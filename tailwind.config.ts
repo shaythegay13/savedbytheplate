@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,27 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom colors for Saved By The Plate
+				'sbtp-blue': '#1DA0F2',  // Logo blue color
+				'sbtp-green': {
+					100: '#E6F3E6',
+					200: '#C2E0C2',
+					300: '#92CC92',
+					400: '#6AB76A',
+					500: '#4C9D4C',  // Medium green from logo
+					600: '#3B7A3B',
+					700: '#2D5C2D',
+					800: '#1E3D1E',
+					900: '#102210',
+				},
+				'sbtp-yellow': '#F4DE7D', // Wheat/grass color from logo
+				'sbtp-beige': '#F5F0E1', // Background color similar to logo background
+				'sbtp-brown': {
+					300: '#A67C52',
+					500: '#725A40', // Earth tone
+					700: '#4D3C2B',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,12 +105,21 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+				'pulse-slow': {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.8 },
+        },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-slow': 'pulse-slow 3s infinite ease-in-out',
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'texture-pattern': "url('/public/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png')",
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

@@ -1,0 +1,264 @@
+
+import { Button } from "@/components/ui/button";
+
+const PremiumFeatures = () => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="bg-white p-6 rounded-lg border border-sbtp-green-200">
+      <div className="flex items-start mb-4">
+        <div className="bg-sbtp-green-100 p-2 rounded-full mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M7 20h10"></path><path d="M10 20c1.5 0 3.485-2.857 4-6.5"></path><path d="M14 20c-1.5 0-2.5-5.5-2.5-9s1-7 3-8c1 1 2 2 2.5 5s.5 4 .5 7-1 5-3 5Z"></path></svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Personalized Garden Plans</h3>
+          <p className="text-sbtp-brown-500">Custom garden designs tailored to your space, climate, and goals.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div className="bg-white p-6 rounded-lg border border-sbtp-green-200">
+      <div className="flex items-start mb-4">
+        <div className="bg-sbtp-green-100 p-2 rounded-full mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2Z"></path><path d="M10 7v10"></path><path d="m15 7-3 5 3 5"></path></svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Advanced Courses</h3>
+          <p className="text-sbtp-brown-500">Access to expert-led courses on sustainable agriculture and gardening.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div className="bg-white p-6 rounded-lg border border-sbtp-green-200">
+      <div className="flex items-start mb-4">
+        <div className="bg-sbtp-green-100 p-2 rounded-full mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><circle cx="9" cy="12" r="1"></circle><circle cx="15" cy="12" r="1"></circle><path d="M7.5 7.2c.3-.4 2.9-2.5 4.5-2.5 1.6.1 3 .7 4.9 2.5"></path><path d="M7.5 16.8c.3.4 2.9 2.5 4.5 2.5 1.6-.1 3-.7 4.9-2.5"></path><path d="M15.5 17c.3 1.3.2 2.5-1.5 4.5"></path><path d="M8.5 17c-.3 1.3-.2 2.5 1.5 4.5"></path><path d="M12 4v16"></path><path d="M20 10c0-4.4-1.8-6-4-6-2 0-4.5 2-4.5 2-1 .5-5 .5-6 0 0 0-2.5-2-4.5-2-2.5 0-4 2-4 6 0 4.1 2 8 2 8 1.4 1.4 4.5 3 7.5 3v-3h2v3c3 0 6.1-1.6 7.5-3 0 0 2-3.9 2-8z"></path></svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Priority Community Support</h3>
+          <p className="text-sbtp-brown-500">Get expert answers to your questions in our Discord community.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div className="bg-white p-6 rounded-lg border border-sbtp-green-200">
+      <div className="flex items-start mb-4">
+        <div className="bg-sbtp-green-100 p-2 rounded-full mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M4 11.5V6a1 1 0 0 1 1-1h5"></path><path d="M20 11.5V6a1 1 0 0 0-1-1h-5"></path><path d="M12 6v3.5"></path><path d="m3 21 8.5-8.5"></path><path d="m13 12 8.5 8.5"></path><path d="M9 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M15 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path></svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Exclusive Webinars</h3>
+          <p className="text-sbtp-brown-500">Regular online sessions with agricultural experts and educators.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const Premium = () => {
+  return (
+    <div className="min-h-screen bg-sbtp-beige">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-sbtp-green-800 to-sbtp-green-600 text-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl font-bold mb-6">Premium Membership</h1>
+            <p className="text-xl mb-8">
+              Unlock exclusive features and support our mission to connect people with sustainable, local food sources.
+            </p>
+            <div className="bg-white/10 rounded-lg p-6 inline-block">
+              <h2 className="text-2xl font-bold mb-2">$10/month or $100/year</h2>
+              <p className="text-sbtp-beige mb-4">Save $20 with annual billing</p>
+              <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 font-semibold py-6 px-10 text-lg">
+                Subscribe Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Features</h2>
+              <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
+                Enhance your sustainable living journey with our premium tools and resources.
+              </p>
+            </div>
+            
+            <PremiumFeatures />
+
+            <div className="mt-12 bg-white rounded-lg border border-sbtp-green-200 overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-3">
+                <div className="p-8 bg-sbtp-green-600 text-white">
+                  <h3 className="text-2xl font-bold mb-6">Comparison</h3>
+                  <ul className="space-y-4">
+                    <li className="flex items-center">
+                      <span>Basic Features</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>Educational Content</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>Community Access</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>Local Food Map</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>Garden Planning</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>Advanced Courses</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>Expert Support</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="p-8">
+                  <h3 className="text-2xl font-bold text-sbtp-green-700 mb-2">Free</h3>
+                  <p className="text-sbtp-brown-500 mb-6">Basic access</p>
+                  <ul className="space-y-4">
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">Basic only</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </li>
+                  </ul>
+                  <Button variant="outline" className="w-full mt-8 border-sbtp-green-500 text-sbtp-green-700">
+                    Current Plan
+                  </Button>
+                </div>
+
+                <div className="p-8 bg-sbtp-green-50 border-l border-sbtp-green-200">
+                  <h3 className="text-2xl font-bold text-sbtp-green-700 mb-2">Premium</h3>
+                  <p className="text-sbtp-brown-500 mb-6">Full access</p>
+                  <ul className="space-y-4">
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">All content</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">Priority</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">Enhanced</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600">
+                    Get Premium
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-16 bg-sbtp-green-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">What Our Members Say</h2>
+              <p className="text-sbtp-brown-500">Hear from people who have transformed their food choices with our premium features.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex items-center mb-4">
+                  <div className="bg-sbtp-green-500 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                    M
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sbtp-green-800">Maria L.</h4>
+                    <p className="text-sm text-sbtp-brown-500">Urban Gardener</p>
+                  </div>
+                </div>
+                <p className="text-sbtp-brown-700">
+                  "The personalized garden plan transformed my small balcony into a thriving food source. I'm now growing enough herbs and greens for my family's needs!"
+                </p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex items-center mb-4">
+                  <div className="bg-sbtp-blue w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                    J
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sbtp-green-800">James K.</h4>
+                    <p className="text-sm text-sbtp-brown-500">School Teacher</p>
+                  </div>
+                </div>
+                <p className="text-sbtp-brown-700">
+                  "As an educator, the premium content has been invaluable for creating engaging curriculum about sustainable agriculture for my students."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-6">Ready to Go Premium?</h2>
+            <p className="text-lg text-sbtp-brown-700 mb-8">
+              Join our growing community of sustainable living enthusiasts and get access to all our premium features.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
+              <Button className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white py-6">
+                Monthly - $10/month
+              </Button>
+              <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 py-6 relative">
+                Annual - $100/year
+                <span className="absolute -top-3 right-0 left-0 mx-auto w-max bg-sbtp-green-500 text-white text-xs px-3 py-0.5 rounded-full">
+                  BEST VALUE
+                </span>
+              </Button>
+            </div>
+            <p className="text-sm text-sbtp-brown-500 mt-4">
+              7-day money-back guarantee. Cancel anytime.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Premium;
