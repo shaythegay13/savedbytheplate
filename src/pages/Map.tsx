@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Form, FormControl, FormDescription, FormField, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Map as MapIcon, MapPin, Filter, Leaf, Calendar, Store, Search, TreeDeciduous, Building2, ShoppingBasket } from 'lucide-react';
+import { useForm } from "react-hook-form";
 
 // Placeholder component for Map (in a real implementation, this would use a mapping library)
 const MapPlaceholder = () => {
@@ -181,6 +181,13 @@ const MapFilters = () => {
   const [searchRadius, setSearchRadius] = useState([5]);
   const [viewType, setViewType] = useState("map");
   
+  // Add form context using react-hook-form
+  const form = useForm({
+    defaultValues: {
+      search_radius: [5],
+    }
+  });
+  
   return (
     <Card className="border-sbtp-green-200">
       <CardContent className="p-6">
@@ -221,10 +228,11 @@ const MapFilters = () => {
             <Badge variant="outline" className="text-xs">{searchRadius[0]} miles</Badge>
           </div>
           <div className="px-1">
-            <Form>
+            <Form {...form}>
               <FormField
+                control={form.control}
                 name="search_radius"
-                render={() => (
+                render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Slider
@@ -232,7 +240,10 @@ const MapFilters = () => {
                         min={1}
                         max={25}
                         step={1}
-                        onValueChange={setSearchRadius}
+                        onValueChange={(value) => {
+                          setSearchRadius(value);
+                          field.onChange(value);
+                        }}
                         className="[&>span]:bg-sbtp-green-500"
                       />
                     </FormControl>
