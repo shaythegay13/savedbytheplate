@@ -21,9 +21,34 @@ const MapPlaceholder = () => {
   };
 
   return (
-    <div className="relative w-full h-[70vh] bg-gradient-to-b from-sbtp-beige to-sbtp-green-100 rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
-      {/* Manhattan mockup background */}
-      <div className="absolute inset-0 opacity-20 bg-[url('https://i.imgur.com/XYBtfqP.png')] bg-cover bg-center"></div>
+    <div className="relative w-full h-[70vh] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
+      {/* Manhattan map background - using actual map image instead of gradient */}
+      <div className="absolute inset-0">
+        <img 
+          src="https://i.imgur.com/XYBtfqP.png" 
+          alt="Manhattan Map" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      {/* Map overlay for streets and features */}
+      <div className="absolute inset-0">
+        <svg width="100%" height="100%" className="opacity-70">
+          {/* Major streets */}
+          <path d="M100,100 L400,100" stroke="#333" strokeWidth="2" className="opacity-40" />
+          <path d="M100,150 L400,150" stroke="#333" strokeWidth="2" className="opacity-40" />
+          <path d="M100,200 L400,200" stroke="#333" strokeWidth="2" className="opacity-40" />
+          <path d="M100,250 L400,250" stroke="#333" strokeWidth="1" className="opacity-30" />
+          <path d="M150,100 L150,300" stroke="#333" strokeWidth="1" className="opacity-30" />
+          <path d="M200,100 L200,300" stroke="#333" strokeWidth="2" className="opacity-40" />
+          <path d="M250,100 L250,300" stroke="#333" strokeWidth="1" className="opacity-30" />
+          <path d="M300,100 L300,300" stroke="#333" strokeWidth="2" className="opacity-40" />
+          
+          {/* Parks and green spaces */}
+          <rect x="220" y="180" width="100" height="60" fill="#72b564" className="opacity-50" rx="5" />
+          <rect x="120" y="120" width="50" height="50" fill="#72b564" className="opacity-50" rx="5" />
+        </svg>
+      </div>
       
       {/* Mockup map controls */}
       <div className="absolute top-4 right-4 flex flex-col gap-2">
@@ -84,6 +109,7 @@ const MapPlaceholder = () => {
         )}
       </div>
       
+      {/* Add the rest of the map pins with popups */}
       <div className="absolute top-[45%] right-[35%]">
         <div 
           className="w-6 h-6 bg-sbtp-blue rounded-full border-2 border-white shadow-md cursor-pointer animate-pulse-slow"
