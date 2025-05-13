@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,13 +23,21 @@ const MapPlaceholder = () => {
 
   return (
     <div className="relative w-full h-[70vh] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
-      {/* Manhattan map background - using actual map image instead of gradient */}
-      <div className="absolute inset-0">
-        <img 
-          src="https://i.imgur.com/XYBtfqP.png" 
-          alt="Manhattan Map" 
-          className="w-full h-full object-cover"
-        />
+      {/* Manhattan map background using a simple styled div instead of an image */}
+      <div className="absolute inset-0 bg-[#f2efe9]">
+        {/* Map grid lines to create a map-like background */}
+        <div className="absolute inset-0 grid grid-cols-12 grid-rows-12">
+          {Array(12).fill(0).map((_, i) => (
+            <div key={`col-${i}`} className="border-r border-gray-300/30 h-full"></div>
+          ))}
+          {Array(12).fill(0).map((_, i) => (
+            <div key={`row-${i}`} className="border-b border-gray-300/30 w-full"></div>
+          ))}
+        </div>
+        
+        {/* Water features */}
+        <div className="absolute top-0 right-0 w-1/4 h-full bg-blue-100/40"></div>
+        <div className="absolute bottom-0 left-0 w-1/5 h-1/3 bg-blue-100/40"></div>
       </div>
       
       {/* Map overlay for streets and features */}
@@ -47,6 +56,15 @@ const MapPlaceholder = () => {
           {/* Parks and green spaces */}
           <rect x="220" y="180" width="100" height="60" fill="#72b564" className="opacity-50" rx="5" />
           <rect x="120" y="120" width="50" height="50" fill="#72b564" className="opacity-50" rx="5" />
+          
+          {/* More urban features */}
+          <rect x="320" y="120" width="40" height="30" fill="#d1c9b7" className="opacity-40" rx="2" />
+          <rect x="180" y="220" width="30" height="30" fill="#d1c9b7" className="opacity-40" rx="2" />
+          <rect x="350" y="200" width="20" height="40" fill="#d1c9b7" className="opacity-40" rx="2" />
+          
+          {/* Main avenues */}
+          <path d="M50,50 L50,350" stroke="#555" strokeWidth="3" className="opacity-50" />
+          <path d="M350,50 L350,350" stroke="#555" strokeWidth="3" className="opacity-50" />
         </svg>
       </div>
       
