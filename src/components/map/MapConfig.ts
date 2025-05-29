@@ -8,9 +8,8 @@ export const locationColors = {
   business: '#9C27B0', // purple
 };
 
-// Set your Mapbox token - in production this should be in .env
-// For now we'll use a temporary value that users should replace
-export const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN';
+// Set your Mapbox token
+export const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2hheXRoZWdheTEzIiwiYSI6ImNtYW15YTR2ODBxOTEycm9qeGhsOGxnN2cifQ.F3DKJtEwjSiAKbqp-7mlXg';
 
 // Default map configuration
 export const defaultMapConfig = {
