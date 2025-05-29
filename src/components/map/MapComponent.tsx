@@ -38,7 +38,7 @@ const MapComponent = () => {
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    if (!MAPBOX_TOKEN || MAPBOX_TOKEN === 'YOUR_MAPBOX_TOKEN') {
+    if (!MAPBOX_TOKEN) {
       console.error('Please set your Mapbox token before using the map');
       return;
     }
@@ -102,7 +102,7 @@ const MapComponent = () => {
 
   return (
     <div className="relative w-full h-[70vh] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
-      {!MAPBOX_TOKEN || MAPBOX_TOKEN === 'YOUR_MAPBOX_TOKEN' ? (
+      {!MAPBOX_TOKEN ? (
         <MapboxTokenMissing />
       ) : (
         <>
