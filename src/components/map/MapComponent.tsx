@@ -4,7 +4,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapLocation } from './types';
 import { locationColors, MAPBOX_TOKEN, defaultMapConfig } from './MapConfig';
-import { sampleLocations } from './sampleLocations';
+import { fetchNYCMapData } from '../../services/mapDataService';
 import LocationMarker from './LocationMarker';
 import LocationPopup from './LocationPopup';
 import MapLegend from './MapLegend';
@@ -15,7 +15,25 @@ const MapComponent = () => {
   const map = useRef<mapboxgl.Map | null>(null);
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const locations = sampleLocations;
+  const [locations, setLocations] = useState<MapLocation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch real NYC data
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const nycLocations = await fetchNYCMapData();
+        setLocations(nycLocations);
+      } catch (error) {
+        console.error('Failed to load map data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -89,6 +107,15 @@ const MapComponent = () => {
       ) : (
         <>
           <div ref={mapContainer} className="absolute inset-0" />
+          
+          {loading && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md">
+              <div className="flex items-center gap-2">
+                <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full"></div>
+                <span className="text-sm text-sbtp-brown-700">Loading NYC facilities...</span>
+              </div>
+            </div>
+          )}
           
           {/* Render markers once map is loaded */}
           {mapLoaded && map.current && locations.map(location => (
