@@ -15,6 +15,15 @@ export interface MapLocation {
   communityboard?: string;
   juris?: string;
   status?: string;
+  operatingHours?: {
+    monday?: string;
+    tuesday?: string;
+    wednesday?: string;
+    thursday?: string;
+    friday?: string;
+    saturday?: string;
+    sunday?: string;
+  };
 }
 
 // NYC Open Data response structure
@@ -34,5 +43,12 @@ export interface NYCDataItem {
   communityboard?: string;
   juris?: string;
   status?: string;
+  openhrsm?: string;
+  openhrstu?: string;
+  openhrsw?: string;
+  openhrsth?: string;
+  openhrsf?: string;
+  openhrssa?: string;
+  openhrssu?: string;
   [key: string]: any;
 }

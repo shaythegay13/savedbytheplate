@@ -3,18 +3,46 @@ import { MapLocation, NYCDataItem } from '../components/map/types';
 
 const NYC_DATA_URL = 'https://data.cityofnewyork.us/resource/p78i-pat6.json';
 
+// Map jurisdiction abbreviations to full names
+const expandJurisdiction = (juris?: string): string => {
+  if (!juris) return '';
+  
+  const jurisdictionMap: Record<string, string> = {
+    'DPR': 'NYC Parks',
+    'HPD': 'Department of Housing Preservation and Development',
+    'NYCHA': 'New York City Housing Authority',
+    'DOT': 'Department of Transportation',
+    'DOE': 'Department of Education',
+    'NYRP': 'New York Restoration Project',
+    'BQLT': 'Brooklyn-Queens Land Trust',
+    'MLT': 'Manhattan Land Trust',
+    'DSNY': 'Department of Sanitation',
+    'HRA': 'Human Resources Administration',
+    'PRI': 'Privately owned land'
+  };
+  
+  return jurisdictionMap[juris] || juris;
+};
+
+// Map borough abbreviations to full names
+const expandBorough = (borough?: string): string => {
+  if (!borough) return '';
+  
+  const boroughMap: Record<string, string> = {
+    'B': 'Brooklyn',
+    'M': 'Manhattan',
+    'Q': 'Queens',
+    'R': 'Staten Island',
+    'X': 'Bronx'
+  };
+  
+  return boroughMap[borough] || borough;
+};
+
 // Map NYC facility types to our location types
 const mapFacilityType = (facilityType?: string, facilitySubtype?: string): MapLocation['type'] => {
-  const type = facilityType?.toLowerCase() || '';
-  const subtype = facilitySubtype?.toLowerCase() || '';
-  
-  if (type.includes('garden') || subtype.includes('garden')) return 'garden';
-  if (type.includes('farm') || subtype.includes('farm')) {
-    if (type.includes('urban') || subtype.includes('urban')) return 'urbanfarm';
-    return 'farm';
-  }
-  if (type.includes('market') || subtype.includes('market')) return 'market';
-  return 'business';
+  // Since these are all community gardens, return 'garden'
+  return 'garden';
 };
 
 // Generate tags based on facility data
@@ -23,9 +51,25 @@ const generateTags = (item: NYCDataItem): string[] => {
   
   if (item.facility_type) tags.push(item.facility_type);
   if (item.facility_subtype) tags.push(item.facility_subtype);
-  if (item.borough) tags.push(item.borough);
+  if (item.borough) tags.push(expandBorough(item.borough));
   
   return tags.slice(0, 3); // Limit to 3 tags
+};
+
+// Extract operating hours from the data
+const extractOperatingHours = (item: NYCDataItem) => {
+  const hours: any = {};
+  
+  if (item.openhrsm) hours.monday = item.openhrsm;
+  if (item.openhrstu) hours.tuesday = item.openhrstu;
+  if (item.openhrsw) hours.wednesday = item.openhrsw;
+  if (item.openhrsth) hours.thursday = item.openhrsth;
+  if (item.openhrsf) hours.friday = item.openhrsf;
+  if (item.openhrssa) hours.saturday = item.openhrssa;
+  if (item.openhrssu) hours.sunday = item.openhrssu;
+  
+  // Only return if we have at least one hour entry
+  return Object.keys(hours).length > 0 ? hours : undefined;
 };
 
 // Transform NYC data to our MapLocation format
@@ -46,10 +90,11 @@ const transformNYCData = (item: NYCDataItem): MapLocation | null => {
     address: item.address,
     crossstreets: item.crossstreets,
     zipcode: item.zipcode,
-    borough: item.borough,
+    borough: expandBorough(item.borough),
     communityboard: item.communityboard,
-    juris: item.juris,
-    status: item.status
+    juris: expandJurisdiction(item.juris),
+    status: item.status,
+    operatingHours: extractOperatingHours(item)
   };
 };
 
