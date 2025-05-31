@@ -30,12 +30,12 @@ const generateTags = (item: NYCDataItem): string[] => {
 
 // Transform NYC data to our MapLocation format
 const transformNYCData = (item: NYCDataItem): MapLocation | null => {
-  if (!item.latitude || !item.longitude || !item.facility_name) {
+  if (!item.lat || !item.lon || !item.gardenname) {
     return null;
   }
   
-  const lat = parseFloat(item.latitude);
-  const lng = parseFloat(item.longitude);
+  const lat = parseFloat(item.lat);
+  const lng = parseFloat(item.lon);
   
   if (isNaN(lat) || isNaN(lng)) {
     return null;
@@ -43,7 +43,7 @@ const transformNYCData = (item: NYCDataItem): MapLocation | null => {
   
   return {
     id: item.objectid || `location-${Math.random().toString(36).substr(2, 9)}`,
-    name: item.facility_name,
+    name: item.gardenname,
     type: mapFacilityType(item.facility_type, item.facility_subtype),
     description: item.address || 'NYC facility',
     tags: generateTags(item),

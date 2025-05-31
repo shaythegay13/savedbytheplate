@@ -13,7 +13,7 @@ export interface MapLocation {
 // NYC Open Data response structure
 export interface NYCDataItem {
   objectid?: string;
-  facility_name?: string;
+  gardenname?: string;
   facility_type?: string;
   facility_subtype?: string;
   address?: string;
@@ -21,7 +21,7 @@ export interface NYCDataItem {
   zipcode?: string;
   phone?: string;
   website?: string;
-  latitude?: string;
-  longitude?: string;
+  lat?: string;
+  lon?: string;
   [key: string]: any;
 }
