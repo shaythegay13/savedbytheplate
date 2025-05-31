@@ -42,7 +42,14 @@ const transformNYCData = (item: NYCDataItem): MapLocation | null => {
     description: item.address || 'NYC facility',
     tags: generateTags(item),
     details: item.phone ? `Phone: ${item.phone}` : undefined,
-    lngLat: [lng, lat] // Verify coordinate order (Mapbox uses [lng, lat])
+    lngLat: [lng, lat], // Verify coordinate order (Mapbox uses [lng, lat])
+    address: item.address,
+    crossstreets: item.crossstreets,
+    zipcode: item.zipcode,
+    borough: item.borough,
+    communityboard: item.communityboard,
+    juris: item.juris,
+    status: item.status
   };
 };
 

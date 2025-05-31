@@ -8,6 +8,13 @@ export interface MapLocation {
   tags: string[];
   details?: string;
   lngLat: [number, number];
+  address?: string;
+  crossstreets?: string;
+  zipcode?: string;
+  borough?: string;
+  communityboard?: string;
+  juris?: string;
+  status?: string;
 }
 
 // NYC Open Data response structure
@@ -23,5 +30,9 @@ export interface NYCDataItem {
   website?: string;
   lat?: string;
   lon?: string;
+  crossstreets?: string;
+  communityboard?: string;
+  juris?: string;
+  status?: string;
   [key: string]: any;
 }
