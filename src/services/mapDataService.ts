@@ -30,53 +30,45 @@ const generateTags = (item: NYCDataItem): string[] => {
 
 // Transform NYC data to our MapLocation format
 const transformNYCData = (item: NYCDataItem): MapLocation | null => {
-  if (!item.lat || !item.lon || !item.gardenname) {
-    return null;
-  }
-  
+  if (!item.lat || !item.lon) return null; // Skip invalid entries
   const lat = parseFloat(item.lat);
   const lng = parseFloat(item.lon);
-  
-  if (isNaN(lat) || isNaN(lng)) {
-    return null;
-  }
+  if (isNaN(lat) || isNaN(lng)) return null; // Skip non-numeric coordinates
   
   return {
     id: item.objectid || `location-${Math.random().toString(36).substr(2, 9)}`,
-    name: item.gardenname,
+    name: item.gardenname || 'Unnamed facility',
     type: mapFacilityType(item.facility_type, item.facility_subtype),
     description: item.address || 'NYC facility',
     tags: generateTags(item),
     details: item.phone ? `Phone: ${item.phone}` : undefined,
-    lngLat: [lng, lat]
+    lngLat: [lng, lat] // Verify coordinate order (Mapbox uses [lng, lat])
   };
 };
 
 export const fetchNYCMapData = async (): Promise<MapLocation[]> => {
   try {
     console.log('Fetching NYC map data...');
-    const response = await fetch(`${NYC_DATA_URL}?$limit=100`);
+    const response = await fetch(`${NYC_DATA_URL}?$limit=5000`); // Increased limit
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     
     const data: NYCDataItem[] = await response.json();
-    console.log('Received NYC data:', data.length, 'items');
+    console.log('Raw data sample:', data.slice(0, 5)); // Debugging
     
     const locations = data
-      .map(transformNYCData)
-      .filter((location): location is MapLocation => location !== null)
-      .filter(location => {
-        // Filter to Manhattan area (approximate bounds)
-        const [lng, lat] = location.lngLat;
-        return lng >= -74.05 && lng <= -73.9 && lat >= 40.7 && lat <= 40.85;
-      });
+      .map(item => {
+        const transformed = transformNYCData(item);
+        if (!transformed) console.warn('Skipped item:', item);
+        return transformed;
+      })
+      .filter((location): location is MapLocation => location !== null);
+      // .filter(location => { ... }); // Disabled geographic filter
     
-    console.log('Transformed locations:', locations.length, 'items');
+    console.log('Transformed locations:', locations);
     return locations;
   } catch (error) {
-    console.error('Error fetching NYC map data:', error);
+    console.error('Full error:', error); // Detailed error
     return [];
   }
 };
