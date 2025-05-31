@@ -1,14 +1,15 @@
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 import { MapLocation } from './types';
 
 interface LocationPopupProps {
   location: MapLocation;
   locationColors: Record<string, string>;
+  onClose: () => void;
 }
 
-const LocationPopup = ({ location, locationColors }: LocationPopupProps) => {
+const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps) => {
   if (!location) return null;
   
   const dayNames = {
@@ -23,7 +24,17 @@ const LocationPopup = ({ location, locationColors }: LocationPopupProps) => {
   
   return (
     <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-80 bg-white rounded-md shadow-lg p-4 z-10 max-h-96 overflow-y-auto">
-      <h4 className="font-medium text-sbtp-green-700 mb-2">{location.name}</h4>
+      <div className="flex justify-between items-start mb-2">
+        <h4 className="font-medium text-sbtp-green-700 flex-1">{location.name}</h4>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="h-6 w-6 p-0 hover:bg-gray-100"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
       
       <div className="space-y-2 text-sm">
         {location.address && (

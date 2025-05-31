@@ -1,5 +1,6 @@
 
 import { MapLocation, NYCDataItem } from '../components/map/types';
+import { fetchGreenThumbData, mergeGardenData } from './greenThumbService';
 
 const NYC_DATA_URL = 'https://data.cityofnewyork.us/resource/p78i-pat6.json';
 
@@ -20,6 +21,11 @@ const expandJurisdiction = (juris?: string): string => {
     'HRA': 'Human Resources Administration',
     'PRI': 'Privately owned land'
   };
+  
+  // Handle multiple jurisdictions separated by "/"
+  if (juris.includes('/')) {
+    return juris.split('/').map(abbr => jurisdictionMap[abbr.trim()] || abbr.trim()).join(' / ');
+  }
   
   return jurisdictionMap[juris] || juris;
 };
@@ -101,26 +107,30 @@ const transformNYCData = (item: NYCDataItem): MapLocation | null => {
 export const fetchNYCMapData = async (): Promise<MapLocation[]> => {
   try {
     console.log('Fetching NYC map data...');
-    const response = await fetch(`${NYC_DATA_URL}?$limit=5000`); // Increased limit
+    const response = await fetch(`${NYC_DATA_URL}?$limit=5000`);
     
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     
     const data: NYCDataItem[] = await response.json();
-    console.log('Raw data sample:', data.slice(0, 5)); // Debugging
+    console.log('Raw data sample:', data.slice(0, 5));
     
-    const locations = data
+    const nycLocations = data
       .map(item => {
         const transformed = transformNYCData(item);
         if (!transformed) console.warn('Skipped item:', item);
         return transformed;
       })
       .filter((location): location is MapLocation => location !== null);
-      // .filter(location => { ... }); // Disabled geographic filter
     
-    console.log('Transformed locations:', locations);
-    return locations;
+    // Fetch and merge GreenThumb data
+    console.log('Fetching GreenThumb data...');
+    const greenThumbLocations = await fetchGreenThumbData();
+    const allLocations = mergeGardenData(nycLocations, greenThumbLocations);
+    
+    console.log('Total locations (NYC + GreenThumb):', allLocations.length);
+    return allLocations;
   } catch (error) {
-    console.error('Full error:', error); // Detailed error
+    console.error('Full error:', error);
     return [];
   }
 };

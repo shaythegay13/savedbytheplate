@@ -97,6 +97,11 @@ const MapComponent = () => {
     setActivePopup(activePopup === locationId ? null : locationId);
   };
 
+  // Handle popup close
+  const handlePopupClose = () => {
+    setActivePopup(null);
+  };
+
   // Get current active location
   const activeLocation = activePopup ? locations.find(loc => loc.id === activePopup) : null;
 
@@ -133,6 +138,7 @@ const MapComponent = () => {
             <LocationPopup 
               location={activeLocation} 
               locationColors={locationColors}
+              onClose={handlePopupClose}
             />
           )}
           
