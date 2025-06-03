@@ -1,6 +1,7 @@
 
 import { MapLocation, NYCDataItem } from '../components/map/types';
 import { fetchGreenThumbData, mergeGardenData } from './greenThumbService';
+import { fetchSupabaseGardenData } from './supabaseMapService';
 
 const NYC_DATA_URL = 'https://data.cityofnewyork.us/resource/p78i-pat6.json';
 
@@ -112,7 +113,7 @@ export const fetchNYCMapData = async (): Promise<MapLocation[]> => {
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     
     const data: NYCDataItem[] = await response.json();
-    console.log('Raw data sample:', data.slice(0, 5));
+    console.log('Raw NYC data sample:', data.slice(0, 5));
     
     const nycLocations = data
       .map(item => {
@@ -121,13 +122,32 @@ export const fetchNYCMapData = async (): Promise<MapLocation[]> => {
         return transformed;
       })
       .filter((location): location is MapLocation => location !== null);
+
+    // Fetch Supabase garden data
+    console.log('Fetching Supabase garden data...');
+    const supabaseLocations = await fetchSupabaseGardenData();
     
     // Fetch and merge GreenThumb data
     console.log('Fetching GreenThumb data...');
     const greenThumbLocations = await fetchGreenThumbData();
-    const allLocations = mergeGardenData(nycLocations, greenThumbLocations);
     
-    console.log('Total locations (NYC + GreenThumb):', allLocations.length);
+    // Merge all data sources
+    let allLocations = mergeGardenData(nycLocations, greenThumbLocations);
+    
+    // Add Supabase data (avoiding duplicates by name)
+    supabaseLocations.forEach(supabaseGarden => {
+      const exists = allLocations.some(existing => 
+        existing.name.toLowerCase() === supabaseGarden.name.toLowerCase()
+      );
+      
+      if (!exists) {
+        allLocations.push(supabaseGarden);
+      }
+    });
+    
+    console.log('Total locations (NYC + GreenThumb + Supabase):', allLocations.length);
+    console.log('Supabase locations added:', supabaseLocations.length);
+    
     return allLocations;
   } catch (error) {
     console.error('Full error:', error);

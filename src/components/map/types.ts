@@ -1,4 +1,3 @@
-
 // Define our location types
 export interface MapLocation {
   id: string;
@@ -24,6 +23,8 @@ export interface MapLocation {
     saturday?: string;
     sunday?: string;
   };
+  website?: string;
+  facebook?: string;
 }
 
 // NYC Open Data response structure

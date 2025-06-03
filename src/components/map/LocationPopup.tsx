@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, ExternalLink, Facebook } from 'lucide-react';
 import { MapLocation } from './types';
 
 interface LocationPopupProps {
@@ -76,6 +76,36 @@ const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps
         {location.status && (
           <div>
             <span className="font-medium">Status:</span> {location.status}
+          </div>
+        )}
+        
+        {location.website && (
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Website:</span>
+            <a 
+              href={location.website.startsWith('http') ? location.website : `https://${location.website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            >
+              <ExternalLink className="h-3 w-3" />
+              Visit
+            </a>
+          </div>
+        )}
+        
+        {location.facebook && (
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Facebook:</span>
+            <a 
+              href={location.facebook.startsWith('http') ? location.facebook : `https://facebook.com/${location.facebook}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            >
+              <Facebook className="h-3 w-3" />
+              Visit
+            </a>
           </div>
         )}
       </div>
