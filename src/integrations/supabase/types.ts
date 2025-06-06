@@ -12,26 +12,32 @@ export type Database = {
       "LUNGS Data1": {
         Row: {
           Address: string
-          Contact: string | null
-          Facebook: string | null
-          "Garden Name": string
-          "Open Hours": string | null
+          "Contact Information": string | null
+          Hours: string | null
+          Latitude: number | null
+          Longitude: number | null
+          "Name of Garden": string
+          Neighborhood: string | null
           Website: string | null
         }
         Insert: {
           Address: string
-          Contact?: string | null
-          Facebook?: string | null
-          "Garden Name": string
-          "Open Hours"?: string | null
+          "Contact Information"?: string | null
+          Hours?: string | null
+          Latitude?: number | null
+          Longitude?: number | null
+          "Name of Garden": string
+          Neighborhood?: string | null
           Website?: string | null
         }
         Update: {
           Address?: string
-          Contact?: string | null
-          Facebook?: string | null
-          "Garden Name"?: string
-          "Open Hours"?: string | null
+          "Contact Information"?: string | null
+          Hours?: string | null
+          Latitude?: number | null
+          Longitude?: number | null
+          "Name of Garden"?: string
+          Neighborhood?: string | null
           Website?: string | null
         }
         Relationships: []
