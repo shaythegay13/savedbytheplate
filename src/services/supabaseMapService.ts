@@ -84,7 +84,7 @@ export const fetchSupabaseGardenData = async (): Promise<MapLocation[]> => {
     console.log('Fetching garden data from Supabase...');
     
     const { data, error } = await supabase
-      .from('LUNGS Data1')
+      .from('"LUNGS Data1"') // Use quotes for tables with spaces
       .select('*');
 
     if (error) {
