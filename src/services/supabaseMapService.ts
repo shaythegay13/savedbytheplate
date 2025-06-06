@@ -84,20 +84,22 @@ export const fetchSupabaseGardenData = async (): Promise<MapLocation[]> => {
     console.log('Fetching garden data from Supabase...');
     
     const { data, error } = await supabase
-      .from('"LUNGS Data1"') // Use quotes for tables with spaces
+      .from('LUNGS Data1') // Use the exact table name from the types
       .select('*');
+
+    console.log('Supabase query result:', { data, error });
 
     if (error) {
       console.error('Error fetching Supabase data:', error);
       return [];
     }
 
-    if (!data) {
-      console.log('No data found in Supabase table');
+    if (!data || data.length === 0) {
+      console.log('No data found in Supabase table LUNGS Data1');
       return [];
     }
 
-    console.log('Supabase data fetched:', data.length, 'records');
+    console.log('Supabase data fetched successfully:', data.length, 'records');
     console.log('Sample Supabase record:', data[0]);
     
     const transformedData = data
@@ -116,7 +118,10 @@ export const fetchSupabaseGardenData = async (): Promise<MapLocation[]> => {
     console.log('- Without coordinates (at [0,0]):', withoutCoords.length);
     
     if (withoutCoords.length > 0) {
-      console.log('Gardens without coordinates:', withoutCoords.map(g => g.name));
+      console.log('Gardens without coordinates (need manual coordinate fixes):');
+      withoutCoords.forEach(garden => {
+        console.log(`- ${garden.name} at ${garden.address}`);
+      });
     }
     
     return validData;
