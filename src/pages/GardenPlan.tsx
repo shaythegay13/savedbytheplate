@@ -2,8 +2,42 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import GardenPlanGenerator from "@/components/garden-plan/GardenPlanGenerator";
 
 const GardenPlan = () => {
+  // For demo purposes, let's assume the user is subscribed
+  // In a real app, this would check the user's subscription status
+  const isSubscribed = true; // This would come from your authentication/subscription context
+
+  if (isSubscribed) {
+    return (
+      <div className="min-h-screen bg-sbtp-beige">
+        {/* Hero Section for Subscribed Users */}
+        <section className="bg-sbtp-green-600 text-white py-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center">
+              <span className="inline-block bg-sbtp-yellow text-sbtp-brown-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
+                Premium Feature
+              </span>
+              <h1 className="text-4xl font-bold mb-4">Your Personalized Garden Planning Tool</h1>
+              <p className="text-xl">
+                Create a customized gardening plan tailored to your specific space, climate, and goals.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Garden Planning Tool */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <GardenPlanGenerator />
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Premium Lock Section (original content for non-subscribers)
   return (
     <div className="min-h-screen bg-sbtp-beige">
       {/* Hero Section - Premium Feature */}
@@ -46,23 +80,27 @@ const GardenPlan = () => {
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-3 mt-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span className="text-sbtp-brown-700">Customized planting calendar</span>
+                    <span className="text-sbtp-brown-700">Customized planting calendar based on your zone and climate</span>
                   </li>
                   <li className="flex items-start">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-3 mt-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span className="text-sbtp-brown-700">Plant recommendations based on your climate zone</span>
+                    <span className="text-sbtp-brown-700">Plant recommendations optimized for your space and sunlight</span>
                   </li>
                   <li className="flex items-start">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-3 mt-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span className="text-sbtp-brown-700">Garden layout designs for your specific space</span>
+                    <span className="text-sbtp-brown-700">Custom garden layout designs for maximum efficiency</span>
                   </li>
                   <li className="flex items-start">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-3 mt-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span className="text-sbtp-brown-700">Care instructions tailored to your garden</span>
+                    <span className="text-sbtp-brown-700">Detailed care instructions tailored to your specific conditions</span>
                   </li>
                   <li className="flex items-start">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-3 mt-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span className="text-sbtp-brown-700">Expert Q&A access for troubleshooting</span>
+                    <span className="text-sbtp-brown-700">Expert troubleshooting tips and seasonal guidance</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-3 mt-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span className="text-sbtp-brown-700">Intelligent plant variety recommendations for your climate</span>
                   </li>
                 </ul>
               </div>
@@ -104,7 +142,7 @@ const GardenPlan = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-400 mb-6"><path d="M7 20h10"></path><path d="M10 20c1.5 0 3.485-2.857 4-6.5"></path><path d="M14 20c-1.5 0-2.5-5.5-2.5-9s1-7 3-8c1 1 2 2 2.5 5s.5 4 .5 7-1 5-3 5Z"></path></svg>
                 <h3 className="text-xl font-semibold text-sbtp-green-800 mb-2">Garden Planning Interface</h3>
                 <p className="text-center text-sbtp-brown-500">
-                  Our interactive garden planning tool helps you visualize and plan your perfect garden.
+                  Our interactive garden planning tool creates personalized recommendations based on your space, climate, and goals.
                 </p>
                 <div className="mt-6 flex items-center justify-center">
                   <div className="bg-sbtp-green-100 rounded-lg p-4 text-center">
