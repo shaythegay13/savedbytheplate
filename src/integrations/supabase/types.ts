@@ -9,13 +9,13 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "LUNGS Data1": {
+      lungs_data1: {
         Row: {
           Address: string
           "Contact Information": string | null
           Hours: string | null
-          Latitude: number | null
-          Longitude: number | null
+          latitude: number | null
+          longitude: number | null
           "Name of Garden": string
           Neighborhood: string | null
           Website: string | null
@@ -24,8 +24,8 @@ export type Database = {
           Address: string
           "Contact Information"?: string | null
           Hours?: string | null
-          Latitude?: number | null
-          Longitude?: number | null
+          latitude?: number | null
+          longitude?: number | null
           "Name of Garden": string
           Neighborhood?: string | null
           Website?: string | null
@@ -34,8 +34,8 @@ export type Database = {
           Address?: string
           "Contact Information"?: string | null
           Hours?: string | null
-          Latitude?: number | null
-          Longitude?: number | null
+          latitude?: number | null
+          longitude?: number | null
           "Name of Garden"?: string
           Neighborhood?: string | null
           Website?: string | null

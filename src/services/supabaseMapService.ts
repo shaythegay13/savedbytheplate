@@ -2,7 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { MapLocation } from '../components/map/types';
 
-// Interface for the LUNGS Data1 table structure based on actual table schema
+// Interface for the lungs_data1 table structure based on actual table schema
 interface LungsData {
   'Name of Garden': string;
   'Address': string;
@@ -10,8 +10,8 @@ interface LungsData {
   'Website'?: string;
   'Contact Information'?: string;
   'Neighborhood'?: string;
-  'Longitude'?: number;
-  'Latitude'?: number;
+  'longitude'?: number;
+  'latitude'?: number;
 }
 
 // Check if coordinates are within NYC bounds (rough boundaries)
@@ -32,8 +32,8 @@ const isWithinNYCBounds = (lat: number, lng: number): boolean => {
 
 // Transform Supabase data to MapLocation format
 const transformSupabaseData = (item: LungsData, index: number): MapLocation | null => {
-  const lng = item['Longitude'];
-  const lat = item['Latitude'];
+  const lng = item['longitude'];
+  const lat = item['latitude'];
   
   // Check if we have valid coordinates
   let validCoords = false;
@@ -84,7 +84,7 @@ export const fetchSupabaseGardenData = async (): Promise<MapLocation[]> => {
     console.log('Fetching garden data from Supabase...');
     
     const { data, error } = await supabase
-      .from('LUNGS Data1') // Use the exact table name from the types
+      .from('lungs_data1') // Updated to use the correct table name
       .select('*');
 
     console.log('Supabase query result:', { data, error });
@@ -95,7 +95,7 @@ export const fetchSupabaseGardenData = async (): Promise<MapLocation[]> => {
     }
 
     if (!data || data.length === 0) {
-      console.log('No data found in Supabase table LUNGS Data1');
+      console.log('No data found in Supabase table lungs_data1');
       return [];
     }
 
