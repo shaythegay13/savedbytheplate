@@ -7,6 +7,7 @@ import { fetchNYCMapData } from '../../services/mapDataService';
 import LocationMarker from './LocationMarker';
 import LocationPopup from './LocationPopup';
 import MapboxTokenMissing from './MapboxTokenMissing';
+import { Badge } from '@/components/ui/badge';
 
 const MapComponent = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
