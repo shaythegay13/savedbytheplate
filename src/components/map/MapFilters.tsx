@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +9,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { MapPin, Filter, Leaf, Calendar, Store, Search, TreeDeciduous, Building2, ShoppingBasket, Map as MapIcon } from 'lucide-react';
+import { MapPin, Filter, Leaf, Calendar, Store, Search, TreeDeciduous, Building2, ShoppingBasket, Map as MapIcon, Refrigerator } from 'lucide-react';
 import { useForm } from "react-hook-form";
 
 // Enhanced Filter component for the map
@@ -249,6 +248,13 @@ const MapFilters = () => {
               <ShoppingBasket className="h-4 w-4 text-purple-500" /> Local Food Businesses
             </Label>
             <Switch id="local-businesses" defaultChecked />
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <Label htmlFor="community-fridges" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
+              <Refrigerator className="h-4 w-4 text-orange-500" /> Community Fridges
+            </Label>
+            <Switch id="community-fridges" defaultChecked />
           </div>
         </div>
         
