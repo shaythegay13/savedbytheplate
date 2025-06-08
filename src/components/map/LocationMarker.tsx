@@ -11,29 +11,6 @@ interface LocationMarkerProps {
   locationColors: Record<string, string>;
 }
 
-const getIconSvg = (type: string, color: string) => {
-  const iconMap = {
-    farm: TreeDeciduous,
-    market: Store,
-    garden: Leaf,
-    urbanfarm: Building2,
-    business: ShoppingBasket,
-    fridge: Refrigerator
-  };
-  
-  const IconComponent = iconMap[type as keyof typeof iconMap] || TreeDeciduous;
-  
-  // Create a temporary div to render the icon and get its HTML
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = `
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      ${getIconPath(type)}
-    </svg>
-  `;
-  
-  return tempDiv.innerHTML;
-};
-
 const getIconPath = (type: string) => {
   const iconPaths = {
     farm: '<path d="M12 3v3m6.366-.366-2.12 2.12M21 12h-3m.366 6.366-2.12-2.12M12 21v-3m-6.366.366 2.12-2.12M3 12h3m-.366-6.366 2.12 2.12"/><circle cx="12" cy="12" r="3"/>',
@@ -51,28 +28,21 @@ const LocationMarker = ({ location, map, onMarkerClick, locationColors }: Locati
   const markerRef = useRef<mapboxgl.Marker | null>(null);
   
   useEffect(() => {
-    // Create custom marker element with icon
+    // Create custom marker element with just the icon
     const el = document.createElement('div');
     el.className = 'marker cursor-pointer';
-    el.style.width = '32px';
-    el.style.height = '32px';
+    el.style.width = '24px';
+    el.style.height = '24px';
     el.style.display = 'flex';
     el.style.alignItems = 'center';
     el.style.justifyContent = 'center';
-    el.style.backgroundColor = 'white';
-    el.style.borderRadius = '50%';
-    el.style.border = `2px solid ${locationColors[location.type]}`;
-    el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
     
-    // Add the icon
+    // Add the icon directly without any background circle
     el.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${locationColors[location.type]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${locationColors[location.type]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
         ${getIconPath(location.type)}
       </svg>
     `;
-    
-    // Add pulse animation
-    el.style.animation = 'pulse-animation 2s infinite';
     
     // Create and store the marker
     const marker = new mapboxgl.Marker(el)

@@ -33,9 +33,9 @@ const Map = () => {
               <MapComponent />
               
               <div className="mt-6 bg-white p-6 rounded-lg border border-sbtp-green-200">
-                <h3 className="text-xl font-semibold text-sbtp-green-800 mb-4">NYC Open Data Integration</h3>
+                <h3 className="text-xl font-semibold text-sbtp-green-800 mb-4">Open Data Integration</h3>
                 <p className="text-sbtp-brown-500 mb-4">
-                  This map displays real facilities from NYC's official open data portal. The data includes community gardens, urban farms, and other food-related facilities across the city.
+                  This map displays real facilities using multiple data sources. If you want to add any information about any of the spaces in the map, click the button "Add to Map" below!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700">

@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -7,7 +6,6 @@ import { locationColors, MAPBOX_TOKEN, defaultMapConfig } from './MapConfig';
 import { fetchNYCMapData } from '../../services/mapDataService';
 import LocationMarker from './LocationMarker';
 import LocationPopup from './LocationPopup';
-import MapLegend from './MapLegend';
 import MapboxTokenMissing from './MapboxTokenMissing';
 
 const MapComponent = () => {
@@ -142,8 +140,10 @@ const MapComponent = () => {
             />
           )}
           
-          {/* Map Legend and Location Label */}
-          <MapLegend locationColors={locationColors} />
+          {/* Manhattan label */}
+          <div className="absolute bottom-4 right-4">
+            <Badge className="bg-white text-sbtp-brown-700 border border-sbtp-green-200">Manhattan, NYC</Badge>
+          </div>
         </>
       )}
     </div>

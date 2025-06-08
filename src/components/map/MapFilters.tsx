@@ -213,7 +213,7 @@ const MapFilters = () => {
         </Tabs>
         
         <div className="space-y-4 border-t border-sbtp-green-200 pt-4 mt-4">
-          <h4 className="font-medium text-sbtp-green-800 mb-2">Show on Map:</h4>
+          <h4 className="font-medium text-sbtp-green-800 mb-2">Map Legend:</h4>
           
           <div className="flex items-center justify-between">
             <Label htmlFor="farms" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
