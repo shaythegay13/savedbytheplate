@@ -33,6 +33,10 @@ const MapLegend = ({ locationColors }: MapLegendProps) => {
             <span className="w-3 h-3 rounded-full" style={{ backgroundColor: locationColors.business }}></span>
             <span>Local Food Businesses</span>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: locationColors.fridge }}></span>
+            <span>Community Fridges</span>
+          </div>
         </div>
       </div>
       

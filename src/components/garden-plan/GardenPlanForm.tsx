@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -120,6 +119,10 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="1a">Zone 1a (-60 to -55°F)</SelectItem>
+                        <SelectItem value="1b">Zone 1b (-55 to -50°F)</SelectItem>
+                        <SelectItem value="2a">Zone 2a (-50 to -45°F)</SelectItem>
+                        <SelectItem value="2b">Zone 2b (-45 to -40°F)</SelectItem>
                         <SelectItem value="3a">Zone 3a (-40 to -35°F)</SelectItem>
                         <SelectItem value="3b">Zone 3b (-35 to -30°F)</SelectItem>
                         <SelectItem value="4a">Zone 4a (-30 to -25°F)</SelectItem>
@@ -136,7 +139,12 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                         <SelectItem value="9b">Zone 9b (25 to 30°F)</SelectItem>
                         <SelectItem value="10a">Zone 10a (30 to 35°F)</SelectItem>
                         <SelectItem value="10b">Zone 10b (35 to 40°F)</SelectItem>
-                        <SelectItem value="11">Zone 11 (40°F and above)</SelectItem>
+                        <SelectItem value="11a">Zone 11a (40 to 45°F)</SelectItem>
+                        <SelectItem value="11b">Zone 11b (45 to 50°F)</SelectItem>
+                        <SelectItem value="12a">Zone 12a (50 to 55°F)</SelectItem>
+                        <SelectItem value="12b">Zone 12b (55 to 60°F)</SelectItem>
+                        <SelectItem value="13a">Zone 13a (60 to 65°F)</SelectItem>
+                        <SelectItem value="13b">Zone 13b (65 to 70°F)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

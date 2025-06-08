@@ -6,6 +6,7 @@ export const locationColors = {
   garden: '#FFC107', // yellow (changed from purple to yellow for community gardens)
   urbanfarm: '#795548', // brown
   business: '#9C27B0', // purple
+  fridge: '#FF5722', // orange for community fridges
 };
 
 // Set your Mapbox token
