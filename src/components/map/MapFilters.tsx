@@ -256,6 +256,13 @@ const MapFilters = () => {
             </Label>
             <Switch id="community-fridges" defaultChecked />
           </div>
+          
+          <div className="flex items-center justify-between">
+            <Label htmlFor="food-banks" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
+              <ShoppingBasket className="h-4 w-4 text-amber-500" /> Food Banks
+            </Label>
+            <Switch id="food-banks" defaultChecked />
+          </div>
         </div>
         
         <Button className="w-full mt-6 bg-sbtp-green-500 hover:bg-sbtp-green-600">

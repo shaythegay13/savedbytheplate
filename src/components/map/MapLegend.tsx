@@ -37,6 +37,10 @@ const MapLegend = ({ locationColors }: MapLegendProps) => {
             <span className="w-3 h-3 rounded-full" style={{ backgroundColor: locationColors.fridge }}></span>
             <span>Community Fridges</span>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: locationColors.foodbank }}></span>
+            <span>Food Banks</span>
+          </div>
         </div>
       </div>
       

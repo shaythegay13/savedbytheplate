@@ -1,4 +1,3 @@
-
 // Color configuration for different location types
 export const locationColors = {
   farm: '#4CAF50', // green
@@ -7,6 +6,7 @@ export const locationColors = {
   urbanfarm: '#795548', // brown
   business: '#9C27B0', // purple
   fridge: '#FF5722', // orange for community fridges
+  foodbank: '#F59E0B', // amber for food banks
 };
 
 // Set your Mapbox token
