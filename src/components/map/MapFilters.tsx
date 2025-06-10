@@ -231,7 +231,7 @@ const MapFilters = () => {
           
           <div className="flex items-center justify-between">
             <Label htmlFor="community-gardens" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <Leaf className="h-4 w-4 text-sbtp-yellow" /> Community Gardens
+              <Leaf className="h-4 w-4 text-red-600" /> Community Gardens
             </Label>
             <Switch id="community-gardens" defaultChecked />
           </div>
