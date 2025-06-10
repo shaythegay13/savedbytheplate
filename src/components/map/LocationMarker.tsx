@@ -2,7 +2,6 @@
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { MapLocation } from './types';
-import { TreeDeciduous, Store, Leaf, Building2, ShoppingBasket, Refrigerator } from 'lucide-react';
 
 interface LocationMarkerProps {
   location: MapLocation;
@@ -24,25 +23,54 @@ const getIconPath = (type: string) => {
   return iconPaths[type as keyof typeof iconPaths] || iconPaths.farm;
 };
 
+// Calculate icon size based on zoom level
+const getIconSize = (zoom: number) => {
+  // Base size at zoom level 12
+  const baseSize = 20;
+  const minSize = 12;
+  const maxSize = 32;
+  
+  // Scale factor based on zoom (less aggressive scaling)
+  const scaleFactor = Math.pow(1.15, zoom - 12);
+  const size = baseSize * scaleFactor;
+  
+  // Clamp between min and max sizes
+  return Math.max(minSize, Math.min(maxSize, size));
+};
+
 const LocationMarker = ({ location, map, onMarkerClick, locationColors }: LocationMarkerProps) => {
   const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const elementRef = useRef<HTMLDivElement | null>(null);
   
   useEffect(() => {
     // Create custom marker element with just the icon
     const el = document.createElement('div');
     el.className = 'marker cursor-pointer';
-    el.style.width = '24px';
-    el.style.height = '24px';
     el.style.display = 'flex';
     el.style.alignItems = 'center';
     el.style.justifyContent = 'center';
     
-    // Add the icon directly without any background circle
-    el.innerHTML = `
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${locationColors[location.type]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
-        ${getIconPath(location.type)}
-      </svg>
-    `;
+    elementRef.current = el;
+    
+    // Function to update icon size based on zoom
+    const updateIconSize = () => {
+      if (!elementRef.current) return;
+      
+      const zoom = map.getZoom();
+      const size = getIconSize(zoom);
+      
+      elementRef.current.style.width = `${size}px`;
+      elementRef.current.style.height = `${size}px`;
+      
+      elementRef.current.innerHTML = `
+        <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${locationColors[location.type]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+          ${getIconPath(location.type)}
+        </svg>
+      `;
+    };
+    
+    // Initial size setup
+    updateIconSize();
     
     // Create and store the marker
     const marker = new mapboxgl.Marker(el)
@@ -55,12 +83,20 @@ const LocationMarker = ({ location, map, onMarkerClick, locationColors }: Locati
     el.addEventListener('click', () => {
       onMarkerClick(location.id);
     });
+    
+    // Listen for zoom changes
+    const handleZoom = () => {
+      updateIconSize();
+    };
+    
+    map.on('zoom', handleZoom);
 
     // Clean up on unmount
     return () => {
       if (markerRef.current) {
         markerRef.current.remove();
       }
+      map.off('zoom', handleZoom);
     };
   }, [location, map, onMarkerClick, locationColors]);
 
