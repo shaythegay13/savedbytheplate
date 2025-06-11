@@ -8,7 +8,9 @@ import { Leaf, Users, MapPin, Sparkles } from "lucide-react";
 
 const WaitingList = () => {
   const [email, setEmail] = useState("");
+  const [heroEmail, setHeroEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isHeroSubmitted, setIsHeroSubmitted] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,6 +27,26 @@ const WaitingList = () => {
     // Here you would integrate with your email service
     console.log("Email submitted:", email);
     setIsSubmitted(true);
+    toast({
+      title: "Welcome to the waiting list!",
+      description: "You'll be the first to know when we launch.",
+    });
+  };
+
+  const handleHeroSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!heroEmail) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address to join the waiting list.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Here you would integrate with your email service
+    console.log("Hero email submitted:", heroEmail);
+    setIsHeroSubmitted(true);
     toast({
       title: "Welcome to the waiting list!",
       description: "You'll be the first to know when we launch.",
@@ -55,9 +77,40 @@ const WaitingList = () => {
               We're building something amazing to empower your food choices.
             </p>
             
-            <div className="bg-sbtp-yellow text-sbtp-brown-700 px-6 py-3 rounded-full text-lg font-semibold inline-block mb-8">
-              🚀 Coming Soon - Join the Waiting List!
-            </div>
+            {!isHeroSubmitted ? (
+              <div className="bg-sbtp-yellow px-6 py-6 rounded-lg text-sbtp-brown-700 inline-block mb-8 shadow-lg">
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-2xl mr-2">🚀</span>
+                  <span className="text-lg font-semibold">Coming Soon - Join the Waiting List!</span>
+                </div>
+                <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={heroEmail}
+                    onChange={(e) => setHeroEmail(e.target.value)}
+                    className="flex-1 bg-white text-gray-900 border-0"
+                    required
+                  />
+                  <Button 
+                    type="submit" 
+                    className="bg-sbtp-green-600 text-white hover:bg-sbtp-green-700 font-semibold px-6"
+                  >
+                    Join Now
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <div className="bg-sbtp-green-600 text-white px-6 py-6 rounded-lg inline-block mb-8 shadow-lg">
+                <div className="flex items-center justify-center mb-2">
+                  <span className="text-2xl mr-2">🎉</span>
+                  <span className="text-lg font-semibold">You're on the list!</span>
+                </div>
+                <p className="text-sbtp-beige">
+                  Thank you for joining! We'll keep you updated on our progress.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
