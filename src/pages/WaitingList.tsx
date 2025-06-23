@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,8 +19,8 @@ const WaitingList = () => {
     return emailRegex.test(email);
   };
 
-  const submitEmailToGoogleScript = async (emailAddress: string) => {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbxvQoMa3APSj7WOf8YjsCJ7BfUFDzwBlENNLUbqTTMZPZFqGfhkFMmkQpr-JIR6SZcw/exec", {
+  const submitEmailToMakeWebhook = async (emailAddress: string) => {
+    const response = await fetch("https://hook.us2.make.com/kqoibhs6z1tdkrm13bmjocbal9ft4h7n", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +59,7 @@ const WaitingList = () => {
     setIsLoading(true);
     
     try {
-      await submitEmailToGoogleScript(email);
+      await submitEmailToMakeWebhook(email);
       console.log("Email submitted successfully:", email);
       setIsSubmitted(true);
       toast({
@@ -103,7 +102,7 @@ const WaitingList = () => {
     setIsHeroLoading(true);
     
     try {
-      await submitEmailToGoogleScript(heroEmail);
+      await submitEmailToMakeWebhook(heroEmail);
       console.log("Hero email submitted successfully:", heroEmail);
       setIsHeroSubmitted(true);
       toast({
