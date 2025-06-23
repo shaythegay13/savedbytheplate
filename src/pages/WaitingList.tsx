@@ -11,10 +11,34 @@ const WaitingList = () => {
   const [heroEmail, setHeroEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isHeroSubmitted, setIsHeroSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isHeroLoading, setIsHeroLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const submitEmailToGoogleScript = async (emailAddress: string) => {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxvQoMa3APSj7WOf8YjsCJ7BfUFDzwBlENNLUbqTTMZPZFqGfhkFMmkQpr-JIR6SZcw/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: emailAddress }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!email) {
       toast({
         title: "Email required",
@@ -23,18 +47,41 @@ const WaitingList = () => {
       });
       return;
     }
+
+    if (!validateEmail(email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
     
-    // Here you would integrate with your email service
-    console.log("Email submitted:", email);
-    setIsSubmitted(true);
-    toast({
-      title: "Welcome to the waiting list!",
-      description: "You'll be the first to know when we launch.",
-    });
+    try {
+      await submitEmailToGoogleScript(email);
+      console.log("Email submitted successfully:", email);
+      setIsSubmitted(true);
+      toast({
+        title: "Welcome to the waiting list!",
+        description: "You'll be the first to know when we launch.",
+      });
+    } catch (error) {
+      console.error("Error submitting email:", error);
+      toast({
+        title: "Submission failed",
+        description: "There was an error submitting your email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleHeroSubmit = (e: React.FormEvent) => {
+  const handleHeroSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!heroEmail) {
       toast({
         title: "Email required",
@@ -43,14 +90,36 @@ const WaitingList = () => {
       });
       return;
     }
+
+    if (!validateEmail(heroEmail)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsHeroLoading(true);
     
-    // Here you would integrate with your email service
-    console.log("Hero email submitted:", heroEmail);
-    setIsHeroSubmitted(true);
-    toast({
-      title: "Welcome to the waiting list!",
-      description: "You'll be the first to know when we launch.",
-    });
+    try {
+      await submitEmailToGoogleScript(heroEmail);
+      console.log("Hero email submitted successfully:", heroEmail);
+      setIsHeroSubmitted(true);
+      toast({
+        title: "Welcome to the waiting list!",
+        description: "You'll be the first to know when we launch.",
+      });
+    } catch (error) {
+      console.error("Error submitting hero email:", error);
+      toast({
+        title: "Submission failed",
+        description: "There was an error submitting your email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsHeroLoading(false);
+    }
   };
 
   return (
@@ -91,12 +160,14 @@ const WaitingList = () => {
                     onChange={(e) => setHeroEmail(e.target.value)}
                     className="flex-1 bg-white text-gray-900 border-0"
                     required
+                    disabled={isHeroLoading}
                   />
                   <Button 
                     type="submit" 
                     className="bg-sbtp-green-600 text-white hover:bg-sbtp-green-700 font-semibold px-6"
+                    disabled={isHeroLoading}
                   >
-                    Join Now
+                    {isHeroLoading ? "Joining..." : "Join Now"}
                   </Button>
                 </form>
               </div>
@@ -207,12 +278,14 @@ const WaitingList = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="flex-1 bg-white text-gray-900 border-0"
                   required
+                  disabled={isLoading}
                 />
                 <Button 
                   type="submit" 
                   className="bg-sbtp-yellow text-sbtp-green-800 hover:bg-sbtp-yellow/90 font-semibold px-8"
+                  disabled={isLoading}
                 >
-                  Join Waiting List
+                  {isLoading ? "Joining..." : "Join Waiting List"}
                 </Button>
               </form>
             ) : (
