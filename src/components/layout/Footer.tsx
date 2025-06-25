@@ -1,8 +1,7 @@
 
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 const currentYear = new Date().getFullYear();
-const location = useLocation();
-const isWaitingList = location.pathname === "/waiting-list";
+
 
 const Footer = () => {
   return (
@@ -23,8 +22,7 @@ const Footer = () => {
             </p>
           </div>
 
-          {!isWaitingList && (
-              <>
+          
                 <div>
                   <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
                   <ul className="space-y-2 text-gray-300">
@@ -49,8 +47,7 @@ const Footer = () => {
                     </li>
                   </ul>
                 </div>
-              </>
-            )}
+              
 
 
           <div>
