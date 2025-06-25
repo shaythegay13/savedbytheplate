@@ -13,6 +13,7 @@ import Education from "./pages/Education";
 import Marketplace from "./pages/Marketplace";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
+import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
               {/* 404 page for truly unknown routes */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <Footer />
           </main>
         </div>
       </BrowserRouter>
