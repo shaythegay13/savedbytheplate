@@ -69,7 +69,7 @@ const Footer = () => {
             <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
-          <div className="flex space-x-6 mt-4 md:mt-0 text-xs text-gray-400">
+          <div className="flex justify-center content-center space-x-6 mt-4 md:mt-0 text-xs text-gray-400">
               <p>All contents {currentYear} © All rights reserved</p>
           </div>
         </div>
