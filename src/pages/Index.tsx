@@ -5,7 +5,7 @@ import MissionSection from "@/components/home/MissionSection";
 import TargetAudienceSection from "@/components/home/TargetAudienceSection";
 import PricingSection from "@/components/home/PricingSection";
 import CallToAction from "@/components/home/CallToAction";
-import Footer from "@/components/layout/Footer";
+
 
 const Index = () => {
   return (
@@ -16,7 +16,6 @@ const Index = () => {
       <TargetAudienceSection />
       <PricingSection />
       <CallToAction />
-      <Footer />
     </div>
   );
 };
