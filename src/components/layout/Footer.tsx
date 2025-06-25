@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-
+const currentYear = new Date().getFullYear();
 const Footer = () => {
   return (
     <footer className="bg-sbtp-green-800 text-white pt-12 pb-6">
@@ -68,6 +68,9 @@ const Footer = () => {
           <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
             <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+          </div>
+          <div className="flex space-x-6 mt-4 md:mt-0 text-xs text-gray-400">
+              <p>All contents {currentYear} © All rights reserved</p>
           </div>
         </div>
       </div>
