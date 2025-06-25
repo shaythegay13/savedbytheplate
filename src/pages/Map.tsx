@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
 import MapFilters from "@/components/map/MapFilters";
+import Footer from "@/components/layout/Footer";
 
 const Map = () => {
   return (
@@ -81,6 +82,7 @@ const Map = () => {
         </div>
       </section>
     </div>
+    <Footer />
   );
 };
 
