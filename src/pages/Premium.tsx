@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import Footer from "@/components/layout/Footer";
+
 
 const PremiumFeatures = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -258,7 +258,7 @@ const Premium = () => {
           </div>
         </div>
       </section>
-        <Footer />
+        
     </div>
   );
 };
