@@ -62,6 +62,7 @@ const premiumCourses = [
 
 const Education = () => {
   return (
+    <>
     <div className="min-h-screen bg-sbtp-beige">
       {/* Hero Section */}
       <section className="bg-sbtp-green-600 text-white py-16">
@@ -180,8 +181,10 @@ const Education = () => {
           </Tabs>
         </div>
       </section>
-      <Footer />
+      
     </div>
+    <Footer />
+    </>
   );
 };
 
