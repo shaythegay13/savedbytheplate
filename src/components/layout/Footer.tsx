@@ -1,8 +1,11 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const currentYear = new Date().getFullYear();
 
+
 const Footer = () => {
+  const location = useLocation();
+  const isWaitingList = location.pathname === "/waiting-list";
   return (
     <footer className="bg-sbtp-green-800 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
@@ -20,7 +23,8 @@ const Footer = () => {
               Empowering individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education.
             </p>
           </div>
-
+          {!isWaitingList && (
+        <>
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-gray-300">
@@ -45,7 +49,8 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-
+          </>
+      )}
           <div>
             <h4 className="text-lg font-semibold mb-4">Stay Connected</h4>
             <ul className="space-y-2 text-gray-300">
