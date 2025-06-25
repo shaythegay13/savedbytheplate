@@ -275,7 +275,8 @@ const Marketplace = () => {
           </div>
         </div>
       </section>
-        <Footer />
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
