@@ -1,6 +1,9 @@
 
-import { Link } from "react-router-dom";
+import { Link useLocation } from "react-router-dom";
 const currentYear = new Date().getFullYear();
+const location = useLocation();
+const isWaitingList = location.pathname === "/waiting-list";
+
 const Footer = () => {
   return (
     <footer className="bg-sbtp-green-800 text-white pt-12 pb-6">
@@ -20,30 +23,35 @@ const Footer = () => {
             </p>
           </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li><Link to="/education" className="hover:text-white transition-colors">Education</Link></li>
-              <li><Link to="/community" className="hover:text-white transition-colors">Community</Link></li>
-              <li><Link to="/map" className="hover:text-white transition-colors">Local Map</Link></li>
-              <li><Link to="/marketplace" className="hover:text-white transition-colors">Marketplace</Link></li>
-              <li><Link to="/garden-plan" className="hover:text-white transition-colors">Garden Plan</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Premium</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li><Link to="/premium" className="hover:text-white transition-colors">Premium Benefits</Link></li>
-              <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-              <li>
-                <div className="flex items-center gap-2">
-                  <span className="hover:text-white transition-colors">Subscription</span>
-                  <span className="bg-sbtp-yellow text-sbtp-green-800 text-xs px-2 py-0.5 rounded-full">$10/mo</span>
+          {!isWaitingList && (
+              <>
+                <div>
+                  <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li><Link to="/education" className="hover:text-white transition-colors">Education</Link></li>
+                    <li><Link to="/community" className="hover:text-white transition-colors">Community</Link></li>
+                    <li><Link to="/map" className="hover:text-white transition-colors">Local Map</Link></li>
+                    <li><Link to="/marketplace" className="hover:text-white transition-colors">Marketplace</Link></li>
+                    <li><Link to="/garden-plan" className="hover:text-white transition-colors">Garden Plan</Link></li>
+                  </ul>
                 </div>
-              </li>
-            </ul>
-          </div>
+            
+                <div>
+                  <h4 className="text-lg font-semibold mb-4">Premium</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li><Link to="/premium" className="hover:text-white transition-colors">Premium Benefits</Link></li>
+                    <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                    <li>
+                      <div className="flex items-center gap-2">
+                        <span className="hover:text-white transition-colors">Subscription</span>
+                        <span className="bg-sbtp-yellow text-sbtp-green-800 text-xs px-2 py-0.5 rounded-full">$10/mo</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </>
+            )}
+
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Stay Connected</h4>
