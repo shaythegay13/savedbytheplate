@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import Footer from "@/components/layout/Footer";
+
 
 // Sample products data
 const seedKits = [
@@ -275,8 +275,7 @@ const Marketplace = () => {
           </div>
         </div>
       </section>
-      {/* Footer */}
-      <Footer />
+      
     </div>
   );
 };
