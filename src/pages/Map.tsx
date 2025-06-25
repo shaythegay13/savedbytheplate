@@ -81,8 +81,8 @@ const Map = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
-    <Footer />
   );
 };
 
