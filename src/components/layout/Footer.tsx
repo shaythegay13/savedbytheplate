@@ -1,5 +1,5 @@
 
-import { Link useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const currentYear = new Date().getFullYear();
 const location = useLocation();
 const isWaitingList = location.pathname === "/waiting-list";
