@@ -13,6 +13,7 @@ const WaitingList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isHeroLoading, setIsHeroLoading] = useState(false);
   const { toast } = useToast();
+  const currentYear = new Date().getFullYear();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
