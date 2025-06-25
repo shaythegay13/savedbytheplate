@@ -11,13 +11,13 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         
           {!isWaitingList && (
-        <>
+        
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        </>
+        
           ) : (
-          <>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex lg:justify-between lg:gap-0">
-          </>
+          
           )}
           
           <div>
