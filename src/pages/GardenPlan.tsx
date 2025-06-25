@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import GardenPlanGenerator from "@/components/garden-plan/GardenPlanGenerator";
+import Footer from "@/components/layout/Footer";
 
 const GardenPlan = () => {
   // For demo purposes, let's assume the user is subscribed
@@ -169,6 +170,7 @@ const GardenPlan = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
