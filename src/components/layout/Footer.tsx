@@ -46,7 +46,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
+            <h4 className="text-lg font-semibold mb-4">Stay Connected</h4>
             <ul className="space-y-2 text-gray-300">
               <li><a href="mailto:contact@savedbytheplate.com" className="hover:text-white transition-colors">contact@savedbytheplate.com</a></li>
               <li>
