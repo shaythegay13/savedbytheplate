@@ -304,25 +304,7 @@ const WaitingList = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-sbtp-green-800 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-center items-center mb-4">
-            <img 
-              src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
-              alt="Saved by the Plate" 
-              className="h-8 w-8 object-contain mr-2"
-            />
-            <span className="text-lg font-semibold">Saved by the Plate</span>
-          </div>
-          <p className="text-sbtp-beige">
-            Empowering communities through local food connections
-          </p>
-        </div>
-        <div className="flex justify-center content-center space-x-6 mt-4 md:mt-0 text-xs text-gray-400">
-              <p>All contents {currentYear} © All rights reserved</p>
-          </div>
-      </footer>
+      
     </div>
   );
 };
