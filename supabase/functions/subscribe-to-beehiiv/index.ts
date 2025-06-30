@@ -19,10 +19,12 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email }: SubscriptionRequest = await req.json();
+    console.log("Processing subscription request for email:", email);
 
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log("Invalid email format:", email);
       return new Response(
         JSON.stringify({ error: "Invalid email address" }),
         {
@@ -45,26 +47,34 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Make request to Beehiiv API
-    const beehiivResponse = await fetch(
-      "https://api.beehiiv.com/v2/publications/pub_7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e/subscriptions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${beehiivApiKey}`,
-        },
-        body: JSON.stringify({
-          email: email,
-          reactivate_existing: false,
-          send_welcome_email: true,
-        }),
-      }
-    );
+    console.log("API key found, making request to Beehiiv...");
+
+    // Make request to Beehiiv API with correct headers and endpoint
+    const beehiivUrl = `https://api.beehiiv.com/v2/publications/pub_7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e/subscriptions`;
+    
+    const beehiivResponse = await fetch(beehiivUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${beehiivApiKey}`,
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        reactivate_existing: false,
+        send_welcome_email: true,
+      }),
+    });
+
+    console.log("Beehiiv API response status:", beehiivResponse.status);
 
     if (!beehiivResponse.ok) {
       const errorData = await beehiivResponse.json();
-      console.error("Beehiiv API error:", errorData);
+      console.error("Beehiiv API error:", {
+        status: beehiivResponse.status,
+        statusText: beehiivResponse.statusText,
+        errors: errorData.errors || errorData
+      });
       
       // Handle specific Beehiiv errors
       if (beehiivResponse.status === 400 && errorData.errors?.some((e: any) => e.message?.includes("already exists"))) {
@@ -75,6 +85,18 @@ const handler = async (req: Request): Promise<Response> => {
           }),
           {
             status: 200,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      }
+
+      // Handle 401 unauthorized error specifically
+      if (beehiivResponse.status === 401) {
+        console.error("Authentication failed - please check your API key");
+        return new Response(
+          JSON.stringify({ error: "Authentication failed. Please contact support." }),
+          {
+            status: 500,
             headers: { "Content-Type": "application/json", ...corsHeaders },
           }
         );
