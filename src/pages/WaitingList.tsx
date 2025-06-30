@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -150,8 +151,11 @@ const WaitingList = () => {
               <div className="bg-sbtp-yellow px-6 py-6 rounded-lg text-sbtp-brown-700 inline-block mb-8 shadow-lg">
                 <div className="flex items-center justify-center mb-4">
                   <span className="text-2xl mr-2">🚀</span>
-                  <span className="text-lg font-semibold">Coming Soon - Join the Waiting List!</span>
+                  <span className="text-lg font-semibold">Join Our Waiting List & Newsletter!</span>
                 </div>
+                <p className="text-sm text-sbtp-brown-600 mb-4 max-w-md mx-auto">
+                  Sign up now to get early access to our website and receive exclusive updates from our upcoming newsletter.
+                </p>
                 <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                   <Input
                     type="email"
@@ -285,7 +289,7 @@ const WaitingList = () => {
                   className="bg-sbtp-yellow text-sbtp-green-800 hover:bg-sbtp-yellow/90 font-semibold px-8"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Joining..." : "Join Waiting List"}
+                  {isLoading ? "Joining..." : "Join Now"}
                 </Button>
               </form>
             ) : (
