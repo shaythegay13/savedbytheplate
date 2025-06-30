@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Leaf, Users, MapPin, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const WaitingList = () => {
   const [email, setEmail] = useState("");
@@ -20,27 +21,21 @@ const WaitingList = () => {
     return emailRegex.test(email);
   };
 
-  const submitEmailToBeehiiv = async (emailAddress: string) => {
-    const response = await fetch("https://api.beehiiv.com/v2/publications/pub_7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e/subscriptions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e"
-      },
-      body: JSON.stringify({ 
-        email: emailAddress,
-        reactivate_existing: false,
-        send_welcome_email: true
-      }),
+  const submitEmailToNewsletter = async (emailAddress: string) => {
+    const { data, error } = await supabase.functions.invoke('subscribe-to-beehiiv', {
+      body: { email: emailAddress }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Beehiiv API error:", errorData);
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (error) {
+      console.error("Supabase function error:", error);
+      throw new Error(error.message || "Failed to subscribe to newsletter");
     }
 
-    return response.json();
+    if (!data.success) {
+      throw new Error(data.error || "Failed to subscribe to newsletter");
+    }
+
+    return data;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,15 +62,15 @@ const WaitingList = () => {
     setIsLoading(true);
     
     try {
-      await submitEmailToBeehiiv(email);
-      console.log("Email submitted successfully to Beehiiv:", email);
+      const result = await submitEmailToNewsletter(email);
+      console.log("Email submitted successfully:", email);
       setIsSubmitted(true);
       toast({
         title: "Welcome to our newsletter!",
-        description: "You've been added to our waiting list and will receive our newsletter updates.",
+        description: result.message || "You've been added to our waiting list and will receive our newsletter updates.",
       });
     } catch (error) {
-      console.error("Error submitting email to Beehiiv:", error);
+      console.error("Error submitting email:", error);
       toast({
         title: "Submission failed",
         description: "There was an error adding you to our newsletter. Please try again.",
@@ -110,15 +105,15 @@ const WaitingList = () => {
     setIsHeroLoading(true);
     
     try {
-      await submitEmailToBeehiiv(heroEmail);
-      console.log("Hero email submitted successfully to Beehiiv:", heroEmail);
+      const result = await submitEmailToNewsletter(heroEmail);
+      console.log("Hero email submitted successfully:", heroEmail);
       setIsHeroSubmitted(true);
       toast({
         title: "Welcome to our newsletter!",
-        description: "You've been added to our waiting list and will receive our newsletter updates.",
+        description: result.message || "You've been added to our waiting list and will receive our newsletter updates.",
       });
     } catch (error) {
-      console.error("Error submitting hero email to Beehiiv:", error);
+      console.error("Error submitting hero email:", error);
       toast({
         title: "Submission failed",
         description: "There was an error adding you to our newsletter. Please try again.",
