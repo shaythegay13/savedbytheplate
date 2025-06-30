@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,20 +20,27 @@ const WaitingList = () => {
     return emailRegex.test(email);
   };
 
-  const submitEmailToMakeWebhook = async (emailAddress: string) => {
-    const response = await fetch("https://hook.us2.make.com/kqoibhs6z1tdkrm13bmjocbal9ft4h7n", {
+  const submitEmailToBeehiiv = async (emailAddress: string) => {
+    const response = await fetch("https://api.beehiiv.com/v2/publications/pub_7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e/subscriptions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer 7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e"
       },
-      body: JSON.stringify({ email: emailAddress }),
+      body: JSON.stringify({ 
+        email: emailAddress,
+        reactivate_existing: false,
+        send_welcome_email: true
+      }),
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Beehiiv API error:", errorData);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response;
+    return response.json();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,18 +67,18 @@ const WaitingList = () => {
     setIsLoading(true);
     
     try {
-      await submitEmailToMakeWebhook(email);
-      console.log("Email submitted successfully:", email);
+      await submitEmailToBeehiiv(email);
+      console.log("Email submitted successfully to Beehiiv:", email);
       setIsSubmitted(true);
       toast({
-        title: "Welcome to the waiting list!",
-        description: "You'll be the first to know when we launch.",
+        title: "Welcome to our newsletter!",
+        description: "You've been added to our waiting list and will receive our newsletter updates.",
       });
     } catch (error) {
-      console.error("Error submitting email:", error);
+      console.error("Error submitting email to Beehiiv:", error);
       toast({
         title: "Submission failed",
-        description: "There was an error submitting your email. Please try again.",
+        description: "There was an error adding you to our newsletter. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -104,18 +110,18 @@ const WaitingList = () => {
     setIsHeroLoading(true);
     
     try {
-      await submitEmailToMakeWebhook(heroEmail);
-      console.log("Hero email submitted successfully:", heroEmail);
+      await submitEmailToBeehiiv(heroEmail);
+      console.log("Hero email submitted successfully to Beehiiv:", heroEmail);
       setIsHeroSubmitted(true);
       toast({
-        title: "Welcome to the waiting list!",
-        description: "You'll be the first to know when we launch.",
+        title: "Welcome to our newsletter!",
+        description: "You've been added to our waiting list and will receive our newsletter updates.",
       });
     } catch (error) {
-      console.error("Error submitting hero email:", error);
+      console.error("Error submitting hero email to Beehiiv:", error);
       toast({
         title: "Submission failed",
-        description: "There was an error submitting your email. Please try again.",
+        description: "There was an error adding you to our newsletter. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -128,6 +134,7 @@ const WaitingList = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-sbtp-green-200 to-sbtp-beige pointer-events-none"></div>
+        
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-8">
@@ -307,8 +314,6 @@ const WaitingList = () => {
           </div>
         </div>
       </section>
-
-      
     </div>
   );
 };
