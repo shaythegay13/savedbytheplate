@@ -46,22 +46,22 @@ const PricingSection = () => {
                 <h3 className="text-2xl font-bold text-sbtp-green-800 mb-2">Choose Your Plan</h3>
                 <p className="text-sbtp-brown-500 mb-6">Select the option that works best for you</p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div className="border border-sbtp-green-200 rounded-lg p-6 flex flex-col">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="border border-sbtp-green-200 rounded-lg p-4 flex flex-col">
                     <div className="text-center mb-4">
                       <h4 className="text-lg font-semibold text-sbtp-green-700">Monthly</h4>
                       <div className="mt-2">
-                        <span className="text-3xl font-bold text-sbtp-green-800">$10</span>
+                        <span className="text-2xl font-bold text-sbtp-green-800">$10</span>
                         <span className="text-sbtp-brown-500">/month</span>
                       </div>
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Billed monthly</p>
-                    <Button className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white">
+                    <Button className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2">
                       Subscribe Monthly
                     </Button>
                   </div>
                   
-                  <div className="border-2 border-sbtp-green-500 rounded-lg p-6 flex flex-col relative">
+                  <div className="border-2 border-sbtp-green-500 rounded-lg p-4 flex flex-col relative">
                     <div className="absolute -top-3 left-0 right-0 flex justify-center">
                       <span className="bg-sbtp-yellow text-sbtp-brown-700 text-xs font-semibold px-3 py-1 rounded-full">
                         BEST VALUE
@@ -70,15 +70,43 @@ const PricingSection = () => {
                     <div className="text-center mb-4">
                       <h4 className="text-lg font-semibold text-sbtp-green-700">Annual</h4>
                       <div className="mt-2">
-                        <span className="text-3xl font-bold text-sbtp-green-800">$100</span>
+                        <span className="text-2xl font-bold text-sbtp-green-800">$100</span>
                         <span className="text-sbtp-brown-500">/year</span>
                       </div>
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Save $20 with annual billing</p>
-                    <Button className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white">
+                    <Button className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2">
                       Subscribe Yearly
                     </Button>
                   </div>
+
+                  <div className="border border-sbtp-blue rounded-lg p-4 flex flex-col">
+                    <div className="text-center mb-4">
+                      <h4 className="text-lg font-semibold text-sbtp-blue">Educator</h4>
+                      <div className="mt-2">
+                        <span className="text-xl font-bold text-sbtp-blue">$8</span>
+                        <span className="text-sbtp-brown-500 text-sm">/month</span>
+                      </div>
+                      <div className="mt-1">
+                        <span className="text-xl font-bold text-sbtp-blue">$85</span>
+                        <span className="text-sbtp-brown-500 text-sm">/year</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-sbtp-brown-500 text-center mb-4">Special pricing for educators</p>
+                    <Button variant="outline" className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2">
+                      Educator Plan
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="bg-sbtp-green-50 border border-sbtp-green-200 rounded-lg p-4 mb-6">
+                  <h4 className="font-semibold text-sbtp-green-800 mb-2">Institutions</h4>
+                  <p className="text-sm text-sbtp-brown-500 mb-3">
+                    Are you interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses.
+                  </p>
+                  <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm">
+                    Contact Us
+                  </Button>
                 </div>
                 
                 <p className="text-sm text-sbtp-brown-500 text-center">

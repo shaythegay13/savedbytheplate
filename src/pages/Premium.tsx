@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 
 
@@ -66,10 +65,10 @@ const Premium = () => {
               Unlock exclusive features and support our mission to connect people with sustainable, local food sources.
             </p>
             <div className="bg-white/10 rounded-lg p-6 inline-block">
-              <h2 className="text-2xl font-bold mb-2">$10/month or $100/year</h2>
-              <p className="text-sbtp-beige mb-4">Save $20 with annual billing</p>
+              <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
+              <p className="text-sbtp-beige mb-4">Standard, Educator, and Institution options</p>
               <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 font-semibold py-6 px-10 text-lg">
-                Subscribe Now
+                View Plans
               </Button>
             </div>
           </div>
@@ -90,7 +89,7 @@ const Premium = () => {
             <PremiumFeatures />
 
             <div className="mt-12 bg-white rounded-lg border border-sbtp-green-200 overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-3">
+              <div className="grid grid-cols-1 md:grid-cols-4">
                 <div className="p-8 bg-sbtp-green-600 text-white">
                   <h3 className="text-2xl font-bold mb-6">Comparison</h3>
                   <ul className="space-y-4">
@@ -183,6 +182,40 @@ const Premium = () => {
                     Get Premium
                   </Button>
                 </div>
+
+                <div className="p-8 bg-sbtp-blue/5 border-l border-sbtp-blue">
+                  <h3 className="text-2xl font-bold text-sbtp-blue mb-2">Educator</h3>
+                  <p className="text-sbtp-brown-500 mb-6">Special pricing</p>
+                  <ul className="space-y-4">
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">All content</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">Priority</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className="text-sm">Enhanced</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-8 bg-sbtp-blue hover:bg-sbtp-blue/80 text-white">
+                    Educator Plan
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -241,18 +274,32 @@ const Premium = () => {
             <p className="text-lg text-sbtp-brown-700 mb-8">
               Join our growing community of sustainable living enthusiasts and get access to all our premium features.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-6">
               <Button className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white py-6">
-                Monthly - $10/month
+                Monthly - $10
               </Button>
               <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 py-6 relative">
-                Annual - $100/year
+                Annual - $100
                 <span className="absolute -top-3 right-0 left-0 mx-auto w-max bg-sbtp-green-500 text-white text-xs px-3 py-0.5 rounded-full">
                   BEST VALUE
                 </span>
               </Button>
+              <Button className="bg-sbtp-blue hover:bg-sbtp-blue/80 text-white py-6">
+                Educator - $8/$85
+              </Button>
             </div>
-            <p className="text-sm text-sbtp-brown-500 mt-4">
+            
+            <div className="bg-sbtp-green-50 border border-sbtp-green-200 rounded-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Institutions</h3>
+              <p className="text-sbtp-brown-500 mb-4">
+                Interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses.
+              </p>
+              <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white">
+                Contact Us for Institution Pricing
+              </Button>
+            </div>
+            
+            <p className="text-sm text-sbtp-brown-500">
               7-day money-back guarantee. Cancel anytime.
             </p>
           </div>
