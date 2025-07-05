@@ -244,6 +244,7 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                           <SelectItem value="greenhouse">Greenhouse growing</SelectItem>
                           <SelectItem value="vertical_growing">Vertical/hydroponic systems</SelectItem>
                           <SelectItem value="soil_remediation">Soil testing and remediation first</SelectItem>
+                          <SelectItem value="several_methods">Several of these</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
