@@ -1,11 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Leaf, MapPin, Lightbulb, MessageCircle, Bell, BarChart3 } from "lucide-react";
+import { Calendar, Leaf, MapPin, Lightbulb, MessageCircle, Bell, BarChart3, Download, FileText } from "lucide-react";
 import NotificationPreferences from './NotificationPreferences';
 import GardenFeedback from './GardenFeedback';
+import GardenPlotVisualizer from './GardenPlotVisualizer';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface PlantRecommendation {
   name: string;
@@ -37,6 +40,13 @@ interface GardenPlanResultsProps {
   careInstructions: string;
   expertTips: string[];
   planId?: string;
+  formData?: {
+    spaceType: string;
+    spaceSize: string;
+    sunlight: string;
+    hardiness_zone: string;
+    goals: string;
+  };
 }
 
 const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
@@ -45,12 +55,62 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
   plantingCalendar,
   careInstructions,
   expertTips,
-  planId
+  planId,
+  formData
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedPlantFeedback, setSelectedPlantFeedback] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const exportToPDF = async () => {
+    if (!contentRef.current) return;
+    
+    try {
+      const canvas = await html2canvas(contentRef.current, {
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save('garden-plan.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
   return (
     <div className="space-y-8">
+      {/* Export Actions */}
+      <div className="flex justify-end space-x-4 print:hidden">
+        <Button
+          onClick={exportToPDF}
+          className="bg-sbtp-blue-600 hover:bg-sbtp-blue-700 text-white"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Export PDF
+        </Button>
+      </div>
+
+      <div ref={contentRef} className="space-y-8">
       {/* AI Learning Notice */}
       <Card className="border-sbtp-blue-200 bg-sbtp-blue/5">
         <CardContent className="pt-6">
@@ -137,30 +197,58 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         </CardContent>
       </Card>
 
-      {/* Garden Layout Design */}
-      <Card>
-        <CardHeader>
+      {/* Garden Plot Visualization */}
+      {formData && (
+        <GardenPlotVisualizer 
+          gardenLayout={gardenLayout}
+          spaceType={formData.spaceType}
+          spaceSize={formData.spaceSize}
+        />
+      )}
+
+      {/* Enhanced Garden Layout Details */}
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-sbtp-green-50 to-sbtp-green-100">
           <CardTitle className="flex items-center text-sbtp-green-800">
             <MapPin className="mr-2" />
-            Your Custom Garden Layout
+            Detailed Garden Layout & Planting Guide
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {gardenLayout.map((section, index) => (
-              <div key={index} className="bg-sbtp-green-50 border border-sbtp-green-200 rounded-lg p-4">
-                <h3 className="font-semibold text-sbtp-green-700 mb-2">{section.section}</h3>
-                <p className="text-sm text-sbtp-brown-600 mb-2">Size: {section.size}</p>
-                <div className="space-y-1">
-                  {section.plants.map((plant, plantIndex) => (
-                    <Badge key={plantIndex} variant="outline" className="mr-1 mb-1">
-                      {plant}
-                    </Badge>
-                  ))}
+              <div key={index} className="bg-gradient-to-br from-sbtp-green-50 to-white border border-sbtp-green-200 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-sbtp-green-700">{section.section}</h3>
+                  <Badge variant="outline" className="bg-sbtp-green-100 text-sbtp-green-700">
+                    {section.size}
+                  </Badge>
                 </div>
-                {section.notes && (
-                  <p className="text-xs text-sbtp-brown-500 mt-2">{section.notes}</p>
-                )}
+                
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-medium text-sbtp-brown-700 mb-2">Recommended Plants:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {section.plants.map((plant, plantIndex) => (
+                        <Badge 
+                          key={plantIndex} 
+                          variant="secondary" 
+                          className="bg-sbtp-yellow/20 text-sbtp-brown-700 hover:bg-sbtp-yellow/30"
+                        >
+                          🌱 {plant}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {section.notes && (
+                    <div className="bg-sbtp-blue-50 border-l-4 border-sbtp-blue-300 p-3 rounded-r">
+                      <p className="text-sm text-sbtp-blue-800">
+                        <strong>💡 Pro Tip:</strong> {section.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -258,6 +346,7 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

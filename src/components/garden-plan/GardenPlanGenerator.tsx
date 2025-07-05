@@ -9,9 +9,11 @@ import { GardenPlanFormData, GardenPlan } from './types';
 const GardenPlanGenerator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [gardenPlan, setGardenPlan] = useState<GardenPlan | null>(null);
+  const [formData, setFormData] = useState<GardenPlanFormData | null>(null);
 
   const generateGardenPlan = async (formData: GardenPlanFormData) => {
     setIsLoading(true);
+    setFormData(formData);
     
     try {
       // Call the AI-powered edge function
@@ -54,7 +56,7 @@ const GardenPlanGenerator: React.FC = () => {
           <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Your AI-Enhanced Personalized Garden Plan</h2>
           <p className="text-sbtp-brown-600">Here's your data-driven garden plan that gets smarter with every gardener who shares their experience</p>
         </div>
-        <GardenPlanResults {...gardenPlan} planId={gardenPlan.planId} />
+        <GardenPlanResults {...gardenPlan} planId={gardenPlan.planId} formData={formData} />
       </div>
     );
   }
