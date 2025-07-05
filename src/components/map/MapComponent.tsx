@@ -7,7 +7,6 @@ import { fetchNYCMapData } from '../../services/mapDataService';
 import LocationMarker from './LocationMarker';
 import LocationPopup from './LocationPopup';
 import MapboxTokenMissing from './MapboxTokenMissing';
-import { Badge } from '@/components/ui/badge';
 
 const MapComponent = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -140,11 +139,6 @@ const MapComponent = () => {
               onClose={handlePopupClose}
             />
           )}
-          
-          {/* Manhattan label */}
-          <div className="absolute bottom-4 right-4">
-            <Badge className="bg-white text-sbtp-brown-700 border border-sbtp-green-200">Manhattan, NYC</Badge>
-          </div>
         </>
       )}
     </div>
