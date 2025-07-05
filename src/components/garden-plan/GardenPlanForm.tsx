@@ -14,7 +14,9 @@ interface GardenPlanFormData {
   spaceSize: string;
   sunlight: string;
   hardiness_zone: string;
+  soil_contaminated: string;
   soil_type: string;
+  growing_options: string;
   rainfall: string;
   season: string;
   experience_level: string;
@@ -30,7 +32,25 @@ interface GardenPlanFormProps {
 }
 
 const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) => {
-  const form = useForm<GardenPlanFormData>();
+  const form = useForm<GardenPlanFormData>({
+    defaultValues: {
+      spaceType: "",
+      spaceSize: "",
+      sunlight: "",
+      hardiness_zone: "",
+      soil_contaminated: "",
+      soil_type: "",
+      growing_options: "",
+      rainfall: "",
+      season: "",
+      experience_level: "",
+      goals: "",
+      space_description: "",
+      preferred_plants: "",
+      time_commitment: ""
+    }
+  });
+  const watchSoilContaminated = form.watch("soil_contaminated");
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -157,29 +177,80 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
 
               <FormField
                 control={form.control}
-                name="soil_type"
+                name="soil_contaminated"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>What type of soil do you have?</FormLabel>
+                    <FormLabel>Is your soil potentially contaminated?</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select soil type" />
+                          <SelectValue placeholder="Select soil condition" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="clay">Clay (heavy, retains water)</SelectItem>
-                        <SelectItem value="sandy">Sandy (light, drains quickly)</SelectItem>
-                        <SelectItem value="loamy">Loamy (balanced, ideal)</SelectItem>
-                        <SelectItem value="rocky">Rocky/Poor soil</SelectItem>
-                        <SelectItem value="containers">Container/Potting mix</SelectItem>
-                        <SelectItem value="unknown">Not sure</SelectItem>
+                        <SelectItem value="no">No, soil is safe</SelectItem>
+                        <SelectItem value="yes">Yes, contaminated or uncertain</SelectItem>
+                        <SelectItem value="unknown">Not sure/need testing</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {watchSoilContaminated === "no" && (
+                <FormField
+                  control={form.control}
+                  name="soil_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>What type of soil do you have?</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select soil type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="clay">Clay (heavy, retains water)</SelectItem>
+                          <SelectItem value="sandy">Sandy (light, drains quickly)</SelectItem>
+                          <SelectItem value="loamy">Loamy (balanced, ideal)</SelectItem>
+                          <SelectItem value="rocky">Rocky/Poor soil</SelectItem>
+                          <SelectItem value="unknown">Not sure</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {(watchSoilContaminated === "yes" || watchSoilContaminated === "unknown") && (
+                <FormField
+                  control={form.control}
+                  name="growing_options"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preferred growing method for safe cultivation</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select growing method" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="raised_beds">Raised beds with new soil</SelectItem>
+                          <SelectItem value="container_gardening">Container gardening</SelectItem>
+                          <SelectItem value="greenhouse">Greenhouse growing</SelectItem>
+                          <SelectItem value="vertical_growing">Vertical/hydroponic systems</SelectItem>
+                          <SelectItem value="soil_remediation">Soil testing and remediation first</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}

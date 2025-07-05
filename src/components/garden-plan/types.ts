@@ -3,7 +3,9 @@ export interface GardenPlanFormData {
   spaceSize: string;
   sunlight: string;
   hardiness_zone: string;
+  soil_contaminated: string;
   soil_type: string;
+  growing_options: string;
   rainfall: string;
   season: string;
   experience_level: string;
