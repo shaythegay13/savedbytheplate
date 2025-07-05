@@ -1,8 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Leaf, MapPin, Lightbulb, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, Leaf, MapPin, Lightbulb, MessageCircle, Bell, BarChart3 } from "lucide-react";
+import NotificationPreferences from './NotificationPreferences';
+import GardenFeedback from './GardenFeedback';
 
 interface PlantRecommendation {
   name: string;
@@ -33,6 +36,7 @@ interface GardenPlanResultsProps {
   plantingCalendar: PlantingCalendar[];
   careInstructions: string;
   expertTips: string[];
+  planId?: string;
 }
 
 const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
@@ -40,10 +44,45 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
   gardenLayout,
   plantingCalendar,
   careInstructions,
-  expertTips
+  expertTips,
+  planId
 }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedPlantFeedback, setSelectedPlantFeedback] = useState<string | null>(null);
   return (
     <div className="space-y-8">
+      {/* AI Learning Notice */}
+      <Card className="border-sbtp-blue-200 bg-sbtp-blue/5">
+        <CardContent className="pt-6">
+          <div className="flex items-start space-x-3">
+            <BarChart3 className="h-5 w-5 text-sbtp-blue-600 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-sbtp-blue-800 mb-1">🤖 AI-Enhanced Garden Plan</h3>
+              <p className="text-sm text-sbtp-blue-700 mb-3">
+                This plan is powered by our learning AI that improves with every garden success and failure shared by our community. 
+                Your feedback will help make future recommendations even better!
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="border-sbtp-blue-300 text-sbtp-blue-700 hover:bg-sbtp-blue-50"
+                >
+                  <Bell className="h-4 w-4 mr-1" />
+                  {showNotifications ? 'Hide' : 'Setup'} Smart Notifications
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Notification Preferences */}
+      {showNotifications && (
+        <NotificationPreferences onPreferencesUpdate={(prefs) => console.log('Preferences:', prefs)} />
+      )}
+
       {/* Plant Recommendations */}
       <Card>
         <CardHeader>
@@ -61,9 +100,16 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
                     {plant.name}
                     {plant.variety && <span className="text-sm text-sbtp-brown-500"> ({plant.variety})</span>}
                   </h3>
-                  <Badge variant={plant.difficulty === 'Easy' ? 'default' : plant.difficulty === 'Medium' ? 'secondary' : 'destructive'}>
-                    {plant.difficulty}
-                  </Badge>
+                  <div className="flex space-x-2">
+                    <Badge variant={plant.difficulty === 'Easy' ? 'default' : plant.difficulty === 'Medium' ? 'secondary' : 'destructive'}>
+                      {plant.difficulty}
+                    </Badge>
+                    {(plant as any).aiInsights && (
+                      <Badge variant="outline" className="bg-sbtp-blue-50 border-sbtp-blue-200 text-sbtp-blue-700">
+                        AI: {(plant as any).aiInsights.successRate}% success
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2 text-sm">
                   <p><strong>Plant:</strong> {plant.plantingTime}</p>
@@ -71,6 +117,19 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
                   <p><strong>Spacing:</strong> {plant.spacing}</p>
                   <p><strong>Expected Yield:</strong> {plant.yield}</p>
                   <p><strong>Care:</strong> {plant.careInstructions}</p>
+                  {(plant as any).aiInsights && (plant as any).aiInsights.commonIssues.length > 0 && (
+                    <p><strong>Common Issues:</strong> {(plant as any).aiInsights.commonIssues.join(', ')}</p>
+                  )}
+                </div>
+                <div className="mt-3 pt-3 border-t border-sbtp-green-100">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedPlantFeedback(plant.name)}
+                    className="text-sbtp-green-700 border-sbtp-green-300 hover:bg-sbtp-green-50"
+                  >
+                    Share Experience with {plant.name}
+                  </Button>
                 </div>
               </div>
             ))}
@@ -168,6 +227,37 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* Plant Feedback Modal */}
+      {selectedPlantFeedback && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-sbtp-green-800">
+                Share Your Experience
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedPlantFeedback(null)}
+              >
+                ✕
+              </Button>
+            </div>
+            <div className="p-4">
+              <GardenFeedback
+                plantName={selectedPlantFeedback}
+                planId={planId}
+                onFeedbackSubmit={(feedback) => {
+                  console.log('Feedback submitted:', feedback);
+                  // In real app, save to database
+                  setSelectedPlantFeedback(null);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

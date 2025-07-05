@@ -22,15 +22,36 @@ const GardenPlanGenerator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [gardenPlan, setGardenPlan] = useState<any>(null);
 
-  const generateGardenPlan = (formData: GardenPlanFormData) => {
+  const generateGardenPlan = async (formData: GardenPlanFormData) => {
     setIsLoading(true);
     
-    // Simulate API call - in a real app, this would call an AI service
-    setTimeout(() => {
+    try {
+      // Call the AI-powered edge function
+      const response = await fetch('https://rxwynfpldittdwqtjhkpw.supabase.co/functions/v1/generate-smart-garden-plan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          user_id: 'demo-user' // In real app, get from auth context
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate garden plan');
+      }
+
+      const aiPlan = await response.json();
+      setGardenPlan(aiPlan);
+    } catch (error) {
+      console.error('Error generating garden plan:', error);
+      // Fallback to mock plan
       const mockPlan = generateMockPlan(formData);
       setGardenPlan(mockPlan);
+    } finally {
       setIsLoading(false);
-    }, 3000);
+    }
   };
 
   const generateMockPlan = (formData: GardenPlanFormData) => {
@@ -178,9 +199,9 @@ PLANT HEALTH:
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-sbtp-green-500 mb-4"></div>
-        <h3 className="text-xl font-semibold text-sbtp-green-800 mb-2">Generating Your Custom Garden Plan</h3>
+        <h3 className="text-xl font-semibold text-sbtp-green-800 mb-2">🤖 AI Agent Creating Your Smart Garden Plan</h3>
         <p className="text-sbtp-brown-600 text-center max-w-md">
-          We're analyzing your space, climate, and preferences to create a personalized gardening plan just for you...
+          Our learning AI is analyzing your space, climate, and preferences alongside community data to create the most accurate personalized gardening plan for you...
         </p>
       </div>
     );
@@ -190,10 +211,10 @@ PLANT HEALTH:
     return (
       <div className="space-y-6">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Your Personalized Garden Plan</h2>
-          <p className="text-sbtp-brown-600">Here's everything you need to create a thriving garden in your space</p>
+          <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Your AI-Enhanced Personalized Garden Plan</h2>
+          <p className="text-sbtp-brown-600">Here's your data-driven garden plan that gets smarter with every gardener who shares their experience</p>
         </div>
-        <GardenPlanResults {...gardenPlan} />
+        <GardenPlanResults {...gardenPlan} planId={gardenPlan.planId} />
       </div>
     );
   }

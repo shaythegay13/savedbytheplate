@@ -9,6 +9,214 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      garden_feedback: {
+        Row: {
+          actual_harvest_time: string | null
+          feedback_date: string
+          garden_plan_id: string
+          growth_issues: string | null
+          harvest_notes: string | null
+          id: string
+          plant_name: string
+          season_planted: string | null
+          success_rating: number | null
+          user_id: string
+          would_plant_again: boolean | null
+          yield_rating: number | null
+        }
+        Insert: {
+          actual_harvest_time?: string | null
+          feedback_date?: string
+          garden_plan_id: string
+          growth_issues?: string | null
+          harvest_notes?: string | null
+          id?: string
+          plant_name: string
+          season_planted?: string | null
+          success_rating?: number | null
+          user_id: string
+          would_plant_again?: boolean | null
+          yield_rating?: number | null
+        }
+        Update: {
+          actual_harvest_time?: string | null
+          feedback_date?: string
+          garden_plan_id?: string
+          growth_issues?: string | null
+          harvest_notes?: string | null
+          id?: string
+          plant_name?: string
+          season_planted?: string | null
+          success_rating?: number | null
+          user_id?: string
+          would_plant_again?: boolean | null
+          yield_rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garden_feedback_garden_plan_id_fkey"
+            columns: ["garden_plan_id"]
+            isOneToOne: false
+            referencedRelation: "garden_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garden_insights: {
+        Row: {
+          average_yield_rating: number | null
+          best_planting_months: string[] | null
+          common_issues: string[] | null
+          companion_plants: string[] | null
+          hardiness_zone: string
+          id: string
+          last_updated: string
+          plant_name: string
+          soil_type: string
+          success_rate: number | null
+          successful_attempts: number | null
+          sunlight: string
+          total_attempts: number | null
+        }
+        Insert: {
+          average_yield_rating?: number | null
+          best_planting_months?: string[] | null
+          common_issues?: string[] | null
+          companion_plants?: string[] | null
+          hardiness_zone: string
+          id?: string
+          last_updated?: string
+          plant_name: string
+          soil_type: string
+          success_rate?: number | null
+          successful_attempts?: number | null
+          sunlight: string
+          total_attempts?: number | null
+        }
+        Update: {
+          average_yield_rating?: number | null
+          best_planting_months?: string[] | null
+          common_issues?: string[] | null
+          companion_plants?: string[] | null
+          hardiness_zone?: string
+          id?: string
+          last_updated?: string
+          plant_name?: string
+          soil_type?: string
+          success_rate?: number | null
+          successful_attempts?: number | null
+          sunlight?: string
+          total_attempts?: number | null
+        }
+        Relationships: []
+      }
+      garden_notifications: {
+        Row: {
+          created_at: string
+          garden_plan_id: string
+          id: string
+          message: string
+          notification_type: string
+          plant_name: string | null
+          scheduled_date: string
+          sent: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          garden_plan_id: string
+          id?: string
+          message: string
+          notification_type: string
+          plant_name?: string | null
+          scheduled_date: string
+          sent?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          garden_plan_id?: string
+          id?: string
+          message?: string
+          notification_type?: string
+          plant_name?: string | null
+          scheduled_date?: string
+          sent?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garden_notifications_garden_plan_id_fkey"
+            columns: ["garden_plan_id"]
+            isOneToOne: false
+            referencedRelation: "garden_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garden_plans: {
+        Row: {
+          created_at: string
+          experience_level: string
+          goals: string
+          hardiness_zone: string
+          id: string
+          notification_preferences: Json | null
+          plan_data: Json
+          preferred_plants: string | null
+          rainfall: string
+          season: string
+          soil_type: string
+          space_description: string | null
+          space_size: string
+          space_type: string
+          sunlight: string
+          time_commitment: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          experience_level: string
+          goals: string
+          hardiness_zone: string
+          id?: string
+          notification_preferences?: Json | null
+          plan_data: Json
+          preferred_plants?: string | null
+          rainfall: string
+          season: string
+          soil_type: string
+          space_description?: string | null
+          space_size: string
+          space_type: string
+          sunlight: string
+          time_commitment: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          experience_level?: string
+          goals?: string
+          hardiness_zone?: string
+          id?: string
+          notification_preferences?: Json | null
+          plan_data?: Json
+          preferred_plants?: string | null
+          rainfall?: string
+          season?: string
+          soil_type?: string
+          space_description?: string | null
+          space_size?: string
+          space_type?: string
+          sunlight?: string
+          time_commitment?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lungs_data1: {
         Row: {
           Address: string
