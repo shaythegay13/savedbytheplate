@@ -51,16 +51,16 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
-    canvas.width = 800;
-    canvas.height = 600;
+    // Set canvas size for detailed plan
+    canvas.width = 1000;
+    canvas.height = 700;
 
     // Clear canvas with light background
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Calculate scale to fit the location in canvas with proper proportions
-    const margin = 80;
+    const margin = 100;
     const availableWidth = canvas.width - 2 * margin;
     const availableHeight = canvas.height - 2 * margin;
     
@@ -69,7 +69,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     
     const scaleX = availableWidth / actualLength;
     const scaleY = availableHeight / actualWidth;
-    const scale = Math.min(scaleX, scaleY) * 0.7; // Use 70% to leave space for labels
+    const scale = Math.min(scaleX, scaleY) * 0.8; // Use 80% to leave space for detailed labels
 
     // Calculate plot dimensions on canvas
     const plotWidth = actualLength * scale;
@@ -187,49 +187,162 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     ctx.textAlign = 'center';
     ctx.fillText('N', compassX, compassY - 20);
 
-    // Add garden section overlays as small indicators
-    const sectionColors = ['#f59e0b', '#dc2626', '#16a34a', '#2563eb', '#9333ea', '#ea580c'];
-    
-    gardenLayout.forEach((section, index) => {
-      if (index < 4) { // Only show first 4 sections to avoid clutter
-        const angle = (index * Math.PI * 2) / Math.min(gardenLayout.length, 4);
-        const radius = Math.min(plotWidth, plotHeight) * 0.25;
-        const centerX = startX + plotWidth / 2;
-        const centerY = startY + plotHeight / 2;
-        
-        const sectionX = centerX + Math.cos(angle) * radius;
-        const sectionY = centerY + Math.sin(angle) * radius;
-        
-        // Draw section indicator
-        ctx.fillStyle = sectionColors[index] + '80';
-        ctx.strokeStyle = sectionColors[index];
+    // Draw detailed garden zones and features
+    const centerX = startX + plotWidth / 2;
+    const centerY = startY + plotHeight / 2;
+
+    // Define garden zones based on the garden layout
+    const zones = [
+      { name: 'Vegetable Beds', x: 0.2, y: 0.3, width: 0.25, height: 0.4, color: '#16a34a' },
+      { name: 'Herb Garden', x: 0.55, y: 0.2, width: 0.2, height: 0.25, color: '#059669' },
+      { name: 'Flower Beds', x: 0.15, y: 0.7, width: 0.3, height: 0.25, color: '#dc2626' },
+      { name: 'Relaxation Zone', x: 0.6, y: 0.6, width: 0.25, height: 0.3, color: '#2563eb' },
+      { name: 'Compost Area', x: 0.8, y: 0.1, width: 0.15, height: 0.15, color: '#92400e' }
+    ];
+
+    // Draw zones
+    zones.forEach((zone, index) => {
+      if (index < gardenLayout.length) {
+        const zoneX = startX + zone.x * plotWidth;
+        const zoneY = startY + zone.y * plotHeight;
+        const zoneWidth = zone.width * plotWidth;
+        const zoneHeight = zone.height * plotHeight;
+
+        // Draw zone boundary
+        ctx.strokeStyle = zone.color;
         ctx.lineWidth = 2;
-        
-        ctx.beginPath();
-        ctx.arc(sectionX, sectionY, 15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        
-        // Add section label
-        ctx.fillStyle = '#1f2937';
-        ctx.font = '10px sans-serif';
+        ctx.fillStyle = zone.color + '20';
+        ctx.strokeRect(zoneX, zoneY, zoneWidth, zoneHeight);
+        ctx.fillRect(zoneX, zoneY, zoneWidth, zoneHeight);
+
+        // Add zone label
+        ctx.fillStyle = zone.color;
+        ctx.font = 'bold 10px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText((index + 1).toString(), sectionX, sectionY + 3);
+        ctx.fillText(gardenLayout[index]?.section || zone.name, zoneX + zoneWidth/2, zoneY + zoneHeight/2);
       }
     });
 
-    // Add scale indicator
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '11px sans-serif';
-    ctx.textAlign = 'left';
-    const scaleText = `Scale: 1 pixel = ${(1/scale).toFixed(1)} feet`;
-    ctx.fillText(scaleText, 15, canvas.height - 15);
+    // Draw main pathways
+    ctx.strokeStyle = '#8b7355';
+    ctx.lineWidth = 3;
+    ctx.fillStyle = '#f5f5dc';
+    
+    // Central north-south path
+    const pathWidth = plotWidth * 0.08;
+    const mainPathX = centerX - pathWidth/2;
+    ctx.fillRect(mainPathX, startY + plotHeight * 0.1, pathWidth, plotHeight * 0.8);
+    ctx.strokeRect(mainPathX, startY + plotHeight * 0.1, pathWidth, plotHeight * 0.8);
+    
+    // East-west connecting path
+    const crossPathY = centerY - pathWidth/2;
+    ctx.fillRect(startX + plotWidth * 0.1, crossPathY, plotWidth * 0.8, pathWidth);
+    ctx.strokeRect(startX + plotWidth * 0.1, crossPathY, plotWidth * 0.8, pathWidth);
 
-    // Add features annotations
+    // Add entry points
+    const entryPoints = [
+      { x: startX + plotWidth * 0.5, y: startY, label: 'North Entry' },
+      { x: startX + plotWidth * 0.8, y: startY + plotHeight * 0.5, label: 'East Entry' },
+      { x: startX + plotWidth * 0.5, y: startY + plotHeight, label: 'South Entry' },
+      { x: startX, y: startY + plotHeight * 0.5, label: 'West Entry' }
+    ];
+
+    entryPoints.forEach(entry => {
+      ctx.fillStyle = '#059669';
+      ctx.beginPath();
+      ctx.arc(entry.x, entry.y, 8, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Add entry label
+      ctx.fillStyle = '#064e3b';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(entry.label, entry.x, entry.y - 15);
+    });
+
+    // Add sunny and shady area indicators
+    // Sunny areas (south-facing)
+    ctx.fillStyle = '#fbbf2480';
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    
+    // South sunny area
+    ctx.beginPath();
+    ctx.ellipse(centerX, startY + plotHeight * 0.7, plotWidth * 0.15, plotHeight * 0.1, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Shady areas (north-facing)
+    ctx.fillStyle = '#6b728080';
+    ctx.strokeStyle = '#374151';
+    
+    // North shady area
+    ctx.beginPath();
+    ctx.ellipse(centerX, startY + plotHeight * 0.3, plotWidth * 0.12, plotHeight * 0.08, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.setLineDash([]); // Reset line dash
+
+    // Add sun/shade legend
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'left';
+    
+    // Sunny area legend
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(startX + plotWidth - 80, startY + 20, 12, 8);
+    ctx.fillStyle = '#374151';
+    ctx.fillText('Full Sun Areas', startX + plotWidth - 65, startY + 28);
+    
+    // Shady area legend
+    ctx.fillStyle = '#6b7280';
+    ctx.fillRect(startX + plotWidth - 80, startY + 35, 12, 8);
+    ctx.fillStyle = '#374151';
+    ctx.fillText('Partial Shade', startX + plotWidth - 65, startY + 43);
+
+    // Add comprehensive scale indicator with visual scale bar
+    ctx.fillStyle = '#6b7280';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('SCALE:', 15, canvas.height - 80);
+    
+    // Calculate and display scale
+    const pixelsPerFoot = scale;
+    const feetPer100Pixels = 100 / pixelsPerFoot;
+    const scaleText = `1 inch = ${Math.round(feetPer100Pixels * 4.17)} feet (approx)`;
+    ctx.font = '11px sans-serif';
+    ctx.fillText(scaleText, 15, canvas.height - 65);
+    
+    // Draw visual scale bar
+    const scaleBarLength = 100; // 100 pixels
+    const scaleBarFeet = Math.round(scaleBarLength / pixelsPerFoot);
+    ctx.strokeStyle = '#374151';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(15, canvas.height - 50);
+    ctx.lineTo(15 + scaleBarLength, canvas.height - 50);
+    ctx.stroke();
+    
+    // Scale bar markers
+    ctx.beginPath();
+    ctx.moveTo(15, canvas.height - 55);
+    ctx.lineTo(15, canvas.height - 45);
+    ctx.moveTo(15 + scaleBarLength, canvas.height - 55);
+    ctx.lineTo(15 + scaleBarLength, canvas.height - 45);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#374151';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('0', 15, canvas.height - 35);
+    ctx.fillText(`${scaleBarFeet}'`, 15 + scaleBarLength, canvas.height - 35);
+
+    // Add features annotations in the right sidebar
     ctx.fillStyle = '#059669';
     ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Features:', 15, canvas.height - 50);
+    ctx.fillText('SITE FEATURES:', startX + plotWidth + 20, startY + 60);
     
     ctx.fillStyle = '#374151';
     ctx.font = '11px sans-serif';
@@ -237,11 +350,12 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
       '• Open meadow space',
       '• Full sun exposure', 
       '• Well-drained soil',
-      '• High foot traffic area'
+      '• High foot traffic area',
+      '• Central Park setting'
     ];
     
     features.forEach((feature, index) => {
-      ctx.fillText(feature, 15, canvas.height - 35 + (index * 14));
+      ctx.fillText(feature, startX + plotWidth + 20, startY + 80 + (index * 16));
     });
 
   }, [gardenLayout, locationData, loading]);
