@@ -37,7 +37,12 @@ const knownLocations: Record<string, LocationDimensions> = {
 export const researchLocationDimensions = async (locationDescription: string): Promise<LocationDimensions> => {
   const normalizedLocation = locationDescription.toLowerCase();
   
-  // Check for known locations, prioritizing more specific matches
+  // Check for Sheep's Meadow specifically first
+  if (normalizedLocation.includes("sheep") || normalizedLocation.includes("meadow")) {
+    return knownLocations["sheep's meadow"];
+  }
+  
+  // Check for other known locations
   const matches = Object.entries(knownLocations)
     .filter(([key]) => normalizedLocation.includes(key))
     .sort((a, b) => b[0].length - a[0].length); // Sort by key length (more specific first)

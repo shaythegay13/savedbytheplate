@@ -88,15 +88,23 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
       const firstPoint = locationData.boundaryPoints[0];
       ctx.moveTo(startX + firstPoint.x * plotWidth, startY + firstPoint.y * plotHeight);
       
-      locationData.boundaryPoints.slice(1).forEach(point => {
-        ctx.lineTo(startX + point.x * plotWidth, startY + point.y * plotHeight);
-      });
+      // Create smooth curves between points for oval shape
+      for (let i = 1; i < locationData.boundaryPoints.length; i++) {
+        const currentPoint = locationData.boundaryPoints[i];
+        const nextPoint = locationData.boundaryPoints[(i + 1) % locationData.boundaryPoints.length];
+        const controlX = startX + currentPoint.x * plotWidth;
+        const controlY = startY + currentPoint.y * plotHeight;
+        const endX = startX + nextPoint.x * plotWidth;
+        const endY = startY + nextPoint.y * plotHeight;
+        
+        ctx.quadraticCurveTo(controlX, controlY, (controlX + endX) / 2, (controlY + endY) / 2);
+      }
       
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
     } else if (locationData.shape === 'oval') {
-      // Draw oval shape
+      // Draw precise oval shape for Sheep's Meadow
       const centerX = startX + plotWidth / 2;
       const centerY = startY + plotHeight / 2;
       const radiusX = plotWidth / 2;
