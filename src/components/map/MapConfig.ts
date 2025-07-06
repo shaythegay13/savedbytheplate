@@ -15,6 +15,6 @@ export const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2hheXRoZWdheTEzIiwiYSI6ImNtYW15YTR2ODBx
 // Default map configuration
 export const defaultMapConfig = {
   style: 'mapbox://styles/mapbox/light-v11',
-  center: [-73.98, 40.73], // Manhattan, NYC
+  center: [-73.98, 40.73] as [number, number], // Manhattan, NYC
   zoom: 12
 };

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import NotificationPreferences from './NotificationPreferences';
-import GardenPlotVisualizer from './GardenPlotVisualizer';
+import IntelligentGardenPlotVisualizer from './components/IntelligentGardenPlotVisualizer';
 import MapComponent from '@/components/map/MapComponent';
 import PDFExport from './components/PDFExport';
 import AILearningNotice from './components/AILearningNotice';
@@ -95,10 +95,11 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         </div>
 
         {formData && (
-          <GardenPlotVisualizer 
+          <IntelligentGardenPlotVisualizer 
             gardenLayout={gardenLayout}
             spaceType={formData.spaceType}
             spaceSize={formData.spaceSize}
+            locationDescription={formData.space_description}
           />
         )}
 
