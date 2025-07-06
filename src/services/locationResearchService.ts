@@ -5,6 +5,8 @@ interface LocationDimensions {
   estimatedLength?: number;
   estimatedWidth?: number;
   description: string;
+  shape?: 'rectangular' | 'oval' | 'irregular' | 'curved';
+  boundaryPoints?: { x: number; y: number }[];
 }
 
 // Known locations with their dimensions
@@ -15,7 +17,12 @@ const knownLocations: Record<string, LocationDimensions> = {
     squareFeet: 653400, // 15 acres * 43,560 sq ft per acre
     estimatedLength: 1000,
     estimatedWidth: 650,
-    description: "A 15-acre lawn in Central Park, popular for relaxation and picnicking"
+    description: "A 15-acre lawn in Central Park, popular for relaxation and picnicking",
+    shape: 'oval',
+    boundaryPoints: [
+      { x: 0, y: 0.3 }, { x: 0.2, y: 0 }, { x: 0.8, y: 0 }, { x: 1, y: 0.3 },
+      { x: 1, y: 0.7 }, { x: 0.8, y: 1 }, { x: 0.2, y: 1 }, { x: 0, y: 0.7 }
+    ]
   },
   "central park": {
     name: "Central Park",

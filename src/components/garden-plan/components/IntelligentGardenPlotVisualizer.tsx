@@ -74,14 +74,40 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     const startX = (canvas.width - plotWidth) / 2;
     const startY = (canvas.height - plotHeight) / 2;
 
-    // Draw main plot boundary
+    // Draw main plot boundary with accurate shape
     ctx.strokeStyle = '#10b981';
     ctx.lineWidth = 3;
-    ctx.strokeRect(startX, startY, plotWidth, plotHeight);
-
-    // Fill with light green
     ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
-    ctx.fillRect(startX, startY, plotWidth, plotHeight);
+
+    if (locationData.boundaryPoints && locationData.boundaryPoints.length > 0) {
+      // Draw custom shape based on boundary points
+      ctx.beginPath();
+      const firstPoint = locationData.boundaryPoints[0];
+      ctx.moveTo(startX + firstPoint.x * plotWidth, startY + firstPoint.y * plotHeight);
+      
+      locationData.boundaryPoints.slice(1).forEach(point => {
+        ctx.lineTo(startX + point.x * plotWidth, startY + point.y * plotHeight);
+      });
+      
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (locationData.shape === 'oval') {
+      // Draw oval shape
+      const centerX = startX + plotWidth / 2;
+      const centerY = startY + plotHeight / 2;
+      const radiusX = plotWidth / 2;
+      const radiusY = plotHeight / 2;
+      
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      // Default rectangular shape
+      ctx.strokeRect(startX, startY, plotWidth, plotHeight);
+      ctx.fillRect(startX, startY, plotWidth, plotHeight);
+    }
 
     // Add title
     ctx.fillStyle = '#064e3b';
