@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import NotificationPreferences from './NotificationPreferences';
 import GardenPlotVisualizer from './GardenPlotVisualizer';
-import LocationBasedMap from './components/LocationBasedMap';
+import MapComponent from '@/components/map/MapComponent';
 import PDFExport from './components/PDFExport';
 import AILearningNotice from './components/AILearningNotice';
 import PlantRecommendations from './components/PlantRecommendations';
@@ -88,10 +88,11 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           onShareExperience={setSelectedPlantFeedback}
         />
 
-        <LocationBasedMap 
-          gardenLayout={gardenLayout}
-          locationDescription={formData?.space_description || "Your Garden Location"}
-        />
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold text-sbtp-green-800">Your Garden Location Map</h3>
+          <p className="text-sbtp-brown-600">{formData?.space_description || "Your Garden Location"}</p>
+          <MapComponent />
+        </div>
 
         {formData && (
           <GardenPlotVisualizer 
