@@ -15,13 +15,13 @@ const knownLocations: Record<string, LocationDimensions> = {
     name: "Sheep's Meadow, Central Park",
     acres: 15,
     squareFeet: 653400, // 15 acres * 43,560 sq ft per acre
-    estimatedLength: 1000,
-    estimatedWidth: 650,
-    description: "A 15-acre lawn in Central Park, popular for relaxation and picnicking",
+    estimatedLength: 1400, // North-south axis
+    estimatedWidth: 500,   // East-west axis
+    description: "A 15-acre oval meadow in Central Park (1,400' x 500')",
     shape: 'oval',
     boundaryPoints: [
-      { x: 0, y: 0.3 }, { x: 0.2, y: 0 }, { x: 0.8, y: 0 }, { x: 1, y: 0.3 },
-      { x: 1, y: 0.7 }, { x: 0.8, y: 1 }, { x: 0.2, y: 1 }, { x: 0, y: 0.7 }
+      { x: 0, y: 0.2 }, { x: 0.15, y: 0 }, { x: 0.85, y: 0 }, { x: 1, y: 0.2 },
+      { x: 1, y: 0.8 }, { x: 0.85, y: 1 }, { x: 0.15, y: 1 }, { x: 0, y: 0.8 }
     ]
   },
   "central park": {
@@ -37,11 +37,13 @@ const knownLocations: Record<string, LocationDimensions> = {
 export const researchLocationDimensions = async (locationDescription: string): Promise<LocationDimensions> => {
   const normalizedLocation = locationDescription.toLowerCase();
   
-  // Check for known locations first
-  for (const [key, location] of Object.entries(knownLocations)) {
-    if (normalizedLocation.includes(key)) {
-      return location;
-    }
+  // Check for known locations, prioritizing more specific matches
+  const matches = Object.entries(knownLocations)
+    .filter(([key]) => normalizedLocation.includes(key))
+    .sort((a, b) => b[0].length - a[0].length); // Sort by key length (more specific first)
+  
+  if (matches.length > 0) {
+    return matches[0][1]; // Return the most specific match
   }
   
   // Default fallback for unknown locations

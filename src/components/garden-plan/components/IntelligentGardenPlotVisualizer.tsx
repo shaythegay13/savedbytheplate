@@ -55,32 +55,35 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     canvas.width = 800;
     canvas.height = 600;
 
-    // Clear canvas
+    // Clear canvas with light background
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Calculate scale to fit the location in canvas
-    const margin = 50;
+    // Calculate scale to fit the location in canvas with proper proportions
+    const margin = 80;
     const availableWidth = canvas.width - 2 * margin;
     const availableHeight = canvas.height - 2 * margin;
     
-    const scaleX = availableWidth / (locationData.estimatedLength || 100);
-    const scaleY = availableHeight / (locationData.estimatedWidth || 100);
-    const scale = Math.min(scaleX, scaleY) * 0.8; // Use 80% to leave some padding
+    const actualLength = locationData.estimatedLength || 100;
+    const actualWidth = locationData.estimatedWidth || 100;
+    
+    const scaleX = availableWidth / actualLength;
+    const scaleY = availableHeight / actualWidth;
+    const scale = Math.min(scaleX, scaleY) * 0.7; // Use 70% to leave space for labels
 
     // Calculate plot dimensions on canvas
-    const plotWidth = (locationData.estimatedLength || 100) * scale;
-    const plotHeight = (locationData.estimatedWidth || 100) * scale;
+    const plotWidth = actualLength * scale;
+    const plotHeight = actualWidth * scale;
     const startX = (canvas.width - plotWidth) / 2;
     const startY = (canvas.height - plotHeight) / 2;
 
-    // Draw main plot boundary with accurate shape
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 3;
-    ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
+    // Draw main meadow boundary with accurate shape
+    ctx.strokeStyle = '#059669';
+    ctx.lineWidth = 4;
+    ctx.fillStyle = 'rgba(34, 197, 94, 0.15)';
 
     if (locationData.boundaryPoints && locationData.boundaryPoints.length > 0) {
-      // Draw custom shape based on boundary points
+      // Draw custom shape based on boundary points (oval for Sheep's Meadow)
       ctx.beginPath();
       const firstPoint = locationData.boundaryPoints[0];
       ctx.moveTo(startX + firstPoint.x * plotWidth, startY + firstPoint.y * plotHeight);
@@ -109,96 +112,129 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
       ctx.fillRect(startX, startY, plotWidth, plotHeight);
     }
 
-    // Add title
+    // Add main title
     ctx.fillStyle = '#064e3b';
-    ctx.font = 'bold 16px sans-serif';
+    ctx.font = 'bold 20px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(locationData.name, canvas.width / 2, 30);
+    ctx.fillText(locationData.name, canvas.width / 2, 35);
 
-    // Add dimensions text
+    // Add area and dimensions
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#059669';
+    const areaText = locationData.acres ? `${locationData.acres} acres` : `${Math.round((locationData.squareFeet || 0) / 43560 * 10) / 10} acres`;
+    ctx.fillText(areaText, canvas.width / 2, 55);
+
+    // Add dimension labels
     ctx.font = '12px sans-serif';
-    ctx.fillStyle = '#065f46';
-    const dimensionsText = locationData.acres 
-      ? `${locationData.acres} acres (${locationData.estimatedLength}' × ${locationData.estimatedWidth}')`
-      : `${locationData.estimatedLength}' × ${locationData.estimatedWidth}'`;
-    ctx.fillText(dimensionsText, canvas.width / 2, 45);
+    ctx.fillStyle = '#374151';
+    
+    // Length dimension (top)
+    const lengthText = `${actualLength}'`;
+    ctx.fillText(lengthText, canvas.width / 2, startY - 10);
+    
+    // Width dimension (side)
+    ctx.save();
+    ctx.translate(startX - 20, startY + plotHeight / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`${actualWidth}'`, 0, 0);
+    ctx.restore();
 
-    // Calculate section layout
-    const cols = Math.ceil(Math.sqrt(gardenLayout.length));
-    const rows = Math.ceil(gardenLayout.length / cols);
-    const sectionWidth = plotWidth / cols;
-    const sectionHeight = plotHeight / rows;
+    // Add dimension lines
+    ctx.strokeStyle = '#6b7280';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    
+    // Top dimension line
+    ctx.beginPath();
+    ctx.moveTo(startX, startY - 25);
+    ctx.lineTo(startX + plotWidth, startY - 25);
+    ctx.stroke();
+    
+    // Side dimension line  
+    ctx.beginPath();
+    ctx.moveTo(startX - 35, startY);
+    ctx.lineTo(startX - 35, startY + plotHeight);
+    ctx.stroke();
+    
+    ctx.setLineDash([]); // Reset line dash
 
-    // Plant colors for different types
-    const plantColors = [
-      '#f59e0b', // yellow
-      '#dc2626', // red  
-      '#16a34a', // green
-      '#2563eb', // blue
-      '#9333ea', // purple
-      '#ea580c', // orange
-    ];
+    // Add compass rose
+    const compassX = startX + plotWidth - 40;
+    const compassY = startY + 40;
+    
+    ctx.strokeStyle = '#059669';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = '#059669';
+    
+    // North arrow
+    ctx.beginPath();
+    ctx.moveTo(compassX, compassY - 15);
+    ctx.lineTo(compassX + 5, compassY - 5);
+    ctx.lineTo(compassX, compassY);
+    ctx.lineTo(compassX - 5, compassY - 5);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('N', compassX, compassY - 20);
 
-    // Draw garden sections
+    // Add garden section overlays as small indicators
+    const sectionColors = ['#f59e0b', '#dc2626', '#16a34a', '#2563eb', '#9333ea', '#ea580c'];
+    
     gardenLayout.forEach((section, index) => {
-      const col = index % cols;
-      const row = Math.floor(index / cols);
-      const x = startX + col * sectionWidth;
-      const y = startY + row * sectionHeight;
-
-      // Section background
-      ctx.fillStyle = plantColors[index % plantColors.length] + '40'; // Add transparency
-      ctx.fillRect(x + 2, y + 2, sectionWidth - 4, sectionHeight - 4);
-
-      // Section border
-      ctx.strokeStyle = plantColors[index % plantColors.length];
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x + 2, y + 2, sectionWidth - 4, sectionHeight - 4);
-
-      // Section label
-      ctx.fillStyle = '#1f2937';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.textAlign = 'center';
-      const centerX = x + sectionWidth / 2;
-      const centerY = y + sectionHeight / 2;
-      
-      // Wrap section name if too long
-      const maxWidth = sectionWidth - 10;
-      const words = section.section.split(' ');
-      let lines = [];
-      let currentLine = '';
-      
-      words.forEach(word => {
-        const testLine = currentLine + (currentLine ? ' ' : '') + word;
-        const metrics = ctx.measureText(testLine);
-        if (metrics.width > maxWidth && currentLine) {
-          lines.push(currentLine);
-          currentLine = word;
-        } else {
-          currentLine = testLine;
-        }
-      });
-      if (currentLine) lines.push(currentLine);
-
-      // Draw section name
-      lines.forEach((line, i) => {
-        ctx.fillText(line, centerX, centerY - 10 + i * 14);
-      });
-
-      // Draw plant count
-      ctx.font = '10px sans-serif';
-      ctx.fillStyle = '#6b7280';
-      ctx.fillText(`${section.plants.length} plants`, centerX, centerY + 15);
-
-      // Draw size
-      ctx.fillText(section.size, centerX, centerY + 27);
+      if (index < 4) { // Only show first 4 sections to avoid clutter
+        const angle = (index * Math.PI * 2) / Math.min(gardenLayout.length, 4);
+        const radius = Math.min(plotWidth, plotHeight) * 0.25;
+        const centerX = startX + plotWidth / 2;
+        const centerY = startY + plotHeight / 2;
+        
+        const sectionX = centerX + Math.cos(angle) * radius;
+        const sectionY = centerY + Math.sin(angle) * radius;
+        
+        // Draw section indicator
+        ctx.fillStyle = sectionColors[index] + '80';
+        ctx.strokeStyle = sectionColors[index];
+        ctx.lineWidth = 2;
+        
+        ctx.beginPath();
+        ctx.arc(sectionX, sectionY, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        
+        // Add section label
+        ctx.fillStyle = '#1f2937';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText((index + 1).toString(), sectionX, sectionY + 3);
+      }
     });
 
     // Add scale indicator
-    ctx.fillStyle = '#374151';
-    ctx.font = '10px sans-serif';
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '11px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(`Scale: 1px = ${(1/scale).toFixed(1)} feet`, 10, canvas.height - 10);
+    const scaleText = `Scale: 1 pixel = ${(1/scale).toFixed(1)} feet`;
+    ctx.fillText(scaleText, 15, canvas.height - 15);
+
+    // Add features annotations
+    ctx.fillStyle = '#059669';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Features:', 15, canvas.height - 50);
+    
+    ctx.fillStyle = '#374151';
+    ctx.font = '11px sans-serif';
+    const features = [
+      '• Open meadow space',
+      '• Full sun exposure', 
+      '• Well-drained soil',
+      '• High foot traffic area'
+    ];
+    
+    features.forEach((feature, index) => {
+      ctx.fillText(feature, 15, canvas.height - 35 + (index * 14));
+    });
 
   }, [gardenLayout, locationData, loading]);
 
