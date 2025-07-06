@@ -36,9 +36,13 @@ const knownLocations: Record<string, LocationDimensions> = {
 
 export const researchLocationDimensions = async (locationDescription: string): Promise<LocationDimensions> => {
   const normalizedLocation = locationDescription.toLowerCase();
+  console.log('Researching location:', locationDescription, 'normalized:', normalizedLocation);
   
-  // Check for Sheep's Meadow specifically first
-  if (normalizedLocation.includes("sheep") || normalizedLocation.includes("meadow")) {
+  // Check for Sheep's Meadow specifically first (most specific match)
+  if ((normalizedLocation.includes("sheep") && normalizedLocation.includes("meadow")) || 
+      normalizedLocation.includes("sheep's meadow") ||
+      normalizedLocation.includes("sheeps meadow")) {
+    console.log('Matched Sheep\'s Meadow');
     return knownLocations["sheep's meadow"];
   }
   
@@ -48,9 +52,11 @@ export const researchLocationDimensions = async (locationDescription: string): P
     .sort((a, b) => b[0].length - a[0].length); // Sort by key length (more specific first)
   
   if (matches.length > 0) {
+    console.log('Matched location:', matches[0][0]);
     return matches[0][1]; // Return the most specific match
   }
   
+  console.log('No match found, using default for:', locationDescription);
   // Default fallback for unknown locations
   return {
     name: locationDescription,

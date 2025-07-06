@@ -187,119 +187,157 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     ctx.textAlign = 'center';
     ctx.fillText('N', compassX, compassY - 20);
 
-    // Draw detailed garden zones and features
+    // Draw detailed garden zones following the oval shape
     const centerX = startX + plotWidth / 2;
     const centerY = startY + plotHeight / 2;
+    const radiusX = plotWidth / 2;
+    const radiusY = plotHeight / 2;
 
-    // Define garden zones based on the garden layout
+    // Define garden zones that follow the oval shape organically
     const zones = [
-      { name: 'Vegetable Beds', x: 0.2, y: 0.3, width: 0.25, height: 0.4, color: '#16a34a' },
-      { name: 'Herb Garden', x: 0.55, y: 0.2, width: 0.2, height: 0.25, color: '#059669' },
-      { name: 'Flower Beds', x: 0.15, y: 0.7, width: 0.3, height: 0.25, color: '#dc2626' },
-      { name: 'Relaxation Zone', x: 0.6, y: 0.6, width: 0.25, height: 0.3, color: '#2563eb' },
-      { name: 'Compost Area', x: 0.8, y: 0.1, width: 0.15, height: 0.15, color: '#92400e' }
+      { 
+        name: 'North Vegetable Garden', 
+        centerAngle: -Math.PI/2, 
+        radiusScale: 0.6, 
+        size: { width: 0.3, height: 0.2 }, 
+        color: '#16a34a' 
+      },
+      { 
+        name: 'East Herb Garden', 
+        centerAngle: 0, 
+        radiusScale: 0.65, 
+        size: { width: 0.2, height: 0.25 }, 
+        color: '#059669' 
+      },
+      { 
+        name: 'South Flower Beds', 
+        centerAngle: Math.PI/2, 
+        radiusScale: 0.7, 
+        size: { width: 0.35, height: 0.2 }, 
+        color: '#dc2626' 
+      },
+      { 
+        name: 'West Relaxation Zone', 
+        centerAngle: Math.PI, 
+        radiusScale: 0.5, 
+        size: { width: 0.25, height: 0.3 }, 
+        color: '#2563eb' 
+      }
     ];
 
-    // Draw zones
+    // Draw zones positioned along the oval perimeter
     zones.forEach((zone, index) => {
       if (index < gardenLayout.length) {
-        const zoneX = startX + zone.x * plotWidth;
-        const zoneY = startY + zone.y * plotHeight;
-        const zoneWidth = zone.width * plotWidth;
-        const zoneHeight = zone.height * plotHeight;
+        // Calculate position along oval perimeter
+        const angleX = Math.cos(zone.centerAngle) * zone.radiusScale;
+        const angleY = Math.sin(zone.centerAngle) * zone.radiusScale;
+        
+        const zoneX = centerX + angleX * radiusX - (zone.size.width * plotWidth) / 2;
+        const zoneY = centerY + angleY * radiusY - (zone.size.height * plotHeight) / 2;
+        const zoneWidth = zone.size.width * plotWidth;
+        const zoneHeight = zone.size.height * plotHeight;
 
-        // Draw zone boundary
+        // Draw organic zone shape (rounded rectangles with fallback)
         ctx.strokeStyle = zone.color;
         ctx.lineWidth = 2;
-        ctx.fillStyle = zone.color + '20';
-        ctx.strokeRect(zoneX, zoneY, zoneWidth, zoneHeight);
-        ctx.fillRect(zoneX, zoneY, zoneWidth, zoneHeight);
+        ctx.fillStyle = zone.color + '25';
+        
+        const radius = 8;
+        
+        // Draw rounded rectangle manually for better compatibility
+        ctx.beginPath();
+        ctx.moveTo(zoneX + radius, zoneY);
+        ctx.lineTo(zoneX + zoneWidth - radius, zoneY);
+        ctx.quadraticCurveTo(zoneX + zoneWidth, zoneY, zoneX + zoneWidth, zoneY + radius);
+        ctx.lineTo(zoneX + zoneWidth, zoneY + zoneHeight - radius);
+        ctx.quadraticCurveTo(zoneX + zoneWidth, zoneY + zoneHeight, zoneX + zoneWidth - radius, zoneY + zoneHeight);
+        ctx.lineTo(zoneX + radius, zoneY + zoneHeight);
+        ctx.quadraticCurveTo(zoneX, zoneY + zoneHeight, zoneX, zoneY + zoneHeight - radius);
+        ctx.lineTo(zoneX, zoneY + radius);
+        ctx.quadraticCurveTo(zoneX, zoneY, zoneX + radius, zoneY);
+        ctx.closePath();
+        
+        ctx.fill();
+        ctx.stroke();
 
         // Add zone label
         ctx.fillStyle = zone.color;
-        ctx.font = 'bold 10px sans-serif';
+        ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(gardenLayout[index]?.section || zone.name, zoneX + zoneWidth/2, zoneY + zoneHeight/2);
+        const sectionName = gardenLayout[index]?.section || zone.name;
+        ctx.fillText(sectionName, zoneX + zoneWidth/2, zoneY + zoneHeight/2 - 5);
+        
+        // Add plant count
+        ctx.fillStyle = '#374151';
+        ctx.font = '9px sans-serif';
+        const plantCount = gardenLayout[index]?.plants?.length || 0;
+        ctx.fillText(`${plantCount} plants`, zoneX + zoneWidth/2, zoneY + zoneHeight/2 + 8);
       }
     });
 
-    // Draw main pathways
+    // Draw curved pathways that follow the oval shape
     ctx.strokeStyle = '#8b7355';
+    ctx.lineWidth = 4;
+    ctx.fillStyle = '#f5f5dc80';
+    
+    // Main elliptical path around the perimeter
+    ctx.beginPath();
+    ctx.ellipse(centerX, centerY, radiusX * 0.85, radiusY * 0.85, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    // Cross paths
     ctx.lineWidth = 3;
-    ctx.fillStyle = '#f5f5dc';
-    
-    // Central north-south path
-    const pathWidth = plotWidth * 0.08;
-    const mainPathX = centerX - pathWidth/2;
-    ctx.fillRect(mainPathX, startY + plotHeight * 0.1, pathWidth, plotHeight * 0.8);
-    ctx.strokeRect(mainPathX, startY + plotHeight * 0.1, pathWidth, plotHeight * 0.8);
-    
-    // East-west connecting path
-    const crossPathY = centerY - pathWidth/2;
-    ctx.fillRect(startX + plotWidth * 0.1, crossPathY, plotWidth * 0.8, pathWidth);
-    ctx.strokeRect(startX + plotWidth * 0.1, crossPathY, plotWidth * 0.8, pathWidth);
+    ctx.beginPath();
+    // North-South axis
+    ctx.moveTo(centerX, startY + plotHeight * 0.15);
+    ctx.lineTo(centerX, startY + plotHeight * 0.85);
+    // East-West axis  
+    ctx.moveTo(startX + plotWidth * 0.15, centerY);
+    ctx.lineTo(startX + plotWidth * 0.85, centerY);
+    ctx.stroke();
 
-    // Add entry points
+    // Add entry points at the major axes
     const entryPoints = [
-      { x: startX + plotWidth * 0.5, y: startY, label: 'North Entry' },
-      { x: startX + plotWidth * 0.8, y: startY + plotHeight * 0.5, label: 'East Entry' },
-      { x: startX + plotWidth * 0.5, y: startY + plotHeight, label: 'South Entry' },
-      { x: startX, y: startY + plotHeight * 0.5, label: 'West Entry' }
+      { x: centerX, y: startY + plotHeight * 0.1, label: 'North Entry' },
+      { x: startX + plotWidth * 0.9, y: centerY, label: 'East Entry' },
+      { x: centerX, y: startY + plotHeight * 0.9, label: 'South Entry' },
+      { x: startX + plotWidth * 0.1, y: centerY, label: 'West Entry' }
     ];
 
     entryPoints.forEach(entry => {
       ctx.fillStyle = '#059669';
       ctx.beginPath();
-      ctx.arc(entry.x, entry.y, 8, 0, Math.PI * 2);
+      ctx.arc(entry.x, entry.y, 6, 0, Math.PI * 2);
       ctx.fill();
       
       // Add entry label
       ctx.fillStyle = '#064e3b';
-      ctx.font = '9px sans-serif';
+      ctx.font = 'bold 9px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(entry.label, entry.x, entry.y - 15);
+      ctx.fillText(entry.label, entry.x, entry.y - 12);
     });
 
-    // Add sunny and shady area indicators
-    // Sunny areas (south-facing)
-    ctx.fillStyle = '#fbbf2480';
+    // Add natural sunlight zones following the oval
+    ctx.fillStyle = '#fbbf2430';
     ctx.strokeStyle = '#f59e0b';
     ctx.lineWidth = 1;
-    ctx.setLineDash([3, 3]);
+    ctx.setLineDash([4, 4]);
     
-    // South sunny area
+    // Southern exposure (full sun)
     ctx.beginPath();
-    ctx.ellipse(centerX, startY + plotHeight * 0.7, plotWidth * 0.15, plotHeight * 0.1, 0, 0, 2 * Math.PI);
+    ctx.ellipse(centerX, centerY + radiusY * 0.3, radiusX * 0.4, radiusY * 0.2, 0, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
     
-    // Shady areas (north-facing)
-    ctx.fillStyle = '#6b728080';
+    // Northern area (partial shade)
+    ctx.fillStyle = '#6b728040';
     ctx.strokeStyle = '#374151';
-    
-    // North shady area
     ctx.beginPath();
-    ctx.ellipse(centerX, startY + plotHeight * 0.3, plotWidth * 0.12, plotHeight * 0.08, 0, 0, 2 * Math.PI);
+    ctx.ellipse(centerX, centerY - radiusY * 0.3, radiusX * 0.3, radiusY * 0.15, 0, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
     
     ctx.setLineDash([]); // Reset line dash
-
-    // Add sun/shade legend
-    ctx.font = 'bold 10px sans-serif';
-    ctx.textAlign = 'left';
-    
-    // Sunny area legend
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(startX + plotWidth - 80, startY + 20, 12, 8);
-    ctx.fillStyle = '#374151';
-    ctx.fillText('Full Sun Areas', startX + plotWidth - 65, startY + 28);
-    
-    // Shady area legend
-    ctx.fillStyle = '#6b7280';
-    ctx.fillRect(startX + plotWidth - 80, startY + 35, 12, 8);
-    ctx.fillStyle = '#374151';
-    ctx.fillText('Partial Shade', startX + plotWidth - 65, startY + 43);
 
     // Add comprehensive scale indicator with visual scale bar
     ctx.fillStyle = '#6b7280';
