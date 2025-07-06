@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import NotificationPreferences from './NotificationPreferences';
 import GardenPlotVisualizer from './GardenPlotVisualizer';
+import LocationBasedMap from './components/LocationBasedMap';
 import PDFExport from './components/PDFExport';
 import AILearningNotice from './components/AILearningNotice';
 import PlantRecommendations from './components/PlantRecommendations';
@@ -46,6 +47,7 @@ interface GardenPlanResultsProps {
     sunlight: string;
     hardiness_zone: string;
     goals: string;
+    space_description?: string;
   };
 }
 
@@ -84,6 +86,11 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         <PlantRecommendations 
           plantRecommendations={plantRecommendations}
           onShareExperience={setSelectedPlantFeedback}
+        />
+
+        <LocationBasedMap 
+          gardenLayout={gardenLayout}
+          locationDescription={formData?.space_description || "Your Garden Location"}
         />
 
         {formData && (
