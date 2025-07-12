@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import NotificationPreferences from './NotificationPreferences';
 import IntelligentGardenPlotVisualizer from './components/IntelligentGardenPlotVisualizer';
-
+import PlanCustomizer from './components/PlanCustomizer';
+import MultiYearPlanning from './components/MultiYearPlanning';
+import WeatherBasedNotifications from './components/WeatherBasedNotifications';
 import PDFExport from './components/PDFExport';
 import AILearningNotice from './components/AILearningNotice';
 import PlantRecommendations from './components/PlantRecommendations';
@@ -13,7 +15,7 @@ import FeedbackModal from './components/FeedbackModal';
 
 interface PlantRecommendation {
   name: string;
-  variety?: string;
+  variety: string;
   plantingTime: string;
   harvestTime: string;
   spacing: string;
@@ -62,11 +64,18 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedPlantFeedback, setSelectedPlantFeedback] = useState<string | null>(null);
+  const [currentPlantRecommendations, setCurrentPlantRecommendations] = useState(plantRecommendations);
+  const [currentGardenLayout, setCurrentGardenLayout] = useState(gardenLayout);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleFeedbackSubmit = (feedback: any) => {
     console.log('Feedback submitted:', feedback);
     // In real app, save to database
+  };
+
+  const handlePlanUpdate = (updatedPlan: { plantRecommendations: PlantRecommendation[], gardenLayout: GardenLayout[] }) => {
+    setCurrentPlantRecommendations(updatedPlan.plantRecommendations);
+    setCurrentGardenLayout(updatedPlan.gardenLayout);
   };
 
   return (
@@ -80,25 +89,37 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         />
 
         {showNotifications && (
-          <NotificationPreferences onPreferencesUpdate={(prefs) => console.log('Preferences:', prefs)} />
+          <div className="space-y-6">
+            <NotificationPreferences onPreferencesUpdate={(prefs) => console.log('Preferences:', prefs)} />
+            <WeatherBasedNotifications />
+          </div>
         )}
 
+        <PlanCustomizer 
+          plantRecommendations={currentPlantRecommendations}
+          gardenLayout={currentGardenLayout}
+          onPlanUpdate={handlePlanUpdate}
+        />
+
         <PlantRecommendations 
-          plantRecommendations={plantRecommendations}
+          plantRecommendations={currentPlantRecommendations}
           onShareExperience={setSelectedPlantFeedback}
         />
 
-
         {formData && (
           <IntelligentGardenPlotVisualizer 
-            gardenLayout={gardenLayout}
+            gardenLayout={currentGardenLayout}
             spaceType={formData.spaceType}
             spaceSize={formData.spaceSize}
             locationDescription={formData.space_description}
           />
         )}
 
-        <EnhancedGardenLayout gardenLayout={gardenLayout} />
+        <EnhancedGardenLayout gardenLayout={currentGardenLayout} />
+
+        <MultiYearPlanning 
+          gardenSections={currentGardenLayout}
+        />
 
         <PlantingCalendarComponent plantingCalendar={plantingCalendar} />
 

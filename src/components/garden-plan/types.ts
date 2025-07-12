@@ -13,6 +13,7 @@ export interface GardenPlanFormData {
   space_description: string;
   preferred_plants: string;
   time_commitment: string;
+  structures?: string[]; // Garden structures like greenhouse, cold frames, etc.
 }
 
 export interface PlantRecommendation {

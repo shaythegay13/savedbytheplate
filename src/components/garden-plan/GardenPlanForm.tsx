@@ -81,9 +81,11 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                         <SelectItem value="small_farm">Small Farm/Homestead (0.25-2 acres)</SelectItem>
                         <SelectItem value="medium_farm">Medium Farm (2-10 acres)</SelectItem>
                         <SelectItem value="large_farm">Large Farm/Urban Farm (10+ acres)</SelectItem>
-                        <SelectItem value="community_plot">Community Garden Plot</SelectItem>
-                        <SelectItem value="indoor">Indoor Growing</SelectItem>
-                        <SelectItem value="greenhouse">Greenhouse</SelectItem>
+                         <SelectItem value="community_plot">Community Garden Plot</SelectItem>
+                         <SelectItem value="indoor">Indoor Growing</SelectItem>
+                         <SelectItem value="greenhouse">Greenhouse</SelectItem>
+                         <SelectItem value="cold_frame">Cold Frame Setup</SelectItem>
+                         <SelectItem value="high_tunnel">High Tunnel/Hoop House</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
