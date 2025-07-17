@@ -8,7 +8,14 @@ const Hero = () => {
       <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-sbtp-green-200 to-sbtp-beige pointer-events-none"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-10 md:mb-0">
+          <div className="md:w-1/2 flex justify-center mb-10 md:mb-0 md:order-2">
+            <img 
+              src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
+              alt="Saved by the Plate Logo" 
+              className="w-64 h-64 md:w-96 md:h-96 object-contain rounded-full bg-white p-4 shadow-lg"
+            />
+          </div>
+          <div className="md:w-1/2 md:order-1">
             <h1 className="text-4xl md:text-5xl font-bold text-sbtp-green-800 mb-4">
               Connect with <span className="text-sbtp-blue">Local Food</span> & Sustainable <span className="text-sbtp-green-600">Agriculture</span>
             </h1>
@@ -22,18 +29,6 @@ const Hero = () => {
               <Button asChild variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-100 py-6 px-8 text-lg">
                 <Link to="/garden-plan">Start Your Garden</Link>
               </Button>
-            </div>
-          </div>
-          <div className="md:w-1/2 flex justify-center">
-            <div className="relative">
-              <img 
-                src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
-                alt="Saved by the Plate Logo" 
-                className="w-64 h-64 md:w-96 md:h-96 object-contain rounded-full bg-white p-4 shadow-lg"
-              />
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-sbtp-yellow text-sbtp-brown-700 px-6 py-2 rounded-full text-lg font-semibold shadow-md">
-                Join our mission
-              </div>
             </div>
           </div>
         </div>
