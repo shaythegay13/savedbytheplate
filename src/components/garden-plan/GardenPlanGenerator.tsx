@@ -5,6 +5,7 @@ import GardenPlanResults from './GardenPlanResults';
 import LoadingState from './LoadingState';
 import { generateMockPlan } from './mockPlanGenerator';
 import { GardenPlanFormData, GardenPlan } from './types';
+import { supabase } from '@/integrations/supabase/client';
 
 const GardenPlanGenerator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,26 +17,30 @@ const GardenPlanGenerator: React.FC = () => {
     setFormData(formData);
     
     try {
-      // Call the AI-powered edge function
-      const response = await fetch('https://rxwynfpldittdwqtjhkpw.supabase.co/functions/v1/generate-smart-garden-plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      console.log('Calling AI garden plan generation with:', formData);
+      
+      // Call the AI-powered edge function using Supabase client
+      const { data: aiPlan, error } = await supabase.functions.invoke('generate-smart-garden-plan', {
+        body: {
           ...formData,
           user_id: 'demo-user' // In real app, get from auth context
-        }),
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to generate garden plan');
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`AI function failed: ${error.message}`);
       }
 
-      const aiPlan = await response.json();
+      if (!aiPlan) {
+        throw new Error('No plan data returned from AI');
+      }
+
+      console.log('AI plan generated successfully:', aiPlan);
       setGardenPlan(aiPlan);
     } catch (error) {
       console.error('Error generating garden plan:', error);
+      console.log('Falling back to mock plan');
       // Fallback to mock plan
       const mockPlan = generateMockPlan(formData);
       setGardenPlan(mockPlan);
