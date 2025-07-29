@@ -154,6 +154,31 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
 
               <FormField
                 control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Location (for weather-based recommendations)</FormLabel>
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input {...field} placeholder="Enter your city or click to get location" />
+                      </FormControl>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={getLocation}
+                        disabled={isGettingLocation}
+                        className="whitespace-nowrap"
+                      >
+                        {isGettingLocation ? "Getting..." : "Get Location"}
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="sunlight"
                 render={({ field }) => (
                   <FormItem>
@@ -350,30 +375,6 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Location (for weather-based recommendations)</FormLabel>
-                    <div className="flex gap-2">
-                      <FormControl>
-                        <Input {...field} placeholder="Enter your city or click to get location" />
-                      </FormControl>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={getLocation}
-                        disabled={isGettingLocation}
-                        className="whitespace-nowrap"
-                      >
-                        {isGettingLocation ? "Getting..." : "Get Location"}
-                      </Button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
             <FormField
