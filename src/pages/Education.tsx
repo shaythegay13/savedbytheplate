@@ -60,7 +60,7 @@ const premiumCourses = [
   },
   {
     title: "Sustainable Agriculture Basics",
-    description: "Master sustainable growing with our comprehensive course on transforming food systems through local production.",
+    description: "This course teaches you about some of the basic knowledge about the varied topics underneath sustainable agriculture such as composting, water-saving techniques, and organic growing.",
     imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b",
     platform: "Systeme.io",
     duration: "8 hours",
