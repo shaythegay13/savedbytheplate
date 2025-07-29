@@ -59,7 +59,7 @@ const premiumCourses = [
     link: "#"
   },
   {
-    title: "Saved by the Plate Complete Course",
+    title: "Sustainable Agriculture Basics",
     description: "Master sustainable growing with our comprehensive course on transforming food systems through local production.",
     imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b",
     platform: "Systeme.io",
