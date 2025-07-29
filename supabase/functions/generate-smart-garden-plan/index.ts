@@ -60,8 +60,23 @@ serve(async (req) => {
       .eq('sunlight', formData.sunlight)
       .order('success_rate', { ascending: false });
 
-    // Generate AI-enhanced recommendations with real AI
-    const plantRecommendations = await generateAIRecommendations(formData, insights || [], weatherData, climateData, usdaData);
+    // Fetch plant data from external databases
+    const [usdaPlantsData, openFarmData, brapiData, perenualData] = await Promise.all([
+      fetchUSDAPlantData(formData.preferred_plants),
+      fetchOpenFarmData(formData.preferred_plants),
+      fetchBRAPIData(formData.preferred_plants),
+      fetchPerenualData(formData.preferred_plants)
+    ]);
+
+    // Generate AI-enhanced recommendations with real AI and external plant data
+    const plantRecommendations = await generateAIRecommendations(
+      formData, 
+      insights || [], 
+      weatherData, 
+      climateData, 
+      usdaData,
+      { usdaPlantsData, openFarmData, brapiData, perenualData }
+    );
     const gardenLayout = await generateAILayout(formData, plantRecommendations, weatherData, climateData, usdaData);
     const plantingCalendar = await generateAICalendar(formData, plantRecommendations, weatherData, climateData, usdaData);
     const careInstructions = await generateAICareInstructions(formData, weatherData, climateData, usdaData);
@@ -204,7 +219,147 @@ async function getUSDAClimateData(latitude: number, longitude: number, city?: st
   }
 }
 
-async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any, usdaData: any) {
+// Plant Database API Functions
+async function fetchUSDAPlantData(preferredPlants: string) {
+  try {
+    // USDA Plants Database API (public)
+    const searchTerms = preferredPlants.split(',').map(p => p.trim().toLowerCase()).slice(0, 3);
+    const plantData = [];
+    
+    for (const term of searchTerms) {
+      const response = await fetch(`https://plantsdb.xyz/search?limit=5&q=${encodeURIComponent(term)}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && data.data.length > 0) {
+          plantData.push(...data.data.map(plant => ({
+            source: 'USDA',
+            commonName: plant.Common_Name,
+            scientificName: plant.Scientific_Name,
+            family: plant.Family,
+            duration: plant.Duration,
+            growth: plant.Growth_Habit,
+            nativeStatus: plant.Native_Status,
+            category: plant.Category
+          })));
+        }
+      }
+    }
+    
+    return plantData;
+  } catch (error) {
+    console.error('USDA Plants API error:', error);
+    return [];
+  }
+}
+
+async function fetchOpenFarmData(preferredPlants: string) {
+  try {
+    // OpenFarm API (public)
+    const searchTerms = preferredPlants.split(',').map(p => p.trim()).slice(0, 3);
+    const plantData = [];
+    
+    for (const term of searchTerms) {
+      const response = await fetch(`https://openfarm.cc/api/v1/crops?filter=${encodeURIComponent(term)}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && data.data.length > 0) {
+          plantData.push(...data.data.map(crop => ({
+            source: 'OpenFarm',
+            name: crop.attributes.name,
+            description: crop.attributes.description,
+            sunRequirements: crop.attributes.sun_requirements,
+            sowingMethod: crop.attributes.sowing_method,
+            spreadingMethod: crop.attributes.spreading_by,
+            rowSpacing: crop.attributes.row_spacing,
+            harvestTime: crop.attributes.days_to_harvest,
+            companions: crop.relationships?.companions?.data || []
+          })));
+        }
+      }
+    }
+    
+    return plantData;
+  } catch (error) {
+    console.error('OpenFarm API error:', error);
+    return [];
+  }
+}
+
+async function fetchBRAPIData(preferredPlants: string) {
+  try {
+    // BrAPI Test Server (public)
+    const response = await fetch('https://test-server.brapi.org/brapi/v2/germplasm?pageSize=20');
+    if (response.ok) {
+      const data = await response.json();
+      
+      const searchTerms = preferredPlants.toLowerCase().split(',').map(p => p.trim());
+      const relevantGermplasm = data.result?.data?.filter(item => 
+        searchTerms.some(term => 
+          item.germplasmName?.toLowerCase().includes(term) ||
+          item.commonCropName?.toLowerCase().includes(term)
+        )
+      ) || [];
+      
+      return relevantGermplasm.map(item => ({
+        source: 'BrAPI',
+        germplasmName: item.germplasmName,
+        accessionNumber: item.accessionNumber,
+        commonCropName: item.commonCropName,
+        genus: item.genus,
+        species: item.species,
+        breedingMethodDbId: item.breedingMethodDbId,
+        seedSource: item.seedSource
+      }));
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('BrAPI error:', error);
+    return [];
+  }
+}
+
+async function fetchPerenualData(preferredPlants: string) {
+  try {
+    const apiKey = Deno.env.get('PERENUAL_API_KEY');
+    if (!apiKey) {
+      console.log('Perenual API key not found');
+      return [];
+    }
+    
+    const searchTerms = preferredPlants.split(',').map(p => p.trim()).slice(0, 3);
+    const plantData = [];
+    
+    for (const term of searchTerms) {
+      const response = await fetch(`https://perenual.com/api/species-list?key=${apiKey}&q=${encodeURIComponent(term)}&edible=1`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && data.data.length > 0) {
+          plantData.push(...data.data.map(plant => ({
+            source: 'Perenual',
+            id: plant.id,
+            commonName: plant.common_name,
+            scientificName: plant.scientific_name,
+            cycle: plant.cycle,
+            watering: plant.watering,
+            sunlight: plant.sunlight,
+            careLevel: plant.care_level,
+            indoor: plant.indoor,
+            flowering: plant.flowering_season,
+            edible: plant.edible_fruit
+          })));
+        }
+      }
+    }
+    
+    return plantData;
+  } catch (error) {
+    console.error('Perenual API error:', error);
+    return [];
+  }
+}
+
+async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any, usdaData: any, plantData?: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) {
     return generateFallbackRecommendations(formData, insights);
@@ -252,6 +407,21 @@ Climate Trends: ${usdaData.climateTrends.temperatureTrend}, ${usdaData.climateTr
 
 COMMUNITY SUCCESS DATA:
 ${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success rate, ${i.total_attempts} attempts`).join('\n') : 'No community data available'}
+
+EXTERNAL PLANT DATABASE DATA:
+${plantData ? `
+USDA Plants Database (${plantData.usdaPlantsData?.length || 0} entries):
+${plantData.usdaPlantsData?.slice(0, 5).map(plant => `- ${plant.commonName} (${plant.scientificName}): ${plant.family}, ${plant.duration}, ${plant.growth}, Native: ${plant.nativeStatus}`).join('\n') || 'No USDA data found'}
+
+OpenFarm Database (${plantData.openFarmData?.length || 0} entries):
+${plantData.openFarmData?.slice(0, 5).map(crop => `- ${crop.name}: ${crop.description?.substring(0, 100)}..., Sun: ${crop.sunRequirements}, Harvest: ${crop.harvestTime} days`).join('\n') || 'No OpenFarm data found'}
+
+BrAPI Database (${plantData.brapiData?.length || 0} entries):
+${plantData.brapiData?.slice(0, 3).map(germ => `- ${germ.germplasmName} (${germ.commonCropName}): ${germ.genus} ${germ.species}`).join('\n') || 'No BrAPI data found'}
+
+Perenual Database (${plantData.perenualData?.length || 0} entries):
+${plantData.perenualData?.slice(0, 5).map(plant => `- ${plant.commonName} (${plant.scientificName}): Cycle: ${plant.cycle}, Watering: ${plant.watering}, Care Level: ${plant.careLevel}, Sunlight: ${plant.sunlight?.join?.(', ') || plant.sunlight}`).join('\n') || 'No Perenual data found'}
+` : 'External plant data not available'}
 
 Please provide 8-12 diverse plant recommendations in this exact JSON format:
 [
