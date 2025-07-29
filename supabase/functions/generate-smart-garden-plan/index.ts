@@ -327,6 +327,10 @@ IMPORTANT:
 }
 
 function generateFallbackRecommendations(formData: GardenPlanRequest, insights: any[]) {
+  // Create diverse recommendations based on user goals and preferences
+  const culturalRelevant = formData.goals?.toLowerCase().includes('cultural') || 
+                          formData.preferred_plants?.toLowerCase().includes('cultural');
+  
   const baseRecommendations = [
     {
       name: "Cherry Tomatoes",
@@ -337,7 +341,7 @@ function generateFallbackRecommendations(formData: GardenPlanRequest, insights: 
       careInstructions: "Water deeply 2-3 times per week. Provide support.",
       difficulty: "Easy" as const,
       yield: "5-10 lbs per plant",
-      whyRecommended: "Great for beginners and small spaces"
+      whyRecommended: "Great for beginners and productive in containers"
     },
     {
       name: "Lettuce",
@@ -348,9 +352,103 @@ function generateFallbackRecommendations(formData: GardenPlanRequest, insights: 
       careInstructions: "Keep soil consistently moist.",
       difficulty: "Easy" as const,
       yield: "1-2 heads per plant",
-      whyRecommended: "Quick growing and easy to manage"
+      whyRecommended: "Quick growing and perfect for succession planting"
+    },
+    {
+      name: "Basil",
+      variety: "Genovese",
+      plantingTime: "After soil warms to 60°F",
+      harvestTime: "Continuous after 60 days",
+      spacing: "12 inches apart",
+      careInstructions: "Pinch flowers to encourage leaf growth.",
+      difficulty: "Easy" as const,
+      yield: "1-2 cups fresh leaves per week",
+      whyRecommended: "Essential herb for cooking and companion planting"
+    },
+    {
+      name: "Bell Peppers",
+      variety: "California Wonder",
+      plantingTime: "2 weeks after last frost",
+      harvestTime: "70-80 days",
+      spacing: "18-24 inches apart",
+      careInstructions: "Consistent watering and full sun.",
+      difficulty: "Medium" as const,
+      yield: "6-8 peppers per plant",
+      whyRecommended: "Versatile vegetable for cooking and good storage"
+    },
+    {
+      name: "Kale",
+      variety: "Lacinato",
+      plantingTime: "Early spring or late summer",
+      harvestTime: "50-60 days",
+      spacing: "12-18 inches apart",
+      careInstructions: "Cold tolerant, harvest outer leaves first.",
+      difficulty: "Easy" as const,
+      yield: "1-2 lbs per plant",
+      whyRecommended: "Nutritious superfood, cold hardy, long harvest"
+    },
+    {
+      name: "Zucchini",
+      variety: "Black Beauty",
+      plantingTime: "After soil is warm",
+      harvestTime: "50-60 days",
+      spacing: "36 inches apart",
+      careInstructions: "Needs space and regular watering.",
+      difficulty: "Easy" as const,
+      yield: "10-15 lbs per plant",
+      whyRecommended: "Highly productive, great for large families"
+    },
+    {
+      name: "Green Beans",
+      variety: "Provider Bush",
+      plantingTime: "After last frost",
+      harvestTime: "50-55 days",
+      spacing: "4-6 inches apart",
+      careInstructions: "Nitrogen fixing, minimal fertilizer needed.",
+      difficulty: "Easy" as const,
+      yield: "3-5 lbs per 10ft row",
+      whyRecommended: "Improves soil and provides protein-rich harvest"
+    },
+    {
+      name: "Cilantro",
+      variety: "Slow Bolt",
+      plantingTime: "Cool weather, spring and fall",
+      harvestTime: "30-40 days",
+      spacing: "4-6 inches apart",
+      careInstructions: "Prefers cool weather, succession plant.",
+      difficulty: "Easy" as const,
+      yield: "Continuous harvest",
+      whyRecommended: "Essential for Latin and Asian cuisine"
     }
   ];
+
+  // Add culturally relevant options if requested
+  if (culturalRelevant) {
+    baseRecommendations.push(
+      {
+        name: "Collard Greens",
+        variety: "Georgia Southern",
+        plantingTime: "Late summer for fall harvest",
+        harvestTime: "60-75 days",
+        spacing: "18-24 inches apart",
+        careInstructions: "Cold hardy, harvest outer leaves.",
+        difficulty: "Easy" as const,
+        yield: "2-3 lbs per plant",
+        whyRecommended: "Traditional Southern vegetable, excellent nutrition"
+      },
+      {
+        name: "Hot Peppers",
+        variety: "Jalapeño",
+        plantingTime: "After last frost",
+        harvestTime: "70-80 days",
+        spacing: "18 inches apart",
+        careInstructions: "Loves heat, minimal water once established.",
+        difficulty: "Medium" as const,
+        yield: "25-35 peppers per plant",
+        whyRecommended: "Essential for authentic spicy cuisine"
+      }
+    );
+  }
 
   return baseRecommendations.map(plant => {
     const insight = insights.find(i => i.plant_name === plant.name);

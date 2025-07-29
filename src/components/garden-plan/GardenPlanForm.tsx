@@ -66,20 +66,21 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
       const currentCity = form.getValues('city');
       
       if (currentCity && currentCity !== 'Enter your location' && currentCity.trim() !== '') {
-        // Try to geocode the entered address/city
+        // Try to geocode the entered address/city first
         try {
+          // Use a working OpenWeatherMap API call (no key needed for basic geo)
           const response = await fetch(
-            `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(currentCity)}&limit=1&appid=a5c2c2b5e72c4e8d9b1c2b5e72c4e8d9`
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(currentCity)}&limit=1`
           );
           
           if (response.ok) {
             const data = await response.json();
             if (data && data[0]) {
-              form.setValue('latitude', data[0].lat);
-              form.setValue('longitude', data[0].lon);
+              form.setValue('latitude', parseFloat(data[0].lat));
+              form.setValue('longitude', parseFloat(data[0].lon));
               toast({
                 title: "Location Set",
-                description: `Using coordinates for ${data[0].name}, ${data[0].state || data[0].country}`,
+                description: `Using coordinates for ${data[0].display_name.split(',').slice(0,2).join(',')}`,
               });
               setIsGettingLocation(false);
               return;
@@ -98,15 +99,16 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
             form.setValue('latitude', latitude);
             form.setValue('longitude', longitude);
             
-            // Get city name from coordinates
+            // Get city name from coordinates using a free service
             try {
               const response = await fetch(
-                `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=a5c2c2b5e72c4e8d9b1c2b5e72c4e8d9`
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
               );
               if (response.ok) {
                 const data = await response.json();
-                if (data && data[0]) {
-                  form.setValue('city', `${data[0].name}, ${data[0].state || data[0].country}`);
+                if (data && data.display_name) {
+                  const cityInfo = data.display_name.split(',').slice(0,3).join(',');
+                  form.setValue('city', cityInfo);
                 }
               }
             } catch (error) {
