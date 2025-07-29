@@ -38,7 +38,7 @@ const premiumCourses = [
     title: "Advanced Container Gardening",
     description: "Master techniques for maximizing yields in small containers and urban spaces.",
     imageUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff",
-    platform: "Skillshare",
+    platform: "Systeme.io",
     duration: "2 hours",
     link: "#"
   },
@@ -46,7 +46,7 @@ const premiumCourses = [
     title: "Season Extension Techniques",
     description: "Learn how to grow food year-round with greenhouses, row covers, and cold frames.",
     imageUrl: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
-    platform: "Skillshare",
+    platform: "Systeme.io",
     duration: "3 hours",
     link: "#"
   },
@@ -54,9 +54,17 @@ const premiumCourses = [
     title: "Permaculture Design Certification",
     description: "Comprehensive course on designing sustainable and productive ecosystems.",
     imageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-    platform: "Skillshare",
+    platform: "Systeme.io",
     duration: "12 hours",
     link: "#"
+  },
+  {
+    title: "Saved by the Plate Complete Course",
+    description: "Master sustainable growing with our comprehensive course on transforming food systems through local production.",
+    imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b",
+    platform: "Systeme.io",
+    duration: "8 hours",
+    link: "https://savedbytheplate.systeme.io/start"
   }
 ];
 
