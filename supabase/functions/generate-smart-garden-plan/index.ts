@@ -42,10 +42,12 @@ serve(async (req) => {
     // Get weather and climate data for location-based recommendations
     let weatherData = null;
     let climateData = null;
+    let usdaData = null;
     if (formData.latitude && formData.longitude) {
-      [weatherData, climateData] = await Promise.all([
+      [weatherData, climateData, usdaData] = await Promise.all([
         getWeatherData(formData.latitude, formData.longitude),
-        getClimateData(formData.latitude, formData.longitude, formData.hardiness_zone)
+        getClimateData(formData.latitude, formData.longitude, formData.hardiness_zone),
+        getUSDAClimateData(formData.latitude, formData.longitude, formData.city)
       ]);
     }
 
@@ -59,11 +61,11 @@ serve(async (req) => {
       .order('success_rate', { ascending: false });
 
     // Generate AI-enhanced recommendations with real AI
-    const plantRecommendations = await generateAIRecommendations(formData, insights || [], weatherData, climateData);
-    const gardenLayout = await generateAILayout(formData, plantRecommendations, weatherData, climateData);
-    const plantingCalendar = await generateAICalendar(formData, plantRecommendations, weatherData, climateData);
-    const careInstructions = await generateAICareInstructions(formData, weatherData, climateData);
-    const expertTips = await generateAITips(formData, insights || [], weatherData, climateData);
+    const plantRecommendations = await generateAIRecommendations(formData, insights || [], weatherData, climateData, usdaData);
+    const gardenLayout = await generateAILayout(formData, plantRecommendations, weatherData, climateData, usdaData);
+    const plantingCalendar = await generateAICalendar(formData, plantRecommendations, weatherData, climateData, usdaData);
+    const careInstructions = await generateAICareInstructions(formData, weatherData, climateData, usdaData);
+    const expertTips = await generateAITips(formData, insights || [], weatherData, climateData, usdaData);
 
     const gardenPlan = {
       plantRecommendations,
@@ -174,7 +176,35 @@ async function getClimateData(latitude: number, longitude: number, hardiness_zon
   }
 }
 
-async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any) {
+async function getUSDAClimateData(latitude: number, longitude: number, city?: string) {
+  try {
+    // Call our USDA climate data edge function
+    const response = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/get-usda-climate-data`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`
+      },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+        year: new Date().getFullYear()
+      })
+    });
+
+    if (!response.ok) {
+      console.error('USDA climate data request failed:', response.status);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching USDA climate data:', error);
+    return null;
+  }
+}
+
+async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any, usdaData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) {
     return generateFallbackRecommendations(formData, insights);
@@ -207,6 +237,17 @@ Annual Precipitation: ${climateData.precipitation_data.annual_avg} inches
 Drought Status: ${climateData.drought_conditions}
 Weather Alerts: ${climateData.weather_alerts.length > 0 ? climateData.weather_alerts.join(', ') : 'None'}
 ` : 'Climate data not available'}
+
+USDA REGIONAL INSIGHTS (if available):
+${usdaData ? `
+Climate Hub: ${usdaData.regionalInsights.climateHub}
+Region: ${usdaData.regionalInsights.region}
+Primary Climate Concerns: ${usdaData.regionalInsights.primaryConcerns.join(', ')}
+Adaptation Strategies: ${usdaData.regionalInsights.adaptationStrategies.join(', ')}
+Major Regional Crops: ${usdaData.agriculturalStatistics.majorCrops.slice(0, 5).map(crop => `${crop.crop} (${crop.acres} acres)`).join(', ')}
+Soil Health: pH ${usdaData.soilData.averagePH}, ${usdaData.soilData.averageOM}% organic matter, ${usdaData.soilData.erosionRisk} erosion risk
+Climate Trends: ${usdaData.climateTrends.temperatureTrend}, ${usdaData.climateTrends.precipitationTrend}
+` : 'USDA data not available'}
 
 COMMUNITY SUCCESS DATA:
 ${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success rate, ${i.total_attempts} attempts`).join('\n') : 'No community data available'}
@@ -318,7 +359,7 @@ function generateFallbackRecommendations(formData: GardenPlanRequest, insights: 
   });
 }
 
-async function generateAILayout(formData: GardenPlanRequest, plants: any[], weatherData: any, climateData: any) {
+async function generateAILayout(formData: GardenPlanRequest, plants: any[], weatherData: any, climateData: any, usdaData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackLayout(formData, plants);
 
@@ -399,7 +440,7 @@ function generateFallbackLayout(formData: GardenPlanRequest, plants: any[]) {
   ];
 }
 
-async function generateAICalendar(formData: GardenPlanRequest, plants: any[], weatherData: any, climateData: any) {
+async function generateAICalendar(formData: GardenPlanRequest, plants: any[], weatherData: any, climateData: any, usdaData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackCalendar(formData, plants);
 
@@ -481,7 +522,7 @@ function generateFallbackCalendar(formData: GardenPlanRequest, plants: any[]) {
   });
 }
 
-async function generateAICareInstructions(formData: GardenPlanRequest, weatherData: any, climateData: any) {
+async function generateAICareInstructions(formData: GardenPlanRequest, weatherData: any, climateData: any, usdaData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackCare(formData);
 
@@ -554,7 +595,7 @@ MAINTENANCE:
 - Proper spacing for your ${formData.sunlight} conditions`;
 }
 
-async function generateAITips(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any) {
+async function generateAITips(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any, usdaData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackTips(insights);
 
