@@ -24,6 +24,9 @@ interface GardenPlanFormData {
   space_description: string;
   preferred_plants: string;
   time_commitment: string;
+  latitude?: number;
+  longitude?: number;
+  city?: string;
 }
 
 interface GardenPlanFormProps {
@@ -32,6 +35,8 @@ interface GardenPlanFormProps {
 }
 
 const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) => {
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  
   const form = useForm<GardenPlanFormData>({
     defaultValues: {
       spaceType: "",
@@ -47,10 +52,52 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
       goals: "",
       space_description: "",
       preferred_plants: "",
-      time_commitment: ""
+      time_commitment: "",
+      latitude: undefined,
+      longitude: undefined,
+      city: ""
     }
   });
   const watchSoilContaminated = form.watch("soil_contaminated");
+
+  const getLocation = async () => {
+    setIsGettingLocation(true);
+    try {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            form.setValue('latitude', latitude);
+            form.setValue('longitude', longitude);
+            
+            // Get city name from coordinates
+            try {
+              const response = await fetch(
+                `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=demo`
+              );
+              if (response.ok) {
+                const data = await response.json();
+                if (data && data[0]) {
+                  form.setValue('city', `${data[0].name}, ${data[0].state || data[0].country}`);
+                }
+              }
+            } catch (error) {
+              console.log('Could not get city name');
+            }
+            
+            setIsGettingLocation(false);
+          },
+          (error) => {
+            console.error('Location error:', error);
+            setIsGettingLocation(false);
+          }
+        );
+      }
+    } catch (error) {
+      console.error('Geolocation not supported');
+      setIsGettingLocation(false);
+    }
+  };
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -345,6 +392,31 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                         <SelectItem value="high">High (6+ hours)</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Location (for weather-based recommendations)</FormLabel>
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input {...field} placeholder="Enter your city or click to get location" />
+                      </FormControl>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={getLocation}
+                        disabled={isGettingLocation}
+                        className="whitespace-nowrap"
+                      >
+                        {isGettingLocation ? "Getting..." : "Get Location"}
+                      </Button>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

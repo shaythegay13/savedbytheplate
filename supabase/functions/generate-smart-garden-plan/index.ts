@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -20,6 +21,9 @@ interface GardenPlanRequest {
   preferred_plants: string;
   time_commitment: string;
   user_id?: string;
+  latitude?: number;
+  longitude?: number;
+  city?: string;
 }
 
 serve(async (req) => {
@@ -35,6 +39,12 @@ serve(async (req) => {
 
     const formData: GardenPlanRequest = await req.json();
 
+    // Get weather data for location-based recommendations
+    let weatherData = null;
+    if (formData.latitude && formData.longitude) {
+      weatherData = await getWeatherData(formData.latitude, formData.longitude);
+    }
+
     // Get insights data to inform recommendations
     const { data: insights } = await supabase
       .from('garden_insights')
@@ -44,12 +54,12 @@ serve(async (req) => {
       .eq('sunlight', formData.sunlight)
       .order('success_rate', { ascending: false });
 
-    // Generate AI-enhanced recommendations based on learned data
-    const plantRecommendations = await generateSmartRecommendations(formData, insights || []);
-    const gardenLayout = generateOptimizedLayout(formData, plantRecommendations);
-    const plantingCalendar = generateSeasonalCalendar(formData, plantRecommendations);
-    const careInstructions = generatePersonalizedCare(formData);
-    const expertTips = generateDataDrivenTips(insights || []);
+    // Generate AI-enhanced recommendations with real AI
+    const plantRecommendations = await generateAIRecommendations(formData, insights || [], weatherData);
+    const gardenLayout = await generateAILayout(formData, plantRecommendations, weatherData);
+    const plantingCalendar = await generateAICalendar(formData, plantRecommendations, weatherData);
+    const careInstructions = await generateAICareInstructions(formData, weatherData);
+    const expertTips = await generateAITips(formData, insights || [], weatherData);
 
     const gardenPlan = {
       plantRecommendations,
@@ -105,175 +115,460 @@ serve(async (req) => {
   }
 });
 
-async function generateSmartRecommendations(formData: GardenPlanRequest, insights: any[]) {
-  // Base plant recommendations enhanced by learning data
+async function getWeatherData(lat: number, lon: number) {
+  try {
+    const apiKey = Deno.env.get('OPENWEATHER_API_KEY');
+    if (!apiKey) return null;
+
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+    );
+    
+    if (!response.ok) return null;
+    
+    const data = await response.json();
+    return {
+      temperature: data.main.temp,
+      humidity: data.main.humidity,
+      conditions: data.weather[0].description,
+      windSpeed: data.wind.speed,
+      cloudiness: data.clouds.all
+    };
+  } catch (error) {
+    console.error('Weather API error:', error);
+    return null;
+  }
+}
+
+async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any) {
+  const openAIKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openAIKey) {
+    return generateFallbackRecommendations(formData, insights);
+  }
+
+  try {
+    const prompt = `You are an expert gardener and agricultural advisor. Generate a personalized plant recommendation list based on the following information:
+
+GARDEN DETAILS:
+- Space: ${formData.spaceType} (${formData.spaceSize})
+- Sunlight: ${formData.sunlight}
+- Hardiness Zone: ${formData.hardiness_zone}
+- Soil: ${formData.soil_type}
+- Experience: ${formData.experience_level}
+- Time commitment: ${formData.time_commitment}
+- Season: ${formData.season}
+- Goals: ${formData.goals}
+- Preferred plants: ${formData.preferred_plants}
+
+CURRENT WEATHER (if available):
+${weatherData ? `Temperature: ${weatherData.temperature}°C, Humidity: ${weatherData.humidity}%, Conditions: ${weatherData.conditions}` : 'Not available'}
+
+COMMUNITY SUCCESS DATA:
+${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success rate, ${i.total_attempts} attempts`).join('\n') : 'No community data available'}
+
+Please provide 6-8 plant recommendations in this exact JSON format:
+[
+  {
+    "name": "Plant Name",
+    "variety": "Specific Variety",
+    "plantingTime": "When to plant",
+    "harvestTime": "When to harvest",
+    "spacing": "Plant spacing",
+    "careInstructions": "Brief care instructions",
+    "difficulty": "Easy|Medium|Hard",
+    "yield": "Expected yield",
+    "whyRecommended": "Why this plant suits their conditions"
+  }
+]
+
+Focus on plants that will thrive in their specific conditions and match their experience level.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          { role: 'system', content: 'You are an expert gardener and agricultural advisor. Always respond with valid JSON only.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 2000,
+      }),
+    });
+
+    if (!response.ok) throw new Error('OpenAI API failed');
+
+    const data = await response.json();
+    const content = data.choices[0].message.content.trim();
+    
+    // Extract JSON from response
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      const recommendations = JSON.parse(jsonMatch[0]);
+      
+      // Enhance with community insights
+      return recommendations.map((plant: any) => {
+        const insight = insights.find(i => i.plant_name.toLowerCase().includes(plant.name.toLowerCase()));
+        if (insight) {
+          plant.aiInsights = {
+            successRate: insight.success_rate,
+            averageYield: insight.average_yield_rating,
+            commonIssues: insight.common_issues || [],
+            recommendedMonths: insight.best_planting_months || []
+          };
+        }
+        return plant;
+      });
+    }
+    
+    throw new Error('Invalid AI response format');
+    
+  } catch (error) {
+    console.error('AI recommendation error:', error);
+    return generateFallbackRecommendations(formData, insights);
+  }
+}
+
+function generateFallbackRecommendations(formData: GardenPlanRequest, insights: any[]) {
   const baseRecommendations = [
     {
       name: "Cherry Tomatoes",
       variety: "Sweet 100",
-      plantingTime: "After last frost (typically March-April)",
-      harvestTime: "60-70 days from planting",
+      plantingTime: "After last frost",
+      harvestTime: "60-70 days",
       spacing: "18-24 inches apart",
-      careInstructions: "Water deeply 2-3 times per week. Provide support with stakes or cages.",
+      careInstructions: "Water deeply 2-3 times per week. Provide support.",
       difficulty: "Easy" as const,
-      yield: "5-10 lbs per plant"
+      yield: "5-10 lbs per plant",
+      whyRecommended: "Great for beginners and small spaces"
     },
     {
       name: "Lettuce",
       variety: "Buttercrunch",
       plantingTime: "Early spring or fall",
-      harvestTime: "45-60 days from seed",
+      harvestTime: "45-60 days",
       spacing: "6-8 inches apart",
-      careInstructions: "Keep soil consistently moist. Harvest outer leaves first.",
+      careInstructions: "Keep soil consistently moist.",
       difficulty: "Easy" as const,
-      yield: "1-2 heads per plant"
-    },
-    {
-      name: "Basil",
-      variety: "Genovese",
-      plantingTime: "After soil warms to 60°F",
-      harvestTime: "Continuous harvest after 60 days",
-      spacing: "12 inches apart",
-      careInstructions: "Pinch flowers to encourage leaf growth. Water at base of plant.",
-      difficulty: "Easy" as const,
-      yield: "1-2 cups fresh leaves per week"
-    },
-    {
-      name: "Bell Peppers",
-      variety: "California Wonder",
-      plantingTime: "2 weeks after last frost",
-      harvestTime: "70-80 days from planting",
-      spacing: "18-24 inches apart",
-      careInstructions: "Consistent watering and full sun. May need support when fruiting.",
-      difficulty: "Medium" as const,
-      yield: "6-8 peppers per plant"
+      yield: "1-2 heads per plant",
+      whyRecommended: "Quick growing and easy to manage"
     }
   ];
 
-  // Enhance recommendations with learned data
-  const enhancedRecommendations = baseRecommendations.map(plant => {
+  return baseRecommendations.map(plant => {
     const insight = insights.find(i => i.plant_name === plant.name);
-    if (insight && insight.success_rate > 0) {
-      return {
-        ...plant,
-        aiInsights: {
-          successRate: insight.success_rate,
-          averageYield: insight.average_yield_rating,
-          commonIssues: insight.common_issues || [],
-          recommendedMonths: insight.best_planting_months || []
-        }
+    if (insight) {
+      plant.aiInsights = {
+        successRate: insight.success_rate,
+        averageYield: insight.average_yield_rating,
+        commonIssues: insight.common_issues || [],
+        recommendedMonths: insight.best_planting_months || []
       };
     }
     return plant;
   });
-
-  // Add high-success plants from insights data
-  const successfulInsights = insights.filter(i => i.success_rate >= 70 && i.total_attempts >= 3);
-  for (const insight of successfulInsights) {
-    if (!enhancedRecommendations.some(r => r.name === insight.plant_name)) {
-      enhancedRecommendations.push({
-        name: insight.plant_name,
-        variety: "Community Recommended",
-        plantingTime: insight.best_planting_months?.join(", ") || "Based on your zone",
-        harvestTime: "Varies by variety",
-        spacing: "Follow seed packet instructions",
-        careInstructions: "Based on community success data",
-        difficulty: insight.success_rate >= 85 ? "Easy" as const : "Medium" as const,
-        yield: `Average rating: ${insight.average_yield_rating}/5`,
-        aiInsights: {
-          successRate: insight.success_rate,
-          averageYield: insight.average_yield_rating,
-          commonIssues: insight.common_issues || [],
-          recommendedMonths: insight.best_planting_months || []
-        }
-      });
-    }
-  }
-
-  return enhancedRecommendations;
 }
 
-function generateOptimizedLayout(formData: GardenPlanRequest, plants: any[]) {
+async function generateAILayout(formData: GardenPlanRequest, plants: any[], weatherData: any) {
+  const openAIKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openAIKey) return generateFallbackLayout(formData, plants);
+
+  try {
+    const prompt = `Create an optimized garden layout based on:
+
+SPACE: ${formData.spaceType} (${formData.spaceSize})
+SUNLIGHT: ${formData.sunlight}
+EXPERIENCE: ${formData.experience_level}
+
+PLANTS TO ARRANGE: ${plants.map(p => p.name).join(', ')}
+
+WEATHER CONDITIONS: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
+
+Return a JSON array of 3-4 garden sections with this format:
+[
+  {
+    "section": "Section Name",
+    "plants": ["plant1", "plant2"],
+    "size": "dimensions",
+    "notes": "layout reasoning"
+  }
+]
+
+Consider companion planting, sunlight needs, and accessibility.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          { role: 'system', content: 'You are a garden layout expert. Respond with valid JSON only.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.6,
+        max_tokens: 1000,
+      }),
+    });
+
+    if (!response.ok) throw new Error('OpenAI API failed');
+
+    const data = await response.json();
+    const content = data.choices[0].message.content.trim();
+    
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    throw new Error('Invalid AI response format');
+    
+  } catch (error) {
+    console.error('AI layout error:', error);
+    return generateFallbackLayout(formData, plants);
+  }
+}
+
+function generateFallbackLayout(formData: GardenPlanRequest, plants: any[]) {
   return [
     {
-      section: "High Success Zone (Section A)",
-      plants: plants.filter(p => p.aiInsights?.successRate >= 70).map(p => p.name).slice(0, 3),
-      size: "4x4 feet",
-      notes: "Plants with proven success in your conditions"
+      section: "Primary Growing Area",
+      plants: plants.slice(0, 4).map(p => p.name),
+      size: "4x6 feet",
+      notes: "Main vegetable growing area with easy access"
     },
     {
-      section: "Herb Garden (Section B)",
-      plants: ["Basil", "Oregano", "Thyme"],
+      section: "Herb Corner",
+      plants: plants.filter(p => p.name.toLowerCase().includes('herb') || p.name.toLowerCase().includes('basil')).map(p => p.name),
       size: "2x3 feet",
-      notes: "Easy access for cooking"
-    },
-    {
-      section: "Quick Greens (Section C)",
-      plants: ["Lettuce", "Spinach", "Arugula"],
-      size: "2x4 feet",
-      notes: "Can be succession planted every 2 weeks"
+      notes: "Convenient location for kitchen herbs"
     }
   ];
 }
 
-function generateSeasonalCalendar(formData: GardenPlanRequest, plants: any[]) {
+async function generateAICalendar(formData: GardenPlanRequest, plants: any[], weatherData: any) {
+  const openAIKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openAIKey) return generateFallbackCalendar(formData, plants);
+
+  try {
+    const prompt = `Create a month-by-month gardening calendar for:
+
+LOCATION: Hardiness Zone ${formData.hardiness_zone}
+SEASON FOCUS: ${formData.season}
+PLANTS: ${plants.map(p => p.name).join(', ')}
+CURRENT WEATHER: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
+
+Generate 6 months starting from now with this JSON format:
+[
+  {
+    "month": "Month Name",
+    "activities": ["activity1", "activity2", "activity3", "activity4"]
+  }
+]
+
+Include specific planting, care, and harvest activities for their plants and zone.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          { role: 'system', content: 'You are a gardening calendar expert. Respond with valid JSON only.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.6,
+        max_tokens: 1500,
+      }),
+    });
+
+    if (!response.ok) throw new Error('OpenAI API failed');
+
+    const data = await response.json();
+    const content = data.choices[0].message.content.trim();
+    
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    throw new Error('Invalid AI response format');
+    
+  } catch (error) {
+    console.error('AI calendar error:', error);
+    return generateFallbackCalendar(formData, plants);
+  }
+}
+
+function generateFallbackCalendar(formData: GardenPlanRequest, plants: any[]) {
   const currentMonth = new Date().getMonth();
   const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
 
-  return Array.from({ length: 4 }, (_, i) => {
+  return Array.from({ length: 6 }, (_, i) => {
     const monthIndex = (currentMonth + i) % 12;
     const monthName = months[monthIndex];
     
     return {
       month: monthName,
       activities: [
-        `Check ${plants[0]?.name || 'primary plants'} for seasonal care`,
-        "Monitor soil moisture and adjust watering",
-        "Apply compost if needed",
-        "Watch for seasonal pests"
+        `Check ${plants[0]?.name || 'plants'} for seasonal care`,
+        "Monitor soil moisture levels",
+        "Apply organic fertilizer as needed",
+        "Watch for pests and diseases"
       ]
     };
   });
 }
 
-function generatePersonalizedCare(formData: GardenPlanRequest) {
-  return `Based on your ${formData.spaceType} with ${formData.sunlight} exposure in hardiness zone ${formData.hardiness_zone}, here are your AI-enhanced care instructions:
+async function generateAICareInstructions(formData: GardenPlanRequest, weatherData: any) {
+  const openAIKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openAIKey) return generateFallbackCare(formData);
 
-WATERING (Optimized by community data):
-- Water deeply but less frequently to encourage root development
-- For ${formData.soil_type} soil, our data shows optimal watering every 2-3 days
-- Use drip irrigation or soaker hoses if possible to minimize disease
+  try {
+    const prompt = `Create detailed, personalized garden care instructions for:
 
-SOIL CARE (Based on successful gardens):
-- Add 2-3 inches of compost annually
-- Test soil pH annually (most vegetables prefer 6.0-7.0)
-- Consider raised beds if drainage is poor
+GARDEN SETUP:
+- Space: ${formData.spaceType} (${formData.spaceSize})
+- Sunlight: ${formData.sunlight}
+- Zone: ${formData.hardiness_zone}
+- Soil: ${formData.soil_type}
+- Experience: ${formData.experience_level}
+- Time available: ${formData.time_commitment}
 
-SEASONAL MAINTENANCE (AI-driven insights):
-- ${formData.season} specific care includes monitoring for seasonal pests
-- Adjust watering based on ${formData.rainfall} rainfall patterns
-- Community data suggests frost protection planning for your zone
+CURRENT CONDITIONS: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.humidity}% humidity, ${weatherData.conditions}` : 'Not available'}
 
-PLANT HEALTH (Machine learning recommendations):
-- Inspect plants weekly for pests and diseases
-- Remove diseased foliage immediately
-- Rotate crops annually to prevent soil depletion`;
+Provide comprehensive care instructions covering watering, soil care, seasonal maintenance, and plant health. Make it specific to their conditions and experience level. Return as plain text (not JSON).`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          { role: 'system', content: 'You are an expert gardening advisor. Provide practical, actionable advice.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500,
+      }),
+    });
+
+    if (!response.ok) throw new Error('OpenAI API failed');
+
+    const data = await response.json();
+    return data.choices[0].message.content.trim();
+    
+  } catch (error) {
+    console.error('AI care instructions error:', error);
+    return generateFallbackCare(formData);
+  }
 }
 
-function generateDataDrivenTips(insights: any[]) {
+function generateFallbackCare(formData: GardenPlanRequest) {
+  return `Personalized care instructions for your ${formData.spaceType} garden:
+
+WATERING:
+- Water deeply 2-3 times per week based on your ${formData.soil_type} soil
+- Check soil moisture 2 inches down before watering
+- Water early morning to reduce evaporation
+
+SOIL CARE:
+- Add compost regularly for healthy soil
+- Test soil pH annually (6.0-7.0 ideal for most vegetables)
+- Ensure good drainage in your ${formData.spaceType}
+
+MAINTENANCE:
+- Weekly plant inspections for pests and diseases
+- Seasonal adjustments for your ${formData.hardiness_zone} zone
+- Proper spacing for your ${formData.sunlight} conditions`;
+}
+
+async function generateAITips(formData: GardenPlanRequest, insights: any[], weatherData: any) {
+  const openAIKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openAIKey) return generateFallbackTips(insights);
+
+  try {
+    const prompt = `Generate 8-10 expert gardening tips personalized for:
+
+GARDENER PROFILE:
+- Experience: ${formData.experience_level}
+- Space: ${formData.spaceType}
+- Goals: ${formData.goals}
+- Time commitment: ${formData.time_commitment}
+
+GROWING CONDITIONS:
+- Zone: ${formData.hardiness_zone}
+- Sunlight: ${formData.sunlight}
+- Soil: ${formData.soil_type}
+
+COMMUNITY DATA: ${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success`).join(', ') : 'Limited data'}
+
+CURRENT WEATHER: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
+
+Return as a JSON array of strings: ["tip1", "tip2", ...]
+
+Focus on actionable, specific advice that will help them succeed.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          { role: 'system', content: 'You are an expert gardening advisor. Respond with valid JSON array only.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.8,
+        max_tokens: 1000,
+      }),
+    });
+
+    if (!response.ok) throw new Error('OpenAI API failed');
+
+    const data = await response.json();
+    const content = data.choices[0].message.content.trim();
+    
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    throw new Error('Invalid AI response format');
+    
+  } catch (error) {
+    console.error('AI tips error:', error);
+    return generateFallbackTips(insights);
+  }
+}
+
+function generateFallbackTips(insights: any[]) {
   const baseTips = [
-    "Start small and expand gradually based on success patterns from our community.",
-    "Succession plant lettuce and greens every 2 weeks for continuous harvest.",
-    "Plant basil near tomatoes - our data shows improved outcomes.",
-    "Water early morning to reduce evaporation and prevent fungal diseases.",
-    "Add compost regularly rather than fertilizer for better long-term results.",
-    "Encourage beneficial insects with companion flowers like marigolds."
+    "Start small and expand gradually as you gain experience.",
+    "Water early morning to reduce evaporation and prevent diseases.",
+    "Add compost regularly for healthy, fertile soil.",
+    "Plant companion flowers like marigolds to attract beneficial insects.",
+    "Keep a garden journal to track what works best.",
+    "Succession plant greens every 2 weeks for continuous harvest."
   ];
 
-  // Add data-driven tips based on insights
   if (insights.length > 0) {
     const highSuccessPlants = insights.filter(i => i.success_rate >= 80);
     if (highSuccessPlants.length > 0) {
