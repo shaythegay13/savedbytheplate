@@ -419,6 +419,139 @@ function generateFallbackRecommendations(formData: GardenPlanRequest, insights: 
       difficulty: "Easy" as const,
       yield: "Continuous harvest",
       whyRecommended: "Essential for Latin and Asian cuisine"
+    },
+    {
+      name: "Carrots",
+      variety: "Nantes",
+      plantingTime: "Early spring to late summer",
+      harvestTime: "70-80 days",
+      spacing: "2-3 inches apart",
+      careInstructions: "Thin seedlings, keep soil moist until germination.",
+      difficulty: "Medium" as const,
+      yield: "1-2 lbs per square foot",
+      whyRecommended: "Root vegetable that stores well and great for kids"
+    },
+    {
+      name: "Spinach",
+      variety: "Space",
+      plantingTime: "Cool weather, spring and fall",
+      harvestTime: "40-50 days",
+      spacing: "4-6 inches apart",
+      careInstructions: "Bolts in heat, succession plant every 2 weeks.",
+      difficulty: "Easy" as const,
+      yield: "4-6 oz per plant",
+      whyRecommended: "Nutritious greens, perfect for salads and cooking"
+    },
+    {
+      name: "Radishes",
+      variety: "Cherry Belle",
+      plantingTime: "Cool weather, early spring",
+      harvestTime: "25-30 days",
+      spacing: "1-2 inches apart",
+      careInstructions: "Quick growing, harvest promptly when mature.",
+      difficulty: "Easy" as const,
+      yield: "20-30 radishes per square foot",
+      whyRecommended: "Fastest crop, great for beginners and succession planting"
+    },
+    {
+      name: "Cucumber",
+      variety: "Straight Eight",
+      plantingTime: "After soil warms",
+      harvestTime: "55-65 days",
+      spacing: "36 inches apart",
+      spacing: "12 inches apart for bush varieties",
+      careInstructions: "Needs support for vining types, consistent watering.",
+      difficulty: "Medium" as const,
+      yield: "10-20 cucumbers per plant",
+      whyRecommended: "Refreshing summer crop, good for pickling"
+    },
+    {
+      name: "Parsley",
+      variety: "Italian Flat Leaf",
+      plantingTime: "Spring after frost danger",
+      harvestTime: "Continuous after 75 days",
+      spacing: "6-8 inches apart",
+      careInstructions: "Cut outer stems first, biennial herb.",
+      difficulty: "Easy" as const,
+      yield: "Continuous harvest",
+      whyRecommended: "Essential cooking herb, rich in vitamins"
+    },
+    {
+      name: "Broccoli",
+      variety: "Calabrese",
+      plantingTime: "Cool weather, spring and fall",
+      harvestTime: "60-90 days",
+      spacing: "18-24 inches apart",
+      careInstructions: "Harvest main head first, side shoots will follow.",
+      difficulty: "Medium" as const,
+      yield: "1-2 lbs per plant",
+      whyRecommended: "Nutritious cruciferous vegetable, multiple harvests"
+    },
+    {
+      name: "Swiss Chard",
+      variety: "Bright Lights",
+      plantingTime: "Spring through fall",
+      harvestTime: "50-60 days",
+      spacing: "6-12 inches apart",
+      careInstructions: "Cut outer leaves, plant will continue producing.",
+      difficulty: "Easy" as const,
+      yield: "Continuous harvest",
+      whyRecommended: "Beautiful and nutritious, heat tolerant greens"
+    },
+    {
+      name: "Onions",
+      variety: "Yellow Storage",
+      plantingTime: "Early spring from sets",
+      harvestTime: "90-120 days",
+      spacing: "4-6 inches apart",
+      careInstructions: "Stop watering when tops begin to fall over.",
+      difficulty: "Easy" as const,
+      yield: "8-12 onions per square foot",
+      whyRecommended: "Essential cooking ingredient, stores well"
+    },
+    {
+      name: "Peas",
+      variety: "Sugar Snap",
+      plantingTime: "Cool weather, early spring",
+      harvestTime: "60-70 days",
+      spacing: "2-4 inches apart",
+      careInstructions: "Provide support, nitrogen fixing legume.",
+      difficulty: "Easy" as const,
+      yield: "2-4 oz per plant",
+      whyRecommended: "Sweet edible pods, improves soil nitrogen"
+    },
+    {
+      name: "Garlic",
+      variety: "Hardneck",
+      plantingTime: "Fall planting for summer harvest",
+      harvestTime: "240-270 days",
+      spacing: "4-6 inches apart",
+      careInstructions: "Plant cloves pointed end up, mulch for winter.",
+      difficulty: "Easy" as const,
+      yield: "1 bulb per clove planted",
+      whyRecommended: "Essential cooking ingredient, medicinal properties"
+    },
+    {
+      name: "Mint",
+      variety: "Spearmint",
+      plantingTime: "Spring after frost",
+      harvestTime: "Continuous after 40 days",
+      spacing: "12-18 inches apart",
+      careInstructions: "Contain in pots, spreads aggressively.",
+      difficulty: "Easy" as const,
+      yield: "Continuous harvest",
+      whyRecommended: "Aromatic herb for teas and cooking, pest deterrent"
+    },
+    {
+      name: "Marigolds",
+      variety: "French Marigold",
+      plantingTime: "After last frost",
+      harvestTime: "Flowers all season",
+      spacing: "6-8 inches apart",
+      careInstructions: "Deadhead for continuous blooms, drought tolerant.",
+      difficulty: "Easy" as const,
+      yield: "Continuous flowers",
+      whyRecommended: "Natural pest deterrent, attracts beneficial insects"
     }
   ];
 
