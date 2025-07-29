@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Cloud, CloudRain, CloudSnow, Sun, AlertTriangle, Phone, Mail, MessageSquare } from "lucide-react";
+import { Cloud, CloudRain, CloudSnow, Sun, AlertTriangle, Phone, Mail, MessageSquare, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface WeatherNotificationSettings {
   enabled: boolean;
@@ -32,15 +33,26 @@ interface WeatherNotificationSettings {
 
 interface WeatherAlert {
   id: string;
-  type: 'frost' | 'heat' | 'rain' | 'drought' | 'wind' | 'hail';
+  type: string;
   severity: 'Low' | 'Medium' | 'High';
-  message: string;
-  action: string;
+  event: string;
+  headline: string;
+  description: string;
+  gardenImpact: string;
+  recommendations: string[];
   timeframe: string;
   icon: React.ReactNode;
 }
 
-const WeatherBasedNotifications: React.FC = () => {
+interface WeatherBasedNotificationsProps {
+  latitude?: number;
+  longitude?: number;
+}
+
+const WeatherBasedNotifications: React.FC<WeatherBasedNotificationsProps> = ({ 
+  latitude = 40.7128, 
+  longitude = -74.0060 
+}) => {
   const { toast } = useToast();
   const [settings, setSettings] = useState<WeatherNotificationSettings>({
     enabled: false,
@@ -62,27 +74,64 @@ const WeatherBasedNotifications: React.FC = () => {
     }
   });
 
-  // Mock current weather alerts
-  const currentAlerts: WeatherAlert[] = [
-    {
-      id: '1',
-      type: 'frost',
-      severity: 'High',
-      message: 'Frost warning tonight - temperatures dropping to 28°F',
-      action: 'Cover tender plants, harvest remaining tomatoes',
-      timeframe: 'Tonight (8pm - 6am)',
-      icon: <CloudSnow className="w-4 h-4" />
-    },
-    {
-      id: '2',
-      type: 'rain',
-      severity: 'Medium',
-      message: 'Heavy rain expected this weekend - 2-3 inches',
-      action: 'Ensure proper drainage, delay watering schedule',
-      timeframe: 'Saturday - Sunday',
-      icon: <CloudRain className="w-4 h-4" />
+  const [alerts, setAlerts] = useState<WeatherAlert[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (latitude && longitude) {
+      fetchWeatherAlerts();
     }
-  ];
+  }, [latitude, longitude]);
+
+  const fetchWeatherAlerts = async () => {
+    setLoading(true);
+    try {
+      const response = await supabase.functions.invoke('get-weather-alerts', {
+        body: {
+          latitude,
+          longitude,
+          user_id: 'demo-user' // In real app, get from auth context
+        }
+      });
+
+      if (response.error) {
+        console.error('Error fetching weather alerts:', response.error);
+      } else {
+        const processedAlerts = response.data?.alerts?.map((alert: any) => ({
+          id: alert.id,
+          type: alert.type,
+          severity: alert.severity,
+          event: alert.event,
+          headline: alert.headline,
+          description: alert.description,
+          gardenImpact: alert.gardenImpact,
+          recommendations: alert.recommendations,
+          timeframe: alert.onset ? new Date(alert.onset).toLocaleDateString() : 'Soon',
+          icon: getAlertIcon(alert.type)
+        })) || [];
+        
+        setAlerts(processedAlerts);
+      }
+    } catch (error) {
+      console.error('Error fetching weather alerts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAlertIcon = (type: string) => {
+    const typeLower = type.toLowerCase();
+    if (typeLower.includes('frost') || typeLower.includes('freeze')) {
+      return <CloudSnow className="w-4 h-4" />;
+    } else if (typeLower.includes('rain') || typeLower.includes('flood')) {
+      return <CloudRain className="w-4 h-4" />;
+    } else if (typeLower.includes('heat')) {
+      return <Sun className="w-4 h-4" />;
+    } else if (typeLower.includes('wind')) {
+      return <Cloud className="w-4 h-4" />;
+    }
+    return <AlertTriangle className="w-4 h-4" />;
+  };
 
   const handleSettingChange = (key: keyof WeatherNotificationSettings, value: any) => {
     setSettings(prev => ({
@@ -131,38 +180,62 @@ const WeatherBasedNotifications: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Current Weather Alerts */}
-      {currentAlerts.length > 0 && (
-        <Card className="border-orange-200 bg-orange-50">
-          <CardHeader>
-            <CardTitle className="flex items-center text-orange-800">
+      <Card className="border-orange-200 bg-orange-50">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between text-orange-800">
+            <div className="flex items-center">
               <AlertTriangle className="mr-2" />
-              Active Weather Alerts
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {currentAlerts.map(alert => (
+              Active Weather Alerts for Your Garden
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={fetchWeatherAlerts}
+              disabled={loading}
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh'}
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {alerts.length === 0 ? (
+            <Alert className="border-green-200 bg-green-50">
+              <AlertDescription className="text-green-800">
+                {loading ? 'Loading weather alerts...' : 'No active weather alerts for your area. Your garden is safe!'}
+              </AlertDescription>
+            </Alert>
+          ) : (
+            alerts.map(alert => (
               <Alert key={alert.id} className="border-orange-200">
                 <div className="flex items-start gap-3">
                   {alert.icon}
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-medium text-orange-900">{alert.message}</h4>
+                      <h4 className="font-medium text-orange-900">{alert.headline}</h4>
                       <Badge variant={getSeverityColor(alert.severity) as any}>
                         {alert.severity}
                       </Badge>
                     </div>
-                    <AlertDescription className="text-orange-800">
-                      <strong>Recommended Action:</strong> {alert.action}
-                      <br />
-                      <strong>Timeframe:</strong> {alert.timeframe}
+                    <AlertDescription className="text-orange-800 mb-2">
+                      <strong>Garden Impact:</strong> {alert.gardenImpact}
                     </AlertDescription>
+                    {alert.recommendations && alert.recommendations.length > 0 && (
+                      <AlertDescription className="text-orange-800">
+                        <strong>Recommendations:</strong>
+                        <ul className="list-disc list-inside mt-1 space-y-1">
+                          {alert.recommendations.map((rec, index) => (
+                            <li key={index} className="text-sm">{rec}</li>
+                          ))}
+                        </ul>
+                      </AlertDescription>
+                    )}
                   </div>
                 </div>
               </Alert>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+            ))
+          )}
+        </CardContent>
+      </Card>
 
       {/* Weather Notification Settings */}
       <Card className="border-sbtp-green-200">

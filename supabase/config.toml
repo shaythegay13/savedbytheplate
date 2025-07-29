@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.send-garden-notifications]
 verify_jwt = false
+
+[functions.get-weather-alerts]
+verify_jwt = false

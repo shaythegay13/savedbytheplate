@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
@@ -252,6 +252,57 @@ export type Database = {
           "Name of Garden"?: string
           Neighborhood?: string | null
           Website?: string | null
+        }
+        Relationships: []
+      }
+      weather_alerts: {
+        Row: {
+          alert_id: string
+          area_description: string | null
+          created_at: string
+          description: string | null
+          event_type: string
+          expires: string | null
+          garden_impact: string | null
+          headline: string
+          id: string
+          onset: string | null
+          recommendations: string[] | null
+          severity: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_id: string
+          area_description?: string | null
+          created_at?: string
+          description?: string | null
+          event_type: string
+          expires?: string | null
+          garden_impact?: string | null
+          headline: string
+          id?: string
+          onset?: string | null
+          recommendations?: string[] | null
+          severity: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_id?: string
+          area_description?: string | null
+          created_at?: string
+          description?: string | null
+          event_type?: string
+          expires?: string | null
+          garden_impact?: string | null
+          headline?: string
+          id?: string
+          onset?: string | null
+          recommendations?: string[] | null
+          severity?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
