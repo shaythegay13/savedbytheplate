@@ -253,7 +253,7 @@ Climate Trends: ${usdaData.climateTrends.temperatureTrend}, ${usdaData.climateTr
 COMMUNITY SUCCESS DATA:
 ${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success rate, ${i.total_attempts} attempts`).join('\n') : 'No community data available'}
 
-Please provide 6-8 plant recommendations in this exact JSON format:
+Please provide 8-12 diverse plant recommendations in this exact JSON format:
 [
   {
     "name": "Plant Name",
@@ -268,7 +268,13 @@ Please provide 6-8 plant recommendations in this exact JSON format:
   }
 ]
 
-Focus on plants that will thrive in their specific conditions and match their experience level.`;
+IMPORTANT: 
+- Focus on a diverse variety of vegetables, herbs, fruits, and culturally appropriate crops
+- Consider traditional and heritage varieties that grow well in this region
+- Include both common and unique plants to create an interesting, productive garden
+- If user goals mention cultural relevance, prioritize plants from relevant culinary traditions
+- Vary the difficulty levels to match the gardener's experience
+- Include quick-growing and long-season crops for continuous harvests`;  
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -277,7 +283,7 @@ Focus on plants that will thrive in their specific conditions and match their ex
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: 'You are an expert gardener and agricultural advisor. Always respond with valid JSON only.' },
           { role: 'user', content: prompt }
@@ -396,7 +402,7 @@ Consider companion planting, sunlight needs, and accessibility.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: 'You are a garden layout expert. Respond with valid JSON only.' },
           { role: 'user', content: prompt }
@@ -472,7 +478,7 @@ Include specific planting, care, and harvest activities for their plants and zon
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: 'You are a gardening calendar expert. Respond with valid JSON only.' },
           { role: 'user', content: prompt }
@@ -556,7 +562,7 @@ Provide comprehensive care instructions covering watering, soil care, seasonal m
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: 'You are an expert gardening advisor. Provide practical, actionable advice.' },
           { role: 'user', content: prompt }
@@ -638,7 +644,7 @@ Focus on actionable, specific advice that will help them succeed.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: 'You are an expert gardening advisor. Respond with valid JSON array only.' },
           { role: 'user', content: prompt }

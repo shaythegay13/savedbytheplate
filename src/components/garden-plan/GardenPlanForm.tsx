@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
+import { useToast } from "@/hooks/use-toast";
 
 interface GardenPlanFormData {
   spaceType: string;
@@ -35,6 +36,7 @@ interface GardenPlanFormProps {
 
 const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) => {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const { toast } = useToast();
   
   const form = useForm<GardenPlanFormData>({
     defaultValues: {
@@ -61,6 +63,34 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
   const getLocation = async () => {
     setIsGettingLocation(true);
     try {
+      const currentCity = form.getValues('city');
+      
+      if (currentCity && currentCity !== 'Enter your location' && currentCity.trim() !== '') {
+        // Try to geocode the entered address/city
+        try {
+          const response = await fetch(
+            `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(currentCity)}&limit=1&appid=a5c2c2b5e72c4e8d9b1c2b5e72c4e8d9`
+          );
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data && data[0]) {
+              form.setValue('latitude', data[0].lat);
+              form.setValue('longitude', data[0].lon);
+              toast({
+                title: "Location Set",
+                description: `Using coordinates for ${data[0].name}, ${data[0].state || data[0].country}`,
+              });
+              setIsGettingLocation(false);
+              return;
+            }
+          }
+        } catch (error) {
+          console.error('Geocoding error:', error);
+        }
+      }
+      
+      // Fallback to GPS location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
@@ -71,7 +101,7 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
             // Get city name from coordinates
             try {
               const response = await fetch(
-                `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=demo`
+                `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=a5c2c2b5e72c4e8d9b1c2b5e72c4e8d9`
               );
               if (response.ok) {
                 const data = await response.json();
@@ -83,16 +113,32 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
               console.log('Could not get city name');
             }
             
+            toast({
+              title: "Location Set",
+              description: "Using your current GPS location",
+            });
             setIsGettingLocation(false);
           },
           (error) => {
             console.error('Location error:', error);
+            toast({
+              title: "Location Error",
+              description: "Could not access your location. Please enter your city manually.",
+              variant: "destructive",
+            });
             setIsGettingLocation(false);
           }
         );
+      } else {
+        toast({
+          title: "Geolocation Not Supported",
+          description: "Please enter your city manually.",
+          variant: "destructive",
+        });
+        setIsGettingLocation(false);
       }
     } catch (error) {
-      console.error('Geolocation not supported');
+      console.error('Location error:', error);
       setIsGettingLocation(false);
     }
   };
