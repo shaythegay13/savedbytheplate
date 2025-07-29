@@ -11,8 +11,9 @@ interface GardenPlanRequest {
   spaceType: string;
   spaceSize: string;
   sunlight: string;
-  hardiness_zone: string;
+  soil_contaminated: string;
   soil_type: string;
+  growing_options: string;
   rainfall: string;
   season: string;
   experience_level: string;
@@ -46,16 +47,15 @@ serve(async (req) => {
     if (formData.latitude && formData.longitude) {
       [weatherData, climateData, usdaData] = await Promise.all([
         getWeatherData(formData.latitude, formData.longitude),
-        getClimateData(formData.latitude, formData.longitude, formData.hardiness_zone),
+        getClimateData(formData.latitude, formData.longitude),
         getUSDAClimateData(formData.latitude, formData.longitude, formData.city)
       ]);
     }
 
-    // Get insights data to inform recommendations
+    // Get insights data to inform recommendations  
     const { data: insights } = await supabase
       .from('garden_insights')
       .select('*')
-      .eq('hardiness_zone', formData.hardiness_zone)
       .eq('soil_type', formData.soil_type)
       .eq('sunlight', formData.sunlight)
       .order('success_rate', { ascending: false });
@@ -84,8 +84,9 @@ serve(async (req) => {
           space_type: formData.spaceType,
           space_size: formData.spaceSize,
           sunlight: formData.sunlight,
-          hardiness_zone: formData.hardiness_zone,
+          soil_contaminated: formData.soil_contaminated,
           soil_type: formData.soil_type,
+          growing_options: formData.growing_options,
           rainfall: formData.rainfall,
           season: formData.season,
           experience_level: formData.experience_level,
@@ -146,7 +147,7 @@ async function getWeatherData(lat: number, lon: number) {
   }
 }
 
-async function getClimateData(latitude: number, longitude: number, hardiness_zone: string) {
+async function getClimateData(latitude: number, longitude: number) {
   try {
     // Call our climate data edge function
     const response = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/get-climate-data`, {
@@ -158,7 +159,6 @@ async function getClimateData(latitude: number, longitude: number, hardiness_zon
       body: JSON.stringify({
         latitude,
         longitude,
-        hardiness_zone,
         start_date: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         end_date: new Date().toISOString().split('T')[0]
       })
@@ -216,8 +216,9 @@ async function generateAIRecommendations(formData: GardenPlanRequest, insights: 
 GARDEN DETAILS:
 - Space: ${formData.spaceType} (${formData.spaceSize})
 - Sunlight: ${formData.sunlight}
-- Hardiness Zone: ${formData.hardiness_zone}
-- Soil: ${formData.soil_type}
+- Soil Contaminated: ${formData.soil_contaminated}
+- Soil Type: ${formData.soil_type}
+- Growing Options: ${formData.growing_options}
 - Experience: ${formData.experience_level}
 - Time commitment: ${formData.time_commitment}
 - Season: ${formData.season}
@@ -447,7 +448,7 @@ async function generateAICalendar(formData: GardenPlanRequest, plants: any[], we
   try {
     const prompt = `Create a month-by-month gardening calendar for:
 
-LOCATION: Hardiness Zone ${formData.hardiness_zone}
+LOCATION: Based on provided coordinates
 SEASON FOCUS: ${formData.season}
 PLANTS: ${plants.map(p => p.name).join(', ')}
 CURRENT WEATHER: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
