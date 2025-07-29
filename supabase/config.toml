@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.get-weather-alerts]
 verify_jwt = false
+
+[functions.get-usda-climate-data]
+verify_jwt = false
