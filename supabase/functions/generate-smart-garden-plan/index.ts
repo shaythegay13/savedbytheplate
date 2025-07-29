@@ -39,10 +39,14 @@ serve(async (req) => {
 
     const formData: GardenPlanRequest = await req.json();
 
-    // Get weather data for location-based recommendations
+    // Get weather and climate data for location-based recommendations
     let weatherData = null;
+    let climateData = null;
     if (formData.latitude && formData.longitude) {
-      weatherData = await getWeatherData(formData.latitude, formData.longitude);
+      [weatherData, climateData] = await Promise.all([
+        getWeatherData(formData.latitude, formData.longitude),
+        getClimateData(formData.latitude, formData.longitude, formData.hardiness_zone)
+      ]);
     }
 
     // Get insights data to inform recommendations
@@ -55,11 +59,11 @@ serve(async (req) => {
       .order('success_rate', { ascending: false });
 
     // Generate AI-enhanced recommendations with real AI
-    const plantRecommendations = await generateAIRecommendations(formData, insights || [], weatherData);
-    const gardenLayout = await generateAILayout(formData, plantRecommendations, weatherData);
-    const plantingCalendar = await generateAICalendar(formData, plantRecommendations, weatherData);
-    const careInstructions = await generateAICareInstructions(formData, weatherData);
-    const expertTips = await generateAITips(formData, insights || [], weatherData);
+    const plantRecommendations = await generateAIRecommendations(formData, insights || [], weatherData, climateData);
+    const gardenLayout = await generateAILayout(formData, plantRecommendations, weatherData, climateData);
+    const plantingCalendar = await generateAICalendar(formData, plantRecommendations, weatherData, climateData);
+    const careInstructions = await generateAICareInstructions(formData, weatherData, climateData);
+    const expertTips = await generateAITips(formData, insights || [], weatherData, climateData);
 
     const gardenPlan = {
       plantRecommendations,
@@ -140,7 +144,37 @@ async function getWeatherData(lat: number, lon: number) {
   }
 }
 
-async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any) {
+async function getClimateData(latitude: number, longitude: number, hardiness_zone: string) {
+  try {
+    // Call our climate data edge function
+    const response = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/get-climate-data`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`
+      },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+        hardiness_zone,
+        start_date: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        end_date: new Date().toISOString().split('T')[0]
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Climate data request failed:', response.status);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching climate data:', error);
+    return null;
+  }
+}
+
+async function generateAIRecommendations(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) {
     return generateFallbackRecommendations(formData, insights);
@@ -162,6 +196,17 @@ GARDEN DETAILS:
 
 CURRENT WEATHER (if available):
 ${weatherData ? `Temperature: ${weatherData.temperature}°C, Humidity: ${weatherData.humidity}%, Conditions: ${weatherData.conditions}` : 'Not available'}
+
+CLIMATE DATA:
+${climateData ? `
+Hardiness Zone: ${climateData.hardiness_zone}
+Last Spring Frost: ${climateData.frost_dates.last_spring_frost}
+First Fall Frost: ${climateData.frost_dates.first_fall_frost}
+Growing Degree Days: ${climateData.growing_degree_days}
+Annual Precipitation: ${climateData.precipitation_data.annual_avg} inches
+Drought Status: ${climateData.drought_conditions}
+Weather Alerts: ${climateData.weather_alerts.length > 0 ? climateData.weather_alerts.join(', ') : 'None'}
+` : 'Climate data not available'}
 
 COMMUNITY SUCCESS DATA:
 ${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success rate, ${i.total_attempts} attempts`).join('\n') : 'No community data available'}
@@ -273,7 +318,7 @@ function generateFallbackRecommendations(formData: GardenPlanRequest, insights: 
   });
 }
 
-async function generateAILayout(formData: GardenPlanRequest, plants: any[], weatherData: any) {
+async function generateAILayout(formData: GardenPlanRequest, plants: any[], weatherData: any, climateData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackLayout(formData, plants);
 
@@ -287,6 +332,8 @@ EXPERIENCE: ${formData.experience_level}
 PLANTS TO ARRANGE: ${plants.map(p => p.name).join(', ')}
 
 WEATHER CONDITIONS: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
+
+CLIMATE DATA: ${climateData ? `Zone ${climateData.hardiness_zone}, Frost season: ${climateData.frost_dates.last_spring_frost} to ${climateData.frost_dates.first_fall_frost}` : 'Not available'}
 
 Return a JSON array of 3-4 garden sections with this format:
 [
@@ -352,7 +399,7 @@ function generateFallbackLayout(formData: GardenPlanRequest, plants: any[]) {
   ];
 }
 
-async function generateAICalendar(formData: GardenPlanRequest, plants: any[], weatherData: any) {
+async function generateAICalendar(formData: GardenPlanRequest, plants: any[], weatherData: any, climateData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackCalendar(formData, plants);
 
@@ -363,6 +410,8 @@ LOCATION: Hardiness Zone ${formData.hardiness_zone}
 SEASON FOCUS: ${formData.season}
 PLANTS: ${plants.map(p => p.name).join(', ')}
 CURRENT WEATHER: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
+
+FROST DATES: ${climateData ? `Last spring frost: ${climateData.frost_dates.last_spring_frost}, First fall frost: ${climateData.frost_dates.first_fall_frost}` : 'Not available'}
 
 Generate 6 months starting from now with this JSON format:
 [
@@ -432,7 +481,7 @@ function generateFallbackCalendar(formData: GardenPlanRequest, plants: any[]) {
   });
 }
 
-async function generateAICareInstructions(formData: GardenPlanRequest, weatherData: any) {
+async function generateAICareInstructions(formData: GardenPlanRequest, weatherData: any, climateData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackCare(formData);
 
@@ -448,6 +497,13 @@ GARDEN SETUP:
 - Time available: ${formData.time_commitment}
 
 CURRENT CONDITIONS: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.humidity}% humidity, ${weatherData.conditions}` : 'Not available'}
+
+CLIMATE INFORMATION: ${climateData ? `
+Zone ${climateData.hardiness_zone}, ${climateData.precipitation_data.annual_avg}" annual rainfall
+Drought status: ${climateData.drought_conditions}
+Temperature range: ${climateData.temperature_data.avg_low}°F to ${climateData.temperature_data.avg_high}°F
+Growing season: ${climateData.frost_dates.last_spring_frost} to ${climateData.frost_dates.first_fall_frost}
+` : 'Climate data not available'}
 
 Provide comprehensive care instructions covering watering, soil care, seasonal maintenance, and plant health. Make it specific to their conditions and experience level. Return as plain text (not JSON).`;
 
@@ -498,7 +554,7 @@ MAINTENANCE:
 - Proper spacing for your ${formData.sunlight} conditions`;
 }
 
-async function generateAITips(formData: GardenPlanRequest, insights: any[], weatherData: any) {
+async function generateAITips(formData: GardenPlanRequest, insights: any[], weatherData: any, climateData: any) {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIKey) return generateFallbackTips(insights);
 
@@ -519,6 +575,15 @@ GROWING CONDITIONS:
 COMMUNITY DATA: ${insights.length > 0 ? insights.map(i => `${i.plant_name}: ${i.success_rate}% success`).join(', ') : 'Limited data'}
 
 CURRENT WEATHER: ${weatherData ? `${weatherData.temperature}°C, ${weatherData.conditions}` : 'Not available'}
+
+CLIMATE INTELLIGENCE: ${climateData ? `
+Hardiness Zone: ${climateData.hardiness_zone}
+Growing Season: ${climateData.frost_dates.last_spring_frost} to ${climateData.frost_dates.first_fall_frost}
+Growing Degree Days: ${climateData.growing_degree_days}
+Precipitation Pattern: ${climateData.precipitation_data.seasonal_pattern}
+Drought Risk: ${climateData.drought_conditions}
+Weather Alerts: ${climateData.weather_alerts.length > 0 ? climateData.weather_alerts.join(', ') : 'None'}
+` : 'Climate data not available'}
 
 Return as a JSON array of strings: ["tip1", "tip2", ...]
 
