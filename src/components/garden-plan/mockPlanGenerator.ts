@@ -100,7 +100,7 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
     }
   ];
 
-  const careInstructions = `Based on your ${formData.spaceType} with ${formData.sunlight} exposure in hardiness zone ${formData.hardiness_zone}, here are your specific care instructions:
+  const careInstructions = `Based on your ${formData.spaceType} with ${formData.sunlight} exposure, here are your specific care instructions:
 
 WATERING:
 - Water deeply but less frequently to encourage root development

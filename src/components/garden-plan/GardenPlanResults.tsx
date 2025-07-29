@@ -47,7 +47,6 @@ interface GardenPlanResultsProps {
     spaceType: string;
     spaceSize: string;
     sunlight: string;
-    hardiness_zone: string;
     goals: string;
     space_description?: string;
   };

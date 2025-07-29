@@ -13,7 +13,6 @@ interface GardenPlanFormData {
   spaceType: string;
   spaceSize: string;
   sunlight: string;
-  hardiness_zone: string;
   soil_contaminated: string;
   soil_type: string;
   growing_options: string;
@@ -42,7 +41,6 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
       spaceType: "",
       spaceSize: "",
       sunlight: "",
-      hardiness_zone: "",
       soil_contaminated: "",
       soil_type: "",
       growing_options: "",
@@ -178,51 +176,6 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="hardiness_zone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>What's your USDA Hardiness Zone?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your zone" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1a">Zone 1a (-60 to -55°F)</SelectItem>
-                        <SelectItem value="1b">Zone 1b (-55 to -50°F)</SelectItem>
-                        <SelectItem value="2a">Zone 2a (-50 to -45°F)</SelectItem>
-                        <SelectItem value="2b">Zone 2b (-45 to -40°F)</SelectItem>
-                        <SelectItem value="3a">Zone 3a (-40 to -35°F)</SelectItem>
-                        <SelectItem value="3b">Zone 3b (-35 to -30°F)</SelectItem>
-                        <SelectItem value="4a">Zone 4a (-30 to -25°F)</SelectItem>
-                        <SelectItem value="4b">Zone 4b (-25 to -20°F)</SelectItem>
-                        <SelectItem value="5a">Zone 5a (-20 to -15°F)</SelectItem>
-                        <SelectItem value="5b">Zone 5b (-15 to -10°F)</SelectItem>
-                        <SelectItem value="6a">Zone 6a (-10 to -5°F)</SelectItem>
-                        <SelectItem value="6b">Zone 6b (-5 to 0°F)</SelectItem>
-                        <SelectItem value="7a">Zone 7a (0 to 5°F)</SelectItem>
-                        <SelectItem value="7b">Zone 7b (5 to 10°F)</SelectItem>
-                        <SelectItem value="8a">Zone 8a (10 to 15°F)</SelectItem>
-                        <SelectItem value="8b">Zone 8b (15 to 20°F)</SelectItem>
-                        <SelectItem value="9a">Zone 9a (20 to 25°F)</SelectItem>
-                        <SelectItem value="9b">Zone 9b (25 to 30°F)</SelectItem>
-                        <SelectItem value="10a">Zone 10a (30 to 35°F)</SelectItem>
-                        <SelectItem value="10b">Zone 10b (35 to 40°F)</SelectItem>
-                        <SelectItem value="11a">Zone 11a (40 to 45°F)</SelectItem>
-                        <SelectItem value="11b">Zone 11b (45 to 50°F)</SelectItem>
-                        <SelectItem value="12a">Zone 12a (50 to 55°F)</SelectItem>
-                        <SelectItem value="12b">Zone 12b (55 to 60°F)</SelectItem>
-                        <SelectItem value="13a">Zone 13a (60 to 65°F)</SelectItem>
-                        <SelectItem value="13b">Zone 13b (65 to 70°F)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}
