@@ -1,0 +1,20 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="food_data_processor",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        'requests==2.31.0',
+        'beautifulsoup4==4.12.2',
+        'geocoder==1.38.1',
+        'soupsieve==2.5',
+        'certifi==2024.2.2',
+        'charset-normalizer==3.3.2',
+        'idna==3.6',
+        'urllib3==2.2.0',
+        'ratelim==0.1.6',
+        'six==1.16.0',
+        'decorator==5.1.1'
+    ],
+) 

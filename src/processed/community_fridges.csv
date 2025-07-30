@@ -1,0 +1,4 @@
+name,type,address,latitude,longitude,organization,hours,contact,additional_info
+Bed-Stuy Fridge,community_fridge,"375 Throop Avenue, Brooklyn, NY 11221",40.68639,-73.942735,Bed-Stuy Fridge Network,24/7,,
+Crown Heights Fridge,community_fridge,"722 Nostrand Avenue, Brooklyn, NY 11216",40.673431,-73.950133,Crown Heights Mutual Aid,24/7,,Located outside Daughter
+Mott Haven Fridge,community_fridge,"383 East 141st Street, Bronx, NY 10454",40.810333,-73.919037,Mott Haven Fridge Network,24/7,,Located outside La Morada restaurant

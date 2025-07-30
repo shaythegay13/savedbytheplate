@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "food_data_processor"
+version = "0.1.0"
+authors = [
+  { name="SavedByThePlate", email="example@example.com" },
+]
+description = "Food data processing scripts"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests==2.31.0",
+    "beautifulsoup4==4.12.2",
+    "geocoder==1.38.1",
+    "soupsieve==2.5",
+    "certifi==2024.2.2",
+    "charset-normalizer==3.3.2",
+    "idna==3.6",
+    "urllib3==2.2.0",
+    "ratelim==0.1.6",
+    "six==1.16.0",
+    "decorator==5.1.1"
+]
+
+[tool.setuptools]
+packages = ["scripts"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+select = ["E", "F", "B", "I", "N", "UP", "PL", "RUF"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--verbose --cov=scripts --cov-report=term-missing" 
