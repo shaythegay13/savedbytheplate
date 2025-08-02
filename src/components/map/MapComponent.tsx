@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapLocation } from './types';
 import { locationColors, MAPBOX_TOKEN, defaultMapConfig } from './MapConfig';
-import { fetchNYCMapData } from '../../services/mapDataService';
+import { fetchEnhancedMapData } from '../../services/enhancedMapDataService';
 import LocationMarker from './LocationMarker';
 import LocationPopup from './LocationPopup';
 import MapboxTokenMissing from './MapboxTokenMissing';
@@ -16,15 +16,15 @@ const MapComponent = () => {
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch real NYC data
+  // Fetch enhanced data from all sources
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const nycLocations = await fetchNYCMapData();
-        setLocations(nycLocations);
+        const allLocations = await fetchEnhancedMapData();
+        setLocations(allLocations);
       } catch (error) {
-        console.error('Failed to load map data:', error);
+        console.error('Failed to load enhanced map data:', error);
       } finally {
         setLoading(false);
       }
@@ -115,8 +115,17 @@ const MapComponent = () => {
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md">
               <div className="flex items-center gap-2">
                 <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full"></div>
-                <span className="text-sm text-sbtp-brown-700">Loading NYC facilities...</span>
+                <span className="text-sm text-sbtp-brown-700">Loading food access locations...</span>
               </div>
+            </div>
+          )}
+          
+          {/* Location count display */}
+          {!loading && locations.length > 0 && (
+            <div className="absolute top-4 right-4 bg-white px-3 py-2 rounded-md shadow-md">
+              <span className="text-sm font-medium text-sbtp-green-700">
+                {locations.length} locations found
+              </span>
             </div>
           )}
           
