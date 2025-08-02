@@ -82,12 +82,19 @@ const parseCSVToLocations = (csvText: string, locationType: MapLocation['type'])
 // Fetch and parse community fridges data
 const fetchCommunityFridges = async (): Promise<MapLocation[]> => {
   try {
+    console.log('🔄 Fetching community fridges...');
     const response = await fetch('/processed/community_fridges.csv');
+    if (!response.ok) {
+      console.warn('CSV file not found, using fallback data');
+      return getFallbackFridges();
+    }
     const csvText = await response.text();
-    return parseCSVToLocations(csvText, 'fridge');
+    const result = parseCSVToLocations(csvText, 'fridge');
+    console.log('✅ Community fridges loaded:', result.length);
+    return result;
   } catch (error) {
     console.error('Error fetching community fridges:', error);
-    return [];
+    return getFallbackFridges();
   }
 };
 
@@ -170,5 +177,18 @@ export const categorizeLocations = (locations: MapLocation[]) => {
   
   return categories;
 };
+
+// Fallback data if CSV files aren't accessible
+const getFallbackFridges = (): MapLocation[] => [
+  {
+    id: 'fridge-1',
+    name: 'Bed-Stuy Community Fridge',
+    type: 'fridge' as const,
+    description: 'Free 24/7 food access',
+    tags: ['Community Fridge', 'Brooklyn'],
+    lngLat: [-73.942735, 40.68639],
+    address: '375 Throop Avenue, Brooklyn, NY 11221'
+  }
+];
 
 export default fetchEnhancedMapData;
