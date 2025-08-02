@@ -43,7 +43,7 @@ const Map = () => {
       <section className="bg-sbtp-green-600 text-white py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">Find Your Local Food Map</h1>
+            <h1 className="text-4xl font-bold mb-4">Find Your Local Food Map 🗺️</h1>
             <p className="text-xl">
               Discover where you can find local sources of food around you including community gardens, farmers markets, farms, and other local resources. Also add any we are missing! 🌱
             </p>
