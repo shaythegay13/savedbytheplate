@@ -48,4 +48,40 @@ export const sampleLocations: MapLocation[] = [
     details: 'Open 7am-8pm daily',
     lngLat: [-73.9787, 40.7689]
   },
+  {
+    id: 'urbanfarm2',
+    name: 'Bushwick City Farm',
+    type: 'urbanfarm',
+    description: 'Urban farm in Bushwick, Brooklyn',
+    tags: ['Urban Farm', 'Brooklyn', 'Community'],
+    details: 'Educational programs and community workshops',
+    lngLat: [-73.9186, 40.6951]
+  },
+  {
+    id: 'foodbank1',
+    name: 'Astoria Food Pantry',
+    type: 'foodbank',
+    description: 'Food pantry serving the Astoria community',
+    tags: ['Food Pantry', 'Queens', 'Community Service'],
+    details: 'Open multiple days per week, call for hours',
+    lngLat: [-73.9212, 40.7614]
+  },
+  {
+    id: 'fridge1',
+    name: 'Astoria Food Pantry Community Fridge',
+    type: 'fridge',
+    description: 'Community fridge outside Astoria Food Pantry',
+    tags: ['Community Fridge', 'Queens', '24/7 Access'],
+    details: '24/7 access, located outside the food pantry',
+    lngLat: [-73.9212, 40.7614]
+  },
+  {
+    id: 'market2',
+    name: 'Uptown Good Food Farmers Market',
+    type: 'market',
+    description: 'Seasonal farmers market, Saturdays June 14 - November 22',
+    tags: ['Seasonal Market', 'Saturday', 'Local Produce'],
+    details: 'Saturdays from June 14th to November 22nd',
+    lngLat: [-73.9442, 40.8176]
+  },
 ];
