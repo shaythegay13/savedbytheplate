@@ -147,6 +147,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
     console.log('🌱 Fetching enhanced map data from all sources...');
     
+    // Import sample locations
+    const { sampleLocations } = await import('../components/map/sampleLocations');
+    
     // Fetch all data sources in parallel
     const [
       nycGardens,
@@ -168,8 +171,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       fetchLungsGardens()
     ]);
     
-    // Combine all data
+    // Combine all data including sample locations
     const allLocations = [
+      ...sampleLocations,
       ...nycGardens,
       ...communityFridges,
       ...farmersMarkets,
