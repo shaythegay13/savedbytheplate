@@ -48,16 +48,20 @@ def scrape_greenthumb_gardens() -> List[Dict]:
         
         gardens = []
         for item in data:
+            # Fix coordinate field names - API uses 'lat'/'lon' not 'latitude'/'longitude'
+            lat = float(item.get('lat', 0)) if item.get('lat') else None
+            lon = float(item.get('lon', 0)) if item.get('lon') else None
+            
             garden = {
                 'name': item.get('gardenname', ''),
                 'type': 'community_garden',
                 'address': item.get('address', ''),
-                'latitude': float(item.get('latitude', 0)) if item.get('latitude') else None,
-                'longitude': float(item.get('longitude', 0)) if item.get('longitude') else None,
+                'latitude': lat,
+                'longitude': lon,
                 'organization': 'NYC Parks GreenThumb',
                 'hours': item.get('openhours', ''),
                 'contact': item.get('contactinfo', ''),
-                'additional_info': f"Cross Streets: {item.get('cross_streets', '')}; Size: {item.get('size', '')}; Neighborhood: {item.get('nta_name', '')}"
+                'additional_info': f"Cross Streets: {item.get('crossstreets', '')}; Borough: {item.get('borough', '')}; Neighborhood: {item.get('nta', '')}"
             }
             
             if garden['latitude'] and garden['longitude'] and is_nyc_metro_coordinates(garden['latitude'], garden['longitude']):
