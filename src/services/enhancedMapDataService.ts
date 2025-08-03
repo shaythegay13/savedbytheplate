@@ -159,7 +159,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       // New enhanced data sources
       additionalFridges,
       enhancedMarkets,
-      lungsGardens
+      lungsGardens,
+      landTrustGardens,
+      farmsAndMarkets
     ] = await Promise.all([
       fetchNYCMapData(),
       fetchCommunityFridges(),
@@ -168,7 +170,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       // Fetch additional data sources with fallback
       fetchAdditionalFridges(),
       fetchEnhancedMarkets(),
-      fetchLungsGardens()
+      fetchLungsGardens(),
+      fetchLandTrustGardens(),
+      fetchFarmsAndMarkets()
     ]);
     
     // Combine all data including sample locations
@@ -180,7 +184,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       ...foodBanks,
       ...additionalFridges,
       ...enhancedMarkets,
-      ...lungsGardens
+      ...lungsGardens,
+      ...landTrustGardens,
+      ...farmsAndMarkets
     ];
     
     // Remove duplicates based on proximity (within ~100 meters)
@@ -259,6 +265,109 @@ const fetchLungsGardens = async (): Promise<MapLocation[]> => {
     console.log('Lungs NYC gardens data not available:', error);
     return [];
   }
+};
+
+// Fetch land trust gardens with fallback
+const fetchLandTrustGardens = async (): Promise<MapLocation[]> => {
+  try {
+    console.log('🔄 Fetching land trust gardens...');
+    const response = await fetch('/processed/land_trust_gardens.csv');
+    if (!response.ok) {
+      console.log('Land trust gardens CSV not found, skipping...');
+      return [];
+    }
+    const csvText = await response.text();
+    const result = parseCSVToLocations(csvText, 'garden');
+    console.log('✅ Land trust gardens loaded:', result.length);
+    return result;
+  } catch (error) {
+    console.log('Land trust gardens data not available:', error);
+    return [];
+  }
+};
+
+// Fetch farms and markets with fallback
+const fetchFarmsAndMarkets = async (): Promise<MapLocation[]> => {
+  try {
+    console.log('🔄 Fetching farms and markets...');
+    const response = await fetch('/processed/farms_and_markets.csv');
+    if (!response.ok) {
+      console.log('Farms and markets CSV not found, skipping...');
+      return [];
+    }
+    const csvText = await response.text();
+    // This CSV contains mixed types, so we need to parse differently
+    const locations = parseCSVFromMixedTypes(csvText);
+    console.log('✅ Farms and markets loaded:', locations.length);
+    return locations;
+  } catch (error) {
+    console.log('Farms and markets data not available:', error);
+    return [];
+  }
+};
+
+// Special parser for mixed-type CSV data
+const parseCSVFromMixedTypes = (csvText: string): MapLocation[] => {
+  const lines = csvText.trim().split('\n');
+  if (lines.length < 2) return [];
+  
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  const locations: MapLocation[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
+    
+    const values: string[] = [];
+    let currentValue = '';
+    let inQuotes = false;
+    
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(currentValue.trim());
+        currentValue = '';
+      } else {
+        currentValue += char;
+      }
+    }
+    values.push(currentValue.trim());
+    
+    const row: any = {};
+    headers.forEach((header, j) => {
+      row[header] = values[j] || '';
+    });
+    
+    const lat = parseFloat(row.latitude);
+    const lng = parseFloat(row.longitude);
+    
+    if (isNaN(lat) || isNaN(lng)) continue;
+    
+    // Use the type from the CSV data
+    const locationType = row.type as MapLocation['type'];
+    
+    const location: MapLocation = {
+      id: `mixed-${locationType}-${i}`,
+      name: row.name || 'Unnamed Location',
+      type: locationType,
+      description: row.organization || row.address || '',
+      tags: [locationType.replace('_', ' '), row.organization].filter(Boolean),
+      lngLat: [lng, lat] as [number, number],
+      address: row.address,
+      website: row.website,
+      details: row.additional_info
+    };
+    
+    if (row.hours) {
+      location.operatingHours = { monday: row.hours };
+    }
+    
+    locations.push(location);
+  }
+  
+  return locations;
 };
 
 // Remove duplicate locations based on proximity
