@@ -222,6 +222,75 @@ export type Database = {
         }
         Relationships: []
       }
+      locations: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          description: string | null
+          details: string | null
+          email: string | null
+          hours: Json | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          organization: string | null
+          phone: string | null
+          source: string | null
+          status: string | null
+          submitted_by: string | null
+          tags: string[] | null
+          type: string
+          updated_at: string | null
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          email?: string | null
+          hours?: Json | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          organization?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string | null
+          submitted_by?: string | null
+          tags?: string[] | null
+          type: string
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          email?: string | null
+          hours?: Json | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          organization?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string | null
+          submitted_by?: string | null
+          tags?: string[] | null
+          type?: string
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       lungs_data1: {
         Row: {
           Address: string
@@ -311,7 +380,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      find_nearby_locations: {
+        Args: {
+          search_lat: number
+          search_lng: number
+          radius_km?: number
+          location_type?: string
+        }
+        Returns: {
+          id: string
+          name: string
+          type: string
+          description: string
+          address: string
+          latitude: number
+          longitude: number
+          organization: string
+          website: string
+          distance_km: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
