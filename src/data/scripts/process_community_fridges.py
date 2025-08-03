@@ -350,4 +350,4 @@ def main():
         print("No Community Fridge data was processed.")
 
 if __name__ == "__main__":
-    main() 
+    main()
