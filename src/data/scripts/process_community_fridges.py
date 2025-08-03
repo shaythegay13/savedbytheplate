@@ -31,33 +31,36 @@ def fetch_community_fridge_finder_data() -> List[Dict]:
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # The fridges are in a list/grid layout
-        fridge_elements = soup.find_all('div', class_='listing-item')
+        # The fridges are in MuiListItem elements
+        fridge_elements = soup.find_all('li', class_='MuiListItem-root')
         
         for element in fridge_elements:
-            # Extract name from the heading
-            name_elem = element.find(['h3', 'h4'], class_='listing-title')
+            # Extract name from the MuiTypography
+            name_elem = element.find('p', class_='MuiTypography-root MuiTypography-body1')
             name = clean_text(name_elem.text) if name_elem else ''
             
-            # Extract address from the location info
-            address_elem = element.find('div', class_='listing-address')
-            address = clean_text(address_elem.text) if address_elem else ''
+            # Skip if it doesn't look like a fridge name (e.g., "FRIDGES WITHIN THIS AREA")
+            if not name or 'FRIDGES WITHIN' in name.upper():
+                continue
             
-            # Extract additional info
-            info_elem = element.find('div', class_='listing-description')
-            additional_info = clean_text(info_elem.text) if info_elem else ''
+            # Extract address from elements with location icon
+            address_elems = element.find_all('p', class_='MuiTypography-root MuiTypography-body1')
+            address = ''
+            for addr_elem in address_elems:
+                # Look for the address (usually the second paragraph)
+                text = clean_text(addr_elem.text)
+                if text and text != name and '@' not in text and 'http' not in text:
+                    address = text
+                    break
             
-            # Extract contact if available
-            contact_elem = element.find('div', class_='listing-contact')
-            contact = clean_text(contact_elem.text) if contact_elem else ''
-            
-            # Extract hours if available
-            hours_elem = element.find('div', class_='listing-hours')
-            hours = clean_text(hours_elem.text) if hours_elem else '24/7'
-            
-            # Try to get coordinates directly if available
-            lat = element.get('data-lat')
-            lng = element.get('data-lng')
+            # Extract social/contact info
+            contact_elems = element.find_all('p', class_='MuiTypography-root MuiTypography-body1')
+            contact = ''
+            for contact_elem in contact_elems:
+                text = clean_text(contact_elem.text)
+                if '@' in text or 'http' in text:
+                    contact = text
+                    break
             
             fridge = {
                 'name': name,
@@ -65,22 +68,16 @@ def fetch_community_fridge_finder_data() -> List[Dict]:
                 'type': 'community_fridge',
                 'organization': 'Community Fridge Finder',
                 'website': url,
-                'hours': hours,
+                'hours': '24/7',
                 'contact': contact,
-                'additional_info': additional_info,
+                'additional_info': '',
                 'latitude': None,
                 'longitude': None
             }
             
-            if lat and lng:
-                try:
-                    fridge['latitude'] = float(lat)
-                    fridge['longitude'] = float(lng)
-                except (ValueError, TypeError):
-                    pass
-            
-            if not (fridge['latitude'] and fridge['longitude']) and fridge['address']:
-                location = geocode_address(fridge['address'])
+            # Geocode the address
+            if address:
+                location = geocode_address(address)
                 if location:
                     fridge['latitude'], fridge['longitude'] = location
                 time.sleep(1)
@@ -108,29 +105,46 @@ def fetch_one_love_fridges() -> List[Dict]:
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # One Love uses sections for each fridge
-        fridge_elements = soup.find_all('section', class_='fridge-section')
+        # One Love uses sections with IDs like "olcf-1", "olcf-2", etc.
+        fridge_sections = soup.find_all('section', id=re.compile(r'olcf-\d+'))
         
-        for element in fridge_elements:
-            # Extract name from the heading
-            name_elem = element.find(['h2', 'h3'], class_='fridge-name')
-            name = clean_text(name_elem.text) if name_elem else ''
+        for section in fridge_sections:
+            # Extract fridge information from the HTML content
+            html_content = section.find('div', class_='sqs-html-content')
+            if not html_content:
+                continue
             
-            # Extract address
-            address_elem = element.find('div', class_='fridge-address')
-            address = clean_text(address_elem.text) if address_elem else ''
+            # Extract name and neighborhood from paragraph
+            name_p = html_content.find('p')
+            name = clean_text(name_p.text) if name_p else ''
             
-            # Extract status/info
-            status_elem = element.find('div', class_='fridge-status')
-            status = clean_text(status_elem.text) if status_elem else ''
+            # Extract address from h3 link
+            address_h3 = html_content.find('h3')
+            address = ''
+            if address_h3:
+                # Extract just the address part, removing the link
+                address_link = address_h3.find('a')
+                if address_link:
+                    address = clean_text(address_link.text)
+                else:
+                    address = clean_text(address_h3.text)
             
-            # Extract contact info
-            contact_elem = element.find('div', class_='fridge-contact')
-            contact = clean_text(contact_elem.text) if contact_elem else ''
+            # Extract host info from the last paragraph
+            host_p = html_content.find_all('p')[-1] if html_content.find_all('p') else None
+            host = clean_text(host_p.text) if host_p and host_p != name_p else ''
             
-            # Try to get coordinates from data attributes
-            lat = element.get('data-latitude')
-            lng = element.get('data-longitude')
+            # Extract coordinates from embedded map if available
+            lat = None
+            lng = None
+            map_div = section.find('div', {'data-context': True})
+            if map_div:
+                try:
+                    context_data = json.loads(map_div['data-context'])
+                    location = context_data.get('location', {})
+                    lat = location.get('markerLat')
+                    lng = location.get('markerLng')
+                except (json.JSONDecodeError, KeyError):
+                    pass
             
             fridge = {
                 'name': name,
@@ -138,22 +152,16 @@ def fetch_one_love_fridges() -> List[Dict]:
                 'type': 'community_fridge',
                 'organization': 'One Love Community Fridge',
                 'website': url,
-                'hours': '24/7',  # Most One Love fridges are 24/7
-                'contact': contact,
-                'additional_info': status,
-                'latitude': None,
-                'longitude': None
+                'hours': '24/7',
+                'contact': '',
+                'additional_info': host,
+                'latitude': lat,
+                'longitude': lng
             }
             
-            if lat and lng:
-                try:
-                    fridge['latitude'] = float(lat)
-                    fridge['longitude'] = float(lng)
-                except (ValueError, TypeError):
-                    pass
-            
-            if not (fridge['latitude'] and fridge['longitude']) and fridge['address']:
-                location = geocode_address(fridge['address'])
+            # If we don't have coordinates from the map, geocode the address
+            if not (lat and lng) and address:
+                location = geocode_address(address)
                 if location:
                     fridge['latitude'], fridge['longitude'] = location
                 time.sleep(1)
