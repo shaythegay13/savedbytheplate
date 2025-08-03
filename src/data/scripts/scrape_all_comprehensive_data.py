@@ -570,7 +570,192 @@ def scrape_urban_agriculture_areas():
     
     return agriculture_sites
 
-def combine_all_comprehensive_data() -> pd.DataFrame:
+def fetch_perplexity_research(api_key: str, location_type: str) -> List[Dict]:
+    """Use Perplexity AI to research comprehensive food access data"""
+    locations = []
+    
+    # Generate research queries based on location type
+    queries = generate_research_queries(location_type)
+    
+    headers = {
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'application/json',
+    }
+    
+    for query in queries:
+        try:
+            print(f"Researching: {query}")
+            
+            response = requests.post('https://api.perplexity.ai/chat/completions', 
+                headers=headers,
+                json={
+                    'model': 'llama-3.1-sonar-large-128k-online',
+                    'messages': [
+                        {
+                            'role': 'system',
+                            'content': f'You are a comprehensive researcher. Provide specific, accurate information about {location_type} in NYC including exact names, addresses, organizations, and contact information. Format as detailed list with addresses.'
+                        },
+                        {
+                            'role': 'user',
+                            'content': query
+                        }
+                    ],
+                    'temperature': 0.2,
+                    'top_p': 0.9,
+                    'max_tokens': 2000,
+                    'return_images': False,
+                    'return_related_questions': False,
+                    'search_recency_filter': 'month'
+                }
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                content = data['choices'][0]['message']['content']
+                parsed_locations = parse_perplexity_response(content, location_type)
+                locations.extend(parsed_locations)
+                print(f"Found {len(parsed_locations)} {location_type} from this query")
+                time.sleep(2)  # Rate limiting
+                
+            else:
+                print(f"Error: {response.status_code} - {response.text}")
+                
+        except Exception as e:
+            print(f"Error with query '{query}': {e}")
+            continue
+    
+    return locations
+
+def generate_research_queries(location_type: str) -> List[str]:
+    """Generate specific research queries for each location type"""
+    base_queries = {
+        'community_gardens': [
+            "NYC community gardens 2024 active locations Brooklyn Queens Manhattan Bronx addresses",
+            "urban gardens New York City community gardening spaces active 2024",
+            "NYC Parks GreenThumb community gardens active locations with addresses",
+            "land trust community gardens NYC Manhattan Brooklyn Queens active 2024",
+            "NYC community garden networks mutual aid growing spaces active"
+        ],
+        'farmers_markets': [
+            "NYC farmers markets 2024 GrowNYC Greenmarket active locations addresses",
+            "New York City farmers markets weekend locations Brooklyn Queens active",
+            "community farmers markets NYC local produce 2024 addresses hours",
+            "NYC outdoor farmers markets active locations accepts SNAP EBT",
+            "urban farmers markets New York City 2024 fresh local produce"
+        ],
+        'community_fridges': [
+            "NYC community fridges 2024 active locations exact addresses all boroughs",
+            "mutual aid community fridges New York City current operating addresses",
+            "community fridge networks NYC 2024 Bed-Stuy Crown Heights active",
+            "NYC community refrigerators food access 2024 Washington Heights Harlem",
+            "Little Free Pantry NYC community fridges active locations 2024"
+        ],
+        'food_banks': [
+            "NYC food banks pantries 2024 active locations addresses food assistance",
+            "food pantries New York City SNAP benefits community assistance 2024",
+            "NYC hunger relief organizations food banks active locations",
+            "emergency food assistance NYC food pantries addresses 2024",
+            "NYC food security organizations community food banks active"
+        ],
+        'urban_farms': [
+            "NYC urban farms 2024 active locations rooftop farms community agriculture",
+            "urban agriculture New York City commercial farms local produce",
+            "Brooklyn Queens urban farms hydroponic agriculture active 2024",
+            "NYC rooftop farms vertical agriculture community farms addresses",
+            "urban farming initiatives New York City food production 2024"
+        ],
+        'local_businesses': [
+            "NYC restaurants cafes sourcing local produce farmers partnerships 2024",
+            "farm to table restaurants New York City local sourcing active",
+            "NYC businesses supporting local agriculture community partnerships",
+            "local food movement NYC restaurants farmers collaboration 2024",
+            "Brooklyn Queens restaurants local farm partnerships active"
+        ]
+    }
+    
+    return base_queries.get(location_type, [])
+
+def parse_perplexity_response(content: str, location_type: str) -> List[Dict]:
+    """Parse Perplexity response to extract location information"""
+    locations = []
+    lines = content.split('\n')
+    
+    current_location = {}
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            if current_location and current_location.get('name') and current_location.get('address'):
+                locations.append(current_location)
+                current_location = {}
+            continue
+            
+        # Look for location names (often start with numbers or bullets)
+        if any(char in line for char in ['1.', '2.', '•', '-', '*']) and len(line) > 10:
+            if current_location and current_location.get('name') and current_location.get('address'):
+                locations.append(current_location)
+            
+            current_location = {
+                'name': clean_line(line),
+                'type': infer_type_from_content(line, location_type),
+                'organization': '',
+                'website': '',
+                'hours': '',
+                'contact': '',
+                'additional_info': '',
+                'latitude': None,
+                'longitude': None
+            }
+            
+        # Look for addresses
+        elif any(keyword in line.lower() for keyword in ['street', 'st', 'avenue', 'ave', 'road', 'rd', 'drive', 'dr', 'place', 'pl', 'blvd', 'boulevard']) and any(borough in line for borough in ['Brooklyn', 'Bronx', 'Manhattan', 'Queens', 'Staten Island', 'NY']):
+            if 'address' not in current_location or not current_location['address']:
+                current_location['address'] = clean_line(line)
+                
+        # Look for contact info
+        elif '@' in line or 'phone' in line.lower() or 'contact' in line.lower():
+            if 'contact' not in current_location or not current_location['contact']:
+                current_location['contact'] = clean_line(line)
+                
+        # Look for hours
+        elif any(time_word in line.lower() for time_word in ['hours', 'open', 'monday', 'tuesday', 'am', 'pm']):
+            if 'hours' not in current_location or not current_location['hours']:
+                current_location['hours'] = clean_line(line)
+    
+    # Add the last location if valid
+    if current_location and current_location.get('name') and current_location.get('address'):
+        locations.append(current_location)
+    
+    return locations
+
+def clean_line(text: str) -> str:
+    """Clean and normalize text lines"""
+    # Remove bullet points and numbering
+    text = re.sub(r'^[\d\.\-\*\•\s]+', '', text)
+    # Remove extra whitespace
+    text = ' '.join(text.split())
+    return text.strip()
+
+def infer_type_from_content(text: str, default_type: str) -> str:
+    """Infer the specific type from content"""
+    text_lower = text.lower()
+    
+    if 'fridge' in text_lower or 'refrigerator' in text_lower:
+        return 'community_fridge'
+    elif 'garden' in text_lower and 'community' in text_lower:
+        return 'community_garden'
+    elif 'market' in text_lower and 'farmer' in text_lower:
+        return 'farmers_market'
+    elif 'farm' in text_lower:
+        return 'urban_farm'
+    elif 'food bank' in text_lower or 'pantry' in text_lower:
+        return 'food_bank'
+    elif 'restaurant' in text_lower or 'cafe' in text_lower:
+        return 'local_business'
+    
+    return default_type
+
+def combine_all_comprehensive_data(perplexity_api_key: str = None) -> pd.DataFrame:
     """Combine ALL scraped data sources into a comprehensive DataFrame"""
     print("Combining ALL comprehensive food access data...")
     
@@ -587,6 +772,30 @@ def combine_all_comprehensive_data() -> pd.DataFrame:
     all_locations.extend(scrape_food_banks_comprehensive())
     all_locations.extend(scrape_urban_farms_comprehensive())
     all_locations.extend(scrape_lungs_nyc_gardens())
+    
+    # ADD PERPLEXITY AI RESEARCH for comprehensive data
+    if perplexity_api_key:
+        print("\n=== ENHANCING WITH PERPLEXITY AI RESEARCH ===")
+        location_types = ['community_gardens', 'farmers_markets', 'community_fridges', 'food_banks', 'urban_farms', 'local_businesses']
+        
+        for location_type in location_types:
+            print(f"\nResearching {location_type} with Perplexity AI...")
+            ai_locations = fetch_perplexity_research(perplexity_api_key, location_type)
+            
+            # Geocode AI-discovered locations
+            for location in ai_locations:
+                if location.get('address') and not (location.get('latitude') and location.get('longitude')):
+                    coords = geocode_address(location['address'])
+                    if coords:
+                        location['latitude'], location['longitude'] = coords
+                    time.sleep(1)  # Rate limiting
+            
+            # Filter valid locations
+            valid_ai_locations = [loc for loc in ai_locations if loc.get('latitude') and loc.get('longitude')]
+            all_locations.extend(valid_ai_locations)
+            print(f"Added {len(valid_ai_locations)} AI-researched {location_type}")
+    else:
+        print("\n⚠️  No Perplexity API key provided - skipping AI enhancement")
     
     # Add One Love Community Fridges (from earlier scraping)
     one_love_fridges = [
@@ -639,12 +848,12 @@ def combine_all_comprehensive_data() -> pd.DataFrame:
     print(f"Combined {len(df)} total locations from ALL sources")
     return df[required_columns]
 
-def save_all_comprehensive_data():
+def save_all_comprehensive_data(perplexity_api_key: str = None):
     """Save all comprehensive food access data from every source"""
     setup_output_directory()
     
-    # Get combined data
-    combined_df = combine_all_comprehensive_data()
+    # Get combined data with optional AI enhancement
+    combined_df = combine_all_comprehensive_data(perplexity_api_key)
     
     # Save comprehensive dataset
     output_path = '../processed/complete_comprehensive_food_access.csv'
@@ -711,10 +920,31 @@ def main():
     print("- South Bronx Farmers Market")
     print("- And more!")
     
+    # Check if user wants to use Perplexity AI enhancement
+    print("\n" + "="*60)
+    print("🤖 PERPLEXITY AI ENHANCEMENT AVAILABLE")
+    print("="*60)
+    print("To significantly boost data coverage and find the latest")
+    print("active locations, you can provide a Perplexity API key.")
+    print("This will research ALL data types comprehensively.")
+    print("="*60)
+    
+    api_key = input("Enter your Perplexity API key (or press Enter to skip): ").strip()
+    if not api_key:
+        api_key = None
+        print("⚠️  Proceeding without AI enhancement...")
+    else:
+        print("🚀 Using Perplexity AI to enhance data collection!")
+    
     try:
-        comprehensive_data = save_all_comprehensive_data()
+        comprehensive_data = save_all_comprehensive_data(api_key)
         print(f"\n✅ SUCCESS! Processed {len(comprehensive_data)} total locations from ALL sources")
         print("Data saved to ../processed/complete_comprehensive_food_access.csv")
+        
+        if api_key:
+            print("🎉 Enhanced with Perplexity AI research!")
+        else:
+            print("💡 For even more data, run again with a Perplexity API key!")
         
     except Exception as e:
         print(f"❌ Error in main execution: {e}")
