@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
 import MapFilters from "@/components/map/MapFilters";
-import MapSidebarLegend from "@/components/map/MapSidebarLegend";
+import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
 import { fetchEnhancedMapData, categorizeLocations } from "@/services/enhancedMapDataService";
 import { useState, useEffect } from "react";
 
@@ -57,7 +57,7 @@ const Map = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div className="lg:col-span-1 space-y-6">
               <MapFilters />
-              <MapSidebarLegend locationCounts={locationCounts} />
+              <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
             </div>
             
             <div className="lg:col-span-3">

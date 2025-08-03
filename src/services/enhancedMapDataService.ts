@@ -18,67 +18,77 @@ interface CSVLocation {
 // Parse CSV data into MapLocation format
 const parseCSVToLocations = (csvText: string, locationType: MapLocation['type']): MapLocation[] => {
   const lines = csvText.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  if (lines.length < 2) {
+    console.warn(`No data found in CSV for type: ${locationType}`);
+    return [];
+  }
   
-    const locations: MapLocation[] = [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  console.log(`📊 Parsing CSV for ${locationType}, headers:`, headers);
+  
+  const locations: MapLocation[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
     
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
-      if (!line.trim()) continue;
-      
-      // Simple CSV parser - handles basic cases
-      const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
-      const row: any = {};
-      
-      headers.forEach((header, j) => {
-        row[header] = values[j] || '';
-      });
-      
-      const lat = parseFloat(row.latitude);
-      const lng = parseFloat(row.longitude);
-      
-      if (isNaN(lat) || isNaN(lng)) continue;
-      
-      // Map CSV type to our location type - use the function parameter
-      let mappedType: MapLocation['type'] = locationType;
-      
-      // Override with specific type mapping from CSV data
-      if (row.type === 'community_fridge') mappedType = 'fridge';
-      if (row.type === 'farmers_market') mappedType = 'market';
-      if (row.type === 'food_bank' || row.type === 'food_pantry' || row.type === 'soup_kitchen' || row.type === 'mobile_pantry') mappedType = 'foodbank';
-      
-      // Parse operating hours into the correct format
-      const operatingHours: any = {};
-      if (row.hours) {
-        // Try to parse specific days or use general format
-        if (row.hours.toLowerCase().includes('monday')) {
-          // Could parse specific days here
-          operatingHours.monday = row.hours;
-        } else {
-          // Use as general description for Monday (fallback)
-          operatingHours.monday = row.hours;
-        }
+    // Enhanced CSV parser - handles quotes and commas better
+    const values: string[] = [];
+    let currentValue = '';
+    let inQuotes = false;
+    
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(currentValue.trim());
+        currentValue = '';
+      } else {
+        currentValue += char;
       }
-      
-      const location: MapLocation = {
-        id: `csv-${locationType}-${i}`,
-        name: row.name || 'Unnamed Location',
-        type: mappedType,
-        description: row.organization || row.address || '',
-        tags: [locationType.replace('_', ' '), row.organization].filter(Boolean),
-        lngLat: [lng, lat] as [number, number],
-        address: row.address,
-        operatingHours: Object.keys(operatingHours).length > 0 ? operatingHours : undefined,
-        website: row.website,
-        details: row.additional_info ? 
-          (row.contact ? `${row.additional_info}\nContact: ${row.contact}` : row.additional_info) :
-          (row.contact ? `Contact: ${row.contact}` : undefined)
-      };
-      
-      locations.push(location);
+    }
+    values.push(currentValue.trim()); // Don't forget the last value
+    
+    const row: any = {};
+    headers.forEach((header, j) => {
+      row[header] = values[j] || '';
+    });
+    
+    const lat = parseFloat(row.latitude);
+    const lng = parseFloat(row.longitude);
+    
+    if (isNaN(lat) || isNaN(lng)) {
+      console.warn(`Invalid coordinates for ${row.name}:`, lat, lng);
+      continue;
     }
     
-    return locations;
+    // Use the passed locationType directly instead of trying to map from CSV
+    const location: MapLocation = {
+      id: `csv-${locationType}-${i}`,
+      name: row.name || 'Unnamed Location',
+      type: locationType, // Use the parameter directly
+      description: row.organization || row.address || '',
+      tags: [locationType.replace('_', ' '), row.organization].filter(Boolean),
+      lngLat: [lng, lat] as [number, number],
+      address: row.address,
+      website: row.website,
+      details: row.additional_info ? 
+        (row.contact ? `${row.additional_info}\nContact: ${row.contact}` : row.additional_info) :
+        (row.contact ? `Contact: ${row.contact}` : undefined)
+    };
+    
+    // Parse operating hours
+    if (row.hours) {
+      location.operatingHours = { monday: row.hours };
+    }
+    
+    locations.push(location);
+    console.log(`✅ Added ${locationType}:`, location.name, `at [${lng}, ${lat}]`);
+  }
+  
+  console.log(`📍 Parsed ${locations.length} ${locationType} locations from CSV`);
+  return locations;
 };
 
 // Fetch and parse community fridges data
@@ -103,9 +113,13 @@ const fetchCommunityFridges = async (): Promise<MapLocation[]> => {
 // Fetch and parse farmers markets data
 const fetchFarmersMarkets = async (): Promise<MapLocation[]> => {
   try {
+    console.log('🔄 Fetching farmers markets...');
     const response = await fetch('/processed/farmers_markets.csv');
+    if (!response.ok) throw new Error('Failed to fetch farmers markets');
     const csvText = await response.text();
-    return parseCSVToLocations(csvText, 'market');
+    const result = parseCSVToLocations(csvText, 'market');
+    console.log('✅ Farmers markets loaded:', result.length);
+    return result;
   } catch (error) {
     console.error('Error fetching farmers markets:', error);
     return [];
@@ -115,9 +129,13 @@ const fetchFarmersMarkets = async (): Promise<MapLocation[]> => {
 // Fetch and parse food banks data
 const fetchFoodBanks = async (): Promise<MapLocation[]> => {
   try {
+    console.log('🔄 Fetching food banks...');
     const response = await fetch('/processed/food_banks.csv');
+    if (!response.ok) throw new Error('Failed to fetch food banks');
     const csvText = await response.text();
-    return parseCSVToLocations(csvText, 'foodbank');
+    const result = parseCSVToLocations(csvText, 'foodbank');
+    console.log('✅ Food banks loaded:', result.length);
+    return result;
   } catch (error) {
     console.error('Error fetching food banks:', error);
     return [];

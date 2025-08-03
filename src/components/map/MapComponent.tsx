@@ -21,7 +21,18 @@ const MapComponent = () => {
     const loadData = async () => {
       try {
         setLoading(true);
+        console.log('🌱 Starting to load enhanced map data...');
         const allLocations = await fetchEnhancedMapData();
+        console.log('📍 Total locations loaded for map:', allLocations.length);
+        console.log('📊 Location types breakdown:', {
+          gardens: allLocations.filter(l => l.type === 'garden').length,
+          markets: allLocations.filter(l => l.type === 'market').length,
+          fridges: allLocations.filter(l => l.type === 'fridge').length,
+          foodbanks: allLocations.filter(l => l.type === 'foodbank').length,
+          farms: allLocations.filter(l => l.type === 'farm').length,
+          urbanfarms: allLocations.filter(l => l.type === 'urbanfarm').length,
+          businesses: allLocations.filter(l => l.type === 'business').length
+        });
         setLocations(allLocations);
       } catch (error) {
         console.error('Failed to load enhanced map data:', error);
