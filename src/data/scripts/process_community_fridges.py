@@ -35,32 +35,38 @@ def fetch_community_fridge_finder_data() -> List[Dict]:
         fridge_elements = soup.find_all('li', class_='MuiListItem-root')
         
         for element in fridge_elements:
-            # Extract name from the MuiTypography
-            name_elem = element.find('p', class_='MuiTypography-root MuiTypography-body1')
+            # Extract all MuiTypography body1 elements
+            body_elements = element.find_all('p', class_='MuiTypography-root MuiTypography-body1')
+            
+            if len(body_elements) < 2:
+                continue
+            
+            # First element should be the name
+            name_elem = body_elements[0]
             name = clean_text(name_elem.text) if name_elem else ''
             
-            # Skip if it doesn't look like a fridge name (e.g., "FRIDGES WITHIN THIS AREA")
+            # Skip if it doesn't look like a fridge name
             if not name or 'FRIDGES WITHIN' in name.upper():
                 continue
             
-            # Extract address from elements with location icon
-            address_elems = element.find_all('p', class_='MuiTypography-root MuiTypography-body1')
+            # Look for address (usually contains street info)
             address = ''
-            for addr_elem in address_elems:
-                # Look for the address (usually the second paragraph)
-                text = clean_text(addr_elem.text)
-                if text and text != name and '@' not in text and 'http' not in text:
-                    address = text
-                    break
-            
-            # Extract social/contact info
-            contact_elems = element.find_all('p', class_='MuiTypography-root MuiTypography-body1')
             contact = ''
-            for contact_elem in contact_elems:
-                text = clean_text(contact_elem.text)
+            
+            for elem in body_elements[1:]:  # Skip the first one (name)
+                text = clean_text(elem.text)
+                if not text:
+                    continue
+                    
+                # Check if it's contact info (contains @ or http)
                 if '@' in text or 'http' in text:
                     contact = text
-                    break
+                # Check if it looks like an address (contains street keywords)
+                elif any(keyword in text.lower() for keyword in ['street', 'st', 'avenue', 'ave', 'road', 'rd', 'drive', 'dr', 'place', 'pl', 'blvd', 'boulevard']):
+                    address = text
+                # If we don't have an address yet and it's not contact info, treat as address
+                elif not address and not any(char in text for char in ['@', 'http', '#']):
+                    address = text
             
             fridge = {
                 'name': name,
