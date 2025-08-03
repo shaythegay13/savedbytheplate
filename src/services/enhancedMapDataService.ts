@@ -148,6 +148,21 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
     console.log('🌱 Fetching enhanced map data from all sources...');
     
+    // First try to load comprehensive dataset
+    try {
+      const response = await fetch('/processed/comprehensive_food_access.csv');
+      if (response.ok) {
+        const csvText = await response.text();
+        const comprehensiveData = parseCSVFromMixedTypes(csvText);
+        if (comprehensiveData.length > 0) {
+          console.log('✅ Loaded comprehensive dataset with', comprehensiveData.length, 'locations');
+          return removeDuplicates(comprehensiveData);
+        }
+      }
+    } catch (error) {
+      console.log('Comprehensive dataset not available, falling back to individual sources...');
+    }
+    
     // Import sample locations
     const { sampleLocations } = await import('../components/map/sampleLocations');
     
@@ -159,7 +174,12 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       foodBanks,
       staticLandTrustData,
       staticQueensFarmData,
-      staticAdditionalFridgesData
+      staticAdditionalFridgesData,
+      additionalFridges,
+      enhancedMarkets,
+      lungsGardens,
+      landTrustGardens,
+      farmsAndMarkets
     ] = await Promise.all([
       fetchNYCMapData(),
       fetchCommunityFridges(),
@@ -167,7 +187,12 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       fetchFoodBanks(),
       getStaticLandTrustData(),
       getStaticQueensFarmData(),
-      getStaticAdditionalFridgesData()
+      getStaticAdditionalFridgesData(),
+      fetchAdditionalFridges(),
+      fetchEnhancedMarkets(),
+      fetchLungsGardens(),
+      fetchLandTrustGardens(),
+      fetchFarmsAndMarkets()
     ]);
     
     // Add One Love Community Fridge data
@@ -183,7 +208,12 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       ...staticLandTrustData,
       ...staticQueensFarmData,
       ...staticAdditionalFridgesData,
-      ...oneLoveFridges
+      ...oneLoveFridges,
+      ...additionalFridges,
+      ...enhancedMarkets,
+      ...lungsGardens,
+      ...landTrustGardens,
+      ...farmsAndMarkets
     ];
     
     // Remove duplicates based on proximity (within ~100 meters)
