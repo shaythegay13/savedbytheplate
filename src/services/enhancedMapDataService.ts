@@ -148,19 +148,34 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
     console.log('🌱 Fetching enhanced map data from all sources...');
     
-    // First try to load comprehensive dataset
+    // First try to load the most comprehensive dataset
+    try {
+      const response = await fetch('/processed/complete_comprehensive_food_access.csv');
+      if (response.ok) {
+        const csvText = await response.text();
+        const comprehensiveData = parseCSVFromMixedTypes(csvText);
+        if (comprehensiveData.length > 0) {
+          console.log('✅ Loaded COMPLETE comprehensive dataset with', comprehensiveData.length, 'locations');
+          return removeDuplicates(comprehensiveData);
+        }
+      }
+    } catch (error) {
+      console.log('Complete comprehensive dataset not available, trying partial comprehensive...');
+    }
+    
+    // Try partial comprehensive dataset
     try {
       const response = await fetch('/processed/comprehensive_food_access.csv');
       if (response.ok) {
         const csvText = await response.text();
         const comprehensiveData = parseCSVFromMixedTypes(csvText);
         if (comprehensiveData.length > 0) {
-          console.log('✅ Loaded comprehensive dataset with', comprehensiveData.length, 'locations');
+          console.log('✅ Loaded partial comprehensive dataset with', comprehensiveData.length, 'locations');
           return removeDuplicates(comprehensiveData);
         }
       }
     } catch (error) {
-      console.log('Comprehensive dataset not available, falling back to individual sources...');
+      console.log('Partial comprehensive dataset not available, falling back to individual sources...');
     }
     
     // Import sample locations
