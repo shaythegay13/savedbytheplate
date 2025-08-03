@@ -474,6 +474,102 @@ def scrape_lungs_nyc_gardens() -> List[Dict]:
     print(f"Processed {len(processed_gardens)} Lungs NYC gardens")
     return processed_gardens
 
+def scrape_urban_agriculture_areas():
+    """Scrape additional urban agriculture data including urban farms, food forests, school gardens."""
+    print("Scraping comprehensive urban agriculture areas...")
+    
+    agriculture_sites = []
+    
+    # Try to get Parks Properties data that may include urban agriculture sites
+    try:
+        print("Fetching Parks Properties data...")
+        url = "https://data.cityofnewyork.us/resource/enfh-gkve.json?$limit=5000"
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        
+        print(f"Found {len(data)} parks properties")
+        
+        # Filter for agriculture-related properties
+        agriculture_keywords = [
+            'garden', 'farm', 'agriculture', 'greenhouse', 'orchard', 
+            'food', 'grow', 'harvest', 'compost', 'urban farm'
+        ]
+        
+        for item in data:
+            prop_name = (item.get('name', '') or '').lower()
+            prop_type = (item.get('typecategory', '') or '').lower()
+            
+            # Check if this property is agriculture-related
+            is_agriculture = any(keyword in prop_name or keyword in prop_type 
+                               for keyword in agriculture_keywords)
+            
+            if is_agriculture and item.get('lat') and item.get('lon'):
+                lat = float(item.get('lat', 0))
+                lon = float(item.get('lon', 0))
+                
+                if is_nyc_metro_coordinates(lat, lon):
+                    agriculture_sites.append({
+                        'name': item.get('name', 'Urban Agriculture Site'),
+                        'type': 'community_garden',  # Categorize as community garden
+                        'address': item.get('address', ''),
+                        'latitude': lat,
+                        'longitude': lon,
+                        'organization': 'NYC Parks',
+                        'hours': '',
+                        'contact': '',
+                        'additional_info': f"Property Type: {item.get('typecategory', '')}; Borough: {item.get('borough', '')}"
+                    })
+        
+        print(f"Found {len(agriculture_sites)} agriculture-related properties")
+        
+    except Exception as e:
+        print(f"Error fetching Parks Properties: {e}")
+    
+    # Try to get school gardens from DOE facilities
+    try:
+        print("Fetching school facilities for potential gardens...")
+        url = "https://data.cityofnewyork.us/resource/7crd-d9xh.json?$limit=2000&factype=School"
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        
+        print(f"Found {len(data)} school facilities")
+        
+        # Look for schools that might have gardens (this is speculative but based on common patterns)
+        garden_schools = []
+        for item in data:
+            school_name = (item.get('facname', '') or '').lower()
+            
+            # Schools more likely to have gardens
+            garden_indicators = ['elementary', 'ps ', 'environmental', 'green', 'garden', 'farm']
+            
+            if any(indicator in school_name for indicator in garden_indicators):
+                if item.get('lat') and item.get('lon'):
+                    lat = float(item.get('lat', 0))
+                    lon = float(item.get('lon', 0))
+                    
+                    if is_nyc_metro_coordinates(lat, lon):
+                        garden_schools.append({
+                            'name': f"{item.get('facname', 'School')} - Learning Garden",
+                            'type': 'community_garden',
+                            'address': item.get('address', ''),
+                            'latitude': lat,
+                            'longitude': lon,
+                            'organization': 'NYC Department of Education',
+                            'hours': 'School hours',
+                            'contact': '',
+                            'additional_info': f"School learning garden; Borough: {item.get('borough', '')}"
+                        })
+        
+        agriculture_sites.extend(garden_schools)
+        print(f"Added {len(garden_schools)} potential school gardens")
+        
+    except Exception as e:
+        print(f"Error fetching school facilities: {e}")
+    
+    return agriculture_sites
+
 def combine_all_comprehensive_data() -> pd.DataFrame:
     """Combine ALL scraped data sources into a comprehensive DataFrame"""
     print("Combining ALL comprehensive food access data...")
@@ -482,6 +578,7 @@ def combine_all_comprehensive_data() -> pd.DataFrame:
     
     # Scrape from all data sources
     all_locations.extend(scrape_greenthumb_gardens())
+    all_locations.extend(scrape_urban_agriculture_areas())  # NEW: Additional urban agriculture sites
     all_locations.extend(scrape_manhattan_land_trust_gardens())
     all_locations.extend(scrape_brooklyn_queens_land_trust_gardens())
     all_locations.extend(scrape_bronx_land_trust_gardens())
