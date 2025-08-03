@@ -213,59 +213,6 @@ const MapFilters = () => {
           </TabsContent>
         </Tabs>
         
-        <div className="space-y-4 border-t border-sbtp-green-200 pt-4 mt-4">
-          <h4 className="font-medium text-sbtp-green-800 mb-2">Map Legend:</h4>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="farms" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <TreeDeciduous className="h-4 w-4 text-sbtp-green-500" /> Farms
-            </Label>
-            <Switch id="farms" defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="farmers-markets" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <Store className="h-4 w-4 text-sbtp-blue" /> Farmers Markets
-            </Label>
-            <Switch id="farmers-markets" defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="community-gardens" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <Leaf className="h-4 w-4 text-red-600" /> Community Gardens
-            </Label>
-            <Switch id="community-gardens" defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="urban-farms" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-sbtp-brown-300" /> Urban Farms
-            </Label>
-            <Switch id="urban-farms" defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="local-businesses" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <ShoppingBasket className="h-4 w-4 text-purple-500" /> Local Food Businesses
-            </Label>
-            <Switch id="local-businesses" defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="community-fridges" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <Refrigerator className="h-4 w-4 text-orange-500" /> Community Fridges
-            </Label>
-            <Switch id="community-fridges" defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Label htmlFor="food-banks" className="text-sbtp-brown-700 cursor-pointer flex items-center gap-2">
-              <Building className="h-4 w-4 text-amber-500" /> Food Banks
-            </Label>
-            <Switch id="food-banks" defaultChecked />
-          </div>
-        </div>
-        
         <Button className="w-full mt-6 bg-sbtp-green-500 hover:bg-sbtp-green-600">
           Apply Filters
         </Button>
