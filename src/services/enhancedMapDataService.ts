@@ -152,12 +152,20 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       nycGardens,
       communityFridges,
       farmersMarkets,
-      foodBanks
+      foodBanks,
+      // New enhanced data sources
+      additionalFridges,
+      enhancedMarkets,
+      lungsGardens
     ] = await Promise.all([
       fetchNYCMapData(),
       fetchCommunityFridges(),
       fetchFarmersMarkets(),
-      fetchFoodBanks()
+      fetchFoodBanks(),
+      // Fetch additional data sources with fallback
+      fetchAdditionalFridges(),
+      fetchEnhancedMarkets(),
+      fetchLungsGardens()
     ]);
     
     // Combine all data
@@ -165,22 +173,111 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       ...nycGardens,
       ...communityFridges,
       ...farmersMarkets,
-      ...foodBanks
+      ...foodBanks,
+      ...additionalFridges,
+      ...enhancedMarkets,
+      ...lungsGardens
     ];
     
-    console.log('📊 Enhanced map data summary:');
-    console.log(`  • Community Gardens: ${nycGardens.length}`);
-    console.log(`  • Community Fridges: ${communityFridges.length}`);
-    console.log(`  • Farmers Markets: ${farmersMarkets.length}`);
-    console.log(`  • Food Banks: ${foodBanks.length}`);
-    console.log(`  • Total: ${allLocations.length}`);
+    // Remove duplicates based on proximity (within ~100 meters)
+    const uniqueLocations = removeDuplicates(allLocations);
     
-    return allLocations;
+    console.log('📊 Enhanced map data summary:');
+    console.log(`  • Community Gardens: ${uniqueLocations.filter(l => l.type === 'garden').length}`);
+    console.log(`  • Community Fridges: ${uniqueLocations.filter(l => l.type === 'fridge').length}`);
+    console.log(`  • Farmers Markets: ${uniqueLocations.filter(l => l.type === 'market').length}`);
+    console.log(`  • Food Banks: ${uniqueLocations.filter(l => l.type === 'foodbank').length}`);
+    console.log(`  • Farms: ${uniqueLocations.filter(l => l.type === 'farm').length}`);
+    console.log(`  • Urban Farms: ${uniqueLocations.filter(l => l.type === 'urbanfarm').length}`);
+    console.log(`  • Businesses: ${uniqueLocations.filter(l => l.type === 'business').length}`);
+    console.log(`  • Total: ${uniqueLocations.length}`);
+    
+    return uniqueLocations;
   } catch (error) {
     console.error('Error fetching enhanced map data:', error);
     // Fallback to basic NYC data
     return await fetchNYCMapData();
   }
+};
+
+// Fetch additional community fridges with fallback
+const fetchAdditionalFridges = async (): Promise<MapLocation[]> => {
+  try {
+    console.log('🔄 Fetching additional community fridges...');
+    const response = await fetch('/processed/additional_community_fridges.csv');
+    if (!response.ok) {
+      console.log('Additional fridges CSV not found, skipping...');
+      return [];
+    }
+    const csvText = await response.text();
+    const result = parseCSVToLocations(csvText, 'fridge');
+    console.log('✅ Additional community fridges loaded:', result.length);
+    return result;
+  } catch (error) {
+    console.log('Additional fridges data not available:', error);
+    return [];
+  }
+};
+
+// Fetch enhanced farmers markets with fallback
+const fetchEnhancedMarkets = async (): Promise<MapLocation[]> => {
+  try {
+    console.log('🔄 Fetching enhanced farmers markets...');
+    const response = await fetch('/processed/enhanced_farmers_markets.csv');
+    if (!response.ok) {
+      console.log('Enhanced markets CSV not found, skipping...');
+      return [];
+    }
+    const csvText = await response.text();
+    const result = parseCSVToLocations(csvText, 'market');
+    console.log('✅ Enhanced farmers markets loaded:', result.length);
+    return result;
+  } catch (error) {
+    console.log('Enhanced markets data not available:', error);
+    return [];
+  }
+};
+
+// Fetch Lungs NYC gardens with fallback
+const fetchLungsGardens = async (): Promise<MapLocation[]> => {
+  try {
+    console.log('🔄 Fetching Lungs NYC gardens...');
+    const response = await fetch('/processed/lungs_nyc_gardens.csv');
+    if (!response.ok) {
+      console.log('Lungs NYC gardens CSV not found, skipping...');
+      return [];
+    }
+    const csvText = await response.text();
+    const result = parseCSVToLocations(csvText, 'garden');
+    console.log('✅ Lungs NYC gardens loaded:', result.length);
+    return result;
+  } catch (error) {
+    console.log('Lungs NYC gardens data not available:', error);
+    return [];
+  }
+};
+
+// Remove duplicate locations based on proximity
+const removeDuplicates = (locations: MapLocation[]): MapLocation[] => {
+  const unique: MapLocation[] = [];
+  
+  for (const location of locations) {
+    const isDuplicate = unique.some(existing => {
+      const distance = Math.sqrt(
+        Math.pow(existing.lngLat[0] - location.lngLat[0], 2) +
+        Math.pow(existing.lngLat[1] - location.lngLat[1], 2)
+      );
+      // Consider locations within ~100 meters as duplicates (roughly 0.001 degrees)
+      return distance < 0.001 && existing.type === location.type;
+    });
+    
+    if (!isDuplicate) {
+      unique.push(location);
+    }
+  }
+  
+  console.log(`🔄 Removed ${locations.length - unique.length} duplicate locations`);
+  return unique;
 };
 
 // Helper to categorize locations by type
