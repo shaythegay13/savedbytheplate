@@ -39,8 +39,10 @@ const parseCSVToLocations = (csvText: string, locationType: MapLocation['type'])
       
       if (isNaN(lat) || isNaN(lng)) continue;
       
-      // Map CSV type to our location type
-      let mappedType: MapLocation['type'] = 'market'; // Default
+      // Map CSV type to our location type - use the function parameter
+      let mappedType: MapLocation['type'] = locationType;
+      
+      // Override with specific type mapping from CSV data
       if (row.type === 'community_fridge') mappedType = 'fridge';
       if (row.type === 'farmers_market') mappedType = 'market';
       if (row.type === 'food_bank' || row.type === 'food_pantry' || row.type === 'soup_kitchen' || row.type === 'mobile_pantry') mappedType = 'foodbank';
