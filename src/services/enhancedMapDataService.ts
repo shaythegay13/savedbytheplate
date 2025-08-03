@@ -170,6 +170,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       getStaticAdditionalFridgesData()
     ]);
     
+    // Add One Love Community Fridge data
+    const oneLoveFridges = getStaticOneLoveFridgesData();
+    
     // Combine all data including sample locations
     const allLocations = [
       ...sampleLocations,
@@ -179,7 +182,8 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       ...foodBanks,
       ...staticLandTrustData,
       ...staticQueensFarmData,
-      ...staticAdditionalFridgesData
+      ...staticAdditionalFridgesData,
+      ...oneLoveFridges
     ];
     
     // Remove duplicates based on proximity (within ~100 meters)
@@ -467,6 +471,52 @@ const getStaticAdditionalFridgesData = async (): Promise<MapLocation[]> => {
   
   console.log('✅ Static additional fridges data loaded:', additionalFridges.length);
   return additionalFridges;
+};
+
+// Get static One Love Community Fridge data  
+const getStaticOneLoveFridgesData = (): MapLocation[] => {
+  return [
+    {
+      id: 'olcf-1-bedstuy',
+      name: 'OLCF 1 — Bed-Stuy (Cafe Botani)',
+      type: 'fridge',
+      description: 'One Love Community Fridge hosted by Cafe Botani',
+      tags: ['Community Fridge', 'Brooklyn', '24/7 Access'],
+      details: 'Hosted by Cafe Botani, available 24/7',
+      lngLat: [-73.9186, 40.6951],
+      address: '173 Lewis Ave, Brooklyn, NY 11221'
+    },
+    {
+      id: 'olcf-2-flatbush',
+      name: 'OLCF 2 — Flatbush (B\'ShERT)',
+      type: 'fridge',
+      description: 'One Love Community Fridge hosted by B\'ShERT',
+      tags: ['Community Fridge', 'Brooklyn', '24/7 Access'],
+      details: 'Hosted by B\'ShERT, available 24/7',
+      lngLat: [-73.9441, 40.6501],
+      address: '1596 Church Ave, Brooklyn, NY 11226'
+    },
+    {
+      id: 'olcf-3-gowanus',
+      name: 'OLCF 3 — Gowanus',
+      type: 'fridge',
+      description: 'One Love Community Fridge in Gowanus',
+      tags: ['Community Fridge', 'Brooklyn', '24/7 Access'],
+      details: 'Community fridge in Gowanus neighborhood, available 24/7',
+      lngLat: [-73.9903, 40.6736],
+      address: '303 Bond St, Brooklyn, NY 11231'
+    },
+    {
+      id: 'olcf-7-harlem',
+      name: 'OLCF 7 — Harlem',
+      type: 'fridge',
+      description: 'One Love Community Fridge in Harlem',
+      tags: ['Community Fridge', 'Manhattan', '24/7 Access'],
+      details: 'Community fridge serving Harlem community, available 24/7',
+      lngLat: [-73.9441, 40.8176],
+      address: 'Harlem, Manhattan, NY'
+    }
+  ];
 };
 
 // Fallback data if CSV files aren't accessible

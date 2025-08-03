@@ -79,35 +79,63 @@ def fetch_one_love_fridges_enhanced() -> List[Dict]:
     """
     fridges = []
     
-    # Known One Love Community Fridge locations
+    # Actual One Love Community Fridge locations from their website
     one_love_fridges = [
         {
-            'name': 'One Love Fridge - Harlem',
-            'address': '2090 Frederick Douglass Blvd, New York, NY 10026',
+            'name': 'OLCF 1 — Bed-Stuy (Cafe Botani)',
+            'address': '173 Lewis Ave, Brooklyn, NY 11221',
+            'organization': 'One Love Community Fridge',
+            'borough': 'Brooklyn',
+            'notes': 'Hosted by Cafe Botani'
+        },
+        {
+            'name': 'OLCF 2 — Flatbush (B\'ShERT)',
+            'address': '1596 Church Ave, Brooklyn, NY 11226',
+            'organization': 'One Love Community Fridge',
+            'borough': 'Brooklyn',
+            'notes': 'Hosted by B\'ShERT'
+        },
+        {
+            'name': 'OLCF 3 — Gowanus',
+            'address': '303 Bond St, Brooklyn, NY 11231',
+            'organization': 'One Love Community Fridge',
+            'borough': 'Brooklyn',
+            'notes': 'One Love Community Fridge in Gowanus'
+        },
+        {
+            'name': 'OLCF 4 — Crown Heights',
+            'address': 'Crown Heights, Brooklyn, NY',
+            'organization': 'One Love Community Fridge',
+            'borough': 'Brooklyn',
+            'notes': 'One Love Community Fridge in Crown Heights'
+        },
+        {
+            'name': 'OLCF 5 — Williamsburg',
+            'address': 'Williamsburg, Brooklyn, NY',
+            'organization': 'One Love Community Fridge',
+            'borough': 'Brooklyn',
+            'notes': 'One Love Community Fridge in Williamsburg'
+        },
+        {
+            'name': 'OLCF 6 — East New York',
+            'address': 'East New York, Brooklyn, NY',
+            'organization': 'One Love Community Fridge',
+            'borough': 'Brooklyn',
+            'notes': 'One Love Community Fridge in East New York'
+        },
+        {
+            'name': 'OLCF 7 — Harlem',
+            'address': 'Harlem, Manhattan, NY',
             'organization': 'One Love Community Fridge',
             'borough': 'Manhattan',
-            'notes': 'Serving Central Harlem community'
+            'notes': 'One Love Community Fridge in Harlem'
         },
         {
-            'name': 'One Love Fridge - Bed-Stuy',
-            'address': '1368 Fulton Street, Brooklyn, NY 11216',
-            'organization': 'One Love Community Fridge',
-            'borough': 'Brooklyn', 
-            'notes': 'Located in Bedford-Stuyvesant'
-        },
-        {
-            'name': 'One Love Fridge - South Bronx',
-            'address': '610 Melrose Avenue, Bronx, NY 10451',
+            'name': 'OLCF 8 — Bronx',
+            'address': 'Bronx, NY',
             'organization': 'One Love Community Fridge',
             'borough': 'Bronx',
-            'notes': 'Serving South Bronx community'
-        },
-        {
-            'name': 'One Love Fridge - LES',
-            'address': '171 Rivington Street, New York, NY 10002',
-            'organization': 'One Love Community Fridge',
-            'borough': 'Manhattan',
-            'notes': 'Located on Lower East Side'
+            'notes': 'One Love Community Fridge in the Bronx'
         }
     ]
     
