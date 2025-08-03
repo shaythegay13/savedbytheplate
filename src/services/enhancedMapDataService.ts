@@ -1,5 +1,6 @@
 import { MapLocation } from '../components/map/types';
 import { fetchNYCMapData } from './mapDataService';
+import { supabase } from '@/integrations/supabase/client';
 
 // CSV data parsers for different food access types
 interface CSVLocation {
@@ -156,23 +157,17 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       communityFridges,
       farmersMarkets,
       foodBanks,
-      // New enhanced data sources
-      additionalFridges,
-      enhancedMarkets,
-      lungsGardens,
-      landTrustGardens,
-      farmsAndMarkets
+      staticLandTrustData,
+      staticQueensFarmData,
+      staticAdditionalFridgesData
     ] = await Promise.all([
       fetchNYCMapData(),
       fetchCommunityFridges(),
       fetchFarmersMarkets(),
       fetchFoodBanks(),
-      // Fetch additional data sources with fallback
-      fetchAdditionalFridges(),
-      fetchEnhancedMarkets(),
-      fetchLungsGardens(),
-      fetchLandTrustGardens(),
-      fetchFarmsAndMarkets()
+      getStaticLandTrustData(),
+      getStaticQueensFarmData(),
+      getStaticAdditionalFridgesData()
     ]);
     
     // Combine all data including sample locations
@@ -182,11 +177,9 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
       ...communityFridges,
       ...farmersMarkets,
       ...foodBanks,
-      ...additionalFridges,
-      ...enhancedMarkets,
-      ...lungsGardens,
-      ...landTrustGardens,
-      ...farmsAndMarkets
+      ...staticLandTrustData,
+      ...staticQueensFarmData,
+      ...staticAdditionalFridgesData
     ];
     
     // Remove duplicates based on proximity (within ~100 meters)
@@ -406,6 +399,74 @@ export const categorizeLocations = (locations: MapLocation[]) => {
   };
   
   return categories;
+};
+
+
+// Static land trust data from scraped sources
+const getStaticLandTrustData = async (): Promise<MapLocation[]> => {
+  const landTrustData: MapLocation[] = [
+    // Manhattan Land Trust gardens
+    { id: 'mlt-1', name: 'Carver Community Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.950707, 40.810909], address: '242 E 124th St, New York, NY' },
+    { id: 'mlt-2', name: 'Clayton Williams Community Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9517, 40.8109], address: '2351 8th Ave, New York, NY' },
+    { id: 'mlt-3', name: 'East Harlem Community Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9434, 40.7949], address: '433 E 117th St, New York, NY' },
+    { id: 'mlt-4', name: 'Five Star Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9507, 40.8105], address: '252 W 121st St, New York, NY' },
+    { id: 'mlt-5', name: 'Hope Steven Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9507, 40.8205], address: '1656 Amsterdam Ave, New York, NY' },
+    { id: 'mlt-6', name: 'La Perla Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9615, 40.7965], address: '78 W 105th St, New York, NY', website: 'http://laperlagarden.org/' },
+    { id: 'mlt-7', name: "Mo' Pals Garden", type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9507, 40.8305], address: '545 W 147th St, New York, NY' },
+    { id: 'mlt-8', name: "Papo's Garden", type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9425, 40.8055], address: '220 E 119th St, New York, NY' },
+    { id: 'mlt-9', name: 'Serenity Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9507, 40.8295], address: '522 W 146th St, New York, NY' },
+    { id: 'mlt-10', name: '11 Street Community Garden', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9831, 40.7285], address: '422 E 11th St, New York, NY' },
+    { id: 'mlt-11', name: "Albert's Garden", type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9911, 40.7254], address: '18 E 2nd St, New York, NY', website: 'http://albertsgarden.org/' },
+    { id: 'mlt-12', name: "All People's Garden", type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9825, 40.7247], address: '295 E 3rd St, New York, NY', website: 'http://allpeoplesgarden.org/' },
+    { id: 'mlt-13', name: 'Lower East Side People Care', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9898, 40.7130], address: '25 Rutgers St, New York, NY' },
+    { id: 'mlt-14', name: 'Parque de Tranquilidad', type: 'garden', description: 'Community garden managed by Manhattan Land Trust', tags: ['garden', 'Manhattan Land Trust'], lngLat: [-73.9835, 40.7226], address: '318 E 4th St, New York, NY', website: 'http://parquedetranquilidad.org/' },
+    
+    // Brooklyn-Queens Land Trust gardens
+    { id: 'bqlt-1', name: '1100 Block Bergen Street Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9442, 40.6782], address: 'Bergen St, Brooklyn, NY' },
+    { id: 'bqlt-2', name: 'Bed-Stuy Campaign Against Hunger Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9365, 40.6892], address: 'Bed-Stuy, Brooklyn, NY' },
+    { id: 'bqlt-3', name: 'Chestnut Commons Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9515, 40.6975], address: 'Chestnut St, Brooklyn, NY' },
+    { id: 'bqlt-4', name: 'Corona Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.8648, 40.7489], address: 'Corona, Queens, NY' },
+    { id: 'bqlt-5', name: 'East New York Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.8826, 40.6669], address: 'East New York, Brooklyn, NY' },
+    { id: 'bqlt-6', name: 'Flatbush Food Justice Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9626, 40.6501], address: 'Flatbush, Brooklyn, NY' },
+    { id: 'bqlt-7', name: 'Jamaica Bay Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.8370, 40.6892], address: 'Jamaica, Queens, NY' },
+    { id: 'bqlt-8', name: 'Park Slope Food Justice Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9772, 40.6708], address: 'Park Slope, Brooklyn, NY' },
+    { id: 'bqlt-9', name: 'Prospect Heights Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9681, 40.6781], address: 'Prospect Heights, Brooklyn, NY' },
+    { id: 'bqlt-10', name: 'Williamsburg Community Garden', type: 'garden', description: 'Community garden managed by Brooklyn-Queens Land Trust', tags: ['garden', 'Brooklyn-Queens Land Trust'], lngLat: [-73.9442, 40.7081], address: 'Williamsburg, Brooklyn, NY' }
+  ];
+  
+  console.log('✅ Static land trust data loaded:', landTrustData.length);
+  return landTrustData;
+};
+
+// Static Queens Farm data
+const getStaticQueensFarmData = async (): Promise<MapLocation[]> => {
+  const queensFarmData: MapLocation[] = [
+    { id: 'qf-1', name: 'Queens County Farm Museum', type: 'farm', description: "NYC's largest remaining tract of undisturbed farmland", tags: ['farm', 'museum', 'Queens'], lngLat: [-73.7368, 40.7292], address: '73-50 Little Neck Pkwy, Floral Park, NY 11004', website: 'https://www.queensfarm.org/' },
+    { id: 'qf-2', name: 'Queens Farm Farmstand', type: 'market', description: 'Fresh produce from Queens County Farm Museum', tags: ['market', 'farm stand', 'Queens'], lngLat: [-73.7368, 40.7292], address: '73-50 Little Neck Pkwy, Floral Park, NY 11004', website: 'https://www.queensfarm.org/farmstand/' }
+  ];
+  
+  console.log('✅ Static Queens farm data loaded:', queensFarmData.length);
+  return queensFarmData;
+};
+
+// Static additional fridges data
+const getStaticAdditionalFridgesData = async (): Promise<MapLocation[]> => {
+  const additionalFridges: MapLocation[] = [
+    // Community Fridge Finder locations
+    { id: 'cf-1', name: 'West Harlem Community Fridge', type: 'fridge', description: '24/7 free food access', tags: ['fridge', 'West Harlem'], lngLat: [-73.9441, 40.8176], address: 'West Harlem, NY' },
+    { id: 'cf-2', name: 'Bed-Stuy Community Fridge', type: 'fridge', description: '24/7 free food access', tags: ['fridge', 'Bed-Stuy'], lngLat: [-73.9365, 40.6892], address: 'Bed-Stuy, Brooklyn, NY' },
+    { id: 'cf-3', name: 'East Village Community Fridge', type: 'fridge', description: '24/7 free food access', tags: ['fridge', 'East Village'], lngLat: [-73.9857, 40.7282], address: 'East Village, NY' },
+    { id: 'cf-4', name: 'Washington Heights Community Fridge', type: 'fridge', description: '24/7 free food access', tags: ['fridge', 'Washington Heights'], lngLat: [-73.9441, 40.8448], address: 'Washington Heights, NY' },
+    { id: 'cf-5', name: 'Bushwick Community Fridge', type: 'fridge', description: '24/7 free food access', tags: ['fridge', 'Bushwick'], lngLat: [-73.9194, 40.6944], address: 'Bushwick, Brooklyn, NY' },
+    
+    // One Love Community Fridge locations
+    { id: 'ol-1', name: 'One Love Bronx Fridge', type: 'fridge', description: 'Community fridge by One Love Community', tags: ['fridge', 'One Love', 'Bronx'], lngLat: [-73.8648, 40.8448], address: 'Bronx, NY' },
+    { id: 'ol-2', name: 'One Love Queens Fridge', type: 'fridge', description: 'Community fridge by One Love Community', tags: ['fridge', 'One Love', 'Queens'], lngLat: [-73.7949, 40.7282], address: 'Queens, NY' },
+    { id: 'ol-3', name: 'One Love Staten Island Fridge', type: 'fridge', description: 'Community fridge by One Love Community', tags: ['fridge', 'One Love', 'Staten Island'], lngLat: [-74.1502, 40.5795], address: 'Staten Island, NY' }
+  ];
+  
+  console.log('✅ Static additional fridges data loaded:', additionalFridges.length);
+  return additionalFridges;
 };
 
 // Fallback data if CSV files aren't accessible
