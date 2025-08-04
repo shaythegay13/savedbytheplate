@@ -1,0 +1,741 @@
+name,type,address,latitude,longitude,organization,hours,contact,additional_info
+2 Fish 5 Loaves Fridge,community_fridge,"63 Whipple Street, Brooklyn, NY",40.7017043,-73.9445087,Community Fridge Network,24/7,,Free food available to anyone in need
+@onlunchbreak x @girlsonlyny Fridge,community_fridge,"2423 Mermaid Avenue, Brooklyn, NY",40.5760229,-73.9919503,Community Fridge Network,24/7,,Free food available to anyone in need
+Allerton Allies Community Fridge,community_fridge,"2527 Boston Road, Bronx, NY",40.8640403,-73.864763,Community Fridge Network,24/7,,Free food available to anyone in need
+Anchor Fridge,community_fridge,"239 City Island Avenue, Bronx, NY",40.8449865,-73.7859206,Community Fridge Network,24/7,,Free food available to anyone in need
+Astoria Fridge,community_fridge,"8-01 Astoria Boulevard, Queens, NY",40.7728082,-73.9324127,Community Fridge Network,24/7,,Free food available to anyone in need
+Astoria Halal Fridge,community_fridge,"35-13 23rd Avenue, Queens, NY",40.7729969,-73.9103886,Community Fridge Network,24/7,,Free food available to anyone in need
+Bedford Stuyvesant Community Fridge,community_fridge,"Bedford Ave, Brooklyn, NY 11216",40.7174046,-73.9570004,Community Fridge Network,24/7,,Free food available to anyone in need
+Bronx Community Fridge,community_fridge,"Grand Concourse, Bronx, NY 10451",40.8282429,-73.9217678,Community Fridge Network,24/7,,Free food available to anyone in need
+Brooklyn Community Fridge,community_fridge,"Flatbush Ave, Brooklyn, NY 11226",40.6542854,-73.9595887,Community Fridge Network,24/7,,Free food available to anyone in need
+Crown Heights Community Fridge,community_fridge,"Eastern Parkway, Brooklyn, NY 11213",40.6685246,-73.9259714,Community Fridge Network,24/7,,Free food available to anyone in need
+East Village Community Fridge,community_fridge,"Avenue A, New York, NY 10009",40.7940729,-73.933889,Community Fridge Network,24/7,,Free food available to anyone in need
+Harlem Community Fridge,community_fridge,"125th Street, New York, NY 10027",40.8108068,-73.9525723,Community Fridge Network,24/7,,Free food available to anyone in need
+Jamaica Community Fridge,community_fridge,"Jamaica Ave, Queens, NY 11432",40.7066283,-73.7916855,Community Fridge Network,24/7,,Free food available to anyone in need
+Lower East Side Community Fridge,community_fridge,"Rivington Street, New York, NY 10002",40.7192086,-73.9854915,Community Fridge Network,24/7,,Free food available to anyone in need
+OLCF 1 — Bed-Stuy (Cafe Botani),community_fridge,"173 Lewis Ave, Brooklyn, NY 11221",40.6907104,-73.9364312,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 2 — Flatbush (B'ShERT),community_fridge,"1596 Church Ave, Brooklyn, NY 11226",40.6485863,-73.9650101,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 3 — Gowanus,community_fridge,"303 Bond St, Brooklyn, NY 11231",40.6800475,-73.9892323,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 4 — Crown Heights,community_fridge,"267 Utica Ave, Brooklyn, NY 11213",40.6694277,-73.9307824,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 5 — Williamsburg,community_fridge,"90 Wythe Ave, Brooklyn, NY 11249",40.7130484,-73.9657725,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 6 — East New York,community_fridge,"1046 Broadway, Brooklyn, NY 11221",40.6952969,-73.9320726,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 7 — Harlem,community_fridge,"131 Avenue A, New York, NY 10009",40.7268801,-73.9831148,One Love Community Fridge,24/7,,One Love Community Fridge network
+OLCF 8 — Bronx,community_fridge,"4070 Broadway, New York, NY 10032",40.8435592,-73.9386824,One Love Community Fridge,24/7,,One Love Community Fridge network
+Queens Community Fridge,community_fridge,"Northern Blvd, Queens, NY 11101",40.7530794,-73.9062074,Community Fridge Network,24/7,,Free food available to anyone in need
+Staten Island Community Fridge,community_fridge,"Bay Street, Staten Island, NY 10301",40.6318477,-74.0760204,Community Fridge Network,24/7,,Free food available to anyone in need
+Washington Heights Community Fridge,community_fridge,"Broadway, New York, NY 10032",40.8341901,-73.944929,Community Fridge Network,24/7,,Free food available to anyone in need
+West Harlem Community Fridge,community_fridge,"Frederick Douglass Blvd, New York, NY 10026",40.8050481,-73.9549077,Community Fridge Network,24/7,,Free food available to anyone in need
+Williamsburg Community Fridge,community_fridge,"Graham Ave, Brooklyn, NY 11206",40.7145231,-73.9443875,Community Fridge Network,24/7,,Free food available to anyone in need
+100 Quincy Community Garden,community_garden,100 Quincy Street,40.685966,-73.957236,NYC Parks GreenThumb,,,Cross Streets: Classon Ave. and Franklin Ave.; Borough: B; Neighborhood: BK69 /
+103rd Street Community Garden,community_garden,105 East 103rd Street,40.790927,-73.948556,NYC Parks GreenThumb,,,Cross Streets: Lexington & Park Avenues; Borough: M; Neighborhood: MN33 /
+11 BC Serenity Garden,community_garden,626 East 11th Street,40.726805,-73.978464,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+11 Street Community Garden,community_garden,"422 E 11th St, New York, NY",40.7287156,-73.982919,Manhattan Land Trust,Seasonal - check garden for hours,,
+1100 Bergen Street Community Garden,community_garden,1107 Bergen Street,40.676293,-73.949232,NYC Parks GreenThumb,,,Cross Streets: Nostrand & New York Avenues; Borough: B; Neighborhood: BK61 /
+1100 Block Bergen Street Community Garden,community_garden,"Bergen St, Brooklyn, NY 11238",40.6808135,-73.9750886,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+117th Street Community Garden,community_garden,172 East 117th Street,40.798811,-73.940557,NYC Parks GreenThumb,,,Cross Streets: 3rd & Lexington Avenues; Borough: M; Neighborhood: MN34 /
+11th Street Community Garden,community_garden,422 East 11th Street,40.728692,-73.982938,NYC Parks GreenThumb,,,Cross Streets: 1st Avenue & Avenue A; Borough: M; Neighborhood: MN22 /
+133rd Swing Street Garden,community_garden,155 West 133rd Street,40.81375,-73.943444,NYC Parks GreenThumb,,,Cross Streets: Lenox & 7th Avenue; Borough: M; Neighborhood: MN03 /
+138th Street Community Garden,community_garden,624 East 138th Street,40.805737,-73.915623,NYC Parks GreenThumb,,,Cross Streets: St. Ann & Cypress Avenues; Borough: X; Neighborhood: BX39 /
+159th Street Community Garden,community_garden,379 East 159th Street,40.823333,-73.91503,NYC Parks GreenThumb,,,Cross Streets: Courtland & Melrose Avenues; Borough: X; Neighborhood: BX35 /
+211th Street Community Garden,community_garden,739 East 211th Street,40.877517,-73.863985,NYC Parks GreenThumb,,,Cross Streets: corner of 211th St. and Carlisle Place; Borough: X; Neighborhood: BX44 /
+400 Montauk Community Garden,community_garden,956 New Lots Ave,40.668748,-73.877132,NYC Parks GreenThumb,,,Cross Streets: at Montauk Ave.; Borough: B; Neighborhood: BK82 /
+462 Halsey Community Farm,community_garden,462 Halsey Street,40.683203,-73.935663,NYC Parks GreenThumb,,,Cross Streets: Marcus Garvey & Lewis Avenue; Borough: B; Neighborhood: BK35 /
+6/15 Green Community Garden,community_garden,274 15th Street,40.664388,-73.987406,NYC Parks GreenThumb,,,Cross Streets: 6th Avenue and 5th Avenue; Borough: B; Neighborhood: BK37 /
+61 Franklin Street Garden,community_garden,61 Franklin Street,40.727543,-73.957459,NYC Parks GreenThumb,,,Cross Streets: Calyer and Oak street; Borough: B; Neighborhood: BK76 /
+64th Street Community Garden,community_garden,373 64th Street,40.638885,-74.020952,NYC Parks GreenThumb,,,Cross Streets: West of 4th Avenue (Dead End St.); Borough: B; Neighborhood: BK32 /
+6BC Botanical Garden,community_garden,624 East 6th Street,40.723869,-73.980742,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+6th Street & Avenue B Garden,community_garden,84 Avenue B,40.724308,-73.982041,NYC Parks GreenThumb,,,Cross Streets: At E. 6th Street; Borough: M; Neighborhood: MN22 /
+721 Decatur Street Community Garden,community_garden,721 Decatur Street,40.683677,-73.914086,NYC Parks GreenThumb,,,Cross Streets: Thomas Boyland Ave & Decatur St.; Borough: B; Neighborhood: BK79 /
+97th Street Community Garden,community_garden,33-28 97th Street,40.756146,-73.871437,NYC Parks GreenThumb,,,Cross Streets: Northern Boulevard & 34th Avenue; Borough: Q; Neighborhood: QN26 /
+A Better Community Garden,community_garden,3 Hunterfly Place,40.678063,-73.928118,NYC Parks GreenThumb,,,Cross Streets: Atlantic Avenue & Herkimer Street; Borough: B; Neighborhood: BK61 /
+A Patch of Inspiration,community_garden,633 Powell Street,40.658494,-73.900895,NYC Parks GreenThumb,,,Cross Streets: New Lots Avenue and Powell St.; Borough: B; Neighborhood: BK81 /
+Aberdeen Street Community Garden,community_garden,91 Aberdeen Street,40.683544,-73.905066,NYC Parks GreenThumb,,,Cross Streets: Bushwick Ave. and deadend of Aberdeen St.; Borough: B; Neighborhood: BK78 /
+Abib Newborn,community_garden,495 Osborn Street,40.659555,-73.905929,NYC Parks GreenThumb,,,Cross Streets: Newport & New Lots; Borough: B; Neighborhood: BK81 /
+Albert's Garden,community_garden,16 East 2nd Street,40.725429,-73.991067,NYC Parks GreenThumb,,,Cross Streets: Bowery & 2nd Avenue; Borough: M; Neighborhood: MN22 /
+Albert's Garden,community_garden,"18 E 2nd St, New York, NY",40.6515008,-73.9801204,Manhattan Land Trust,Seasonal - check garden for hours,,Website: http://albertsgarden.org/
+All People's Community Garden,community_garden,149 Tompkins Avenue,40.694396,-73.945843,NYC Parks GreenThumb,,,Cross Streets: At Willoughby; Borough: B; Neighborhood: BK75 /
+All People's Garden,community_garden,"295 E 3rd St, New York, NY",40.6446945,-73.9774045,Manhattan Land Trust,Seasonal - check garden for hours,,Website: http://allpeoplesgarden.org/
+"All People's Garden, Inc.",community_garden,293 East 3rd Street,40.721486,-73.979595,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+Alphabet City Community Garden,community_garden,"Avenue C, New York, NY 10009",40.7278881,-73.976071,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Amazing Garden,community_garden,265 Columbia Street,40.683083,-74.003371,NYC Parks GreenThumb,,,Cross Streets: At Carroll Street; Borough: B; Neighborhood: BK33 /
+Amboy Street Garden,community_garden,208 Amboy Street,40.665361,-73.913836,NYC Parks GreenThumb,,,Cross Streets: between Blake & Herzl; Borough: B; Neighborhood: BK81 /
+American Heart Garden,community_garden,122 Hart Street,40.693177,-73.946688,NYC Parks GreenThumb,,,Cross Streets: Tompkins & Marcy Avenues; Borough: B; Neighborhood: BK75 /
+Artsy Bloom Community Garden,community_garden,716 Sutter Avenue,40.669704,-73.892083,NYC Parks GreenThumb,,,Cross Streets: corner of Wyona St.; Borough: B; Neighborhood: BK85 /
+Ashford Learning Garden,community_garden,341 Ashford Street,40.674083,-73.884927,NYC Parks GreenThumb,,,Cross Streets: Glenmore and Pitkin Ave.; Borough: B; Neighborhood: BK82 /
+Ashford Street Abundant Garden,community_garden,330 Ashford Street,40.674367,-73.885496,NYC Parks GreenThumb,,,Cross Streets: Pitkin Ave. and Glenmore Ave.; Borough: B; Neighborhood: BK82 /
+Astoria Residents Reclaiming Our World (ARROW),community_garden,35-38 35 STREET,40.755826,-73.926287,NYC Parks GreenThumb,,,Cross Streets: 35th & 36th Avenues; Borough: Q; Neighborhood: QN70 /
+Atkins Gardeners,community_garden,213 Atkins Avenue,40.673794,-73.878525,NYC Parks GreenThumb,,,Cross Streets: Pitkin & Belmont Avenues; Borough: B; Neighborhood: BK82 /
+Atlantic Avenue Community Garden,community_garden,"Atlantic Ave, Brooklyn, NY 11233",40.6755661,-73.9029897,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+BACDYS Garden (Bangladeshi American Development and Youth Services),community_garden,215 Forbell Street,40.678078,-73.863501,NYC Parks GreenThumb,,,Cross Streets: corner of Glenmore Ave.; Borough: B; Neighborhood: BK83 /
+Back To Eden Community Garden,community_garden,144-29 Lakewood Avenue,40.689588,-73.803594,NYC Parks GreenThumb,,,Cross Streets: corner of Inwood St.; Borough: Q; Neighborhood: QN01 /
+Backyard Garden,community_garden,69 Hamilton Avenue,40.683223,-74.005585,NYC Parks GreenThumb,,,Cross Streets: At Van Brunt Street; Borough: B; Neighborhood: BK33 /
+Bainbridge Avenue Garden,community_garden,"2980 Bainbridge Avenue, Bronx, NY",40.8743182,-73.8793602,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Bainbridge Garden,community_garden,2980 Bainbridge Avenue,40.870927,-73.883979,NYC Parks GreenThumb,,,Cross Streets: E. 201st Street & Bedford Park Boulevard; Borough: X; Neighborhood: BX05 /
+Bathgate Community Garden,community_garden,1818 Bathgate Avenue,40.844874,-73.897827,NYC Parks GreenThumb,,,"Cross Streets: E 175th & E 176th, just North of Cross Bronx; Borough: X; Neighborhood: BX01 /"
+Bay 84th Street Community Garden,community_garden,322 Beach 84th Street,40.591121,-73.809828,NYC Parks GreenThumb,,,Cross Streets: Beach Channel Drive & Dead End St.; Borough: Q; Neighborhood: QN12 /
+Beach 91 Community Garden,community_garden,136 Beach 91st Street,40.585266,-73.813136,NYC Parks GreenThumb,,,Cross Streets: Holland Ave. and Beach 91st St.; Borough: Q; Neighborhood: QN12 /
+Bean Morris Garden,community_garden,2096 Morris Avenue,40.854368,-73.904251,NYC Parks GreenThumb,,,Cross Streets: E. 181st Street and Burnside Avenue; Borough: X; Neighborhood: BX41 /
+Bed-Stuy Community Garden,community_garden,"Bedford Ave, Brooklyn, NY 11216",40.7174046,-73.9570004,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Bed-Stuy Farm,community_garden,404 Decatur Street,40.681968,-73.92687,NYC Parks GreenThumb,,,Cross Streets: Btwn Malcolm X & Patchen Avenue; Borough: B; Neighborhood: BK61 /
+Bedford Stuyvesant Community Garden (Lola Bryant Comm. Garden),community_garden,95 Malcolm X Boulevard,40.690426,-73.930283,NYC Parks GreenThumb,,,Cross Streets: Greene & Lexington Avenues; Borough: B; Neighborhood: BK35 /
+Belmont Little Farmers,community_garden,2485 Belmont Avenue,40.857012,-73.884668,NYC Parks GreenThumb,,,Cross Streets: E. 189th Street & E. Fordam Rd.; Borough: X; Neighborhood: BX06 /
+Belmont Little Farmers,community_garden,"2485 Belmont Avenue, Bronx, NY",40.8569275,-73.8845774,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Berry Street Garden,community_garden,303 Berry Street,40.713328,-73.963596,NYC Parks GreenThumb,,,Cross Streets: S 2nd & 3rd Streets; Borough: B; Neighborhood: BK73 /
+Bette's Rose Garden,community_garden,1017 Teller Avenue,40.828087,-73.914261,NYC Parks GreenThumb,,,Cross Streets: E 164th & E 165th; Borough: X; Neighborhood: BX14 /
+Betty's Community Garden at Hull Street,community_garden,227 Hull Street,40.68014,-73.907681,NYC Parks GreenThumb,,,Cross Streets: Mother Gaston & Broadway; Borough: B; Neighborhood: BK79 /
+Big Red Community Garden,community_garden,436 Van Siclen Avenue,40.668733,-73.889586,NYC Parks GreenThumb,,,Cross Streets: Blake & Sutter Avenues; Borough: B; Neighborhood: BK82 /
+Bissel Gardens,community_garden,4525 Barnes Avenue,40.899817,-73.849882,NYC Parks GreenThumb,,,Cross Streets: from Barnes to Baychester Avenues; Borough: X; Neighborhood: BX62 /
+Black Joy Farm,community_garden,972 Simpson Street,40.821981,-73.892573,NYC Parks GreenThumb,,,Cross Streets: Westchester Ave. and 163rd St.; Borough: X; Neighborhood: BX27 /
+Borinquen Community Garden,community_garden,1262 Madison Street,40.694823,-73.912965,NYC Parks GreenThumb,,,Cross Streets: Wilson & Knickerbocker; Borough: B; Neighborhood: BK77 /
+Bountiful Bliss Community Garden,community_garden,1087 East 43rd Street,40.628526,-73.934411,NYC Parks GreenThumb,,,Cross Streets: btw Ave. I and Ave. J; Borough: B; Neighborhood: BK58 /
+Bowery Houston Community Farm and Garden,community_garden,"Bowery & Houston St, New York, NY 10012",40.7238693,-73.9922863,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Bradhurst Community Garden of Love,community_garden,321 W 152nd Street,40.827556,-73.939418,NYC Parks GreenThumb,,,Cross Streets: at Bradhurst Ave.; Borough: M; Neighborhood: MN03 /
+Bridge Plaza Community Garden,community_garden,153 Concord Street,40.697619,-73.984785,NYC Parks GreenThumb,,,Cross Streets: Corner of Bridge St & Concord St; Borough: B; Neighborhood: BK38 /
+Brisas Del Caribe,community_garden,237 E 3rd Street,40.72228,-73.981471,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Bronx River Community Garden,community_garden,1086 East 180th Street,40.841952,-73.876631,NYC Parks GreenThumb,,,Cross Streets: Boston Rd & Devoe Avenue; Borough: X; Neighborhood: BX17 /
+Bronx Sunshine Garden,community_garden,1768 Bryant Avenue,40.836679,-73.884667,NYC Parks GreenThumb,,,Cross Streets: E. 174th & E. 175th (in shopping ctr parking lot); Borough: X; Neighborhood: BX75 /
+Brook Park,community_garden,"st St & Brook Ave, Bronx, NY 10454",40.8218313,-73.9105139,,,,
+Brooklyn Bears/Carlton Avenue Garden,community_garden,397 Carlton Avenue,40.685761,-73.971097,NYC Parks GreenThumb,,,Cross Streets: Greene Avenue & Fulton Street; Borough: B; Neighborhood: BK68 /
+Brooklyn Bears/Pacific Street Garden,community_garden,590 Pacific Street,40.68307,-73.977527,NYC Parks GreenThumb,,,Cross Streets: at Flatbush Ave.; Borough: B; Neighborhood: BK37 /
+Brooklyn Bears/Rockwell Place Garden,community_garden,104 Rockwell Place,40.686946,-73.979267,NYC Parks GreenThumb,,,Cross Streets: At Lafayette Avenue; Borough: B; Neighborhood: BK68 /
+Brooklyn College Garden,community_garden,2109 Campus Road,40.631459,-73.95618,NYC Parks GreenThumb,,,Cross Streets: Campus Road and Ave. H (E. 21st Street & Ocean Avenue); Borough: B; Neighborhood: BK42 /
+Brooklyn's Finest Garden,community_garden,48 Lefferts Place,40.681255,-73.961916,NYC Parks GreenThumb,,,Cross Streets: Saint James Pl & Grand Avenue; Borough: B; Neighborhood: BK69 /
+Brownsville Community Farm (James McKeather),community_garden,239 Herzl Street,40.664153,-73.913899,NYC Parks GreenThumb,,,Cross Streets: Blake/Dumont; Borough: B; Neighborhood: BK81 /
+Brownsville Green Community Garden,community_garden,1418 Eastern Parkway,40.668718,-73.921218,NYC Parks GreenThumb,,,Cross Streets: Howard Avenue & Pitkin Avenue; Borough: B; Neighborhood: BK79 /
+Bruckner Mott Haven Garden,community_garden,179 Bruckner Blvd,40.803815,-73.914592,NYC Parks GreenThumb,,,Cross Streets: Bruckner & Cypruss; Borough: X; Neighborhood: BX39 /
+Bruckner Mott Haven Garden,community_garden,"684 East 136th Street, Bronx, NY",40.8038743,-73.914729,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Bryant Hill Community Garden,community_garden,901 Bryant Avenue,40.819829,-73.887215,NYC Parks GreenThumb,,,Cross Streets: Seneca & Garrison Avenues; Borough: X; Neighborhood: BX27 /
+Bushwick Community Garden,community_garden,"Bushwick Ave, Brooklyn, NY 11207",40.681728,-73.904502,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+CAUSA Festival Garden,community_garden,790 Blake Avenue,40.668444,-73.889374,NYC Parks GreenThumb,,,Cross Streets: At Van Siclen Avenue; Borough: B; Neighborhood: BK82 /
+Cambria Heights Community Garden,community_garden,116-98 227th Street,40.693278,-73.734015,NYC Parks GreenThumb,,,Cross Streets: At Linden Boulevard; Borough: Q; Neighborhood: QN33 /
+Campos Community Garden,community_garden,644 East 12th Street,40.72725,-73.977573,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Canarsie Neighborhood Farm and Garden,community_garden,9299 Schenck Street,40.629839,-73.889006,NYC Parks GreenThumb,,,Cross Streets: Corner of E. 93rd & Schenck; Borough: B; Neighborhood: BK50 /
+Carmen Pabon Del Amanecer Jardin,community_garden,117 Avenue C,40.724593,-73.97897,NYC Parks GreenThumb,,,Cross Streets: East 8th and East 7th St.; Borough: M; Neighborhood: MN28 /
+Carpenter Avenue Community Garden,community_garden,4501 Carpenter Avenue,40.901389,-73.855808,NYC Parks GreenThumb,,,Cross Streets: At Carpenter Avenue; Borough: X; Neighborhood: BX62 /
+Carrie McCracken TRUCE Garden,community_garden,145 St. Nicholas Avenue,40.804628,-73.95306,NYC Parks GreenThumb,,,Cross Streets: W. 117th & W. 118th Streets; Borough: M; Neighborhood: MN11 /
+Carroll Gardens Community Garden,community_garden,"Court St, Brooklyn, NY 11231",40.6941,-73.991777,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Carver Community Garden,community_garden,242 East 124th Street,40.802094,-73.934695,NYC Parks GreenThumb,,,Cross Streets: 2nd & 3rd Avenues; Borough: M; Neighborhood: MN34 /
+Carver Community Garden,community_garden,"242 E 124th St, New York, NY",40.8025376,-73.9353787,Manhattan Land Trust,Seasonal - check garden for hours,,
+Cedar Tree Garden,community_garden,305 Greene Avenue,40.687698,-73.959179,NYC Parks GreenThumb,,,Cross Streets: Classon & Franklin Avenues; Borough: B; Neighborhood: BK75 /
+Central Bainbridge Street Community Garden,community_garden,269 Patchen Avenue,40.68197,-73.925861,NYC Parks GreenThumb,,,Cross Streets: Ralph & Patchen Avenues; Borough: B; Neighborhood: BK61 /
+Centro Cultural Rincon Criollo,community_garden,749 Brook Avenue,40.820578,-73.912035,NYC Parks GreenThumb,,,Cross Streets: corner of E. 157th St.; Borough: X; Neighborhood: BX34 /
+Chestnut Street Garden,community_garden,9 Chestnut Street,40.687771,-73.87622,NYC Parks GreenThumb,,,Cross Streets: Jamaica Ave. & Etna St.; Borough: B; Neighborhood: BK83 /
+Children's Magical Garden,community_garden,131 Stanton Street,40.720735,-73.986576,NYC Parks GreenThumb,,,Cross Streets: Norfolk and Essex St.; Borough: M; Neighborhood: MN27 /
+Citizens for a Better Community Garden,community_garden,742 Monroe Street,40.687841,-73.926698,NYC Parks GreenThumb,,,Cross Streets: Monroe St. & Madison St.; Borough: B; Neighborhood: BK35 /
+Clara's Garden,community_garden,579 Glenmore Avenue,40.674403,-73.889029,NYC Parks GreenThumb,,,Cross Streets: At Schenck Avenue; Borough: B; Neighborhood: BK82 /
+Claremont Neighborhood Garden,community_garden,1280 Teller Avenue,40.834136,-73.910203,NYC Parks GreenThumb,,,Cross Streets: At 169th Street; Borough: X; Neighborhood: BX14 /
+Classon / Fulgate Block Association Garden,community_garden,474 Classon Avenue,40.683902,-73.959315,NYC Parks GreenThumb,,,Cross Streets: Madison & Monroe Streets; Borough: B; Neighborhood: BK69 /
+Clay Avenue Community Garden,community_garden,1330 Clay Avenue,40.834909,-73.908897,NYC Parks GreenThumb,,,Cross Streets: E. 169th & E. 170th Streets; Borough: X; Neighborhood: BX14 /
+Clayton Williams Community Garden,community_garden,303 W 126th Street,40.811247,-73.951058,NYC Parks GreenThumb,,,Cross Streets: At Frederick Douglass Boulevard; Borough: M; Neighborhood: MN03 /
+Cleveland Street Vegetable Garden,community_garden,433 Cleveland Street,40.674195,-73.884083,NYC Parks GreenThumb,,,Cross Streets: Pitkin & Glenmore Avenues; Borough: B; Neighborhood: BK82 /
+Clifton Place Block Association Garden,community_garden,289 Grand Avenue,40.687645,-73.962356,NYC Parks GreenThumb,,,Cross Streets: Clifton Pl. & Greene Avenue; Borough: B; Neighborhood: BK69 /
+Clifton Place Memorial Garden & Park,community_garden,1031 Bedford Avenue,40.6886,-73.954653,NYC Parks GreenThumb,,,Cross Streets: Clifton Pl. & Greene Avenue; Borough: B; Neighborhood: BK75 /
+Clinton Avenue Community Garden,community_garden,757 East 179th Street,40.845984,-73.887991,NYC Parks GreenThumb,,,Cross Streets: corner of Prospect Avenue & 179th Street; Borough: X; Neighborhood: BX17 /
+Clinton Community Garden,community_garden,436 West 48th Street,40.762777,-73.991737,NYC Parks GreenThumb,,,Cross Streets: 9th & 10th Avenues; Borough: M; Neighborhood: MN15 /
+Clinton Community Garden (LES),community_garden,171 Stanton Street,40.72001,-73.984459,NYC Parks GreenThumb,,,Cross Streets: At Clinton Street; Borough: M; Neighborhood: MN28 /
+Clinton Hill Community Garden,community_garden,"Clinton Ave, Brooklyn, NY 11205",40.6897244,-73.9681317,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Clyde Romero Memorial Garden,community_garden,213 East 7th Street,40.724648,-73.979638,NYC Parks GreenThumb,,,Cross Streets: btw Avenue B & C; Borough: M; Neighborhood: MN28 /
+College Avenue Garden,community_garden,1420 College Avenue,40.838033,-73.909923,NYC Parks GreenThumb,,,Cross Streets: E. 170th & E. 171st Streets; Borough: X; Neighborhood: BX14 /
+Collyer Brothers Park Garden,community_garden,2078 5th Avenue,40.808542,-73.941061,NYC Parks GreenThumb,,,Cross Streets: 128th Street; Borough: M; Neighborhood: MN03 /
+Colonial Gardeners,community_garden,304 WEST 150 STREET,40.826047,-73.940298,NYC Parks GreenThumb,,,Cross Streets: Bradhurst Avenue & Frederick Douglass Boulevard; Borough: M; Neighborhood: MN03 /
+Community Gardens District - East Village,community_garden,"East Village, New York, NY 10009",40.7292688,-73.9873613,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Community Gardens District - LES,community_garden,"Lower East Side, New York, NY 10002",40.7159357,-73.9868057,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Community Rock Garden,community_garden,1665 Longfellow Avenue,40.834723,-73.885408,NYC Parks GreenThumb,,,Cross Streets: E. 173rd & E. 174th Streets.; Borough: X; Neighborhood: BX75 /
+Community Serenity Garden,community_garden,30-15 Seagirt Boulevard,40.595586,-73.763592,NYC Parks GreenThumb,,,Cross Streets: At Beach 31st Street; Borough: Q; Neighborhood: QN12 /
+Concerned Citizens of Grove Street Community Garden,community_garden,72 Grove Street,40.692199,-73.921479,NYC Parks GreenThumb,,,Cross Streets: Evergreen Ave. & Bushwick Ave.; Borough: B; Neighborhood: BK78 /
+Concerned Residents of Barbey Street,community_garden,351 Barbey Street,40.674119,-73.887858,NYC Parks GreenThumb,,,Cross Streets: At Barbey Street; Borough: B; Neighborhood: BK82 /
+Concrete Dreams Community Garden,community_garden,745 Jennings Street,40.831977,-73.89831,NYC Parks GreenThumb,,,Cross Streets: Boston Rd & Prospect; Borough: X; Neighborhood: BX35 /
+Contented Hart Garden,community_garden,1475 Bushwick Avenue,40.683606,-73.907171,NYC Parks GreenThumb,,,Cross Streets: Pilling St. & Granite St.; Borough: B; Neighborhood: BK78 /
+Convent Garden,community_garden,821 Saint Nicholas Avenue,40.828337,-73.942681,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN04 /
+Cook Community Farm,community_garden,2173 Bathgate Avenue,40.852805,-73.894269,NYC Parks GreenThumb,,,Cross Streets: E. 182nd & E. 181st Streets.; Borough: X; Neighborhood: BX01 /
+Cooper Street Block Buster Community Garden,community_garden,41 Cooper Street,40.684693,-73.910732,NYC Parks GreenThumb,,,Cross Streets: Bushwick Avenue & Broadway; Borough: B; Neighborhood: BK78 /
+Cooper Street Community Garden,community_garden,34 Cooper Street,40.684199,-73.910509,NYC Parks GreenThumb,,,Cross Streets: Bushwick Avenue & Broadway; Borough: B; Neighborhood: BK78 /
+Cordelia’s Garden,community_garden,1311 Bristow Street,40.830931,-73.895016,NYC Parks GreenThumb,,,Cross Streets: Jennings & Freeman Streets.; Borough: X; Neighborhood: BX75 /
+Corona Community Garden,community_garden,"Corona, Queens, NY 11368",40.7469593,-73.8601456,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Corona Peachtree Community Garden,community_garden,52-02 102nd Street,40.741388,-73.860084,NYC Parks GreenThumb,,,Cross Streets: At Radcliffe Avenue; Borough: Q; Neighborhood: QN25 /
+Corozal Family,community_garden,170 East 117th Street,40.798836,-73.940611,NYC Parks GreenThumb,,,Cross Streets: Lexington & 3rd Avenues; Borough: M; Neighborhood: MN34 /
+Courtlandt Avenue Community Garden,community_garden,364 East 158th Street,40.822502,-73.916202,NYC Parks GreenThumb,,,Cross Streets: Courtland & Melrose Avenues; Borough: X; Neighborhood: BX34 /
+Creative Little Garden,community_garden,530 East 6th Street,40.724649,-73.982589,NYC Parks GreenThumb,,,Cross Streets: Avenues A & B; Borough: M; Neighborhood: MN22 /
+Creative Little Garden,community_garden,"E 6th St, New York, NY 10009",40.7234967,-73.9792647,,,,
+Creston Jungle Playground,community_garden,2242 Creston Avenue,40.856629,-73.901254,NYC Parks GreenThumb,,,Cross Streets: E 182nd & E 183rd; Borough: X; Neighborhood: BX40 /
+Crown Heights Community Garden,community_garden,"Crown Heights, Brooklyn, NY 11213",40.667471,-73.9435662,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Crystal Wells Community Garden,community_garden,35 Crystal Street,40.678286,-73.874882,NYC Parks GreenThumb,,,Cross Streets: Liberty and Wells Street; Borough: B; Neighborhood: BK82 /
+"Curtis ""50 Cent"" Community Garden",community_garden,117-09 165th Street,40.684648,-73.780947,NYC Parks GreenThumb,,,Cross Streets: At Foch Boulevard; Borough: Q; Neighborhood: QN76 /
+Damiana Pizarro Community Garden,community_garden,580 Crotona Park South,40.835091,-73.900646,NYC Parks GreenThumb,,,Cross Streets: Fulton Ave and Franklin Ave; Borough: X; Neighborhood: BX35 /
+David Foulke Memorial Garden,community_garden,248 Bergen Street,40.68409,-73.984341,NYC Parks GreenThumb,,,Cross Streets: Bond St. & Nevins St.; Borough: B; Neighborhood: BK38 /
+Davidson Avenue Community Garden,community_garden,2387 Davidson Avenue,40.861393,-73.903539,NYC Parks GreenThumb,,,Cross Streets: W. 184th Street & W. Fordham Rd.; Borough: X; Neighborhood: BX30 /
+Davidson Avenue Community Garden,community_garden,"2387 Davidson Avenue, Bronx, NY",40.8613283,-73.9033573,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+De Colores Community Yard & Cultural Center,community_garden,313 E 8th Street,40.725436,-73.97971,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Decatur Street Community Garden,community_garden,1052 Decatur Street,40.68584,-73.910071,NYC Parks GreenThumb,,,Cross Streets: Bushwick & Evergreen Avenues; Borough: B; Neighborhood: BK78 /
+Demera Santiago Garden,community_garden,941 Avenue St. John,40.815267,-73.902248,NYC Parks GreenThumb,,,Cross Streets: Kelly St. and Beck St. inside park Playground 52; Borough: X; Neighborhood: BX33 /
+Diamante Garden / Dimantis Garden,community_garden,308 East 118th Street,40.797835,-73.936296,NYC Parks GreenThumb,,,Cross Streets: 1st & 2nd Avenues; Borough: M; Neighborhood: MN34 /
+Dias Y Flores,community_garden,520 East 13th Street,40.729103,-73.979979,NYC Parks GreenThumb,,,Cross Streets: Avenues A & B; Borough: M; Neighborhood: MN22 /
+Diversity Edible Farm Garden,community_garden,1673 Madison Avenue,40.796772,-73.946059,NYC Parks GreenThumb,,,Cross Streets: E. 111th & E. 112th Streets.; Borough: M; Neighborhood: MN33 /
+Dolly's Park,community_garden,503 President Street,40.678139,-73.986354,NYC Parks GreenThumb,,,Cross Streets: 3rd Ave. and Nevins St.; Borough: B; Neighborhood: BK37 /
+Dolorinda Lisante Community Garden,community_garden,809 Courtlandt Avenue,40.823068,-73.916728,NYC Parks GreenThumb,,,Cross Streets: E. 158th & E. 159th Streets.; Borough: X; Neighborhood: BX34 /
+Dorothy K. McGowan Memorial Garden,community_garden,513 W 158th Street,40.834024,-73.942264,NYC Parks GreenThumb,,,Cross Streets: Amsterdam Avenue & Broadway; Borough: M; Neighborhood: MN36 /
+Dorothy Strelsin Memorial Garden (Suffolk St. - Committee of Poor People),community_garden,174 Suffolk Street,40.720952,-73.984798,NYC Parks GreenThumb,,,Cross Streets: Houston & Stanton; Borough: M; Neighborhood: MN27 /
+Down to Earth Garden,community_garden,546 East 12th Street,40.728612,-73.980217,NYC Parks GreenThumb,,,Cross Streets: At 12th Street; Borough: M; Neighborhood: MN22 /
+Down to Earth Garden,community_garden,"East Village, New York, NY 10009",40.7292688,-73.9873613,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Dred Scott Bird Sanctuary Garden,community_garden,1304 Grant Ave.,40.836153,-73.913456,NYC Parks GreenThumb,,,Cross Streets: Grant & Morris Avenue; Borough: X; Neighborhood: BX14 /
+Drew Garden,community_garden,1059 East Tremont Avenue,40.840094,-73.879312,NYC Parks GreenThumb,,,Cross Streets: west of E. 177th Street & BX River; Borough: X; Neighborhood: BX17 /
+Dumont Garden of Green,community_garden,746 Dumont Avenue,40.666783,-73.891121,NYC Parks GreenThumb,,,Cross Streets: At Bradford St.; Borough: B; Neighborhood: BK85 /
+Dunton Community Garden,community_garden,143-01 Shore Avenue,40.689639,-73.805801,NYC Parks GreenThumb,,,Cross Streets: Shore Ave and 107th Ave; Borough: Q; Neighborhood: QN01 /
+EL Garden,community_garden,120 Jefferson Street,40.69952,-73.930605,NYC Parks GreenThumb,,,Cross Streets: Central Ave. and Evergreen Ave.; Borough: B; Neighborhood: BK78 /
+ENY Oasis Community Garden,community_garden,2539 Pitkin Avenue,40.674651,-73.878584,NYC Parks GreenThumb,,,Cross Streets: Atkins/Montauk; Borough: B; Neighborhood: BK82 /
+ENY Youth Farm,community_garden,620 Schenck Avenue,40.665272,-73.886831,NYC Parks GreenThumb,,,Cross Streets: At Livonia; Borough: B; Neighborhood: BK82 /
+Eagle Slope,community_garden,586 Westchester Avenue,40.815733,-73.91142,NYC Parks GreenThumb,,,Cross Streets: Eagle Ave & St. Anns Ave.; Borough: X; Neighborhood: BX34 /
+Earth People,community_garden,333 East 8th Street,40.725161,-73.978963,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+East 145th Street Garden,community_garden,"E 145th St, Bronx, NY 10454",40.8127899,-73.9178814,,,,
+East 4th Street Community Garden (Windsor Terrace Kensington Veterans Memorial),community_garden,171 E 4th Street,40.648198,-73.977358,NYC Parks GreenThumb,,,Cross Streets: Ft. Hamilton Pkwy & Caton Avenue; Borough: B; Neighborhood: BK40 /
+East Elmhurst Community Garden,community_garden,"East Elmhurst, Queens, NY 11369",40.7612123,-73.8651358,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+East End Community Garden,community_garden,260 Van Siclen Avenue,40.673551,-73.890822,NYC Parks GreenThumb,,,Cross Streets: At Glenmore Avenue; Borough: B; Neighborhood: BK82 /
+East Flatbush Community Garden,community_garden,"East Flatbush, Brooklyn, NY 11203",40.6537148,-73.9304151,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+East Harlem Community Garden,community_garden,429 East 117th Street,40.79637,-73.933589,NYC Parks GreenThumb,,,Cross Streets: 1st & Pleasant Avenues; Borough: M; Neighborhood: MN34 /
+East Harlem Community Garden,community_garden,"433 E 117th St, New York, NY",40.7964216,-73.9340754,Manhattan Land Trust,Seasonal - check garden for hours,,
+East New York Community Garden,community_garden,"East New York, Brooklyn, NY 11207",40.6667702,-73.8823583,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+East Side Outside Community Garden,community_garden,415 East 11th Street,40.729384,-73.983024,NYC Parks GreenThumb,,,Cross Streets: 1st Avenue & Avenue A; Borough: M; Neighborhood: MN22 /
+East Village Community Garden,community_garden,"East Village, New York, NY 10009",40.7292688,-73.9873613,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Eastchester Road Community Garden,community_garden,3634 Eastchester Road,40.881752,-73.84848,NYC Parks GreenThumb,,,Cross Streets: btw e. 222nd and 223rd St.; Borough: X; Neighborhood: BX03 /
+Eden Community Garden,community_garden,2084 Pacific Street,40.675571,-73.916044,NYC Parks GreenThumb,,,Cross Streets: Saratoga Avenue & Thomas Boyland Blvd; Borough: B; Neighborhood: BK79 /
+Eden’s Community Garden,community_garden,1123 Saint Mark's Avenue,40.674522,-73.932567,NYC Parks GreenThumb,,,Cross Streets: Schenectady & Utica Avenues; Borough: B; Neighborhood: BK61 /
+Edgecombe Avenue Garden Park Sanctuary,community_garden,339 Edgecombe Avenue,40.826556,-73.942079,NYC Parks GreenThumb,,,Cross Streets: W. 145th & W. 150th Streets.; Borough: M; Neighborhood: MN04 /
+Edgecombe Avenue Garden Park Sanctuary,community_garden,"Edgecombe Ave, New York, NY 10031",40.8222685,-73.9445113,,,Contact: Kyleen.Sanchez@parks.nyc.gov (volunteer coordinator)[1],
+Edgemere Farm,community_garden,385 Beach 45th Street,40.595017,-73.776744,NYC Parks GreenThumb,,,Cross Streets: Beach Channel Dr. & Rockaway Beach Blvd.; Borough: Q; Neighborhood: QN12 /
+Edward P. Bowman Park,community_garden,52 W 129th Street,40.809756,-73.942906,NYC Parks GreenThumb,,,Cross Streets: 5th Ave & Lenox; Borough: M; Neighborhood: MN03 /
+El Barrio Community Garden,community_garden,415 East 117th Street,40.796563,-73.934047,NYC Parks GreenThumb,,,Cross Streets: 1st Avenue & E 117th St; Borough: M; Neighborhood: MN34 /
+El Barrio Garden of Angels,community_garden,121 East 122nd Street,40.802911,-73.939358,NYC Parks GreenThumb,,,Cross Streets: Park & Lexington Ave; Borough: M; Neighborhood: MN34 /
+El Batey Borincano,community_garden,815 Eagle Avenue,40.820768,-73.909288,NYC Parks GreenThumb,,,Cross Streets: E. 158 & E. 159 Streets.; Borough: X; Neighborhood: BX34 /
+El Batey de Dona Provi,community_garden,504 East 178th Street,40.847974,-73.896315,NYC Parks GreenThumb,,,Cross Streets: At Bathgate Avenue; Borough: X; Neighborhood: BX01 /
+El Cataño Garden,community_garden,171 East 110th Street,40.794539,-73.943183,NYC Parks GreenThumb,,,Cross Streets: 3rd & Lexington Avenues; Borough: M; Neighborhood: MN33 /
+El Coqui Liberation Community Garden,community_garden,924 Melrose Avenue,40.825278,-73.912971,NYC Parks GreenThumb,,,Cross Streets: At E. 163rd Street; Borough: X; Neighborhood: BX35 /
+El Flamboyan,community_garden,586 Tinton Avenue,40.813766,-73.905927,NYC Parks GreenThumb,,,Cross Streets: At E. 150th Street; Borough: X; Neighborhood: BX34 /
+El Jardin del Paraiso,community_garden,710 East 5th Street,40.722417,-73.979198,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+El Puente: Espiritu Tierra Community Garden - Earth Spirit,community_garden,207 South 2nd Street,40.712503,-73.959351,NYC Parks GreenThumb,,,Cross Streets: Roebling Street & Driggs Avenue; Borough: B; Neighborhood: BK73 /
+El Sitio Feliz (The Happy Place),community_garden,203 East 104th Street,40.790151,-73.944761,NYC Parks GreenThumb,,,Cross Streets: 2nd & 3rd Avenues; Borough: M; Neighborhood: MN33 /
+El Sol Brillante Garden,community_garden,522-528 East 12th Street,40.728398,-73.98029,NYC Parks GreenThumb,,,Cross Streets: Avenues A & B; Borough: M; Neighborhood: MN22 /
+El Sol Brillante Jr.,community_garden,537 East 12th Street,40.728582,-73.979535,NYC Parks GreenThumb,,,Cross Streets: Avenues A & B; Borough: M; Neighborhood: MN22 /
+Electric Ladybug Garden,community_garden,237 West 111th Street,40.800885,-73.956296,NYC Parks GreenThumb,,,Cross Streets: Frederick Douglas & Adam Clayton Powell Blvd.; Borough: M; Neighborhood: MN11 /
+Elizabeth Langley Memorial Garden,community_garden,123 West 137th Street,40.816139,-73.941076,NYC Parks GreenThumb,,,Cross Streets: Lenox & 7th Avenues; Borough: M; Neighborhood: MN03 /
+Elizabeth Street Garden,community_garden,"Elizabeth St, New York, NY 10012",40.718845,-73.995669,,,,
+Elizabeth Street Garden,community_garden,"Elizabeth Street, New York, NY 10012",40.718845,-73.995669,,,Contact: Volunteer and info at https://elizabethstreetgarden.com/volunteer,
+Elton Street Community Garden,community_garden,585 Elton Street,40.668635,-73.881836,NYC Parks GreenThumb,,,Cross Streets: Blake & Dumont Avenues; Borough: B; Neighborhood: BK82 /
+Escape to Nature,community_garden,555 Glenmore Avenue,40.674245,-73.889909,NYC Parks GreenThumb,,,Cross Streets: At 299 Hendrix Street; Borough: B; Neighborhood: BK82 /
+Essential Garden,community_garden,13328 133rd Ave,40.669074,-73.805515,NYC Parks GreenThumb,,,"Cross Streets: 133rd Ave. and 135th Ave, and 143rd Street and 145th Street; Borough: Q; Neighborhood: QN55 /"
+Essex Street Community Garden,community_garden,3030 Fulton Street,40.680263,-73.882984,NYC Parks GreenThumb,,,Cross Streets: at Essex St.; Borough: B; Neighborhood: BK82 /
+Eternal Life Community Garden,community_garden,1810 University Avenue,40.85081,-73.914818,NYC Parks GreenThumb,,,Cross Streets: Dr. MLK JR Blvd and Morton PL; Borough: X; Neighborhood: BX36 /
+Euclid / Pine Street Block Association Garden,community_garden,1308 Dumont Avenue,40.669714,-73.869726,NYC Parks GreenThumb,,,Cross Streets: Euclid St. & Pine St.; Borough: B; Neighborhood: BK82 /
+Euclid 500 Community Garden,community_garden,532 Euclid Avenue,40.673888,-73.871686,NYC Parks GreenThumb,,,Cross Streets: Belmont & Sutter Avenues; Borough: B; Neighborhood: BK82 /
+Evergreen Community Garden,community_garden,47-32 Colden Street,40.748464,-73.820845,NYC Parks GreenThumb,,,Cross Streets: Juniper and Colden; Borough: Q; Neighborhood: QN62 /
+F.A.R.R. Community Garden,community_garden,808 Herkimer Street,40.678194,-73.926644,NYC Parks GreenThumb,,,Cross Streets: Rochester Ave. and Suydam Place; Borough: B; Neighborhood: BK61 /
+FF Michael Brennan Memorial LIC Roots Community Garden,community_garden,29-08 47th Avenue,40.743372,-73.938243,NYC Parks GreenThumb,,,Cross Streets: 29th & 30th Streets; Borough: Q; Neighborhood: QN31 /
+Family Community Garden Brooklyn,community_garden,793 Cleveland Street,40.66517,-73.881204,NYC Parks GreenThumb,,,Cross Streets: Hegeman & New Lots Avenues; Borough: B; Neighborhood: BK82 /
+Family Community Garden Manhattan,community_garden,156 East 111th Street,40.795119,-73.943785,NYC Parks GreenThumb,,,Cross Streets: 3rd & Lexington Avenues; Borough: M; Neighborhood: MN33 /
+Family Garden by Tiffany & Co.,community_garden,431 East 114th Street,40.794282,-73.934775,NYC Parks GreenThumb,,,Cross Streets: 1st Ave. & Pleasant Avenues; Borough: M; Neighborhood: MN34 /
+Fantasy Garden,community_garden,181 Legion Street,40.66432,-73.91688,NYC Parks GreenThumb,,,Cross Streets: Blake & Dumont Avenues; Borough: B; Neighborhood: BK81 /
+Far Rock Urban Agro-Education Center,community_garden,378 Beach 45th Street,40.595195,-73.776495,NYC Parks GreenThumb,,,Cross Streets: corner of Beach Channel Drive; Borough: Q; Neighborhood: QN12 /
+Farm in the Bronx,community_garden,2179 Washington Avenue,40.853797,-73.894669,NYC Parks GreenThumb,,,Cross Streets: At Washington Avenue in Bathgate Playground; Borough: X; Neighborhood: BX01 /
+Farmers Garden,community_garden,1901 Bergen Street,40.674603,-73.918186,NYC Parks GreenThumb,,,Cross Streets: Howard & Saratoga Avenues; Borough: B; Neighborhood: BK79 /
+Feeding Tree Garden,community_garden,340 Tompkins Avenue,40.685966,-73.944714,NYC Parks GreenThumb,,,Cross Streets: Between Monroe Street & Tompkins Ave; Borough: B; Neighborhood: BK75 /
+Fifth Street Slope Garden,community_garden,626-27 East 5th Street,40.723089,-73.980782,NYC Parks GreenThumb,,,Cross Streets: West of Avenue C (dead end street); Borough: M; Neighborhood: MN28 /
+Firemen's Memorial Garden,community_garden,360 East 8th Street,40.724275,-73.978003,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+First Quincy Street Community Garden,community_garden,397 Quincy Street,40.687912,-73.944384,NYC Parks GreenThumb,,,Cross Streets: Tompkins & Throop Avenues; Borough: B; Neighborhood: BK75 /
+First Street Garden,community_garden,48 East 1st Street,40.724013,-73.989606,NYC Parks GreenThumb,,,Cross Streets: 1st & 2nd Avenues; Borough: M; Neighborhood: MN22 /
+Fishbridge Park Garden,community_garden,340 Pearl Street,40.709354,-74.001861,NYC Parks GreenThumb,,,Cross Streets: Dover Between Pearl & Warren; Borough: M; Neighborhood: MN25 /
+Five Star Garden,community_garden,"252 W 121st St, New York, NY",40.8069406,-73.9516771,Manhattan Land Trust,Seasonal - check garden for hours,,
+Five Star Gardens,community_garden,252 West 121st Street,40.806988,-73.952159,NYC Parks GreenThumb,,,Cross Streets: Adam Clayton Powell & Fredrick Douglas Blvds; Borough: M; Neighborhood: MN11 /
+Flatbush Community Garden,community_garden,"Flatbush Ave, Brooklyn, NY 11226",40.6542854,-73.9595887,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Floral Vineyard,community_garden,2379 Pitkin Avenue,40.673754,-73.884592,NYC Parks GreenThumb,,,Cross Streets: Cleveland & Ashford Street; Borough: B; Neighborhood: BK82 /
+Flower Door Garden,community_garden,135 Avenue C,40.725255,-73.978584,NYC Parks GreenThumb,,,Cross Streets: 8th and 9th St.; Borough: M; Neighborhood: MN28 /
+Flower Garden- Morris II Houses (NYCHA),community_garden,1460 Washington Avenue,40.83634,-73.903333,NYC Parks GreenThumb,,,Cross Streets: 3rd Avenue & East 170th street; Borough: X; Neighborhood: BX01 /
+Fordham Bedford Lot-Busters,community_garden,2599 Bainbridge Avenue,40.864227,-73.892627,NYC Parks GreenThumb,,,Cross Streets: At W. 193rd Street; Borough: X; Neighborhood: BX05 /
+Forsyth Garden Conservancy,community_garden,106 CHRYSTIE STREET,40.718908,-73.992998,NYC Parks GreenThumb,,,Cross Streets: in Sarah D. Roosevelt Park; Borough: M; Neighborhood: MN27 /
+Fort Greene Community Garden,community_garden,"Fort Greene, Brooklyn, NY 11217",40.6907711,-73.9766245,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Francisco “Pancho” Ramos Community Garden,community_garden,703 East 9th Street,40.725279,-73.977534,NYC Parks GreenThumb,,,Cross Streets: At Avenue C; Borough: M; Neighborhood: MN28 /
+Frank White Memorial Garden,community_garden,506 West 143rd Street,40.824229,-73.949831,NYC Parks GreenThumb,,,Cross Streets: Hamilton Pl. & Broadway; Borough: M; Neighborhood: MN04 /
+Franklin Memorial Garden,community_garden,1058 Cauldwell Ave,40.826282,-73.905613,NYC Parks GreenThumb,,,Cross Streets: 165th & 166th Streets & Boston Rd; Borough: X; Neighborhood: BX35 /
+Fred McLeod Community Garden,community_garden,1833 Strauss Street,40.669343,-73.916462,NYC Parks GreenThumb,,,Cross Streets: btw East New York Ave. and Pitkin Ave.; Borough: B; Neighborhood: BK81 /
+Frederick Douglass Boulevard Community Garden,community_garden,300 W 152nd Street,40.827268,-73.939054,NYC Parks GreenThumb,,,Cross Streets: 8th Avenue and Frederick Douglas Blvd.; Borough: M; Neighborhood: MN03 /
+Freeman Garden,community_garden,1225 Hoe Avenue,40.829604,-73.891108,NYC Parks GreenThumb,,,Cross Streets: ; Borough: X; Neighborhood: BX35 /
+Friends of Brook Park Community Garden,community_garden,494 East 141st Street,40.809599,-73.9187,NYC Parks GreenThumb,,,Cross Streets: Brook Avenue; Borough: X; Neighborhood: BX39 /
+Friends of Flowers Community Garden,community_garden,1905 Bergen Street,40.6746,-73.918096,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK79 /
+Garden Kitchen Lab at St. John's Rec.,community_garden,1251 Prospect Place,40.674369,-73.934756,NYC Parks GreenThumb,,,Cross Streets: Troy and Schenectady Ave.; Borough: B; Neighborhood: BK61 /
+Garden Of Youth,community_garden,2175 Prospect Avenue,40.84857,-73.885442,NYC Parks GreenThumb,,,Cross Streets: E. 182nd Street & Astin Jacobo Way/Prospect Avenue; Borough: X; Neighborhood: BX17 /
+Garden People,community_garden,191 Riverside Drive,40.79303,-73.976876,NYC Parks GreenThumb,,,Cross Streets: Mid-level of Riverside Park at West 91st St.; Borough: M; Neighborhood: MN12 /
+Garden for Living - Carver Houses (NYCHA),community_garden,1445 Madison Avenue,40.789795,-73.951301,NYC Parks GreenThumb,,,Cross Streets: Madison Avenue & East 99th street; Borough: M; Neighborhood: MN33 /
+Garden of Angels,community_garden,978 Greene Avenue,40.69076,-73.92862,NYC Parks GreenThumb,,,Cross Streets: Patchen Avenue & Malcolm X Blvd.; Borough: B; Neighborhood: BK35 /
+Garden of Eden,community_garden,1664 Weeks Avenue,40.843463,-73.907396,NYC Parks GreenThumb,,,Cross Streets: At E. 173rd Street; Borough: X; Neighborhood: BX41 /
+Garden of Happiness,community_garden,2160 Prospect Avenue,40.848556,-73.884968,NYC Parks GreenThumb,,,Cross Streets: E 181st & E 182nd Streets; Borough: X; Neighborhood: BX17 /
+Garden of Hope,community_garden,392 Hancock Street,40.683441,-73.940104,NYC Parks GreenThumb,,,Cross Streets: Throop & Marcus Garvey Blvd; Borough: B; Neighborhood: BK35 /
+Garden of Life,community_garden,1665 Weeks Avenue,40.843507,-73.907956,NYC Parks GreenThumb,,,Cross Streets: At E. 173rd Street; Borough: X; Neighborhood: BX41 /
+Garden of Life (Brooklyn),community_garden,762 Herkimer Street,40.678288,-73.928309,NYC Parks GreenThumb,,,Cross Streets: Corner of Hunterfly Place; Borough: B; Neighborhood: BK61 /
+Garden of Love,community_garden,304 West 116th Street,40.80442,-73.956109,NYC Parks GreenThumb,,,Cross Streets: Fredrick Douglass Blvd. & Manhattan Avenue; Borough: M; Neighborhood: MN11 /
+Garden of Plenty,community_garden,19 Hunterfly Place,40.677629,-73.928061,NYC Parks GreenThumb,,,Cross Streets: Herkimer Street and Atlantic Avenue; Borough: B; Neighborhood: BK61 /
+Garden of Resilience,community_garden,179-18 145th Drive,40.66381,-73.765668,NYC Parks GreenThumb,,,Cross Streets: ; Borough: Q; Neighborhood: QN03 /
+Garden of Union (Annie's Garden),community_garden,634 Union Street,40.676961,-73.982565,NYC Parks GreenThumb,,,Cross Streets: 4th & 5th Avenues; Borough: B; Neighborhood: BK37 /
+Garden of the Humanitarians,community_garden,272 East 4th Street,40.722552,-73.981377,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Gatehouse Garden,community_garden,1195 Amsterdam Ave,40.808437,-73.959582,NYC Parks GreenThumb,,,Cross Streets: 118th and 119th St.; Borough: M; Neighborhood: MN09 /
+Gates Harvest Garden,community_garden,953 Gates Avenue,40.689085,-73.927645,NYC Parks GreenThumb,,,Cross Streets: Patchen & Malcolm X; Borough: B; Neighborhood: BK35 /
+Genesis Community Garden,community_garden,1185 Franklin Avenue,40.829635,-73.904554,NYC Parks GreenThumb,,,Cross Streets: E. 167th & E. 168th Streets.; Borough: X; Neighborhood: BX35 /
+George Eagle Carr Community Garden,community_garden,89-23 148th Street,40.70387,-73.807444,NYC Parks GreenThumb,,,Cross Streets: 89th & 90th Avenues; Borough: Q; Neighborhood: QN61 /
+George Washington Carver Botanical Garden,community_garden,109-19 156th Street,40.692392,-73.794831,NYC Parks GreenThumb,,,Cross Streets: 156th St between 109 ave and 110 ave; Borough: Q; Neighborhood: QN01 /
+George Washington Carver Community Garden,community_garden,110 Walton Street,40.702776,-73.947957,NYC Parks GreenThumb,,,Cross Streets: Harrison Ave & Throop; Borough: B; Neighborhood: BK75 /
+Georgia Avenue Community Garden,community_garden,328 New Lots Avenue,40.661005,-73.894443,NYC Parks GreenThumb,,,Cross Streets: At Georgia Avenue; Borough: B; Neighborhood: BK85 /
+Gethsemane Garden,community_garden,148 Newport Street,40.659015,-73.909645,NYC Parks GreenThumb,,,Cross Streets: Chester & Bristol Streets; Borough: B; Neighborhood: BK81 /
+Gil Hodges (Carroll Street Garden),community_garden,534 Carroll Street,40.676273,-73.984765,NYC Parks GreenThumb,,,Cross Streets: Carroll St. and Denton Place; Borough: B; Neighborhood: BK37 /
+Glover Street Community Garden,community_garden,1636 Castle Hill Avenue,40.838594,-73.852619,NYC Parks GreenThumb,,,Cross Streets: Intersection of Castle Hill & Glover Street; Borough: X; Neighborhood: BX59 /
+Go Vertical,community_garden,479 Milford Street,40.667523,-73.874329,NYC Parks GreenThumb,,,Cross Streets: Dumont Ave & Hegeman Ave; Borough: B; Neighborhood: BK82 /
+Good Life Garden,community_garden,46 Goodwin Place,40.691237,-73.923676,NYC Parks GreenThumb,,,Cross Streets: Grove street & Goodwin Pl; Borough: B; Neighborhood: BK78 /
+Good Shepherds Community Group,community_garden,555 Shepherd Avenue,40.670771,-73.879673,NYC Parks GreenThumb,,,Cross Streets: Sutter & Blake Avenues; Borough: B; Neighborhood: BK82 /
+Grand Street Community Garden,community_garden,239 Grand Street,40.713787,-73.958936,NYC Parks GreenThumb,,,Cross Streets: btw Driggs Ave & Roebling St; Borough: B; Neighborhood: BK73 /
+Granite Street Community Garden,community_garden,30 Granite Street,40.68239,-73.907602,NYC Parks GreenThumb,,,Cross Streets: Bushwick Ave & Broadway; Borough: B; Neighborhood: BK78 /
+Grant Shade Garden- Grant Houses (NYCHA),community_garden,550 West 125 Street,40.81383,-73.957909,NYC Parks GreenThumb,,,Cross Streets: West 125th street & AmsterdanAve.; Borough: M; Neighborhood: MN09 /
+Green Dome,community_garden,229 North 12th Street,40.719516,-73.952969,NYC Parks GreenThumb,,,Cross Streets: Driggs and Union (On McArren Square); Borough: B; Neighborhood: BK73 /
+Green Gems,community_garden,147 Fountain Avenue,40.676659,-73.875415,NYC Parks GreenThumb,,,Cross Streets: Glenmore Ave. & Liberty Ave.; Borough: B; Neighborhood: BK82 /
+Green Oasis Community Garden / Gilbert's Garden,community_garden,372 East 8th Street,40.724085,-73.97756,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+Green Patch on Walton,community_garden,110 East 176th Street,40.847916,-73.909331,NYC Parks GreenThumb,,,Cross Streets: At Walton Avenue; Borough: X; Neighborhood: BX41 /
+Green Space at President Street,community_garden,222 5th Avenue,40.675973,-73.981084,NYC Parks GreenThumb,,,Cross Streets: President Street and 5th Ave.; Borough: B; Neighborhood: BK37 /
+Green Valley Garden,community_garden,93 New Lots Avenue,40.658185,-73.901811,NYC Parks GreenThumb,,,Cross Streets: Powell Street and Sachman Street; Borough: B; Neighborhood: BK81 /
+GreenSpace Native Plant Community Garden and Environmental Center,community_garden,207 4th Avenue,40.677667,-73.982381,NYC Parks GreenThumb,,,Cross Streets: Union and Sackett Streets; Borough: B; Neighborhood: BK37 /
+Greene Acres Community Garden,community_garden,349 Greene Ave,40.687676,-73.957538,NYC Parks GreenThumb,,,Cross Streets: corner of Greene Ave; Borough: B; Neighborhood: BK75 /
+Greene Avenue United Neighbors Community Garden,community_garden,490 Greene Avenue,40.688154,-73.951282,NYC Parks GreenThumb,,,Cross Streets: At Nostrand Avenue; Borough: B; Neighborhood: BK75 /
+Greene Garden,community_garden,2 South Portland Avenue,40.689569,-73.975419,NYC Parks GreenThumb,,,Cross Streets: At DeKalb Avenue; Borough: B; Neighborhood: BK68 /
+Gregory's Garden,community_garden,444 Warwick Street,40.67266,-73.885939,NYC Parks GreenThumb,,,Cross Streets: Belmont & Pitkin Avenues; Borough: B; Neighborhood: BK82 /
+Hancock Community Backyard Garden Park,community_garden,322 Hancock Street,40.6831,-73.94309,NYC Parks GreenThumb,,,Cross Streets: Throop and Tompkins; Borough: B; Neighborhood: BK75 /
+Hands & Heart (New Lots Urban Farm),community_garden,290 New Lots Avenue,40.66074,-73.895554,NYC Parks GreenThumb,,,Cross Streets: New Lots Avenue At Alabama Avenue; Borough: B; Neighborhood: BK85 /
+Harding Park Community Garden,community_garden,905 Harding Park,40.80756,-73.857467,NYC Parks GreenThumb,,,Cross Streets: Corner of Leland Avenue and North Street; Borough: X; Neighborhood: BX09 /
+Harlem Grows 127th Street Learning Annex,community_garden,128 West 127th Street,40.809455,-73.946045,NYC Parks GreenThumb,,,Cross Streets: Lenox Ave. and Adam Clayton Powell Blvd.; Borough: M; Neighborhood: MN03 /
+Harlem Grows 131st Street Farm,community_garden,34 West 131st Street,40.810696,-73.941247,NYC Parks GreenThumb,,,Cross Streets: btw 5th & Lenox  Avenues; Borough: M; Neighborhood: MN03 /
+Harlem Grows 134th Street Farm,community_garden,116 West 134th Street,40.813804,-73.942816,NYC Parks GreenThumb,,,Cross Streets: Lenox Avenue & Adam Clayton Powell Blvd.; Borough: M; Neighborhood: MN03 /
+Harlem Grows 134th Street Green House,community_garden,126 West 134th Street,40.813931,-73.943116,NYC Parks GreenThumb,,,Cross Streets: Malcolm X Blvd. and Adam Clayton Powell Jr. Blvd.; Borough: M; Neighborhood: MN03 /
+Harlem Grows P.S. 125 Community Garden,community_garden,425 West 123rd Street,40.810791,-73.955726,NYC Parks GreenThumb,,,Cross Streets: Morningside Ave. and Amsterdam Ave.; Borough: M; Neighborhood: MN09 /
+Harlem Roots Community Garden,community_garden,203 W. 120th Street,40.806224,-73.951109,NYC Parks GreenThumb,,,Cross Streets: Adam C. Powell Blvd. & Street Nicholas Avenue; Borough: M; Neighborhood: MN11 /
+Harlem Rose Garden,community_garden,8 East 129th Street,40.808505,-73.939916,NYC Parks GreenThumb,,,Cross Streets: Btwn 5th & Madison; Borough: M; Neighborhood: MN03 /
+Harlem Valley Garden,community_garden,197 West 134th Street,40.814612,-73.943556,NYC Parks GreenThumb,,,Cross Streets: Adam Clayton Powell Jr. Blvd. and West 134th St.; Borough: M; Neighborhood: MN03 /
+Harlem Village Green,community_garden,54 W 129th Street,40.809794,-73.942975,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN03 /
+Hart to Hart Community Garden,community_garden,108 Hart Street,40.693106,-73.947312,NYC Parks GreenThumb,,,Cross Streets: Tompkins & Marcy; Borough: B; Neighborhood: BK75 /
+Hattie Carthan Community Garden,community_garden,719 Marcy Avenue,40.689338,-73.947992,NYC Parks GreenThumb,,,Cross Streets: Lafayette & Clifton; Borough: B; Neighborhood: BK75 /
+Hattie Carthan Herban Farm,community_garden,49 Van Buren St,40.690255,-73.943578,NYC Parks GreenThumb,,,Cross Streets: Tompkins Ave and Throop Ave; Borough: B; Neighborhood: BK75 /
+Havemeyer Garden Association,community_garden,512 Havemeyer Avenue,40.817606,-73.84454,NYC Parks GreenThumb,,,Cross Streets: Randall & Lacombe; Borough: X; Neighborhood: BX09 /
+Heaven's Gate Community Garden (Hart Street),community_garden,169 Hart Street,40.693882,-73.944606,NYC Parks GreenThumb,,,Cross Streets: Throop Ave. & Tompkins Ave.; Borough: B; Neighborhood: BK75 /
+Hendrix Street Block Association Garden,community_garden,532 Hendrix Street,40.668531,-73.888494,NYC Parks GreenThumb,,,Cross Streets: Blake & Dumont Avenues; Borough: B; Neighborhood: BK82 /
+Her-King Alagantic Community Garden,community_garden,411 Herkimer Street,40.679318,-73.939658,NYC Parks GreenThumb,,,Cross Streets: Kingston Ave. & Albany Ave.; Borough: B; Neighborhood: BK61 /
+Herb Garden (formerly 111th St. Betterment Assoc.),community_garden,176 E 111th Street,40.794874,-73.943208,NYC Parks GreenThumb,,,Cross Streets: 3rd Ave. & Lexington Ave.; Borough: M; Neighborhood: MN33 /
+Herbal Garden of East New York,community_garden,281 Schenck Avenue,40.673947,-73.888748,NYC Parks GreenThumb,,,Cross Streets: Glenmore and Pitkin Ave.; Borough: B; Neighborhood: BK82 /
+Highland Park Community Garden,community_garden,400 Jamaica Avenue,40.682589,-73.887645,NYC Parks GreenThumb,,,Cross Streets: Ashford & Warwick; Borough: B; Neighborhood: BK83 /
+Hill Street Community Garden,community_garden,50 Hill Street,40.621465,-74.079872,NYC Parks GreenThumb,,,Cross Streets: Warren St & Tompkins Ave; Borough: R; Neighborhood: SI37 /
+Hispanos Unidos,community_garden,2035 Honeywell  Avenue,40.844078,-73.88353,NYC Parks GreenThumb,,,Cross Streets: corner of E 179th Street; Borough: X; Neighborhood: BX17 /
+Hollenback Community Garden,community_garden,460 Washington Avenue,40.685148,-73.965606,NYC Parks GreenThumb,,,Cross Streets: Gates & Greene Avenue; Borough: B; Neighborhood: BK69 /
+Home Depot Children's Garden,community_garden,421 East 117th Street,40.796483,-73.933859,NYC Parks GreenThumb,,,Cross Streets: btw 1st Ave and Pleasant; Borough: M; Neighborhood: MN34 /
+Hooper Grove,community_garden,375 South 5th Street,40.707972,-73.953619,NYC Parks GreenThumb,,,Cross Streets: at Hooper Street; Borough: B; Neighborhood: BK73 /
+Hope Garden,community_garden,193 East 2nd Street,40.722077,-73.984188,NYC Parks GreenThumb,,,Cross Streets: Btwn Avenues A & B; Borough: M; Neighborhood: MN22 /
+Hope Steven Garden,community_garden,1656 Amsterdam Avenue,40.823554,-73.949275,NYC Parks GreenThumb,,,Cross Streets: 142nd St & Hamilton Pl & Amsterdam Avenue; Borough: M; Neighborhood: MN04 /
+Hope Steven Garden,community_garden,"1656 Amsterdam Ave, New York, NY",40.8235826,-73.9493279,Manhattan Land Trust,Seasonal - check garden for hours,,
+Hornaday Community Garden,community_garden,851 Hornaday Place,40.847016,-73.882538,NYC Parks GreenThumb,,,Cross Streets: Mohegan Avenue & Crotona Pkwy; Borough: X; Neighborhood: BX17 /
+Howard Garden,community_garden,750 Howard Avenue,40.663584,-73.919339,NYC Parks GreenThumb,,,Cross Streets: Dumont & Blake; Borough: B; Neighborhood: BK81 /
+Hull Street Community Garden (NYRP),community_garden,145 Hull Street,40.679671,-73.911745,NYC Parks GreenThumb,,,Cross Streets: Hopkinson & Rockaway Avenues; Borough: B; Neighborhood: BK79 /
+Humacao Community Garden,community_garden,335 E 108th Street,40.791351,-73.939527,NYC Parks GreenThumb,,,Cross Streets: 1st & 2nd Avenues; Borough: M; Neighborhood: MN33 /
+Human Compass Community Garden,community_garden,134 Sackett Street,40.684898,-74.002502,NYC Parks GreenThumb,,,Cross Streets: Columbia At Sackett; Borough: B; Neighborhood: BK33 /
+Hylan Garden - Hylan Houses (NYCHA),community_garden,131 Moore street,40.704332,-73.940057,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK78 /
+ISO Student Farm,community_garden,514 Rockaway Avenue,40.667464,-73.910481,NYC Parks GreenThumb,,,Cross Streets: Sutter Ave. & Belmont Ave.; Borough: B; Neighborhood: BK81 /
+Imani Community Garden (Schenectady),community_garden,87 Schenectady Avenue,40.676314,-73.93289,NYC Parks GreenThumb,,,Cross Streets: btw Pacific St. and Dean St.; Borough: B; Neighborhood: BK61 /
+Imani II Community Garden,community_garden,1680 Pacific Street,40.676512,-73.932987,NYC Parks GreenThumb,,,Cross Streets: Schenectady Avenue and Utica Avenue; Borough: B; Neighborhood: BK61 /
+Infant Jesus Community Garden,community_garden,36 Aberdeen Street,40.68167,-73.905959,NYC Parks GreenThumb,,,Cross Streets: Bushwick Avenue & Broadway; Borough: B; Neighborhood: BK78 /
+Isabahlia Community Garden,community_garden,615 Saratoga Avenue,40.665838,-73.916236,NYC Parks GreenThumb,,,Cross Streets: Dumont & Sutter Avenues; Borough: B; Neighborhood: BK81 /
+Isla Verde Garden,community_garden,625 Wales Avenue,40.814925,-73.906829,NYC Parks GreenThumb,,,Cross Streets: E. 151st; Borough: X; Neighborhood: BX34 /
+It's All About Brownsville,community_garden,754 Thomas Boyland Street,40.661978,-73.911973,NYC Parks GreenThumb,,,Cross Streets: At Livonia Avenue; Borough: B; Neighborhood: BK81 /
+Jackie Robinson Community Garden,community_garden,103 East 122nd Street,40.803085,-73.939773,NYC Parks GreenThumb,,,Cross Streets: At Park Avenue; Borough: M; Neighborhood: MN34 /
+Jamaica Community Garden,community_garden,"Jamaica, Queens, NY 11432",40.699835,-73.8077023,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Jane Bailey Memorial Garden,community_garden,327 Greene Avenue,40.687822,-73.958245,NYC Parks GreenThumb,,,Cross Streets: Franklin & Classon; Borough: B; Neighborhood: BK75 /
+Jane Street Garden,community_garden,36 Jane Street,40.738033,-74.004002,NYC Parks GreenThumb,,,Cross Streets: 8th Avenue; Borough: M; Neighborhood: MN23 /
+Jardin De Ternura,community_garden,"2078 Anthony Avenue, Bronx, NY",40.8529548,-73.9017209,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Jardin de Ternura,community_garden,2078 Anthony Avenue,40.852883,-73.901552,NYC Parks GreenThumb,,,Cross Streets: E. 180th Street & Burnside Avenue; Borough: X; Neighborhood: BX41 /
+Jardin de la Familia,community_garden,1507 Washington Avenue,40.837893,-73.903505,NYC Parks GreenThumb,,,Cross Streets: corner of East 171st Street; Borough: X; Neighborhood: BX01 /
+Jardin de las Rosas,community_garden,15 Buchanan Place,40.858114,-73.904791,NYC Parks GreenThumb,,,Cross Streets: Davidson & Jerome Avenues; Borough: X; Neighborhood: BX40 /
+Jardin la Roca,community_garden,438 East 160th Street,40.823206,-73.912985,NYC Parks GreenThumb,,,Cross Streets: between Elton Ave. and Melrose Ave.; Borough: X; Neighborhood: BX35 /
+Java Street Community Garden,community_garden,59 Java Street,40.731425,-73.958817,NYC Parks GreenThumb,,,Cross Streets: Franklin St. and West St.; Borough: B; Neighborhood: BK76 /
+Jefferson Market Garden,community_garden,421 AVENUE OF THE AMER,40.73424,-73.999123,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN23 /
+Jenny's Garden,community_garden,699 W 138th Street,40.82276,-73.955403,NYC Parks GreenThumb,,,Cross Streets: At 12th Avenue; Borough: M; Neighborhood: MN04 /
+Jerome Gardens,community_garden,447 Jerome Street,40.670585,-73.885812,NYC Parks GreenThumb,,,Cross Streets: At Sutter; Borough: B; Neighborhood: BK82 /
+Jerome-Glenmore Cornerstone,community_garden,314 Jerome Street,40.674091,-73.887216,NYC Parks GreenThumb,,,Cross Streets: At Glenmore; Borough: B; Neighborhood: BK82 /
+Jerry and the Senior Gents of E.N.Y.,community_garden,349 Schenck Avenue,40.672344,-73.888066,NYC Parks GreenThumb,,,Cross Streets: Belmont & Pitkin Avenues; Borough: B; Neighborhood: BK82 /
+Jes Good Rewards Children's Garden,community_garden,155 Amboy Street,40.666868,-73.913647,NYC Parks GreenThumb,,,Cross Streets: Sutter Avenue & Pitkin Avenue; Borough: B; Neighborhood: BK81 /
+Joe Holzka Community Garden,community_garden,1170 Castleton Avenue,40.633896,-74.121457,NYC Parks GreenThumb,,,Cross Streets: Barker Street & Castleton Avenue; Borough: R; Neighborhood: SI22 /
+John the Baptist Community Garden,community_garden,10 Stuyvesant Avenue,40.69638,-73.935048,NYC Parks GreenThumb,,,Cross Streets: Broadway & Vernon Ave.; Borough: B; Neighborhood: BK35 /
+Joseph Daniel Wilson Memorial Gardens,community_garden,219 W. 122nd Street,40.807621,-73.950533,NYC Parks GreenThumb,,,Cross Streets: Adam Clayton Powell / Frederick Douglass Blvd (7th & 8th); Borough: M; Neighborhood: MN11 /
+Juan Alonso Community Garden,community_garden,565 WEST 51 STREET,40.766507,-73.993765,NYC Parks GreenThumb,,,Cross Streets: 51st/11th Avenue; Borough: M; Neighborhood: MN15 /
+Karol's Urban Farm - Castle Hill Houses (NYCHA),community_garden,2225 Lacombe Avenue,40.818149,-73.84623,NYC Parks GreenThumb,,,Cross Streets: Castle Hill Avenue & Lacombe Avenue; Borough: X; Neighborhood: BX09 /
+Keap Fourth Community Garden,community_garden,347 Keap Street,40.709161,-73.954776,NYC Parks GreenThumb,,,Cross Streets: South 4th Street; Borough: B; Neighborhood: BK73 /
+Kenkeleba Memory Garden,community_garden,212 East 3rd Street,40.722299,-73.982676,NYC Parks GreenThumb,,,Cross Streets: Avenue B & C; Borough: M; Neighborhood: MN28 /
+Kingsbridge Heights Community Garden,community_garden,3101 Kingsbridge Terrace,40.877576,-73.900702,NYC Parks GreenThumb,,,Cross Streets: Perot St. & Summit PL; Borough: X; Neighborhood: BX28 /
+Know Waste Lands,community_garden,1278 Myrtle Avenue,40.697859,-73.925926,NYC Parks GreenThumb,,,Cross Streets: Union Ave. and Central Ave.; Borough: B; Neighborhood: BK78 /
+Kosciusko Street Garden and Learning Center,community_garden,385 Kosciusko Street,40.692232,-73.939347,NYC Parks GreenThumb,,,Cross Streets: Marcus Garvey Blvd and Lewis Avenue; Borough: B; Neighborhood: BK35 /
+Krystal Community Garden,community_garden,2093 Vyse Avenue,40.843795,-73.880914,NYC Parks GreenThumb,,,Cross Streets: 180th St and E. 179th St.  inside Vidalia Park; Borough: X; Neighborhood: BX17 /
+La Casita,community_garden,223 E. 119th Street,40.799658,-73.937486,NYC Parks GreenThumb,,,Cross Streets: 2nd & 3rd Avenue; Borough: M; Neighborhood: MN34 /
+La Casita Garden,community_garden,339 East 8th Street,40.725255,-73.978584,NYC Parks GreenThumb,,,Cross Streets: Ave. B and Ave. C; Borough: M; Neighborhood: MN28 /
+La Casita Verde Community Garden,community_garden,451 Bedford Avenue,40.707973,-73.964324,NYC Parks GreenThumb,,,Cross Streets: corner of Bedford ave and Division Ave.; Borough: B; Neighborhood: BK73 /
+La Cuevita Community Garden,community_garden,71 East 115th Street,40.799118,-73.944295,NYC Parks GreenThumb,,,Cross Streets: Madison & Park Avenue; Borough: M; Neighborhood: MN34 /
+La Finca Community Garden,community_garden,1034 Flushing Avenue,40.703903,-73.930402,NYC Parks GreenThumb,,,Cross Streets: Knickerbocker Avenue  & Noll Street; Borough: B; Neighborhood: BK77 /
+La Finca Del Sur,community_garden,175 East 138th Street,40.812889,-73.929667,NYC Parks GreenThumb,,,Cross Streets: corner of Grand Concourse and 138th St.; Borough: X; Neighborhood: BX39 /
+La Isla USA,community_garden,836 Elton Avenue,40.822749,-73.912426,NYC Parks GreenThumb,,,Cross Streets: E. 159th & E. 160th Streets.; Borough: X; Neighborhood: BX35 /
+La Isla Youth Community Garden,community_garden,96 West 163rd Street,40.831909,-73.929264,NYC Parks GreenThumb,,,Cross Streets: Woodycrest & Nelson; Borough: X; Neighborhood: BX26 /
+La Perla Community Garden,community_garden,76 W. 105th Street,40.798181,-73.963062,NYC Parks GreenThumb,,,Cross Streets: Columbus & Manhattan; Borough: M; Neighborhood: MN12 /
+La Perla Garden,community_garden,"78 W 105th St, New York, NY",40.7982416,-73.9628148,Manhattan Land Trust,Seasonal - check garden for hours,,Website: http://laperlagarden.org/
+La Plaza Cultural-Armando Perez,community_garden,674 East 9th Street,40.725554,-73.978631,NYC Parks GreenThumb,,,Cross Streets: At Avenue C; Borough: M; Neighborhood: MN28 /
+LaGuardia Corner Community Garden,community_garden,511 LaGuardia Place,40.727582,-73.998737,NYC Parks GreenThumb,,,Cross Streets: Bleecker & Houston Streets.; Borough: M; Neighborhood: MN23 /
+Las Casitas Community Garden,community_garden,1130 Woodycrest Avenue,40.835574,-73.925408,NYC Parks GreenThumb,,,Cross Streets: 166th Street / 167th Street; Borough: X; Neighborhood: BX26 /
+Latinos Unidos,community_garden,427 East 157th Street,40.821557,-73.914125,NYC Parks GreenThumb,,,Cross Streets: Elton & Melrose Avenues; Borough: X; Neighborhood: BX34 /
+Le Petit Versailles Garden,community_garden,247 East 2nd Street,40.721133,-73.981792,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Leave It Better Community Garden,community_garden,1974 Grand Avenue,40.852317,-73.910507,NYC Parks GreenThumb,,,Cross Streets: At West Tremont Ave; Borough: X; Neighborhood: BX36 /
+Lefferts Place Community Garden,community_garden,162 Lefferts Place,40.680369,-73.957629,NYC Parks GreenThumb,,,Cross Streets: Classon & Franklin; Borough: B; Neighborhood: BK69 /
+Lentol Garden,community_garden,478 Graham Avenue,40.719702,-73.945689,NYC Parks GreenThumb,,,Cross Streets: Bayard Street and Meeker Ave; Borough: B; Neighborhood: BK76 /
+Liberty Collective Learning Gardeners,community_garden,106-17 173rd Street,40.701593,-73.783387,NYC Parks GreenThumb,,,Cross Streets: ; Borough: Q; Neighborhood: QN01 /
+Life Spire,community_garden,2015 Lexington Avenue,40.802579,-73.938451,NYC Parks GreenThumb,,,Cross Streets: E.122 & E.123 Streets; Borough: M; Neighborhood: MN34 /
+Lincoln Road Garden,community_garden,316 Lincoln Road,40.661233,-73.952253,NYC Parks GreenThumb,,,Cross Streets: Nostrand & Rogers; Borough: B; Neighborhood: BK60 /
+Lincoln-Berkeley Community Garden,community_garden,20 Lincoln Place,40.677188,-73.978964,NYC Parks GreenThumb,,,Cross Streets: between 5th & 6th Ave.; Borough: B; Neighborhood: BK37 /
+Linden Boulevard Community Garden,community_garden,178-22 Linden Boulevard,40.692424,-73.769621,NYC Parks GreenThumb,,,Cross Streets: 178th st. At traingle 115th Avenue; Borough: Q; Neighborhood: QN08 /
+Linden Bushwick - Calvary Methodist Church,community_garden,1885 UNIVERSITY AVENUE,40.852621,-73.913724,NYC Parks GreenThumb,,,Cross Streets: W. Burnside & W. Tremont; Borough: X; Neighborhood: BX36 /
+Linwood Street Garden,community_garden,580 Linwood Street,40.670929,-73.881846,NYC Parks GreenThumb,,,Cross Streets: at Linwood St.; Borough: B; Neighborhood: BK82 /
+Little Paradise,community_garden,"1062 Grant Avenue, Bronx, NY",40.8300792,-73.9169177,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Little Paradise Community Garden,community_garden,1062 Grant Avenue,40.830311,-73.916593,NYC Parks GreenThumb,,,Cross Streets: E. 165th & E. 166th Streets; Borough: X; Neighborhood: BX14 /
+Living Laboratory Community Garden,community_garden,289 Bristol Street,40.664269,-73.911271,NYC Parks GreenThumb,,,Cross Streets: Livonia Ave & Riverdale Ave; Borough: B; Neighborhood: BK81 /
+Liz Christy Garden,community_garden,110 E Houston Street,40.724153,-73.991883,NYC Parks GreenThumb,,,Cross Streets: The Bowery & 2nd Avenue; Borough: M; Neighborhood: MN22 /
+Long Island City Community Garden,community_garden,5-30 49th Avenue,40.743432,-73.955078,NYC Parks GreenThumb,,,Cross Streets: Vernon Blvd. and 5th St.; Borough: Q; Neighborhood: QN31 /
+Los Amigos,community_garden,221 East 3rd Street,40.722513,-73.982027,NYC Parks GreenThumb,,,Cross Streets: Avenue B & C; Borough: M; Neighborhood: MN28 /
+Los Amigos Garden NYRP,community_garden,326 Pleasant Avenue,40.796076,-73.93205,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN34 /
+Lower East Side Community Garden,community_garden,"Lower East Side, New York, NY 10002",40.7159357,-73.9868057,Lungs NYC,"April 1 - October 31, weekends mainly",,Historic community gardens in Lower Manhattan
+Lower East Side People Care,community_garden,25 Rutgers Street,40.713006,-73.989824,NYC Parks GreenThumb,,,Cross Streets: Henry & Madison; Borough: M; Neighborhood: MN28 /
+Lower East Side People Care,community_garden,"25 Rutgers St, New York, NY",40.7128513,-73.9899047,Manhattan Land Trust,Seasonal - check garden for hours,,
+Lucille McClarey Wicked Friendship Garden,community_garden,499 West 150th Street,40.828797,-73.945654,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN04 /
+Luigi's Garden of Love,community_garden,227 West 115th Street,40.803355,-73.954354,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN11 /
+Lydia's Magic Garden (El Girasol Magic Garden),community_garden,1665 Park Avenue,40.800083,-73.942206,NYC Parks GreenThumb,,,Cross Streets: 117th St. and 118th Street; Borough: M; Neighborhood: MN34 /
+M'finda Kalunga Garden,community_garden,165 Forsyth Street,40.720851,-73.991605,NYC Parks GreenThumb,,,Cross Streets: Christie & Delancy; Borough: M; Neighborhood: MN27 /
+M.S. 210 - YMCA Beacon Center Garden,community_garden,93-11 101 AVENUE,40.684761,-73.847633,NYC Parks GreenThumb,,,Cross Streets: 93rd & 94th streets; Borough: Q; Neighborhood: QN53 /
+Madison Hill Community Garden,community_garden,90 Madison Street,40.683926,-73.955464,NYC Parks GreenThumb,,,Cross Streets: Bedford Avenue & Franklin Avenue; Borough: B; Neighborhood: BK69 /
+Madison Street Association,community_garden,974 Madison Street,40.688824,-73.918854,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK78 /
+Maggie's Garden,community_garden,564 West 149th Street,40.828532,-73.948126,NYC Parks GreenThumb,,,Cross Streets: Amsterdam & Broadway; Borough: M; Neighborhood: MN04 /
+Maggie's Magic Garden,community_garden,1574 Lexington Avenue,40.788767,-73.949172,NYC Parks GreenThumb,,,Cross Streets: E. 101 St & E. 100th St.; Borough: M; Neighborhood: MN33 /
+Magnolia Tree Community Garden,community_garden,668 St. Ann's Avenue,40.817223,-73.911208,NYC Parks GreenThumb,,,Cross Streets: Westchester Avenue & 156th Street; Borough: X; Neighborhood: BX34 /
+Malcolm X Garden,community_garden,33-12 112th Street,40.757571,-73.857711,NYC Parks GreenThumb,,,Cross Streets: corner of 111-26 Northern Blvd and 112th Street; Borough: Q; Neighborhood: QN26 /
+Mama Dee's Community Garden,community_garden,1397 Bedford Avenue,40.675224,-73.953076,NYC Parks GreenThumb,,,"Cross Streets: corner of St. Mark""s Ave.; Borough: B; Neighborhood: BK61 /"
+Manor Avenue Seniors Garden,community_garden,1021 Manor Avenue,40.82467,-73.87568,NYC Parks GreenThumb,,,Cross Streets: Bruckner Blvd & Watson; Borough: X; Neighborhood: BX55 /
+Manor Avenue Seniors Garden,community_garden,"1021 Manor Avenue, Bronx, NY",40.8247132,-73.8755139,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Mapes Avenue Garden,community_garden,2124 Mapes Avenue,40.847126,-73.884761,NYC Parks GreenThumb,,,Cross Streets: At E. 181st Street; Borough: X; Neighborhood: BX17 /
+Mapes Avenue Garden,community_garden,"2124 Mapes Avenue, Bronx, NY",40.847192,-73.884921,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Maple Street Community Garden,community_garden,237 Maple Street,40.66091,-73.952787,NYC Parks GreenThumb,,,Cross Streets: between Bedford and Prospect; Borough: B; Neighborhood: BK60 /
+Marble Hill Garden - Marble Hill Houses (NYCHA),community_garden,5240 Broadway,40.874868,-73.907826,NYC Parks GreenThumb,,,Cross Streets: Broadway & West 228th; Borough: X; Neighborhood: MN01 /
+Marcus Garvey Farm,community_garden,251 CHESTER STREET,40.66566,-73.910541,NYC Parks GreenThumb,,,Cross Streets: Blake Ave. and Dumont Ave.; Borough: B; Neighborhood: BK81 /
+Marge Matthews Garden,community_garden,13 Louis Place,40.677402,-73.917321,NYC Parks GreenThumb,,,Cross Streets: Louis Pl. between Herkimer St. and Atlantic Ave.; Borough: B; Neighborhood: BK79 /
+Marie Brooks Community Garden,community_garden,722 Home Street,40.82819,-73.902651,NYC Parks GreenThumb,,,Cross Streets: Corner of Jackson & Home Street; Borough: X; Neighborhood: BX35 /
+McIntosh Neighborhood Association Garden,community_garden,25-16 McIntosh Street,40.764081,-73.869527,NYC Parks GreenThumb,,,Cross Streets: 27th Avenue & 25th Avenue  (25-16 McIntosh Street); Borough: Q; Neighborhood: QN27 /
+McLeod Community Garden,community_garden,130 Liberty Avenue,40.672867,-73.905329,NYC Parks GreenThumb,,,Cross Streets: Sackman & Powell Streets.; Borough: B; Neighborhood: BK81 /
+Melrose Houses Community Garden - Melrose Houses (NYCHA),community_garden,345 East 153rd Street,40.820762,-73.919546,NYC Parks GreenThumb,,,Cross Streets: Morris Ave and courtland ave; Borough: X; Neighborhood: BX34 /
+Melrose New Generation Community Garden,community_garden,377 East 160th Street,40.82403,-73.914906,NYC Parks GreenThumb,,,Cross Streets: Melrose and Courtland Ave.; Borough: X; Neighborhood: BX35 /
+Merrick-Marsden Neighborhood Association Garden,community_garden,118-18 Merrick Boulevard,40.686175,-73.7742,NYC Parks GreenThumb,,,Cross Streets: 119th Avenue; Borough: Q; Neighborhood: QN08 /
+Merrick-Marsden Neighborhood Association Garden II,community_garden,117-02 Merrick Boulevard,40.686739,-73.775038,NYC Parks GreenThumb,,,Cross Streets: corner of Foch and Merrick Blvd  (170-148 Foch Blvd.); Borough: Q; Neighborhood: QN08 /
+Mildred T. Rhodebeck Garden (Garden of Eden),community_garden,927 Faile Street,40.821509,-73.889647,NYC Parks GreenThumb,,,Cross Streets: N/W corner of Bruckner Boulevard & Faile Street; Borough: X; Neighborhood: BX27 /
+Miracle Garden,community_garden,194 East 3rd Street,40.722667,-73.983567,NYC Parks GreenThumb,,,Cross Streets: Avenues A & B; Borough: M; Neighborhood: MN22 /
+Miracle Garden - Bronx,community_garden,851 Fairmont Place,40.842086,-73.887546,NYC Parks GreenThumb,,,Cross Streets: At Marmion Ave.; Borough: X; Neighborhood: BX17 /
+Miraflores Community Garden,community_garden,900 Broadway,40.697748,-73.936994,NYC Parks GreenThumb,,,Cross Streets: between Stockton St & Arion Pl; Borough: B; Neighborhood: BK35 /
+Mission Garden,community_garden,65 East 111th Street,40.796772,-73.946059,NYC Parks GreenThumb,,,Cross Streets: 111th & 112th Streets.; Borough: M; Neighborhood: MN33 /
+Mo' Pals,community_garden,545 West 147th Street,40.827506,-73.94839,NYC Parks GreenThumb,,,Cross Streets: Amsterdam & Broadway; Borough: M; Neighborhood: MN04 /
+Mo' Pals Garden,community_garden,"545 W 147th St, New York, NY",40.8275841,-73.9483368,Manhattan Land Trust,Seasonal - check garden for hours,,
+MoCADA Ubuntu Garden,community_garden,48 Lafayette Avenue,40.686825,-73.97679,NYC Parks GreenThumb,,,Cross Streets: Fort Greene Pl; Borough: B; Neighborhood: BK68 /
+Mobilization For Change Community Garden,community_garden,955 Columbus Avenue,40.799704,-73.962184,NYC Parks GreenThumb,,,Cross Streets: bet. 106th & 107th Streets; Borough: M; Neighborhood: MN09 /
+Model T Community Garden,community_garden,1312 Bristow Street,40.830963,-73.894058,NYC Parks GreenThumb,,,Cross Streets: Jennings & Freeman; Borough: X; Neighborhood: BX75 /
+Moffat Street Community Garden,community_garden,9 Moffat Street,40.683581,-73.910654,NYC Parks GreenThumb,,,Cross Streets: Broadway and Bushwick Ave.; Borough: B; Neighborhood: BK78 /
+Montauk Atkins Community Garden,community_garden,214 Montauk Avenue,40.673887,-73.87789,NYC Parks GreenThumb,,,Cross Streets: Pitkin & Belmont Avenues; Borough: B; Neighborhood: BK82 /
+Monty's Bradford Street Garden,community_garden,522 Bradford Street,40.666041,-73.890784,NYC Parks GreenThumb,,,Cross Streets: Livonia & Dumont; Borough: B; Neighborhood: BK85 /
+Moravian Community Garden,community_garden,1657 Victory Boulevard,40.613716,-74.118996,NYC Parks GreenThumb,,,Cross Streets: Todt Hill Rd; Borough: R; Neighborhood: SI07 /
+Morning Glory Community Garden,community_garden,1221 Hoe Avenue,40.829456,-73.891148,NYC Parks GreenThumb,,,Cross Streets: Freeman St. & Hoe St.; Borough: X; Neighborhood: BX35 /
+Morris Jumel Community Garden,community_garden,457 West 162nd Street,40.835777,-73.939143,NYC Parks GreenThumb,,,Cross Streets: Edgecomb & Street Nic/Amsterdam; Borough: M; Neighborhood: MN36 /
+Mujeres en Movimento Huerto Comunitario,community_garden,55-25 Van Cleef Street,40.740967,-73.852752,NYC Parks GreenThumb,,,Cross Streets: 120th Avenue; Borough: Q; Neighborhood: QN25 /
+Myrtle Village Green,community_garden,636 Myrtle Avenue,40.693553,-73.958743,NYC Parks GreenThumb,,,Cross Streets: Kent Ave. and Franklin Ave.; Borough: B; Neighborhood: BK69 /
+NYRP Members Garden (Dalia Group),community_garden,724 Courtlandt Avenue,40.820862,-73.917288,NYC Parks GreenThumb,,,Cross Streets: E 155th & E 156th; Borough: X; Neighborhood: BX34 /
+Nehemiah 10 Community Garden,community_garden,565 Barbey Street,40.66868,-73.886021,NYC Parks GreenThumb,,,Cross Streets: Blake &  Dumont; Borough: B; Neighborhood: BK82 /
+Neighborhood Advisory Committee Community Garden,community_garden,360 E. 151st Street,40.817613,-73.918473,NYC Parks GreenThumb,,,Cross Streets: Courtlandt & Melrose Avenues; Borough: X; Neighborhood: BX34 /
+Neighborhood Advisory Committee Community Garden,community_garden,"360 East 151st Street, Bronx, NY",40.8179382,-73.9191239,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Neighbors of Vega Baja,community_garden,320 E. 109th Street,40.791938,-73.940162,NYC Parks GreenThumb,,,Cross Streets: 1st & 2nd Avenues; Borough: M; Neighborhood: MN33 /
+New Beginnings Community Garden,community_garden,2502 Davidson Avenue,40.86421,-73.900849,NYC Parks GreenThumb,,,Cross Streets: At 190th Street; Borough: X; Neighborhood: BX30 /
+New Hoe Avenue Garden,community_garden,958 Hoe Avenue,40.822703,-73.890104,NYC Parks GreenThumb,,,Cross Streets: Aldus St. and E. 163rd St.; Borough: X; Neighborhood: BX27 /
+New Jersey Avenue Community Garden,community_garden,476 New Jersey Ave,40.667466,-73.894011,NYC Parks GreenThumb,,,Cross Streets: Blake & Dumont; Borough: B; Neighborhood: BK85 /
+New Madison Harvest Community Garden,community_garden,894 Madison Street,40.687786,-73.921873,NYC Parks GreenThumb,,,Cross Streets: Howard & Ralph; Borough: B; Neighborhood: BK35 /
+New Roots Community Farm,community_garden,670 Grand Concourse,40.821447,-73.925492,NYC Parks GreenThumb,,,Cross Streets: corner of East 153rd St.; Borough: X; Neighborhood: BX14 /
+Newkirk Community Garden,community_garden,736 East 8th Street,40.63224,-73.968353,NYC Parks GreenThumb,,,Cross Streets: Newkirk Avenue; Borough: B; Neighborhood: BK42 /
+Newport Garden,community_garden,195 Newport Street,40.659697,-73.907878,NYC Parks GreenThumb,,,Cross Streets: btw Alabama Ave. and Georgia Ave.; Borough: B; Neighborhood: BK81 /
+Nick's Garden,community_garden,776 LORIMER STREET,40.720218,-73.950649,NYC Parks GreenThumb,,,Cross Streets: Lorimer and Bayard Streets; Borough: B; Neighborhood: BK73 /
+Northside Community Garden,community_garden,599 Driggs Avenue,40.715892,-73.957354,NYC Parks GreenThumb,,,Cross Streets: btw N. 5th & N. 6th Street; Borough: B; Neighborhood: BK73 /
+Nos Cuidamos Community Garden,community_garden,104 Moore Street,40.703668,-73.941316,NYC Parks GreenThumb,,,Cross Streets: Graham Ave. & Humbolt Street; Borough: B; Neighborhood: BK90 /
+Oak Grove Pentecostal Holiness Church,community_garden,2176 FULTON STREET,40.677959,-73.909494,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK79 /
+Oasis Community Garden,community_garden,505 West 52nd Street,40.76631,-73.991228,NYC Parks GreenThumb,,,Cross Streets: 10th & 11th Avenue; Borough: M; Neighborhood: MN15 /
+Oasis on the Green,community_garden,1981 Lafontaine Ave.,40.84717,-73.894249,NYC Parks GreenThumb,,,Cross Streets: E. 178th & LaFontaine Avenue; Borough: X; Neighborhood: BX17 /
+Oasis on the Green,community_garden,"1981 Lafontaine Avenue, Bronx, NY",40.8470844,-73.8941019,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Olga's El Gallo Community Garden,community_garden,1891-1895 Lexington Avenue,40.799665,-73.940574,NYC Parks GreenThumb,,,Cross Streets: At E. 118th Street; Borough: M; Neighborhood: MN34 /
+Olive Street Garden,community_garden,25 Olive Street,40.713345,-73.939057,NYC Parks GreenThumb,,,Cross Streets: At Powers St. & Devoe St.; Borough: B; Neighborhood: BK90 /
+Olivet Heavenly Harvest,community_garden,97 Myrtle Avenue,40.630199,-74.115963,NYC Parks GreenThumb,,,Cross Streets: ; Borough: R; Neighborhood: SI35 /
+Orchard Alley,community_garden,350 East 4th Street,40.72131,-73.978441,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+Orient Grove,community_garden,2 Orient Avenue,40.714808,-73.940336,NYC Parks GreenThumb,,,Cross Streets: Metropolitan Ave. & Olive St.; Borough: B; Neighborhood: BK90 /
+Oriental Garden,community_garden,326 Jerome Street,40.67383,-73.887151,NYC Parks GreenThumb,,,Cross Streets: Glenmore & Pitkin; Borough: B; Neighborhood: BK82 /
+Our Little Green Acre (Garden Eight),community_garden,277 West 122nd Street,40.808226,-73.952065,NYC Parks GreenThumb,,,Cross Streets: At Frederick Douglass Blvd.; Borough: M; Neighborhood: MN11 /
+Our Neighborhood Place,community_garden,77 West 127th Street,40.808996,-73.943777,NYC Parks GreenThumb,,,Cross Streets: Lenox Ave. and 5th Ave.; Borough: M; Neighborhood: MN03 /
+P.S. 84 - The Dream Garden and Garden of Angels,community_garden,59 WEST 91 STREET,40.789479,-73.968423,NYC Parks GreenThumb,,,Cross Streets: Central Park West; Borough: M; Neighborhood: MN12 /
+Pa'lante Community Garden,community_garden,1651 Madison Avenue,40.796166,-73.947331,NYC Parks GreenThumb,,,Cross Streets: At E. 110th Street; Borough: M; Neighborhood: MN33 /
+Pacific Street Garden,community_garden,"Pacific St, Brooklyn, NY 11217",40.6885848,-73.9911106,,,,
+Padre Plaza,community_garden,545 East 139th Street,40.807847,-73.917799,NYC Parks GreenThumb,,,Cross Streets: Corner of Saint Anne`s Avenue & East 139th Street; Borough: X; Neighborhood: BX39 /
+Palmas Del Caribe,community_garden,"869 Eagle Avenue, Bronx, NY",40.8224041,-73.9084394,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Palmas del Caribe (Eagle Avenue Community Garden),community_garden,869 Eagle Avenue,40.822044,-73.908763,NYC Parks GreenThumb,,,Cross Streets: ; Borough: X; Neighborhood: BX34 /
+Papo's Garden,community_garden,220 E. 119th Street,40.799249,-73.937696,NYC Parks GreenThumb,,,Cross Streets: 2nd & 3rd; Borough: M; Neighborhood: MN34 /
+Papo's Garden,community_garden,"220 E 119th St, New York, NY",40.799582,-73.9381144,Manhattan Land Trust,Seasonal - check garden for hours,,
+Paradise Community Garden,community_garden,686 Glenmore Avenue,40.674654,-73.884904,NYC Parks GreenThumb,,,Cross Streets: Ashford St. & Cleveland St.; Borough: B; Neighborhood: BK82 /
+Paradise Community Garden NY,community_garden,107-29 Inwood Street,40.690572,-73.804028,NYC Parks GreenThumb,,,Cross Streets: Lakewood & Shore Avenues; Borough: Q; Neighborhood: QN01 /
+Paradise on Earth Community Garden,community_garden,1105 Fox Street,40.826741,-73.894169,NYC Parks GreenThumb,,,Cross Streets: East 167th Street; Borough: X; Neighborhood: BX35 /
+Park Slope Community Garden,community_garden,"Park Slope, Brooklyn, NY 11215",40.6701033,-73.9859723,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Parque De Tranquilidad,community_garden,314 East 4th Street,40.721838,-73.979689,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+Patchen Avenue Garden,community_garden,49 Patchen Avenue,40.690732,-73.927322,NYC Parks GreenThumb,,,Cross Streets: btw Lexington Ave. and Greene Ave.; Borough: B; Neighborhood: BK35 /
+Patchen Community Square Garden,community_garden,142 Patchen Avenue,40.686483,-73.927071,NYC Parks GreenThumb,,,Cross Streets: corner of Putnam Ave. and Patchen Ave.; Borough: B; Neighborhood: BK35 /
+Patrick Van Doren Pocket Park,community_garden,123 Malcolm X Boulevard,40.689444,-73.930075,NYC Parks GreenThumb,,,Cross Streets: corner of Quincy St.; Borough: B; Neighborhood: BK35 /
+Peaceful Valley,community_garden,52 East 117th Street,40.800188,-73.943817,NYC Parks GreenThumb,,,Cross Streets: At Madison Avenue; Borough: M; Neighborhood: MN34 /
+Peach Tree Garden,community_garden,236 East 2nd Street,40.721676,-73.98202,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Pembroke/Van Nostrand Court Garden,community_garden,253-15 Pembroke Avenue,40.770898,-73.734672,NYC Parks GreenThumb,,,Cross Streets: 254th St. & Little Neck Pkwy.; Borough: Q; Neighborhood: QN45 /
+Pennsylvania Avenue Garden,community_garden,"Pennsylvania Ave, Brooklyn, NY 11207",40.6646501,-73.894767,,,,
+People's Garden,community_garden,1323 Prospect Avenue,40.828719,-73.898235,NYC Parks GreenThumb,,,Cross Streets: corner of E. 168th St and Prospect Ave.; Borough: X; Neighborhood: BX35 /
+Perry's Garden,community_garden,"2139 Daly Avenue, Bronx, NY",40.8455945,-73.8810455,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Perry's Garden (Concerned Tenants of Daly Avenue),community_garden,2139 Daly Avenue,40.8459,-73.881022,NYC Parks GreenThumb,,,Cross Streets: 181st Street & Bronx Parkway South; Borough: X; Neighborhood: BX17 /
+Phoenix Community Garden,community_garden,16 Somers Street,40.67859,-73.912521,NYC Parks GreenThumb,,,Cross Streets: Corner of Fulton & Somers; Borough: B; Neighborhood: BK79 /
+Phoenix Gate Community Garden,community_garden,171-03 120th Avenue,40.683284,-73.774076,NYC Parks GreenThumb,,,"Cross Streets: 120th Avenue, 172nd St, 171st St. and Victoria Drive; Borough: Q; Neighborhood: QN08 /"
+Pink's Paradise Garden of Love - Pink Houses,community_garden,1258 Loring Avenue,40.666757,-73.864058,NYC Parks GreenThumb,,,Cross Streets: Loring Avenue & Autumn Avenue; Borough: B; Neighborhood: BK82 /
+Pirate's Cove Garden,community_garden,313 Columbia Street,40.681387,-74.004193,NYC Parks GreenThumb,,,Cross Streets: btw Hamilton Ave. and Woodhull St.; Borough: B; Neighborhood: BK33 /
+Ponderosa Garden,community_garden,660 East 105th Street,40.649653,-73.897056,NYC Parks GreenThumb,,,Cross Streets: north of Glenwood Rd.; Borough: B; Neighborhood: BK50 /
+Poplar Street Community Garden,community_garden,25 Poplar Street,40.70119,-73.993238,NYC Parks GreenThumb,,,Cross Streets: At Hicks St; Borough: B; Neighborhood: BK09 /
+Poppa & Momma Jones Historical Garden,community_garden,337 Van Siclen Avenue,40.671728,-73.890057,NYC Parks GreenThumb,,,Cross Streets: At Belmont; Borough: B; Neighborhood: BK82 /
+Positive Seeds of Life Garden,community_garden,554 Snediker Avenue,40.661279,-73.899215,NYC Parks GreenThumb,,,Cross Streets: Newport Ave. and Riverdale Ave.; Borough: B; Neighborhood: BK85 /
+Powell Street Garden,community_garden,410 Livonia Avenue,40.663361,-73.901847,NYC Parks GreenThumb,,,Cross Streets: Powell Street and Junius Street; Borough: B; Neighborhood: BK81 /
+Powers Street Garden,community_garden,278 Powers Street,40.712747,-73.939674,NYC Parks GreenThumb,,,Cross Streets: Olive & Bushwick Streets; Borough: B; Neighborhood: BK90 /
+Powers Street Garden,community_garden,"Powers Street, Brooklyn, NY",40.7129362,-73.9398726,,,,
+Preston Community Garden,community_garden,1711 Park Place,40.67208,-73.92068,NYC Parks GreenThumb,,,Cross Streets: Ralph & Howard Avenues; Borough: B; Neighborhood: BK79 /
+Project Eden,community_garden,67-2 Kessel Street,40.716394,-73.857629,NYC Parks GreenThumb,,,Cross Streets: At Yellowstone Blvd.; Borough: Q; Neighborhood: QN17 /
+Prophecy Garden,community_garden,67 Malta Street,40.659178,-73.89507,NYC Parks GreenThumb,,,Cross Streets: Hegeman & New Lots Avenues; Borough: B; Neighborhood: BK85 /
+Prophecy Garden,community_garden,"Malta Street, Brooklyn, NY",40.6563286,-73.8932828,,,,
+Prospect Farm,community_garden,1194 Prospect Avenue,40.653948,-73.976715,NYC Parks GreenThumb,,,Cross Streets: Terrace Place and Vanderbilt Street; Borough: B; Neighborhood: BK40 /
+Prospect Heights Community Farm,community_garden,252-256 St. Marks Avenue,40.678089,-73.967744,NYC Parks GreenThumb,,,Cross Streets: Underhill & Vanderbilt Avenues; Borough: B; Neighborhood: BK64 /
+Prospect Heights Community Garden,community_garden,"Prospect Heights, Brooklyn, NY 11238",40.6778708,-73.9684725,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Pueblo Unido,community_garden,1659 Madison Avenue,40.796399,-73.947114,NYC Parks GreenThumb,,,Cross Streets: E 110th & E 111th; Borough: M; Neighborhood: MN33 /
+Pulse Garden (NYCHA - Farragut Houses),community_garden,"York Street, Brooklyn, NY",40.701397,-73.986751,,,,
+Q Gardens Community Farm,community_garden,69 East 18th Street,40.649673,-73.962982,NYC Parks GreenThumb,,,Cross Streets: between Church Ave. and Caton Ave.; Borough: B; Neighborhood: BK42 /
+Q Gardens Community Farm,community_garden,"East 18th Street, Brooklyn, NY",40.6045485,-73.9545757,,,,
+RING - Riverside Inwood Neighborhood Garden,community_garden,236 Dyckman Street,40.86591,-73.927727,NYC Parks GreenThumb,,,"Cross Streets: Riverside Drive, Dyckman, Broadway, Seaman; Borough: M; Neighborhood: MN35 /"
+Rainbow Garden of Life and Health,community_garden,757 Melrose Avenue,40.821379,-73.915632,NYC Parks GreenThumb,,,Cross Streets: 157th and 156th St.; Borough: X; Neighborhood: BX34 /
+Raise the Roof Garden,community_garden,158 Hopkins Street,40.699139,-73.94598,NYC Parks GreenThumb,,,Cross Streets: Tomkins & Throop; Borough: B; Neighborhood: BK75 /
+Ralph-Lincoln Service Center Garden,community_garden,1654 St. John's Place,40.669891,-73.923005,NYC Parks GreenThumb,,,Cross Streets: btw Ralph Ave. and Lincoln Place; Borough: B; Neighborhood: BK61 /
+Ralph-Lincoln Service Center Garden,community_garden,"St. John's Place, Brooklyn, NY",40.6738837,-73.9348989,,,,
+Rays of Sunshine Community Garden (Family Group Garden),community_garden,418 East 158th Street,40.821853,-73.914118,NYC Parks GreenThumb,,,Cross Streets: Elton & Melrose Avenues; Borough: X; Neighborhood: BX34 /
+Red Gate Garden,community_garden,604 Marcy Avenue,40.693747,-73.94919,NYC Parks GreenThumb,,,Cross Streets: At Willoughby Avenue; Borough: B; Neighborhood: BK75 /
+Red Gate Garden,community_garden,"Marcy Avenue, Brooklyn, NY",40.7084064,-73.9579142,,,,
+Red Hook Community Farm / Added Value,community_garden,558 Columbia Street,40.672472,-74.009838,NYC Parks GreenThumb,,,Cross Streets: Otsego/Sigourney/Halleck; Borough: B; Neighborhood: BK33 /
+Red Shed Community Garden,community_garden,264 Skillman Avenue,40.716318,-73.940475,NYC Parks GreenThumb,,,"Cross Streets: Kingsland Avenue, Maspeth Avenue; Borough: B; Neighborhood: BK90 /"
+Red Shed Community Garden,community_garden,"Skillman Avenue, Brooklyn, NY",40.7159162,-73.9448555,,,,
+Relaxation Garden,community_garden,209 Avenue B,40.728537,-73.978377,NYC Parks GreenThumb,,,Cross Streets: At E.13 th Street; Borough: M; Neighborhood: MN28 /
+Rev. Linnette C. Williamson Memorial Park,community_garden,65 West 128th Street,40.809454,-73.942924,NYC Parks GreenThumb,,,Cross Streets: 5th Avenue/Lennox; Borough: M; Neighborhood: MN03 /
+Risse Street Community Garden,community_garden,10 Risse Street Garden,40.878564,-73.885289,NYC Parks GreenThumb,,,Cross Streets: Risse/Mosholu/Jerome Avenue; Borough: X; Neighborhood: BX05 /
+Riverbank State Park Community Garden,community_garden,679 Riverside Drive,40.828574,-73.955056,NYC Parks GreenThumb,,,Cross Streets: ; Borough: M; Neighborhood: MN04 /
+Rivers Run Community Garden,community_garden,801 Co-op City Blvd,40.879323,-73.829063,NYC Parks GreenThumb,,,Cross Streets: Peartree and Bellamy Loop; Borough: X; Neighborhood: BX13 /
+Robert L. Clinkscales Playground and Community Garden  (C.G. of West 146th St.),community_garden,234 West 146th Street,40.82269,-73.940084,NYC Parks GreenThumb,,,Cross Streets: Adam Clayton Powell & Frederick Douglass Boulevards; Borough: M; Neighborhood: MN03 /
+Roberto Clemente Community Garden,community_garden,1276 Shakespeare Avenue,40.838961,-73.922408,NYC Parks GreenThumb,,,Cross Streets: Shakespeare Avenue & W 169th St; Borough: X; Neighborhood: BX26 /
+Roberto Clemente Community Garden,community_garden,"1276 Shakespeare Avenue, Bronx, NY",40.8390559,-73.9225888,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Rogers/Tilden/Veronica Place Garden,community_garden,2601 Tilden Avenue.,40.647004,-73.952508,NYC Parks GreenThumb,,,Cross Streets: btw Rogers Ave. and Veronica Place; Borough: B; Neighborhood: BK95 /
+Rogers/Tilden/Veronica Place Garden,community_garden,"Tilden Avenue, Brooklyn, NY",40.6484566,-73.925654,,,,
+Roots of Peace Community Garden,community_garden,390 Targee Street,40.617666,-74.084888,NYC Parks GreenThumb,,,Cross Streets: at Irving Place; Borough: R; Neighborhood: SI37 /
+Roy Wilkins Community Garden,community_garden,17850 LINDEN BOULEVARD,40.690173,-73.768345,NYC Parks GreenThumb,,,Cross Streets: entrance at 179th St. and Linden Blvd.; Borough: Q; Neighborhood: QN08 /
+Sage's Garden,community_garden,281 East 4th Street,40.722823,-73.980872,NYC Parks GreenThumb,,,Cross Streets: Ave B & Ave. C; Borough: M; Neighborhood: MN28 /
+Sam & Sadie Koenig Garden,community_garden,237 E. 7th Street,40.724094,-73.978343,NYC Parks GreenThumb,,,Cross Streets: Avenues C & D; Borough: M; Neighborhood: MN28 /
+Santos Community Garden,community_garden,2110 Mermaid Avenue,40.576031,-73.988261,NYC Parks GreenThumb,,,Cross Streets: W. 21st Street & W. 22nd Street; Borough: B; Neighborhood: BK21 /
+Santos Community Garden,community_garden,"Mermaid Avenue, Brooklyn, NY",40.5765702,-73.9853035,,,,
+Saratoga Farm,community_garden,1969 Fulton Street,40.67876,-73.916018,NYC Parks GreenThumb,,,Cross Streets: Saratoga St. & Hull St.; Borough: B; Neighborhood: BK79 /
+Schervier Community Garden,community_garden,2975 Independence Avenue,40.883077,-73.918917,NYC Parks GreenThumb,,,Cross Streets: W. 231th St.; Borough: X; Neighborhood: BX29 /
+Scholes Street Children’s Garden,community_garden,134 Scholes Street,40.708478,-73.944309,NYC Parks GreenThumb,,,Cross Streets: btw Graham and Manhattan; Borough: B; Neighborhood: BK90 /
+Scholes Street Children’s Garden,community_garden,"Scholes Street, Brooklyn, NY",40.7089243,-73.9419619,,,,
+Schomburg Arts Garden,community_garden,1009 Rev James A Polite Ave,40.823488,-73.898893,NYC Parks GreenThumb,,,Cross Streets: Corner of Rev. James A. Polite & 164th St; Borough: X; Neighborhood: BX33 /
+Seagirt Boulevard Community Garden,community_garden,30-03 Seagirt Boulevard,40.59561,-73.763372,NYC Parks GreenThumb,,,Cross Streets: Beach 30th & Beach 31st; Borough: Q; Neighborhood: QN12 /
+Seasons of Vision Garden,community_garden,9-11 Rochester Avenue,40.678806,-73.927086,NYC Parks GreenThumb,,,Cross Streets: Herkimer St & Fulton St; Borough: B; Neighborhood: BK61 /
+Secret Garden,community_garden,293 East 4th Street,40.722494,-73.98036,NYC Parks GreenThumb,,,Cross Streets: At Avenue C; Borough: M; Neighborhood: MN28 /
+Senior Citizen Garden Club,community_garden,177-01 Baisley Boulevard,40.687913,-73.772048,NYC Parks GreenThumb,,,Cross Streets: 116th Ave. and 175th St. (inside park); Borough: Q; Neighborhood: QN08 /
+Senior Garden - Roosevelt Houses (NYCHA),community_garden,"Lewis Avenue, Brooklyn, NY",40.6957776,-73.9376016,,,,
+Senior Retreat Garden - Tompkins Houses (NYCHA),community_garden,"Myrtle Avenue, Brooklyn, NY",40.6969959,-73.9352775,,,,
+Serenity Community Garden,community_garden,4402 Ave. L,40.623046,-73.932878,NYC Parks GreenThumb,,,Cross Streets: Troy Ave. & Flatlands; Borough: B; Neighborhood: BK58 /
+Serenity Community Garden,community_garden,"Avenue L, Brooklyn, NY",40.6198829,-73.9652288,,,,
+Serenity Garden,community_garden,"522 W 146th St, New York, NY",40.8261344,-73.9478865,Manhattan Land Trust,Seasonal - check garden for hours,,
+Serenity Gardens,community_garden,522 West 146th Street,40.826155,-73.948297,NYC Parks GreenThumb,,,Cross Streets: Amsterdam Ave. and Broadway; Borough: M; Neighborhood: MN04 /
+Sheffield Garden,community_garden,673 Sheffield Avenue,40.660675,-73.892962,NYC Parks GreenThumb,,,Cross Streets: btw New Lots Ave. and Hegeman Ave.; Borough: B; Neighborhood: BK85 /
+Sheffield Garden,community_garden,"Sheffield Avenue, Brooklyn, NY",40.6599288,-73.8927223,,,,
+Shield of Faith,community_garden,81 Montauk Avenue,40.677552,-73.878503,NYC Parks GreenThumb,,,Cross Streets: Atlantic & Liberty; Borough: B; Neighborhood: BK82 /
+Shield of Faith,community_garden,"Montauk Avenue, Brooklyn, NY",40.6673776,-73.8756265,,,,
+Shiloh Garden,community_garden,323 Monroe Street,40.686284,-73.945247,NYC Parks GreenThumb,,,Cross Streets: Tompkins & Marcy; Borough: B; Neighborhood: BK75 /
+Shiloh Garden,community_garden,"Monroe Street, Brooklyn, NY",40.685657,-73.9489501,,,,
+Skyline Community Garden,community_garden,40-66 Prospect Avenue,40.640021,-74.089489,NYC Parks GreenThumb,,,Cross Streets: Clyde Place & Harvard Ave.; Borough: R; Neighborhood: SI22 /
+Smiling Hogshead Ranch,community_garden,25-30 Skillman Avenue,40.743163,-73.943472,NYC Parks GreenThumb,,,Cross Streets: Pearson Place & 49th Avenue; Borough: Q; Neighborhood: QN31 /
+South Beach Community Garden - South Beach Houses (NYCHA),community_garden,100 Kramer Street,40.595335,-74.0793,NYC Parks GreenThumb,,,Cross Streets: Kramer & Lamport; Borough: R; Neighborhood: SI14 /
+South Brooklyn Children's Garden,community_garden,204 Columbia Street,40.685246,-74.002928,NYC Parks GreenThumb,,,Cross Streets: corner of Sackett St and Columbia St; Borough: B; Neighborhood: BK33 /
+South Center Community Garden - South Jamaica 1 Houses (NYCHA),community_garden,159-2 Tuskegee Airmen way,40.697976,-73.79547,NYC Parks GreenThumb,,,Cross Streets: ; Borough: Q; Neighborhood: QN01 /
+South Jamaica Community Garden,community_garden,"South Jamaica, Queens, NY 11433",40.6956234,-73.7941863,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Sparrow's Nest Community Garden,community_garden,54-01 101st Street,40.740335,-73.85909,NYC Parks GreenThumb,,,Cross Streets: Lewis Ave. and Martense Ave; Borough: Q; Neighborhood: QN25 /
+Spencer Street Community Garden,community_garden,230A Spencer Street,40.691449,-73.954821,NYC Parks GreenThumb,,,Cross Streets: DeKalb & Willoughby Avenue; Borough: B; Neighborhood: BK75 /
+St. John's Place Renaissance Garden,community_garden,1642 St. John's Place,40.66985,-73.923444,NYC Parks GreenThumb,,,Cross Streets: Ralph & Buffalo Avenue; Borough: B; Neighborhood: BK61 /
+St. Mark's Avenue / Prospect Heights Community Garden,community_garden,207 St. Marks Avenue,40.678924,-73.969016,NYC Parks GreenThumb,,,Cross Streets: Vanderbilt & Carlton Avenues; Borough: B; Neighborhood: BK64 /
+St. Nicholas Miracle Garden,community_garden,330 Saint Nicholas Avenue,40.811676,-73.951434,NYC Parks GreenThumb,,,Cross Streets: 126th and 127th Street; Borough: M; Neighborhood: MN03 /
+Stars of Hope Community Garden,community_garden,213 Madison Street,40.684917,-73.950693,NYC Parks GreenThumb,,,Cross Streets: At Nostrand; Borough: B; Neighborhood: BK75 /
+Sterling Community Group Garden,community_garden,1701 Sterling Place,40.671016,-73.922347,NYC Parks GreenThumb,,,"Cross Streets: Sterling Place, Ralph, Howard; Borough: B; Neighborhood: BK79 /"
+Stockholm Street Garden,community_garden,143 Stockholm St,40.698978,-73.923653,NYC Parks GreenThumb,,,Cross Streets: Myrtle Avenue & Wilson Avenue; Borough: B; Neighborhood: BK78 /
+Success Garden - East New York,community_garden,461 Williams Avenue,40.664694,-73.897501,NYC Parks GreenThumb,,,Cross Streets: Livonia and Dumont Ave.; Borough: B; Neighborhood: BK85 /
+Sugar Hill Garden,community_garden,333 Edgecombe Avenue,40.82632,-73.942552,NYC Parks GreenThumb,,,Cross Streets: 145 & 150th Street; Borough: M; Neighborhood: MN04 /
+Sugar Hill Hope Garden,community_garden,475 W 152nd Street,40.829592,-73.943547,NYC Parks GreenThumb,,,Cross Streets: West 153rd Street; Borough: M; Neighborhood: MN04 /
+Summit Street Community Garden,community_garden,281 Columbia Street,40.682485,-74.003649,NYC Parks GreenThumb,,,Cross Streets: Columbia/NE corner of Summit/Hicks; Borough: B; Neighborhood: BK33 /
+Sumpter Street Community Garden,community_garden,182 Sumpter Street,40.680043,-73.917527,NYC Parks GreenThumb,,,Cross Streets: Howard & Saratoga; Borough: B; Neighborhood: BK35 /
+"Sun, Wind & Shade Oasis",community_garden,955 Sherman Avenue,40.828442,-73.919291,NYC Parks GreenThumb,,,Cross Streets: 164th & 165th Streets; Borough: X; Neighborhood: BX14 /
+"Sun, Wind and Shade Oasis",community_garden,"959 Sherman Avenue, Bronx, NY",40.8285114,-73.9190739,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+Sunkissed Garden,community_garden,658 Saratoga Avenue & 89 Blake Avenue,40.664735,-73.916623,NYC Parks GreenThumb,,,Cross Streets: Saratoga & Blake Avenue; Borough: B; Neighborhood: BK81 /
+Sunset Community Garden,community_garden,1808 Willoughby Avenue,40.708407,-73.916937,NYC Parks GreenThumb,,,Cross Streets: Onderdonk Avenue and Seneca Avenue; Borough: Q; Neighborhood: QN20 /
+Sunshine Community Garden,community_garden,101 McKibbin Street,40.705291,-73.943969,NYC Parks GreenThumb,,,Cross Streets: Manhattan & Graham Avenues; Borough: B; Neighborhood: BK90 /
+Surf Avenue Community Garden,community_garden,2801 Surf Avenue,40.573281,-73.994061,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK21 /
+Sweetgum Community Garden,community_garden,995 Summit Avenue,40.83317,-73.930505,NYC Parks GreenThumb,,,Cross Streets: On  Summit  - West 162St. & West 164St.; Borough: X; Neighborhood: BX26 /
+Synergi Urban Garden,community_garden,1211 Hoe Avenue,40.829124,-73.89113,NYC Parks GreenThumb,,,Cross Streets: Home Street & Freeman Street; Borough: X; Neighborhood: BX35 /
+T&T Vernon Block Community Garden,community_garden,200 Vernon Avenue,40.694998,-73.943863,NYC Parks GreenThumb,,,Cross Streets: Tompkins & Throop; Borough: B; Neighborhood: BK75 /
+TLC Sculpture Park Garden,community_garden,275 Glenmore Avenue,40.672731,-73.90056,NYC Parks GreenThumb,,,Cross Streets: Hinsdale & Williams; Borough: B; Neighborhood: BK85 /
+Taqwa Community Farm,community_garden,90 W 164th Street,40.832529,-73.928873,NYC Parks GreenThumb,,,Cross Streets: at Ogden; Borough: X; Neighborhood: BX26 /
+Target Bronx (Anderson Avenue Community Garden),community_garden,1001 Anderson Avenue,40.832377,-73.927337,NYC Parks GreenThumb,,,Cross Streets: W 164th & W 165th Streets; Borough: X; Neighborhood: BX26 /
+Target Brooklyn (Bedford Avenue Block Association),community_garden,931 Bedford Avenue,40.692119,-73.955332,NYC Parks GreenThumb,,,Cross Streets: Willoughby and Dekalb Ave.; Borough: B; Neighborhood: BK75 /
+Tehuti Ma’at Community Garden,community_garden,455 Ralph Avenue,40.673546,-73.921865,NYC Parks GreenThumb,,,Cross Streets: St. Marks & Prospect Pl; Borough: B; Neighborhood: BK79 /
+Ten Eyck Garden,community_garden,17 Ten Eyck Street,40.709804,-73.950097,NYC Parks GreenThumb,,,Cross Streets: Union & Lorimer; Borough: B; Neighborhood: BK73 /
+The CPT Samuel E. & Katherine Whaley Husbands Legacy of Love Permaculture Garden,community_garden,189-22 Linden Boulevard,40.691761,-73.761989,NYC Parks GreenThumb,,,Cross Streets: ; Borough: Q; Neighborhood: QN08 /
+The Classics Bronx Community Garden,community_garden,551 Cauldwell Avenue,40.814179,-73.911053,NYC Parks GreenThumb,,,Cross Streets: E. 149th Street & Westchester Avenue; Borough: X; Neighborhood: BX34 /
+The Classics Bronx Garden,community_garden,"551 Cauldwell Avenue, Bronx, NY",40.8145836,-73.9107209,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+The Garden By The Bay,community_garden,480 Beach 43rd Street,40.598131,-73.774778,NYC Parks GreenThumb,,,Cross Streets: Edgemere Drive and Norton Basin; Borough: Q; Neighborhood: QN12 /
+The Gus Dinolis Waterfront Garden - The Hidden Gem,community_garden,2008 Gildersleeve Avenue,40.809755,-73.850548,NYC Parks GreenThumb,,,Cross Streets: Husson Avenue & Betts Avenue; Borough: X; Neighborhood: BX09 /
+The Healing Garden,community_garden,426 Beach 36th Street,40.597022,-73.768887,NYC Parks GreenThumb,,,Cross Streets: ; Borough: Q; Neighborhood: QN12 /
+The Julia Gabriel People's Garden,community_garden,1039 Amsterdam Avenue,40.803857,-73.963207,NYC Parks GreenThumb,,,Cross Streets: at 111th Street; Borough: M; Neighborhood: MN09 /
+The People's Garden,community_garden,"1237 Greene Avenue,",40.696695,-73.920864,NYC Parks GreenThumb,,,Cross Streets: Van Buren Street & Bushwick Avenue; Borough: B; Neighborhood: BK78 /
+The William Hooper Garden,community_garden,"Boston Road & East 165th Street, Bronx, NY",40.825638,-73.9074657,Bronx Land Trust,Seasonal - check garden for hours,,Community-managed garden space in the Bronx
+The William Rainey Garden,community_garden,685 Beck Street,40.815077,-73.901106,NYC Parks GreenThumb,,,"Cross Streets: Leggett Street & Avenue, Street John; Borough: X; Neighborhood: BX33 /"
+Third Street Children's Garden (P.S. 63 - Neighborhood School),community_garden,150 EAST 4 STREET,40.724438,-73.986215,NYC Parks GreenThumb,,,Cross Streets: 1st Avenue & Avenue A; Borough: M; Neighborhood: MN22 /
+Townsend Garden,community_garden,1735 Walton Avenue,40.846913,-73.911017,NYC Parks GreenThumb,,,Cross Streets: At E 175th Street; Borough: X; Neighborhood: BX41 /
+Toyota Childrens Learning Garden (Coradan Evaeden),community_garden,603 East 11th Street,40.727478,-73.979002,NYC Parks GreenThumb,,,Cross Streets: Avenues B & C; Borough: M; Neighborhood: MN28 /
+Tranquility Farm,community_garden,267 Throop Avenue,40.694831,-73.943098,NYC Parks GreenThumb,,,Cross Streets: Vernon Ave. & Willoughby Ave.; Borough: B; Neighborhood: BK35 /
+Transit Garden,community_garden,134 2nd Place,40.678889,-73.996225,NYC Parks GreenThumb,,,Cross Streets: Smith Street and Court Street; Borough: B; Neighborhood: BK33 /
+Trees of Life Organic Garden,community_garden,106-17 173rd Street,40.701593,-73.783387,NYC Parks GreenThumb,,,Cross Streets: 173rd St and 106th Avenue/  SE/C of Liberty Park; Borough: Q; Neighborhood: QN01 /
+"Triple R (Rest, Reflection, Relaxation)",community_garden,641 Hendrix Street,40.666022,-73.887662,NYC Parks GreenThumb,,,Cross Streets: Dumont & Livonia Streets; Borough: B; Neighborhood: BK82 /
+Two Coves Community Garden,community_garden,11-01 30th Avenue,40.771972,-73.932086,NYC Parks GreenThumb,,,Cross Streets: 30th Avenue & Main Avenue & Astoria Boulevard & 8th St.; Borough: Q; Neighborhood: QN71 /
+Ujamaa Northeast Community Garden,community_garden,3601 Marolla Place,40.884047,-73.834892,NYC Parks GreenThumb,,,Cross Streets: ; Borough: X; Neighborhood: BX03 /
+Umoja Garden,community_garden,1448 Broadway,40.687957,-73.919381,NYC Parks GreenThumb,,,Cross Streets: Putnam Avenue.; Borough: B; Neighborhood: BK35 /
+Union Street Garden and Community Development,community_garden,1029 Union Street,40.670346,-73.959247,NYC Parks GreenThumb,,,Cross Streets: Classon & Franklin Avenues; Borough: B; Neighborhood: BK63 /
+United Herkimer Garden Club,community_garden,97 Herkimer Street,40.679897,-73.950167,NYC Parks GreenThumb,,,Cross Streets: Nostrand & Bedford Avenue; Borough: B; Neighborhood: BK61 /
+United We Stand Garden (Sunflower / Girasol),community_garden,627 East 137th Street,40.805441,-73.91571,NYC Parks GreenThumb,,,Cross Streets: Cypress & Street Anne Streets; Borough: X; Neighborhood: BX39 /
+Unity Park,community_garden,55 West 128th Street,40.809341,-73.942661,NYC Parks GreenThumb,,,Cross Streets: 5th Ave. & Lenox Ave.; Borough: M; Neighborhood: MN03 /
+University Neighborhood High School,community_garden,198 MONROE STREET,40.712251,-73.984118,NYC Parks GreenThumb,,,Cross Streets: Montgmery Street Gouveneur Street; Borough: M; Neighborhood: MN28 /
+Upon This Rock Community Garden,community_garden,2556 Pitkin Avenue,40.674543,-73.877838,NYC Parks GreenThumb,,,Cross Streets: Montauk & Milford; Borough: B; Neighborhood: BK82 /
+Urban Meadow,community_garden,125 Van Brunt Street,40.684467,-74.005286,NYC Parks GreenThumb,,,Cross Streets: Corner of President & Van Brunt Streets; Borough: B; Neighborhood: BK33 /
+Vamos A Sembrar,community_garden,198 Avenue B,40.728321,-73.979088,NYC Parks GreenThumb,,,Cross Streets: E. 12th & E. 13th Streets.; Borough: M; Neighborhood: MN22 /
+Vernon Cases Community Garden,community_garden,46 Vernon Avenue,40.694263,-73.950271,NYC Parks GreenThumb,,,Cross Streets: Marcy & Lee; Borough: B; Neighborhood: BK75 /
+Vernon and Throop Community Garden,community_garden,253 Throop Avenue,40.695198,-73.943094,NYC Parks GreenThumb,,,Cross Streets: Corner of Vernon Ave and Throop Ave.; Borough: B; Neighborhood: BK35 /
+Victory Garden B5,community_garden,613 Hendrix Street,40.666576,-73.887549,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK82 /
+Villa Santurce,community_garden,95 East 111th Street,40.796245,-73.945843,NYC Parks GreenThumb,,,Cross Streets: Park & Madison Avenues; Borough: M; Neighborhood: MN33 /
+Vinegar Hill Community Garden,community_garden,199 York Street,40.701516,-73.982638,NYC Parks GreenThumb,,,Cross Streets: Gold and Navy St.; Borough: B; Neighborhood: BK38 /
+Vogue Community Garden,community_garden,431 E. 156th Street,40.820588,-73.914676,NYC Parks GreenThumb,,,Cross Streets: Elton & Melrose; Borough: X; Neighborhood: BX34 /
+Von King Park and Cultural Center Garden,community_garden,670 Lafayette Ave.,40.689672,-73.946622,NYC Parks GreenThumb,,,Cross Streets: btw Marcy and Tompkins Ave. inside Von King Park; Borough: B; Neighborhood: BK75 /
+Walt L. Shamel Community Garden,community_garden,1095 Dean Street,40.677252,-73.953785,NYC Parks GreenThumb,,,Cross Streets: Bedford/ Franklin; Borough: B; Neighborhood: BK61 /
+Walter Miller III Memorial Garden (La Casa Frela),community_garden,13 West 119th Street,40.803011,-73.945556,NYC Parks GreenThumb,,,Cross Streets: 5th and Lenox Ave.; Borough: M; Neighborhood: MN11 /
+Wanaqua Garden,community_garden,462 East 136th Street,40.806735,-73.921889,NYC Parks GreenThumb,,,Cross Streets: Brown Place & Willis; Borough: X; Neighborhood: BX39 /
+Warren-St.Marks Community Garden,community_garden,623 Warren Street,40.681031,-73.979355,NYC Parks GreenThumb,,,Cross Streets: b/w 4th & 5th avenue; Borough: B; Neighborhood: BK37 /
+Warwick Street Greenery Glow Garden,community_garden,601 Warwick Street,40.66867,-73.884381,NYC Parks GreenThumb,,,Cross Streets: Blake & Dumont; Borough: B; Neighborhood: BK82 /
+We Rose In Together Community Garden - Hammel Houses (NYCHA),community_garden,255 Beach 84th Street,40.589206,-73.809992,NYC Parks GreenThumb,,,Cross Streets: ; Borough: Q; Neighborhood: QN12 /
+Welcome Home Garden,community_garden,681 Halsey Street,40.68486,-73.925313,NYC Parks GreenThumb,,,Cross Streets: Ralph & Patchen; Borough: B; Neighborhood: BK35 /
+West 104th Street Garden,community_garden,8 West 104th Street,40.796822,-73.961785,NYC Parks GreenThumb,,,Cross Streets: Central Park West & Manhattan Avenue; Borough: M; Neighborhood: MN12 /
+West 123rd Street Community Garden,community_garden,116 W. 123rd Street,40.806684,-73.94754,NYC Parks GreenThumb,,,Cross Streets: Lenox & Adam Clayton Powell; Borough: M; Neighborhood: MN11 /
+West 124th Street Community Garden,community_garden,75 West 124th Street,40.807023,-73.945209,NYC Parks GreenThumb,,,Cross Streets: Malcolm X Boulevard & Mount Morris Park West.; Borough: M; Neighborhood: MN11 /
+West 132nd Street Garden,community_garden,108 West 132nd Street,40.812311,-73.943149,NYC Parks GreenThumb,,,"Cross Streets: Lenox / Adam Clayton Powell, Jr. Blvd.; Borough: M; Neighborhood: MN03 /"
+West 181st Street Beautification Project,community_garden,814 West 181st Street,40.85084,-73.939075,NYC Parks GreenThumb,,,Cross Streets: Pinehurst Avenue and West 181st Street; Borough: M; Neighborhood: MN36 /
+West 23rd Street Community Garden,community_garden,2403 Neptune Avenue,40.578638,-73.992451,NYC Parks GreenThumb,,,Cross Streets: At W. 23rd Street; Borough: B; Neighborhood: BK21 /
+West 87th Street Park & Garden,community_garden,55 West 87th Street,40.787089,-73.970926,NYC Parks GreenThumb,,,Cross Streets: CPW & Columbus; Borough: M; Neighborhood: MN12 /
+West Brighton Community Garden,community_garden,18 Chappell Street,40.637128,-74.119827,NYC Parks GreenThumb,,,Cross Streets: Chappell St. & Henderson St.; Borough: R; Neighborhood: SI22 /
+Westbrook Memorial Garden,community_garden,1233 Pacific Street,40.677979,-73.95156,NYC Parks GreenThumb,,,Cross Streets: Bedford & Nostrand Avenues; Borough: B; Neighborhood: BK61 /
+Westervelt Community Garden,community_garden,143 Westervelt Avenue,40.644304,-74.084497,NYC Parks GreenThumb,,,Cross Streets: btw Curtis Place and Cleveland St.; Borough: R; Neighborhood: SI22 /
+Westside Community Garden,community_garden,123 WEST 89 STREET,40.789285,-73.971803,NYC Parks GreenThumb,,,Cross Streets: Amsterdam and Columbus; Borough: M; Neighborhood: MN12 /
+Whole Neighborhood Garden,community_garden,1001 Bedford Avenue,40.689791,-73.954869,NYC Parks GreenThumb,,,Cross Streets: Kosciuszko & Lafayette; Borough: B; Neighborhood: BK75 /
+William A. Harris Garden,community_garden,869 St Nicholas Ave,40.829957,-73.94213,NYC Parks GreenThumb,,,Cross Streets: 153rd St.; Borough: M; Neighborhood: MN04 /
+William B. Washington Memorial Garden,community_garden,325 West 126th Street,40.81142,-73.951571,NYC Parks GreenThumb,,,Cross Streets: Street Nicholas & Frederick Douglass Avenues; Borough: M; Neighborhood: MN03 /
+William Hooper Garden (Jacquline Denise Davis Garden),community_garden,586 E 165th Street,40.825462,-73.906662,NYC Parks GreenThumb,,,Cross Streets: 165th Street & Cauldwell Avenue; Borough: X; Neighborhood: BX35 /
+Williams Avenue Community Garden,community_garden,88 Williams Avenue,40.674257,-73.900623,NYC Parks GreenThumb,,,Cross Streets: Liberty Ave. & Atlantic Ave.; Borough: B; Neighborhood: BK85 /
+Williamsburg Community Garden,community_garden,"Williamsburg, Brooklyn, NY 11249",40.714622,-73.95345,Brooklyn-Queens Land Trust,Seasonal - check garden for hours,,Community-managed garden space
+Willis Avenue Community Garden (Bronx Community & Cultural Garden),community_garden,378 Willis Avenue,40.812339,-73.920141,NYC Parks GreenThumb,,,Cross Streets: E. 143rd St.; Borough: X; Neighborhood: BX39 /
+Windmill Community Garden,community_garden,39-22 29th Street,40.753098,-73.935209,NYC Parks GreenThumb,,,Cross Streets: 39th Ave. and 40th Ave.; Borough: Q; Neighborhood: QN68 /
+Wishing Well Garden,community_garden,864 Reverend James A. Polite Avenue,40.819497,-73.898632,NYC Parks GreenThumb,,,Cross Streets: Reverend Polite/ Dawson Street; Borough: X; Neighborhood: BX33 /
+Woodbine Street Block Association Garden,community_garden,146 Woodbine Street,40.692512,-73.916401,NYC Parks GreenThumb,,,Cross Streets: btw Central Ave. and Evergreen Ave.; Borough: B; Neighborhood: BK78 /
+Woodruff Avenue Community Garden,community_garden,106 Woodruff Avenue,40.653489,-73.962533,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK42 /
+Woodycrest Community Garden,community_garden,949 Woodycrest Avenue,40.83127,-73.929398,NYC Parks GreenThumb,,,Cross Streets: At 162 Street; Borough: X; Neighborhood: BX26 /
+Wyckoff Bond Garden,community_garden,166 Bond Street,40.684562,-73.986573,NYC Parks GreenThumb,,,Cross Streets: ; Borough: B; Neighborhood: BK38 /
+Ying & Yang,community_garden,11329 Seaview Avenue,40.644849,-73.877006,NYC Parks GreenThumb,,,Cross Streets: Van Siclen Ave.; Borough: B; Neighborhood: BK93 /
+57th Street Greenmarket,farmers_market,"57th St & 9th Ave, New York, NY 10019",40.7681086,-73.9857422,GrowNYC,Saturday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Astoria Greenmarket,farmers_market,"14th St & 31st Dr, Astoria, NY 11106",40.7675012,-73.9335149,GrowNYC,Wednesday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Bowling Green Greenmarket,farmers_market,"Bowling Green Park, New York, NY 10004",40.704829,-74.0138418,GrowNYC,Tuesday 8am-2pm,,"Fresh local produce, accepts SNAP/EBT"
+Bowling Green Greenmarket**,farmers_market,"Broadway & Whitehall St, Manhattan",40.7007792,-74.0111935,,"Open: Tuesdays, 8am–3pm (May 6–Nov 25)",,
+City Hall Greenmarket,farmers_market,"City Hall Park, New York, NY 10007",40.713617,-74.0067015,GrowNYC,Tuesday 8am-2pm,,"Fresh local produce, accepts SNAP/EBT"
+City Hall Greenmarket**,farmers_market,"Broadway & Chambers St, Manhattan",40.7139622,-74.0066029,,"Open: Tuesdays, 8am–4pm (May 6–Nov 25)",,
+Columbia Greenmarket,farmers_market,"Broadway & 116th St, New York, NY 10027",40.8077772,-73.9638473,GrowNYC,Thursday 8am-4pm,,"Fresh local produce, accepts SNAP/EBT"
+Corona Greenmarket,farmers_market,"103-15 Roosevelt Ave, Corona, NY 11368",40.7500338,-73.8622445,GrowNYC,Friday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Dag Hammarskjold Greenmarket,farmers_market,"Dag Hammarskjold Plaza, New York, NY 10017",40.7523699,-73.9688887,GrowNYC,Wednesday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Fort Greene Park Greenmarket,farmers_market,"Fort Greene Park, Brooklyn, NY 11217",40.6905835,-73.9741945,GrowNYC,Saturday 8am-4pm,,"Fresh local produce, accepts SNAP/EBT"
+Grand Army Plaza Greenmarket,farmers_market,"Grand Army Plaza, Brooklyn, NY 11238",40.6749223,-73.9708155,GrowNYC,Saturday 8am-4pm,,"Fresh local produce, accepts SNAP/EBT"
+Greenpoint Greenmarket,farmers_market,"McGolrick Park, Brooklyn, NY 11222",40.7244723,-73.9432083,GrowNYC,Thursday 8am-4pm,,"Fresh local produce, accepts SNAP/EBT"
+Jamaica Farmers Market,farmers_market,"90-38 160th Street, Jamaica, NY 11432",40.6966136,-73.7939553,GrowNYC,Friday & Saturday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+LIC Greenmarket,farmers_market,"5-25 46th Ave, Long Island City, NY 11101",40.7475503,-73.9540859,GrowNYC,Wednesday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+McCarren Park Greenmarket,farmers_market,"McCarren Park, Brooklyn, NY 11222",40.7220391,-73.9517946,GrowNYC,Saturday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Park Slope Greenmarket,farmers_market,"J.J. Byrne Playground, Brooklyn, NY 11215",40.6727774,-73.9841182,GrowNYC,Sunday 9am-4pm,,"Fresh local produce, accepts SNAP/EBT"
+Poe Park Greenmarket,farmers_market,"Grand Concourse & E 192nd St, Bronx, NY 10468",40.8640653,-73.8962198,GrowNYC,Friday 8am-4pm,,"Fresh local produce, accepts SNAP/EBT"
+Prospect Heights Greenmarket,farmers_market,"Vanderbilt Ave & St Marks Ave, Brooklyn, NY 11238",40.6783955,-73.9687364,GrowNYC,Monday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Queens Borough Hall Greenmarket,farmers_market,"120-55 Queens Blvd, Kew Gardens, NY 11424",40.7137831,-73.8282995,GrowNYC,Thursday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Rockefeller Center Greenmarket,farmers_market,"Rockefeller Center, New York, NY 10020",40.7592576,-73.9799569,GrowNYC,Wednesday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+St. George Greenmarket,farmers_market,"St George Terminal, Staten Island, NY 10301",40.6439626,-74.0734416,GrowNYC,Saturday 8am-2pm,,"Fresh local produce, accepts SNAP/EBT"
+Tompkins Square Greenmarket,farmers_market,"Tompkins Square Park, New York, NY 10009",40.7268404,-73.9814915,GrowNYC,Sunday 8am-6pm,,"Fresh local produce, accepts SNAP/EBT"
+Tribeca Greenmarket,farmers_market,"Greenwich & Chambers St, New York, NY 10013",40.7160715,-74.0106049,GrowNYC,Saturday 8am-3pm,,"Fresh local produce, accepts SNAP/EBT"
+Tribeca Greenmarket**,farmers_market,"Greenwich St & Chambers St, Manhattan",40.7166152,-74.0114715,,"Open: Saturdays, 8am–2pm",,
+Union Square Greenmarket,farmers_market,"Union Square Park, New York, NY 10003",40.7365331,-73.9892695,GrowNYC,"Mon, Wed, Fri, Sat 8am-6pm",,"Fresh local produce, accepts SNAP/EBT"
+City Harvest,food_bank,"150 52nd St, New York, NY 10022",40.648561,-74.0192406,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Community Food Advocate,food_bank,"2012 Adam Clayton Powell Jr Blvd, New York, NY 10027",40.8061802,-73.95049,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Food Bank For New York City,food_bank,"39 Broadway, New York, NY 10006",40.7062513,-74.0131652,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+AIDS Center of Queens County - Far Rockaway,food_pantry,"16-00 Central Ave, Far Rockaway, NY 11691",40.605237,-73.7524201,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+AIDS Center of Queens County - Jamaica,food_pantry,"161-21 Jamaica Ave, Jamaica, NY 11432",40.7066283,-73.7916855,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+AIDS Center of Queens County - Woodside,food_pantry,"62-07 Woodside Ave, Woodside, NY 11377",40.744766,-73.9022415,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Beth Hark Christian Counseling Center,food_pantry,"1832 Madison Ave, New York, NY 10035",40.8015356,-73.943841,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Bowery Mission,food_pantry,"227 Bowery, New York, NY 10002",40.7219659,-73.9928007,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Bread of Life Food Pantry,food_pantry,"1104 Elder Ave, Bronx, NY 10472",40.8263204,-73.8785126,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Bronx Community College Food Pantry,food_pantry,"2155 University Ave, Bronx, NY 10453",40.8576846,-73.9128962,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Brooklyn Community Pantry,food_pantry,"122 Prospect Park West, Brooklyn, NY 11215",40.6656582,-73.976327,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Brooklyn Food Coalition,food_pantry,"525 Clinton Ave, Brooklyn, NY 11238",40.6825164,-73.9663153,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Cathedral Church of St. John the Divine,food_pantry,"1047 Amsterdam Ave, New York, NY 10025",40.8037659,-73.9617843,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Church of St. Nicholas of Tolentine,food_pantry,"2345 University Ave, Bronx, NY 10468",40.862239,-73.9057253,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Harlem Dowling West Side Center,food_pantry,"2139 Adam Clayton Powell Jr Blvd, New York, NY 10027",40.8099882,-73.9471209,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Health Essential Association,food_pantry,"2101 E 16th St, Brooklyn, NY 11229",40.5985984,-73.9552809,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Project Hospitality,food_pantry,"100 Central Ave, Staten Island, NY 10301",40.6390513,-74.0766036,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Queens Community House,food_pantry,"108-25 62nd Dr, Forest Hills, NY 11375",40.7361611,-73.8501495,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Riverside Church Food Pantry,food_pantry,"91 Claremont Ave, New York, NY 10027",40.8119559,-73.9625116,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Staten Island Community Food Network,food_pantry,"2187 Victory Blvd, Staten Island, NY 10314",40.6131538,-74.136832,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+ABC Kitchen**,local_business,"E 18th St, New York, NY 10003",40.7348157,-73.98305,,,,
+"Chef Alain Verzeroli’s restaurant is noted for its produce-driven menu, where seasonal vegetables, fruits, and herbs take center stage, with carefully sourced meats and sustainable fish as supporting elements. The restaurant’s verdant interior reflects its commitment to fresh, local ingredients, and it is recognized by the Michelin Guide for its focus on sustainability and collaboration with local producers[1].",local_business,"Ninth Ave, New York, NY 10018",40.9157613,-73.8036096,,,,
+Jams Restaurant by Chef Jonathan Waxman**,local_business,"Avenue of the Americas, New York, NY 10019",40.7367809,-73.997261,,,,
+Le Jardinier,local_business,"Lexington Ave, New York, NY 10022",40.7507463,-73.9765681,,,,
+White Street**,local_business,"White St, New York, NY 10013",40.7168951,-74.0007377,,"This Tribeca restaurant offers a seasonal American menu and is noted for its commitment to local sourcing, working closely with regional farms to create dishes that highlight the best of the season[4].",,
+Holy Apostles Soup Kitchen,soup_kitchen,"296 9th Ave, New York, NY 10001",40.7493539,-73.998973,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+Masbia Soup Kitchen,soup_kitchen,"1372 Coney Island Ave, Brooklyn, NY 11230",40.6241122,-73.9651583,NYC Food Network,Varies - call ahead,,"Free food assistance, ID may be required"
+170 Farm Stand,urban_farm,"1406 Townsend Avenue, Bronx, NY 10452",40.8400529,-73.916517,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Added Value Red Hook Farm,urban_farm,"Red Hook Community Farm, Brooklyn, NY 11231",40.672478,-74.0098246,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Battery Urban Farm,urban_farm,"Battery Park, New York, NY 10004",40.702856,-74.0172629,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+BronxWorks Bronx Community Garden,urban_farm,"60 E Tremont Ave, Bronx, NY 10453",40.8508989,-73.908113,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Brooklyn Bridge Park Urban Farm,urban_farm,"Brooklyn Bridge Park, Brooklyn, NY 11201",40.6981375,-73.997905,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Brooklyn Grange - Rooftop Farm,urban_farm,"37-18 Northern Blvd, Long Island City, NY 11101",40.7653504,-73.8170464,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Dyckman Farmhouse Museum,urban_farm,"4881 Broadway, New York, NY 10034",40.8673822,-73.9228859,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+East New York Farms,urban_farm,"613 New Lots Ave, Brooklyn, NY 11207",40.6648125,-73.8866216,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+McCarren Recreation Center Farm,urban_farm,"McCarren Park, Brooklyn, NY 11222",40.7220391,-73.9517946,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+New York Botanical Garden Edible Academy,urban_farm,"2900 Southern Blvd, Bronx, NY 10458",40.8668453,-73.8786107,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Prospect Farm,urban_farm,"Prospect Avenue, Brooklyn, NY",40.665414,-73.992872,,,,
+Queens County Farm Museum,urban_farm,"73-50 Little Neck Pkwy, Floral Park, NY 11004",40.727259,-73.7103585,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Queens Farm Farmstand,urban_farm,"73-50 Little Neck Pkwy, Queens, NY 11004",40.7454595,-73.7247114,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
+Saratoga Farm,urban_farm,"Fulton Street, Brooklyn, NY",40.679758,-73.9379172,,,,
+Sunset Recreation Center Farm,urban_farm,"4207 7th Ave, Brooklyn, NY 11232",40.6467557,-74.0012884,NYC Urban Agriculture Network,Varies by season,,"Educational programs, fresh produce, community involvement"
