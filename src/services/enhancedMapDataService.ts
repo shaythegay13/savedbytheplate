@@ -348,6 +348,29 @@ const fetchFarmsAndMarkets = async (): Promise<MapLocation[]> => {
   }
 };
 
+// Map CSV types to our MapLocation types
+const mapCSVTypeToLocationType = (csvType: string): MapLocation['type'] => {
+  const typeMap: Record<string, MapLocation['type']> = {
+    'community_fridge': 'fridge',
+    'community_garden': 'garden',
+    'farmers_market': 'market',
+    'farmers market': 'market',
+    'food_bank': 'foodbank',
+    'food bank': 'foodbank',
+    'farm': 'farm',
+    'urban_farm': 'urbanfarm',
+    'urban farm': 'urbanfarm',
+    'business': 'business',
+    'fridge': 'fridge',
+    'garden': 'garden',
+    'market': 'market',
+    'foodbank': 'foodbank',
+    'urbanfarm': 'urbanfarm'
+  };
+  
+  return typeMap[csvType.toLowerCase()] || 'garden';
+};
+
 // Special parser for mixed-type CSV data
 const parseCSVFromMixedTypes = (csvText: string): MapLocation[] => {
   const lines = csvText.trim().split('\n');
@@ -355,6 +378,8 @@ const parseCSVFromMixedTypes = (csvText: string): MapLocation[] => {
   
   const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
   const locations: MapLocation[] = [];
+  
+  console.log(`📊 Parsing mixed-type CSV, headers:`, headers);
   
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
@@ -387,8 +412,8 @@ const parseCSVFromMixedTypes = (csvText: string): MapLocation[] => {
     
     if (isNaN(lat) || isNaN(lng)) continue;
     
-    // Use the type from the CSV data
-    const locationType = row.type as MapLocation['type'];
+    // Map the CSV type to our standardized location type
+    const locationType = mapCSVTypeToLocationType(row.type || '');
     
     const location: MapLocation = {
       id: `mixed-${locationType}-${i}`,
@@ -407,8 +432,14 @@ const parseCSVFromMixedTypes = (csvText: string): MapLocation[] => {
     }
     
     locations.push(location);
+    
+    // Log first few entries for debugging
+    if (i <= 5) {
+      console.log(`✅ Added ${row.type} -> ${locationType}:`, location.name, `at [${lng}, ${lat}]`);
+    }
   }
   
+  console.log(`📍 Parsed ${locations.length} mixed-type locations from CSV`);
   return locations;
 };
 
