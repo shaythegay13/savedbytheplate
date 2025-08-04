@@ -143,93 +143,66 @@ const fetchFoodBanks = async (): Promise<MapLocation[]> => {
   }
 };
 
-// Enhanced data fetcher that combines all sources
+// Enhanced data fetcher that focuses on the 4 main processed CSV files
 export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
-    console.log('🌱 Fetching enhanced map data from all sources...');
+    console.log('🌱 Fetching enhanced map data from 4 main processed CSV files...');
     
-    // First try to load the most comprehensive dataset
-    try {
-      const response = await fetch('/processed/complete_comprehensive_food_access.csv');
-      if (response.ok) {
-        const csvText = await response.text();
-        const comprehensiveData = parseCSVFromMixedTypes(csvText);
-        if (comprehensiveData.length > 0) {
-          console.log('✅ Loaded COMPLETE comprehensive dataset with', comprehensiveData.length, 'locations');
-          return removeDuplicates(comprehensiveData);
-        }
-      }
-    } catch (error) {
-      console.log('Complete comprehensive dataset not available, trying partial comprehensive...');
-    }
+    const allLocations: MapLocation[] = [];
     
-    // Try partial comprehensive dataset
-    try {
-      const response = await fetch('/processed/comprehensive_food_access.csv');
-      if (response.ok) {
-        const csvText = await response.text();
-        const comprehensiveData = parseCSVFromMixedTypes(csvText);
-        if (comprehensiveData.length > 0) {
-          console.log('✅ Loaded partial comprehensive dataset with', comprehensiveData.length, 'locations');
-          return removeDuplicates(comprehensiveData);
-        }
-      }
-    } catch (error) {
-      console.log('Partial comprehensive dataset not available, falling back to individual sources...');
-    }
-    
-    // Import sample locations
-    const { sampleLocations } = await import('../components/map/sampleLocations');
-    
-    // Fetch all data sources in parallel
-    const [
-      nycGardens,
-      communityFridges,
-      farmersMarkets,
-      foodBanks,
-      staticLandTrustData,
-      staticQueensFarmData,
-      staticAdditionalFridgesData,
-      additionalFridges,
-      enhancedMarkets,
-      lungsGardens,
-      landTrustGardens,
-      farmsAndMarkets
-    ] = await Promise.all([
-      fetchNYCMapData(),
-      fetchCommunityFridges(),
-      fetchFarmersMarkets(),
-      fetchFoodBanks(),
-      getStaticLandTrustData(),
-      getStaticQueensFarmData(),
-      getStaticAdditionalFridgesData(),
-      fetchAdditionalFridges(),
-      fetchEnhancedMarkets(),
-      fetchLungsGardens(),
-      fetchLandTrustGardens(),
-      fetchFarmsAndMarkets()
-    ]);
-    
-    // Add One Love Community Fridge data
-    const oneLoveFridges = getStaticOneLoveFridgesData();
-    
-    // Combine all data including sample locations
-    const allLocations = [
-      ...sampleLocations,
-      ...nycGardens,
-      ...communityFridges,
-      ...farmersMarkets,
-      ...foodBanks,
-      ...staticLandTrustData,
-      ...staticQueensFarmData,
-      ...staticAdditionalFridgesData,
-      ...oneLoveFridges,
-      ...additionalFridges,
-      ...enhancedMarkets,
-      ...lungsGardens,
-      ...landTrustGardens,
-      ...farmsAndMarkets
+    // Load the 4 main processed CSV files in order of priority
+    const csvFiles = [
+      { path: '/processed/complete_comprehensive_food_access.csv', name: 'Complete Comprehensive Food Access' },
+      { path: '/processed/comprehensive_community_fridges.csv', name: 'Community Fridges' },
+      { path: '/processed/farmers_markets.csv', name: 'Farmers Markets' },
+      { path: '/processed/food_banks.csv', name: 'Food Banks' }
     ];
+    
+    for (const csvFile of csvFiles) {
+      try {
+        console.log(`🔄 Loading ${csvFile.name} from ${csvFile.path}...`);
+        const response = await fetch(csvFile.path);
+        if (response.ok) {
+          const csvText = await response.text();
+          const locations = parseCSVFromMixedTypes(csvText);
+          allLocations.push(...locations);
+          console.log(`✅ Loaded ${locations.length} locations from ${csvFile.name}`);
+        } else {
+          console.warn(`⚠️ Could not load ${csvFile.name}: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(`❌ Error loading ${csvFile.name}:`, error);
+      }
+    }
+    
+    // If no data was loaded from the main files, fallback to other sources
+    if (allLocations.length === 0) {
+      console.log('📦 No data from main CSV files, falling back to other sources...');
+      
+      // Import sample locations
+      const { sampleLocations } = await import('../components/map/sampleLocations');
+      
+      // Fetch fallback data sources
+      const [
+        nycGardens,
+        communityFridges,
+        farmersMarkets,
+        foodBanks
+      ] = await Promise.all([
+        fetchNYCMapData(),
+        fetchCommunityFridges(),
+        fetchFarmersMarkets(),
+        fetchFoodBanks()
+      ]);
+      
+      allLocations.push(
+        ...sampleLocations,
+        ...nycGardens,
+        ...communityFridges,
+        ...farmersMarkets,
+        ...foodBanks
+      );
+    }
     
     // Remove duplicates based on proximity (within ~100 meters)
     const uniqueLocations = removeDuplicates(allLocations);
