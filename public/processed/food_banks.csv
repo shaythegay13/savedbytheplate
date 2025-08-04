@@ -1,6 +1,50 @@
 name,type,address,latitude,longitude,organization,hours,contact,additional_info
 Beacon of Hope Food Pantry,food_pantry,"850 Hylan Boulevard, Staten Island, NY 10305",40.596944,-74.068056,Food Bank NYC,Tuesday and Saturday 10am-2pm,(718) 448-0378,Serving South Beach and Midland Beach areas
 Bed-Stuy Campaign Against Hunger,food_pantry,"2010 Fulton Street, Brooklyn, NY 11233",40.679167,-73.914722,Food Bank NYC,Monday-Saturday 10am-3pm,(718) 773-3551,Supermarket-style food pantry
+Bethel Gospel Tabernacle,food_pantry,"110-25 Guy R Brewer Boulevard, Jamaica, NY 11433",40.694167,-73.786389,Food Bank NYC,Wednesday and Saturday 10am-1pm,(718) 291-2791,Food pantry and community services
+Brighton Neighborhood Association,food_pantry,"1121 Brighton Beach Avenue, Brooklyn, NY 11235",40.578333,-73.960833,Food Bank NYC,Monday-Friday 10am-3pm,(718) 891-0800,Multi-lingual services available
+Bronx Spanish Evangelical Church,food_pantry,"800 East 156th Street, Bronx, NY 10455",40.8175,-73.901389,Food Bank NYC,Monday and Wednesday 9am-1pm,(718) 893-0222,Bilingual services available
+Bronx Works Mobile Food Pantry,mobile_pantry,"2930 Westchester Avenue, Bronx, NY 10461",40.843056,-73.842778,Food Bank NYC,Wednesday 10am-2pm,(718) 828-4400,Mobile pantry serving Pelham Bay area
+BronxWorks Community Food Pantry,food_pantry,"1130 Grand Concourse, Bronx, NY 10456",40.833611,-73.919722,Food Bank NYC,Monday-Friday 9am-5pm,(718) 731-3114,Food pantry and social services
+Brooks Memorial United Methodist Church,food_pantry,"143-22 109th Avenue, Jamaica, NY 11435",40.695833,-73.799444,Food Bank NYC,Saturday 8am-10am,(718) 297-6762,Food pantry and breakfast program
+CAMBA Beyond Hunger Emergency Food Pantry,food_pantry,"1117 Eastern Parkway, Brooklyn, NY 11213",40.669444,-73.932778,Food Bank NYC,Monday-Friday 10am-4pm,(718) 774-3198,Emergency food assistance
+COPO Food Pantry,food_pantry,"1077 Nostrand Avenue, Brooklyn, NY 11225",40.6625,-73.950833,Food Bank NYC,Monday and Wednesday 9am-1pm,(718) 434-3283,Caribbean and kosher options available
+Church of St. Matthew & St. Timothy,food_pantry,"26 West 84th Street, New York, NY 10024",40.784722,-73.971389,Food Bank NYC,Tuesday 11am-1pm,(212) 362-6750,Food pantry and community meals
+City Harvest - Cohen Community Food Rescue Center,food_bank,"150-52 55th Avenue, Queens, NY 11101",40.739676,-73.917937,City Harvest,Monday-Friday 8am-4pm,(646) 412-0600,Main warehouse and distribution center
+City Harvest Mobile Market - Washington Heights,food_bank,"560 West 165th Street, New York, NY 10032",40.838373,-73.939732,City Harvest,1st & 3rd Thursday 9:30am-11:30am,(646) 412-0600,Free fresh produce distribution
+Community Church of Laurelton,food_pantry,"134-14 235th Street, Laurelton, NY 11413",40.668056,-73.744722,Food Bank NYC,Saturday 9am-11am,(718) 528-9843,Food pantry and senior services
+Community Health Action Mobile Market,mobile_pantry,"56 Bay Street, Staten Island, NY 10301",40.636944,-74.076389,Food Bank NYC,Thursday 10am-2pm,(718) 808-1300,Fresh produce mobile market
+Crossroads Church Food Pantry,food_pantry,"168 New Dorp Lane, Staten Island, NY 10306",40.571944,-74.116667,Food Bank NYC,Saturday 9am-11am,(718) 351-5657,Serving South Shore communities
+Davidson Community Center,food_pantry,"2038 Davidson Avenue, Bronx, NY 10453",40.852778,-73.907222,Food Bank NYC,Tuesday and Thursday 9am-5pm,(718) 731-6360,Food pantry and community services
 Food Bank For New York City - Community Kitchen,soup_kitchen,"252 West 116th Street, New York, NY 10026",40.804615,-73.955681,Food Bank NYC,Monday-Friday 9am-5pm,(212) 566-7855,Food pantry and soup kitchen
+Food Bank For New York City - Warehouse,distribution_center,"355 Food Center Drive, Bronx, NY 10474",40.801996,-73.872459,Food Bank NYC,Monday-Friday 7am-3pm,(718) 991-4300,Main warehouse and distribution center
+Fordham Community Center,soup_kitchen,"2382-2386 Jerome Avenue, Bronx, NY 10468",40.8625,-73.901389,Food Bank NYC,Monday-Friday 11:30am-1pm,(718) 933-2539,Hot meals and emergency food packages
+Fourth Avenue Presbyterian Church,food_pantry,"6753 Fourth Avenue, Brooklyn, NY 11220",40.636111,-74.023611,Food Bank NYC,Wednesday 10am-12pm,(718) 836-0681,Serving Bay Ridge community
 Holy Apostles Soup Kitchen,soup_kitchen,"296 9th Avenue, New York, NY 10001",40.748882,-73.99973,Food Bank NYC,Monday-Friday 10:30am-12:30pm,(212) 924-0167,Largest soup kitchen in NYC
+Holy Child Church,food_pantry,"4747 Amboy Road, Staten Island, NY 10312",40.544722,-74.151389,Food Bank NYC,Monday and Wednesday 10am-2pm,(718) 356-5890,Food pantry and emergency assistance
+Homecrest Presbyterian Church,food_pantry,"1413 Avenue T, Brooklyn, NY 11229",40.598889,-73.957222,Food Bank NYC,Saturday 10am-12pm,(718) 376-0143,Food pantry serving South Brooklyn
+Hour Children Food Pantry,food_pantry,"36-49 11th Street, Long Island City, NY 11106",40.760833,-73.943889,Food Bank NYC,Tuesday-Thursday 11am-3pm,(718) 482-8226,Food pantry focusing on families
+Isabella Geriatric Center Food Pantry,food_pantry,"515 Audubon Avenue, New York, NY 10040",40.851389,-73.9375,Food Bank NYC,Tuesday and Thursday 10am-2pm,(212) 342-9200,Senior-focused food pantry
+Jewish Center of Jackson Heights,food_pantry,"37-06 77th Street, Jackson Heights, NY 11372",40.748611,-73.889167,Food Bank NYC,Thursday 9:30am-11:30am,(718) 426-2992,Kosher food available
+Korean Community Services,food_pantry,"203-05 32nd Avenue, Bayside, NY 11361",40.771944,-73.792778,Food Bank NYC,Tuesday and Friday 10am-2pm,(718) 939-6137,Asian food options available
+Make the Road NY Food Pantry,food_pantry,"301 Grove Street, Brooklyn, NY 11237",40.697222,-73.911111,Food Bank NYC,Tuesday and Thursday 10am-4pm,(718) 418-7690,Immigration and legal services also available
+Manhattan Sikh Center,food_pantry,"112 East Broadway, New York, NY 10002",40.714167,-73.991944,Food Bank NYC,Saturday-Sunday 11am-2pm,(212) 962-7842,Free meals (langar) and pantry
+Masbia of Queens,food_bank,"105-47 64th Road, Forest Hills, NY 11375",40.729893,-73.845807,NYC Food Help,Sunday-Thursday 2pm-9pm,(718) 972-4446,Kosher soup kitchen and food pantry
+Middle Collegiate Church Food Pantry,food_pantry,"112 Second Avenue, New York, NY 10003",40.727778,-73.9875,Food Bank NYC,Saturday 10:30am-1pm,(212) 477-0666,"Open to all, no documentation required"
+Nazareth Housing - LES,food_pantry,"206 East 4th Street, New York, NY 10009",40.723889,-73.984167,Food Bank NYC,Tuesday-Thursday 10am-2pm,(212) 477-7017,Emergency food pantry
+New Life Food and Clothing Pantry,food_pantry,"82-10 Queens Boulevard, Elmhurst, NY 11373",40.7375,-73.878611,Food Bank NYC,Saturday 9am-12pm,(718) 424-0122,Food and clothing assistance
 New York Common Pantry,food_pantry,"8 East 109th Street, New York, NY 10029",40.795958,-73.949136,Food Bank NYC,Wednesday-Saturday 10am-2pm,(917) 720-9700,Choice pantry system
+Our Lady Help of Christians,food_pantry,"7396 Amboy Road, Staten Island, NY 10307",40.505556,-74.251389,Food Bank NYC,Tuesday and Thursday 9am-12pm,(718) 317-9199,Food pantry serving South Shore
+Part of the Solution (POTS),soup_kitchen,"2759 Webster Avenue, Bronx, NY 10458",40.869722,-73.888056,Food Bank NYC,Monday-Saturday 12pm-3pm,(718) 220-4892,Hot meals and case management services
+Part of the Solution (POTS),food_bank,"2759 Webster Avenue, Bronx, NY 10458",40.869421,-73.888151,NYC Food Help,Monday-Saturday 9am-3pm,(718) 220-4892,"Food pantry, soup kitchen, and social services"
+Project Hospitality Food Pantry,food_pantry,"514 Bay Street, Staten Island, NY 10304",40.626431,-74.076825,Food Bank NYC,Monday-Friday 9am-5pm,(718) 448-1544,Food pantry and homeless services
+River Fund Mobile Food Pantry,mobile_pantry,"89-11 Lefferts Boulevard, Richmond Hill, NY 11418",40.700278,-73.8225,Food Bank NYC,Wednesday-Saturday 9am-5pm,(718) 441-1125,Mobile food pantry and benefits access
+Salt and Sea Mission,food_pantry,"2417 Mermaid Avenue, Brooklyn, NY 11224",40.576944,-73.985833,Food Bank NYC,Tuesday and Thursday 10am-2pm,(718) 372-9466,Food pantry and community meals
+St. Albans Presbyterian Church,food_pantry,"190-04 119th Avenue, St. Albans, NY 11412",40.698611,-73.758889,Food Bank NYC,Tuesday and Thursday 10am-2pm,(718) 657-8282,Food pantry serving Southeast Queens
+St. Bartholomew's Church,food_pantry,"325 Park Avenue, New York, NY 10022",40.757778,-73.973056,Food Bank NYC,Monday-Friday 12pm-3pm,(212) 378-0222,Food pantry and community kitchen
+St. John's Bread and Life,soup_kitchen,"795 Lexington Avenue, Brooklyn, NY 11221",40.691814,-73.928935,Food Bank NYC,Monday-Friday 8am-4pm,(718) 574-0058,Food pantry and soup kitchen
+The Point CDC,food_pantry,"940 Garrison Avenue, Bronx, NY 10474",40.818889,-73.889722,Food Bank NYC,Wednesday and Friday 11am-3pm,(718) 542-4139,Food pantry and youth programs
+Thessalonia Baptist Church,food_pantry,"941 Rev James A Polite Avenue, Bronx, NY 10459",40.822778,-73.896944,Food Bank NYC,Tuesday and Thursday 10am-2pm,(718) 589-2501,Food pantry and community services
+Trinity Church Wall Street,food_pantry,"89 Broadway, New York, NY 10006",40.708056,-74.0125,Food Bank NYC,Monday-Friday 9am-5pm,(212) 602-0800,Food pantry and community services
+Vision Urbana Food Pantry,food_pantry,"332 East 4th Street, New York, NY 10009",40.722222,-73.979167,Food Bank NYC,Wednesday and Friday 10am-2pm,(212) 254-9200,Bilingual services available
+West Side Campaign Against Hunger,food_pantry,"263 West 86th Street, New York, NY 10024",40.787778,-73.977222,Food Bank NYC,Monday-Friday 9am-5pm,(212) 362-3662,Supermarket-style food pantry

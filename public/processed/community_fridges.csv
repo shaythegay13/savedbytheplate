@@ -2,3 +2,12 @@ name,type,address,latitude,longitude,organization,hours,contact,additional_info
 Bed-Stuy Fridge,community_fridge,"375 Throop Avenue, Brooklyn, NY 11221",40.68639,-73.942735,Bed-Stuy Fridge Network,24/7,,
 Crown Heights Fridge,community_fridge,"722 Nostrand Avenue, Brooklyn, NY 11216",40.673431,-73.950133,Crown Heights Mutual Aid,24/7,,Located outside Daughter
 Mott Haven Fridge,community_fridge,"383 East 141st Street, Bronx, NY 10454",40.810333,-73.919037,Mott Haven Fridge Network,24/7,,Located outside La Morada restaurant
+OLCF 1 — Bed-Stuy,community_fridge,"173 Lewis Ave.Brooklyn, NY 11221",40.6906851,-73.93643469999999,One Love Community Fridge,24/7,,Hosted by Cafe Botani
+OLCF 2 — Flatbush,community_fridge,"1596 Church Ave.Brooklyn, NY 11226",40.6483701,-73.9655274,One Love Community Fridge,24/7,,Hosted by B’ShERT
+OLCF 3 — Gowanus,community_fridge,"303 Bond St.Brooklyn, NY 11231",40.6800366,-73.9892241,One Love Community Fridge,24/7,,Hosted by Van Alen Institute
+OLCF 4 — Seattle,community_fridge,"306 Dexter Ave N.Seattle, WA 98109",47.621229,-122.3420129,One Love Community Fridge,24/7,,Hosted by Dignity for Divas
+OLCF 5 — Bed-Stuy,community_fridge,"343 Tompkins Ave, Brooklyn, NY 11216",40.720422,-73.96417319999999,One Love Community Fridge,24/7,,Hosted by Sincerely Tommy
+OLCF 6 — Bed-Stuy,community_fridge,"477 Gates Ave.Brooklyn, NY 11216",40.6866874,-73.9478504,One Love Community Fridge,24/7,,Hosted by Little Grenjai
+OLCF 7 — East Williamsburg,community_fridge,"65 Scholes St.Brooklyn, NY 11206",40.7086097,-73.9475935,One Love Community Fridge,24/7,,Hosted by HAVEN Boxing
+OLCF 8 — Bushwick,community_fridge,"219 McKibbin St, Brooklyn, NY 11206",40.70549159999999,-73.93889829999999,One Love Community Fridge,24/7,,Hosted by Sure We Can
+OLCF 9 — Alphabet City,community_fridge,"638 E 6th St. New York, NY 10009",40.723685,-73.98024699999999,One Love Community Fridge,24/7,,Hosted by Sixth Street Community Center
