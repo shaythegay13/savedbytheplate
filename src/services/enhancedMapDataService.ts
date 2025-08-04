@@ -150,78 +150,90 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
     
     const allLocations: MapLocation[] = [];
     
-    // Load the 4 main processed CSV files in order of priority
-    const csvFiles = [
-      { path: '/processed/complete_comprehensive_food_access.csv', name: 'Complete Comprehensive Food Access' },
-      { path: '/processed/comprehensive_community_fridges.csv', name: 'Community Fridges' },
-      { path: '/processed/farmers_markets.csv', name: 'Farmers Markets' },
-      { path: '/processed/food_banks.csv', name: 'Food Banks' }
+    // Load each specific CSV file with its corresponding type
+    const csvSources = [
+      { 
+        path: '/processed/complete_comprehensive_food_access.csv', 
+        name: 'Complete Comprehensive Food Access',
+        parser: parseCSVFromMixedTypes
+      },
+      { 
+        path: '/processed/comprehensive_community_fridges.csv', 
+        name: 'Community Fridges',
+        parser: (csvText: string) => parseCSVToLocations(csvText, 'fridge')
+      },
+      { 
+        path: '/processed/farmers_markets.csv', 
+        name: 'Farmers Markets',
+        parser: (csvText: string) => parseCSVToLocations(csvText, 'market')
+      },
+      { 
+        path: '/processed/food_banks.csv', 
+        name: 'Food Banks',
+        parser: (csvText: string) => parseCSVToLocations(csvText, 'foodbank')
+      }
     ];
     
-    for (const csvFile of csvFiles) {
+    // Load each CSV file with proper parsing
+    for (const source of csvSources) {
       try {
-        console.log(`🔄 Loading ${csvFile.name} from ${csvFile.path}...`);
-        const response = await fetch(csvFile.path);
+        console.log(`🔄 Loading ${source.name} from ${source.path}...`);
+        const response = await fetch(source.path);
         if (response.ok) {
           const csvText = await response.text();
-          const locations = parseCSVFromMixedTypes(csvText);
-          allLocations.push(...locations);
-          console.log(`✅ Loaded ${locations.length} locations from ${csvFile.name}`);
+          const locations = source.parser(csvText);
+          
+          if (locations.length > 0) {
+            allLocations.push(...locations);
+            console.log(`✅ Loaded ${locations.length} locations from ${source.name}`);
+            
+            // Log some example entries for debugging
+            const sampleCount = Math.min(3, locations.length);
+            for (let i = 0; i < sampleCount; i++) {
+              const loc = locations[i];
+              console.log(`   📍 Example: ${loc.name} (${loc.type}) at [${loc.lngLat[0]}, ${loc.lngLat[1]}]`);
+            }
+          } else {
+            console.warn(`⚠️ No valid locations found in ${source.name}`);
+          }
         } else {
-          console.warn(`⚠️ Could not load ${csvFile.name}: ${response.status}`);
+          console.warn(`⚠️ Could not load ${source.name}: ${response.status}`);
         }
       } catch (error) {
-        console.error(`❌ Error loading ${csvFile.name}:`, error);
+        console.error(`❌ Error loading ${source.name}:`, error);
       }
     }
     
-    // If no data was loaded from the main files, fallback to other sources
-    if (allLocations.length === 0) {
-      console.log('📦 No data from main CSV files, falling back to other sources...');
-      
-      // Import sample locations
-      const { sampleLocations } = await import('../components/map/sampleLocations');
-      
-      // Fetch fallback data sources
-      const [
-        nycGardens,
-        communityFridges,
-        farmersMarkets,
-        foodBanks
-      ] = await Promise.all([
-        fetchNYCMapData(),
-        fetchCommunityFridges(),
-        fetchFarmersMarkets(),
-        fetchFoodBanks()
-      ]);
-      
-      allLocations.push(
-        ...sampleLocations,
-        ...nycGardens,
-        ...communityFridges,
-        ...farmersMarkets,
-        ...foodBanks
-      );
-    }
+    console.log(`📊 Total locations loaded before deduplication: ${allLocations.length}`);
     
-    // Remove duplicates based on proximity (within ~100 meters)
+    // Remove duplicates based on proximity and name similarity
     const uniqueLocations = removeDuplicates(allLocations);
     
-    console.log('📊 Enhanced map data summary:');
-    console.log(`  • Community Gardens: ${uniqueLocations.filter(l => l.type === 'garden').length}`);
-    console.log(`  • Community Fridges: ${uniqueLocations.filter(l => l.type === 'fridge').length}`);
-    console.log(`  • Farmers Markets: ${uniqueLocations.filter(l => l.type === 'market').length}`);
-    console.log(`  • Food Banks: ${uniqueLocations.filter(l => l.type === 'foodbank').length}`);
-    console.log(`  • Farms: ${uniqueLocations.filter(l => l.type === 'farm').length}`);
-    console.log(`  • Urban Farms: ${uniqueLocations.filter(l => l.type === 'urbanfarm').length}`);
-    console.log(`  • Businesses: ${uniqueLocations.filter(l => l.type === 'business').length}`);
-    console.log(`  • Total: ${uniqueLocations.length}`);
+    // Final summary with proper counts
+    const summary = {
+      gardens: uniqueLocations.filter(l => l.type === 'garden').length,
+      fridges: uniqueLocations.filter(l => l.type === 'fridge').length,
+      markets: uniqueLocations.filter(l => l.type === 'market').length,
+      foodbanks: uniqueLocations.filter(l => l.type === 'foodbank').length,
+      farms: uniqueLocations.filter(l => l.type === 'farm').length,
+      urbanfarms: uniqueLocations.filter(l => l.type === 'urbanfarm').length,
+      businesses: uniqueLocations.filter(l => l.type === 'business').length
+    };
+    
+    console.log('📊 Enhanced map data final summary:');
+    console.log(`  • Community Gardens: ${summary.gardens}`);
+    console.log(`  • Community Fridges: ${summary.fridges}`);
+    console.log(`  • Farmers Markets: ${summary.markets}`);
+    console.log(`  • Food Banks/Pantries: ${summary.foodbanks}`);
+    console.log(`  • Farms: ${summary.farms}`);
+    console.log(`  • Urban Farms: ${summary.urbanfarms}`);
+    console.log(`  • Businesses: ${summary.businesses}`);
+    console.log(`  • Total Unique Locations: ${uniqueLocations.length}`);
     
     return uniqueLocations;
   } catch (error) {
     console.error('Error fetching enhanced map data:', error);
-    // Fallback to basic NYC data
-    return await fetchNYCMapData();
+    return [];
   }
 };
 
@@ -329,11 +341,16 @@ const mapCSVTypeToLocationType = (csvType: string): MapLocation['type'] => {
     'farmers_market': 'market',
     'farmers market': 'market',
     'food_bank': 'foodbank',
+    'food_pantry': 'foodbank',
     'food bank': 'foodbank',
+    'mobile_pantry': 'foodbank',
+    'soup_kitchen': 'foodbank',
+    'distribution_center': 'foodbank',
     'farm': 'farm',
     'urban_farm': 'urbanfarm',
     'urban farm': 'urbanfarm',
     'business': 'business',
+    'local_food_business': 'business',
     'fridge': 'fridge',
     'garden': 'garden',
     'market': 'market',
@@ -416,21 +433,28 @@ const parseCSVFromMixedTypes = (csvText: string): MapLocation[] => {
   return locations;
 };
 
-// Remove duplicate locations based on proximity
+// Remove duplicate locations based on proximity and name similarity
 const removeDuplicates = (locations: MapLocation[]): MapLocation[] => {
   const unique: MapLocation[] = [];
   
   for (const location of locations) {
     const isDuplicate = unique.some(existing => {
+      // Check coordinate proximity (within ~100 meters)
       const distance = Math.sqrt(
         Math.pow(existing.lngLat[0] - location.lngLat[0], 2) +
         Math.pow(existing.lngLat[1] - location.lngLat[1], 2)
       );
-      // Consider locations within ~100 meters as duplicates (roughly 0.001 degrees)
-      return distance < 0.001 && existing.type === location.type;
+      
+      // Check name similarity (basic check)
+      const nameSimilar = existing.name.toLowerCase() === location.name.toLowerCase();
+      
+      // Consider as duplicate if same type and either very close coordinates OR same name
+      return existing.type === location.type && (distance < 0.001 || nameSimilar);
     });
     
     if (!isDuplicate) {
+      // Ensure unique ID
+      location.id = `${location.type}-${unique.length}-${Date.now()}`;
       unique.push(location);
     }
   }
