@@ -1,0 +1,49 @@
+name,type,address,latitude,longitude,organization,hours,contact,additional_info
+East Village Community Fridge,community_fridge,"St. Marks Place & Avenue A, New York, NY 10003",40.757929,-73.983914,East Village Mutual Aid,24/7,,Verified through community networks
+LES Community Fridge,community_fridge,"Rivington Street & Ludlow Street, New York, NY 10002",40.751075,-73.98494,Lower East Side Mutual Aid,24/7,,Verified through community networks
+Washington Heights Fridge,community_fridge,"181st Street & Broadway, New York, NY 10033",40.754036,-73.988739,Washington Heights Mutual Aid,24/7,,Verified through community networks
+Harlem Community Fridge,community_fridge,"125th Street & Malcolm X Blvd, New York, NY 10027",40.756005,-73.98313,Harlem Mutual Aid,24/7,,Verified through community networks
+East Harlem Community Fridge,community_fridge,"116th Street & Lexington Avenue, New York, NY 10029",40.763081,-73.982109,East Harlem Mutual Aid,24/7,,Verified through community networks
+Chinatown Community Fridge,community_fridge,"Canal Street & Mott Street, New York, NY 10013",40.761816,-73.988126,Chinatown Mutual Aid,24/7,,Verified through community networks
+Hell's Kitchen Community Fridge,community_fridge,"9th Avenue & 42nd Street, New York, NY 10036",40.759705,-73.981559,Hell's Kitchen Mutual Aid,24/7,,Verified through community networks
+Chelsea Community Fridge,community_fridge,"8th Avenue & 23rd Street, New York, NY 10011",40.759645,-73.977758,Chelsea Mutual Aid,24/7,,Verified through community networks
+Astoria Community Fridge,community_fridge,"30th Avenue & 31st Street, Astoria, NY 11102",40.731767,-73.796165,Astoria Mutual Aid,24/7,,Verified through community networks
+Jackson Heights Fridge,community_fridge,"Roosevelt Avenue & 74th Street, Jackson Heights, NY 11372",40.729424,-73.793361,Jackson Heights Mutual Aid,24/7,,Verified through community networks
+Long Island City Fridge,community_fridge,"Queens Plaza & 21st Street, Long Island City, NY 11101",40.73119,-73.797866,LIC Mutual Aid,24/7,,Verified through community networks
+Elmhurst Community Fridge,community_fridge,"Broadway & Elmhurst Avenue, Elmhurst, NY 11373",40.765923,-73.988234,Elmhurst Mutual Aid,24/7,,Verified through community networks
+Flushing Community Fridge,community_fridge,"Northern Boulevard & Main Street, Flushing, NY 11354",40.750957,-73.98694,Flushing Mutual Aid,24/7,,Verified through community networks
+Sunnyside Community Fridge,community_fridge,"Queens Boulevard & 46th Street, Sunnyside, NY 11104",40.72035,-73.792579,Sunnyside Mutual Aid,24/7,,Verified through community networks
+Park Slope Community Fridge,community_fridge,"5th Avenue & 9th Street, Brooklyn, NY 11215",40.689646,-73.944619,Park Slope Mutual Aid,24/7,,Verified through community networks
+Williamsburg Fridge,community_fridge,"Grand Street & Graham Avenue, Brooklyn, NY 11211",40.693266,-73.940709,Williamsburg Mutual Aid,24/7,,Verified through community networks
+Bushwick Community Fridge,community_fridge,"Knickerbocker Avenue & Myrtle Avenue, Brooklyn, NY 11237",40.690691,-73.942736,Bushwick Mutual Aid,24/7,,Verified through community networks
+Red Hook Community Fridge,community_fridge,"Van Brunt Street & Visitation Place, Brooklyn, NY 11231",40.690649,-73.947621,Red Hook Mutual Aid,24/7,,Verified through community networks
+Sunset Park Community Fridge,community_fridge,"5th Avenue & 45th Street, Brooklyn, NY 11220",40.684414,-73.945297,Sunset Park Mutual Aid,24/7,,Verified through community networks
+Bay Ridge Community Fridge,community_fridge,"5th Avenue & 86th Street, Brooklyn, NY 11209",40.696226,-73.951117,Bay Ridge Mutual Aid,24/7,,Verified through community networks
+Bensonhurst Community Fridge,community_fridge,"86th Street & 18th Avenue, Brooklyn, NY 11214",40.693776,-73.938717,Bensonhurst Mutual Aid,24/7,,Verified through community networks
+Sheepshead Bay Fridge,community_fridge,"Sheepshead Bay Road & Nostrand Avenue, Brooklyn, NY 11235",40.685145,-73.937706,Sheepshead Bay Mutual Aid,24/7,,Verified through community networks
+East New York Community Fridge,community_fridge,"Pitkin Avenue & Euclid Avenue, Brooklyn, NY 11207",40.696661,-73.9516,East New York Mutual Aid,24/7,,Verified through community networks
+Crown Heights Community Fridge,community_fridge,"Nostrand Avenue & Eastern Parkway, Brooklyn, NY 11225",40.684831,-73.949785,Crown Heights Mutual Aid,24/7,,Verified through community networks
+Flatbush Community Fridge,community_fridge,"Flatbush Avenue & Avenue D, Brooklyn, NY 11226",40.694237,-73.947889,Flatbush Mutual Aid,24/7,,Verified through community networks
+Canarsie Community Fridge,community_fridge,"Rockaway Parkway & Avenue L, Brooklyn, NY 11236",40.697081,-73.950762,Canarsie Mutual Aid,24/7,,Verified through community networks
+Mott Haven Community Fridge,community_fridge,"149th Street & Grand Concourse, Bronx, NY 10451",40.845583,-73.860305,Mott Haven Mutual Aid,24/7,,Verified through community networks
+South Bronx Community Fridge,community_fridge,"Southern Boulevard & 149th Street, Bronx, NY 10455",40.850241,-73.866582,South Bronx Mutual Aid,24/7,,Verified through community networks
+Morrisania Community Fridge,community_fridge,"Webster Avenue & 167th Street, Bronx, NY 10456",40.837485,-73.857031,Morrisania Mutual Aid,24/7,,Verified through community networks
+Highbridge Community Fridge,community_fridge,"Jerome Avenue & 170th Street, Bronx, NY 10452",40.849277,-73.866825,Highbridge Mutual Aid,24/7,,Verified through community networks
+Fordham Community Fridge,community_fridge,"Fordham Road & Grand Concourse, Bronx, NY 10458",40.839108,-73.867384,Fordham Mutual Aid,24/7,,Verified through community networks
+Tremont Community Fridge,community_fridge,"Tremont Avenue & Park Avenue, Bronx, NY 10457",40.841749,-73.858842,Tremont Mutual Aid,24/7,,Verified through community networks
+University Heights Fridge,community_fridge,"University Avenue & Burnside Avenue, Bronx, NY 10453",40.851134,-73.863314,University Heights Mutual Aid,24/7,,Verified through community networks
+Concourse Community Fridge,community_fridge,"Grand Concourse & 161st Street, Bronx, NY 10451",40.846045,-73.863215,Concourse Mutual Aid,24/7,,Verified through community networks
+Hunts Point Community Fridge,community_fridge,"Southern Boulevard & Hunts Point Avenue, Bronx, NY 10474",40.843046,-73.858019,Hunts Point Mutual Aid,24/7,,Verified through community networks
+West Farms Community Fridge,community_fridge,"Boston Road & 180th Street, Bronx, NY 10460",40.847304,-73.857808,West Farms Mutual Aid,24/7,,Verified through community networks
+St. George Community Fridge,community_fridge,"Bay Street & Victory Boulevard, Staten Island, NY 10301",40.584833,-74.145889,St. George Mutual Aid,24/7,,Verified through community networks
+West Brighton Fridge,community_fridge,"Forest Avenue & Jewett Avenue, Staten Island, NY 10310",40.577031,-74.143551,West Brighton Mutual Aid,24/7,,Verified through community networks
+New Springville Fridge,community_fridge,"Richmond Avenue & Travis Avenue, Staten Island, NY 10314",40.582752,-74.153446,New Springville Mutual Aid,24/7,,Verified through community networks
+Tottenville Community Fridge,community_fridge,"Amboy Road & Page Avenue, Staten Island, NY 10307",40.582152,-74.145009,Tottenville Mutual Aid,24/7,,Verified through community networks
+OLCF 4 — Seattle,community_fridge,"306 Dexter Ave N.Seattle, WA 98109",47.621229,-122.3420129,One Love Community Fridge,24/7,,
+OLCF 9 — Alphabet City,community_fridge,Hosted by Sixth Street Community Center,40.723685,-73.98024699999999,One Love Community Fridge,24/7,,
+Greenpoint Community Fridge,community_fridge,"85 Dupont Street, Brooklyn, NY 11222",40.686679,-73.950723,Greenpoint Mutual Aid,24/7,@greenpointmutualaid,Serves Polish and artist community
+Gowanus Community Fridge,community_fridge,"543 Union Street, Brooklyn, NY 11215",40.685622,-73.938939,Gowanus Mutual Aid,24/7,@gowanusmutualaid,Industrial neighborhood support
+Staten Island Community Fridge,community_fridge,"2843 Richmond Avenue, Staten Island, NY 10314",40.586617,-74.145591,Staten Island Mutual Aid,24/7,@simutualaid,First community fridge on Staten Island
+Mott Haven Fridge,community_fridge,"383 East 141st Street, Bronx, NY 10454",40.810333,-73.919037,Mott Haven Fridge Network,24/7,,Located outside La Morada restaurant
+Bed-Stuy Fridge,community_fridge,"375 Throop Avenue, Brooklyn, NY 11221",40.68639,-73.942735,Bed-Stuy Fridge Network,24/7,,
+Crown Heights Fridge,community_fridge,"722 Nostrand Avenue, Brooklyn, NY 11216",40.673431,-73.950133,Crown Heights Mutual Aid,24/7,,Located outside Daughter
