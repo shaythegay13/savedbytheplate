@@ -1,8 +1,11 @@
 
-import { Button } from "@/components/ui/button";
+import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { MapPin, Clock, Star, ShoppingCart } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
 
 
 // Sample products data
@@ -173,14 +176,15 @@ const ProductCard = ({ product, buttonText = "Add to Cart", isPremium = false })
 
 const Marketplace = () => {
   return (
-    <div className="min-h-screen bg-sbtp-beige">
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
-      <section className="bg-sbtp-green-600 text-white py-10">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">Marketplace</h1>
-            <p className="text-xl">
-              Shop for seed kits, gardening supplies, CSA subscriptions, and premium educational content.
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Urban Garden Marketplace</h1>
+            <p className="text-xl opacity-90">
+              Shop for seeds, supplies, and fresh produce from local NYC urban farmers and gardeners.
             </p>
           </div>
         </div>

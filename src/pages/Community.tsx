@@ -1,6 +1,9 @@
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
 
 // Sample Discord channels
 const channels = [
@@ -76,14 +79,15 @@ const regions = [
 
 const Community = () => {
   return (
-    <div className="min-h-screen bg-sbtp-beige">
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-sbtp-green-700 to-sbtp-green-600 text-white py-16">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">Join Our Community</h1>
-            <p className="text-xl mb-6">
-              Connect with like-minded individuals passionate about sustainable food systems and local agriculture.
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Join Our Growing Community</h1>
+            <p className="text-xl opacity-90 mb-8">
+              Connect with fellow urban gardeners, share experiences, and learn from experts across NYC's five boroughs.
             </p>
             <div className="bg-white/10 p-6 rounded-lg inline-flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3"><circle cx="9" cy="12" r="1"></circle><circle cx="15" cy="12" r="1"></circle><path d="M7.5 7.2c.3-.4 2.9-2.5 4.5-2.5 1.6.1 3 .7 4.9 2.5"></path><path d="M7.5 16.8c.3.4 2.9 2.5 4.5 2.5 1.6-.1 3-.7 4.9-2.5"></path><path d="M15.5 17c.3 1.3.2 2.5-1.5 4.5"></path><path d="M8.5 17c-.3 1.3-.2 2.5 1.5 4.5"></path><path d="M12 4v16"></path><path d="M20 10c0-4.4-1.8-6-4-6-2 0-4.5 2-4.5 2-1 .5-5 .5-6 0 0 0-2.5-2-4.5-2-2.5 0-4 2-4 6 0 4.1 2 8 2 8 1.4 1.4 4.5 3 7.5 3v-3h2v3c3 0 6.1-1.6 7.5-3 0 0 2-3.9 2-8z"></path></svg>

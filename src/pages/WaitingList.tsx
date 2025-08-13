@@ -1,10 +1,12 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Leaf, Users, Mail, CheckCircle, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Leaf, Users, MapPin, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import Navbar from "@/components/layout/Navbar";
 
 const WaitingList = () => {
   const [email, setEmail] = useState("");
@@ -125,9 +127,10 @@ const WaitingList = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sbtp-green-100 to-sbtp-beige">
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32">
+      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground overflow-hidden py-20 md:py-32">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-sbtp-green-200 to-sbtp-beige pointer-events-none"></div>
         
         <div className="container mx-auto px-4 relative z-10">

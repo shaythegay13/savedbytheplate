@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import GardenPlanGenerator from "@/components/garden-plan/GardenPlanGenerator";
 import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 
 const GardenPlan = () => {
   // For demo purposes, let's assume the user is subscribed
@@ -12,17 +13,18 @@ const GardenPlan = () => {
 
   if (isSubscribed) {
     return (
-      <div className="min-h-screen bg-sbtp-beige">
+      <div className="min-h-screen bg-background">
+        <Navbar />
         {/* Hero Section for Subscribed Users */}
-        <section className="bg-sbtp-green-600 text-white py-12">
+        <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="inline-block bg-sbtp-yellow text-sbtp-brown-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
+              <span className="inline-block bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
                 Premium Feature
               </span>
-              <h1 className="text-4xl font-bold mb-4">Your Personalized Garden Planning Tool</h1>
-              <p className="text-xl">
-                Create a customized gardening plan tailored to your specific space, climate, and goals.
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">AI Garden Planner</h1>
+              <p className="text-xl opacity-90">
+                Get a personalized garden plan tailored to your space, location, and preferences using advanced AI.
               </p>
             </div>
           </div>
@@ -40,17 +42,18 @@ const GardenPlan = () => {
 
   // Premium Lock Section (original content for non-subscribers)
   return (
-    <div className="min-h-screen bg-sbtp-beige">
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section - Premium Feature */}
-      <section className="bg-sbtp-green-600 text-white py-16">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="inline-block bg-sbtp-yellow text-sbtp-brown-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
+            <span className="inline-block bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
               Premium Feature
             </span>
-            <h1 className="text-4xl font-bold mb-4">Your Personalized Garden Plan</h1>
-            <p className="text-xl mb-8">
-              Get a customized gardening plan tailored to your space, climate, and goals, whether you have an urban balcony or rural acreage.
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">AI Garden Planner</h1>
+            <p className="text-xl opacity-90 mb-8">
+              Get a personalized garden plan tailored to your space, location, and preferences using advanced AI.
             </p>
           </div>
         </div>

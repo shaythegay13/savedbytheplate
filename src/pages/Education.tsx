@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Navbar from "@/components/layout/Navbar";
 
 
 // Sample course data
@@ -71,16 +72,17 @@ const premiumCourses = [
 const Education = () => {
   return (
     <>
-    <div className="min-h-screen bg-sbtp-beige">
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
-      <section className="bg-sbtp-green-600 text-white py-16">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">Educational Resources</h1>
-            <p className="text-xl mb-8">
-              Explore our courses and resources on sustainable agriculture, gardening, and local food systems.
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Learn to Grow</h1>
+            <p className="text-xl opacity-90 mb-8">
+              Master the art of urban farming with our comprehensive courses designed for New York City gardeners.
             </p>
-            <Button asChild className="bg-white text-sbtp-green-700 hover:bg-sbtp-yellow">
+            <Button variant="secondary" size="lg">
               <a href="#courses">Browse Courses</a>
             </Button>
           </div>

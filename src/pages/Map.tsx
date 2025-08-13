@@ -8,6 +8,7 @@ import MapFilters from "@/components/map/MapFilters";
 import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
 import { fetchEnhancedMapData, categorizeLocations } from "@/services/enhancedMapDataService";
 import { useState, useEffect } from "react";
+import Navbar from "@/components/layout/Navbar";
 
 const Map = () => {
   const [locationCounts, setLocationCounts] = useState<any>(null);
@@ -38,14 +39,15 @@ const Map = () => {
     loadCounts();
   }, []);
   return (
-    <div className="min-h-screen bg-sbtp-beige">
+    <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
-      <section className="bg-sbtp-green-600 text-white py-10">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4">Find Your Local Food Map 🗺️</h1>
-            <p className="text-xl">
-              Discover where you can find local sources of food around you including community gardens, farmers markets, farms, and other local resources. Also add any we are missing! 🌱
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Local Food Access Map</h1>
+            <p className="text-xl opacity-90">
+              Discover food banks, farmers markets, community fridges, and urban farms across NYC's five boroughs.
             </p>
           </div>
         </div>
