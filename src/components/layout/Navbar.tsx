@@ -1,119 +1,88 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Sprout } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const navItems = [
+    { href: "/index", label: "Home" },
+    { href: "/map", label: "Local Food" },
+    { href: "/education", label: "Learn to Grow" },
+    { href: "/marketplace", label: "Marketplace" },
+    { href: "/garden-plan", label: "Garden Planner" },
+    { href: "/community", label: "Community" },
+  ];
+
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
-          <Link to="/" className="flex items-center space-x-2">
-            <img 
-              src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
-              alt="Saved by the Plate" 
-              className="h-10 w-10 object-contain"
-            />
-            <span className="text-xl font-bold text-sbtp-green-700">Saved by the Plate</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/education" className="text-sbtp-green-700 hover:text-sbtp-green-500 transition-colors">
-              Education
-            </Link>
-            <Link to="/community" className="text-sbtp-green-700 hover:text-sbtp-green-500 transition-colors">
-              Community
-            </Link>
-            <Link to="/map" className="text-sbtp-green-700 hover:text-sbtp-green-500 transition-colors">
-              Local Map
-            </Link>
-            <Link to="/marketplace" className="text-sbtp-green-700 hover:text-sbtp-green-500 transition-colors">
-              Marketplace
-            </Link>
-            <Link to="/garden-plan" className="text-sbtp-green-700 hover:text-sbtp-green-500 transition-colors">
-              Garden Plan
+    <nav className="bg-green-800 text-white shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/index" className="flex items-center">
+              <Sprout className="h-8 w-8 mr-2" />
+              <span className="font-bold text-xl">Saved by the Plate</span>
             </Link>
           </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700">
-              Sign In
-            </Button>
-            <Button className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white">
-              Get Premium
-            </Button>
+          
+          {/* Desktop menu */}
+          <div className="hidden md:flex items-center space-x-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={`px-3 py-2 rounded-md transition-colors ${
+                  isActive(item.href)
+                    ? "bg-green-700 text-white"
+                    : "hover:bg-green-700"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
-
-          {/* Mobile Navigation Icon */}
-          <div className="md:hidden">
+          
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
             <button 
-              onClick={toggleMenu}
-              className="text-sbtp-green-700"
+              onClick={toggleMenu} 
+              className="text-white hover:text-green-200 focus:outline-none"
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden pb-4 pt-2">
-            <div className="flex flex-col gap-3">
-              <Link 
-                to="/education" 
-                onClick={() => setIsMenuOpen(false)}
-                className="px-3 py-2 text-sbtp-green-700 hover:bg-sbtp-green-100 rounded-md"
-              >
-                Education
-              </Link>
-              <Link 
-                to="/community" 
-                onClick={() => setIsMenuOpen(false)}
-                className="px-3 py-2 text-sbtp-green-700 hover:bg-sbtp-green-100 rounded-md"
-              >
-                Community
-              </Link>
-              <Link 
-                to="/map" 
-                onClick={() => setIsMenuOpen(false)}
-                className="px-3 py-2 text-sbtp-green-700 hover:bg-sbtp-green-100 rounded-md"
-              >
-                Local Map
-              </Link>
-              <Link 
-                to="/marketplace" 
-                onClick={() => setIsMenuOpen(false)}
-                className="px-3 py-2 text-sbtp-green-700 hover:bg-sbtp-green-100 rounded-md"
-              >
-                Marketplace
-              </Link>
-              <Link 
-                to="/garden-plan" 
-                onClick={() => setIsMenuOpen(false)}
-                className="px-3 py-2 text-sbtp-green-700 hover:bg-sbtp-green-100 rounded-md"
-              >
-                Garden Plan
-              </Link>
-              <div className="flex flex-col gap-2 mt-2">
-                <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 w-full">
-                  Sign In
-                </Button>
-                <Button className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white w-full">
-                  Get Premium
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+      
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-green-800">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={`block px-3 py-2 rounded-md transition-colors ${
+                  isActive(item.href)
+                    ? "bg-green-700 text-white"
+                    : "hover:bg-green-700"
+                }`}
+                onClick={toggleMenu}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
