@@ -1,8 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin } from 'lucide-react';
+import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
 import MapFilters from "@/components/map/MapFilters";
 import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
@@ -41,94 +41,162 @@ const Map = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Local Food Access Map</h1>
-            <p className="text-xl opacity-90">
-              Discover food banks, farmers markets, community fridges, and urban farms across NYC's five boroughs.
-            </p>
+      
+      {/* Enhanced Header */}
+      <div className="bg-white border-b border-sbtp-green-200">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-sbtp-green-800 mb-2">Local Food Access Map</h1>
+              <p className="text-sbtp-brown-500">
+                {!loading && locationCounts ? 
+                  `Showing ${Object.values(locationCounts).reduce((a: number, b: number) => a + b, 0)} verified locations` : 
+                  'Loading food access locations'} across NYC
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Share className="h-4 w-4" />
+                Share Map
+              </Button>
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Heart className="h-4 w-4" />
+                Save
+              </Button>
+              <Button variant="outline" size="sm">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Map Section */}
-      <section className="py-10">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-1 space-y-6">
-              <MapFilters />
-              <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
-            </div>
+      {/* Enhanced Map Layout */}
+      <div className="flex h-[calc(100vh-200px)]">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-sbtp-green-200 overflow-y-auto">
+          <div className="p-4 space-y-6">
+            {/* Quick Search */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sbtp-brown-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    placeholder="Search locations, neighborhoods..."
+                    className="w-full pl-10 pr-4 py-3 border border-sbtp-green-200 rounded-lg focus:ring-2 focus:ring-sbtp-green-300 focus:border-sbtp-green-300 text-sm"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg text-sbtp-green-800 flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  Quick Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center p-3 bg-sbtp-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-sbtp-green-700">
+                      {!loading && locationCounts ? locationCounts.gardens + locationCounts.farms + locationCounts.urbanfarms : '...'}
+                    </div>
+                    <div className="text-xs text-sbtp-brown-500">Growing Spaces</div>
+                  </div>
+                  <div className="text-center p-3 bg-sbtp-yellow/20 rounded-lg">
+                    <div className="text-2xl font-bold text-sbtp-brown-700">
+                      {!loading && locationCounts ? locationCounts.markets : '...'}
+                    </div>
+                    <div className="text-xs text-sbtp-brown-500">Markets</div>
+                  </div>
+                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-700">
+                      {!loading && locationCounts ? locationCounts.fridges : '...'}
+                    </div>
+                    <div className="text-xs text-sbtp-brown-500">Free Fridges</div>
+                  </div>
+                  <div className="text-center p-3 bg-purple-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-700">
+                      {!loading && locationCounts ? locationCounts.foodbanks : '...'}
+                    </div>
+                    <div className="text-xs text-sbtp-brown-500">Food Banks</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Map Controls */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg text-sbtp-green-800 flex items-center gap-2">
+                  <Layers className="h-5 w-5" />
+                  Map Layers
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-sbtp-brown-700">Show all locations</span>
+                    <input type="checkbox" defaultChecked className="rounded" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-sbtp-brown-700">Transit accessibility</span>
+                    <input type="checkbox" className="rounded" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-sbtp-brown-700">Walking distance</span>
+                    <input type="checkbox" className="rounded" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Filters */}
+            <MapFilters />
             
-            <div className="lg:col-span-3">
-              <MapComponent />
-              
-              <div className="mt-6 bg-white p-6 rounded-lg border border-sbtp-green-200">
-                <h3 className="text-xl font-semibold text-sbtp-green-800 mb-4">Enhanced Food Access Map</h3>
-                <p className="text-sbtp-brown-500 mb-4">
-                  This map displays {!loading && locationCounts ? 
-                    `${Object.values(locationCounts).reduce((a: number, b: number) => a + b, 0)} verified food access locations` : 
-                    'comprehensive food access locations'} from multiple trusted data sources including NYC Open Data, community organizations, and Food Bank NYC. 
-                  Help us keep this data current by adding missing locations or reporting changes!
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700">
-                    <MapPin className="h-4 w-4 mr-2" /> Add to Map
+            {/* Legend */}
+            <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
+          </div>
+        </div>
+
+        {/* Map Container */}
+        <div className="flex-1 relative">
+          <MapComponent />
+          
+          {/* Map Overlay Controls */}
+          <div className="absolute top-4 right-4 flex flex-col gap-2">
+            <Button size="sm" variant="outline" className="bg-white shadow-md">
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button size="sm" variant="outline" className="bg-white shadow-md">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Bottom Action Bar */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <div className="bg-white rounded-lg shadow-lg border border-sbtp-green-200 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Add Location
                   </Button>
                   <Button variant="outline" className="border-sbtp-green-300 text-sbtp-green-700">
-                    Report an Issue
+                    Report Issue
                   </Button>
                 </div>
-              </div>
-              
-               {/* Data Source Info */}
-              <div className="mt-6">
-                <h3 className="text-xl font-semibold text-sbtp-green-800 mb-4">Data Sources</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-sbtp-green-700">NYC Open Data</h4>
-                          <p className="text-xs text-sbtp-brown-500">Community gardens & farms</p>
-                        </div>
-                        <Badge className="bg-sbtp-blue text-white text-xs">Live</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-sbtp-green-700">GrowNYC</h4>
-                          <p className="text-xs text-sbtp-brown-500">Farmers markets</p>
-                        </div>
-                        <Badge className="bg-sbtp-green-500 text-white text-xs">Active</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-sbtp-green-700">Food Bank NYC</h4>
-                          <p className="text-xs text-sbtp-brown-500">Food pantries & fridges</p>
-                        </div>
-                        <Badge className="bg-sbtp-yellow text-sbtp-brown-700 text-xs">Verified</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
+                <div className="text-sm text-sbtp-brown-500">
+                  Last updated: Today
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-      
+      </div>
     </div>
   );
 };
