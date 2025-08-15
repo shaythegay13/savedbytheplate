@@ -2,7 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 import GardenPlanGenerator from "@/components/garden-plan/GardenPlanGenerator";
+import LocationInput from "@/components/garden-plan/LocationInput";
+import GardenQuestions from "@/components/garden-plan/GardenQuestions";
+import GardenGoals from "@/components/garden-plan/GardenGoals";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
@@ -10,6 +14,28 @@ const GardenPlan = () => {
   // For demo purposes, let's assume the user is subscribed
   // In a real app, this would check the user's subscription status
   const isSubscribed = true; // This would come from your authentication/subscription context
+  
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState({
+    location: {},
+    questions: {},
+    goals: {}
+  });
+
+  const handleLocationSubmit = (location: any) => {
+    setFormData(prev => ({ ...prev, location }));
+    setCurrentStep(1);
+  };
+
+  const handleQuestionsComplete = (questions: any) => {
+    setFormData(prev => ({ ...prev, questions }));
+    setCurrentStep(2);
+  };
+
+  const handleGoalsComplete = (goals: any) => {
+    setFormData(prev => ({ ...prev, goals }));
+    setCurrentStep(3);
+  };
 
   if (isSubscribed) {
     return (
@@ -30,10 +56,23 @@ const GardenPlan = () => {
           </div>
         </section>
 
-        {/* Garden Planning Tool */}
+        {/* Garden Planning Steps */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <GardenPlanGenerator />
+            <div className="max-w-2xl mx-auto">
+              {currentStep === 0 && (
+                <LocationInput onLocationSubmit={handleLocationSubmit} />
+              )}
+              {currentStep === 1 && (
+                <GardenQuestions onQuestionsComplete={handleQuestionsComplete} />
+              )}
+              {currentStep === 2 && (
+                <GardenGoals onGoalsComplete={handleGoalsComplete} />
+              )}
+              {currentStep === 3 && (
+                <GardenPlanGenerator />
+              )}
+            </div>
           </div>
         </section>
       </div>

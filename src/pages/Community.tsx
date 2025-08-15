@@ -2,85 +2,102 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout } from "lucide-react";
+import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout, ExternalLink, Clock, Star } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
-// Sample Discord channels
-const channels = [
+// Discord Servers (specific to your requirements)
+const discordServers = [
   {
-    name: "Farming",
-    description: "Discuss traditional and modern farming techniques for both rural and urban settings.",
-    memberCount: 1240,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M4 11.5V6a1 1 0 0 1 1-1h5"></path><path d="M20 11.5V6a1 1 0 0 0-1-1h-5"></path><path d="M12 6v3.5"></path><path d="m3 21 8.5-8.5"></path><path d="m13 12 8.5 8.5"></path><path d="M9 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M15 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path></svg>
-    )
+    name: "NYC Urban Gardeners",
+    description: "Connect with fellow urban gardeners across the five boroughs",
+    memberCount: 3200,
+    featured: true
   },
   {
-    name: "Gardening",
-    description: "Exchange gardening tips, tricks, and best practices for growing your own food.",
+    name: "Container Gardening",
+    description: "Master the art of growing in small spaces and containers",
+    memberCount: 2850,
+    featured: false
+  },
+  {
+    name: "Permaculture Principles",
+    description: "Learn sustainable design principles for urban environments",
+    memberCount: 1940,
+    featured: false
+  },
+  {
+    name: "Soil Health",
+    description: "Everything about building and maintaining healthy soil",
+    memberCount: 2120,
+    featured: false
+  },
+  {
+    name: "Rooftop Farming",
+    description: "Specialized community for rooftop and vertical growing",
+    memberCount: 1580,
+    featured: false
+  },
+  {
+    name: "Seasonal Harvests",
+    description: "Share your harvests and seasonal growing experiences",
     memberCount: 2340,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M7 20h10"></path><path d="M10 20c1.5 0 3.485-2.857 4-6.5"></path><path d="M14 20c-1.5 0-2.5-5.5-2.5-9s1-7 3-8c1 1 2 2 2.5 5s.5 4 .5 7-1 5-3 5Z"></path></svg>
-    )
-  },
-  {
-    name: "Educational Q&A",
-    description: "Ask questions and get answers about sustainable agriculture and local food systems.",
-    memberCount: 1875,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2Z"></path><path d="M10 7v10"></path><path d="m15 7-3 5 3 5"></path></svg>
-    )
+    featured: false
   }
 ];
 
-// Sample regional channels
-const regions = [
+// Community Guidelines
+const communityGuidelines = [
+  "Be respectful and supportive of all community members",
+  "Share knowledge freely and ask questions without hesitation",
+  "Stay on topic in each channel to maintain organization", 
+  "No spam, self-promotion without prior approval, or commercial solicitation",
+  "Help maintain a positive, inclusive environment for learning"
+];
+
+// Upcoming Community Events
+const upcomingEvents = [
   {
-    name: "Northeast",
-    description: "Connect with community members from the Northeastern United States.",
-    memberCount: 890,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-blue"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="M9 15v-3"></path><path d="M9 15h3"></path><path d="m15 9-3 3"></path></svg>
-    )
+    title: "Seed Swap Saturday",
+    date: "March 15, 2024",
+    time: "10:00 AM - 2:00 PM",
+    location: "Brooklyn Botanic Garden",
+    description: "Bring seeds to trade and meet fellow gardeners"
   },
   {
-    name: "Southeast",
-    description: "Connect with community members from the Southeastern United States.",
-    memberCount: 1050,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-blue"><circle cx="12" cy="12" r="10"></circle><path d="m15 15-6-6"></path><path d="M15 9v6"></path><path d="M9 15h6"></path></svg>
-    )
+    title: "Container Gardening Workshop",
+    date: "March 22, 2024", 
+    time: "1:00 PM - 4:00 PM",
+    location: "Queens Community Center",
+    description: "Hands-on workshop for apartment gardening"
   },
   {
-    name: "Central",
-    description: "Connect with community members from the Central United States.",
-    memberCount: 780,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-blue"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>
-    )
-  },
-  {
-    name: "Northwest",
-    description: "Connect with community members from the Northwestern United States.",
-    memberCount: 920,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-blue"><circle cx="12" cy="12" r="10"></circle><path d="m9 9 6 6"></path><path d="M15 9v6"></path><path d="M9 9h6"></path></svg>
-    )
-  },
-  {
-    name: "Southwest",
-    description: "Connect with community members from the Southwestern United States.",
-    memberCount: 750,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-blue"><circle cx="12" cy="12" r="10"></circle><path d="m9 15 6-6"></path><path d="M9 15v-6"></path><path d="M15 9h-6"></path></svg>
-    )
+    title: "Urban Composting Demo",
+    date: "March 29, 2024",
+    time: "11:00 AM - 1:00 PM", 
+    location: "Central Park Conservatory",
+    description: "Learn composting techniques for small spaces"
   }
 ];
+
+// Community Showcase (weekly rotation)
+const currentShowcase = {
+  title: "Brooklyn Grange Rooftop Farm",
+  location: "Long Island City, Queens",
+  description: "This week we're featuring Brooklyn Grange, one of NYC's largest rooftop soil farms. Spanning over 2.5 acres across multiple locations, they demonstrate how urban agriculture can thrive in unexpected places.",
+  image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+  highlights: [
+    "Over 80,000 lbs of produce grown annually",
+    "Hosts educational programs for 10,000+ visitors yearly", 
+    "Creates habitat for local wildlife and pollinators",
+    "Demonstrates sustainable urban farming practices"
+  ]
+};
 
 const Community = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
@@ -90,92 +107,157 @@ const Community = () => {
               Connect with fellow urban gardeners, share experiences, and learn from experts across NYC's five boroughs.
             </p>
             <div className="bg-white/10 p-6 rounded-lg inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3"><circle cx="9" cy="12" r="1"></circle><circle cx="15" cy="12" r="1"></circle><path d="M7.5 7.2c.3-.4 2.9-2.5 4.5-2.5 1.6.1 3 .7 4.9 2.5"></path><path d="M7.5 16.8c.3.4 2.9 2.5 4.5 2.5 1.6-.1 3-.7 4.9-2.5"></path><path d="M15.5 17c.3 1.3.2 2.5-1.5 4.5"></path><path d="M8.5 17c-.3 1.3-.2 2.5 1.5 4.5"></path><path d="M12 4v16"></path><path d="M20 10c0-4.4-1.8-6-4-6-2 0-4.5 2-4.5 2-1 .5-5 .5-6 0 0 0-2.5-2-4.5-2-2.5 0-4 2-4 6 0 4.1 2 8 2 8 1.4 1.4 4.5 3 7.5 3v-3h2v3c3 0 6.1-1.6 7.5-3 0 0 2-3.9 2-8z"></path></svg>
+              <MessageCircle className="mr-3 h-8 w-8" />
               <div className="text-left">
                 <h3 className="font-semibold">Discord Community</h3>
-                <p className="text-sm opacity-80">5,000+ members and growing</p>
+                <p className="text-sm opacity-80">14,000+ members and growing</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Topic Channels Section */}
+      {/* Discord Servers Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Topic Channels</h2>
-            <p className="text-sbtp-brown-500 mb-8">Join discussions organized by specific topics related to sustainable agriculture.</p>
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Discord Communities</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {channels.map((channel, index) => (
-                <Card key={index} className="border-sbtp-green-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+              {discordServers.map((server, index) => (
+                <Card key={index} className={`border-sbtp-green-200 hover:shadow-lg transition-all ${server.featured ? 'ring-2 ring-sbtp-yellow' : ''}`}>
                   <CardHeader>
-                    <div className="flex items-start gap-4">
-                      <div className="bg-sbtp-green-100 p-3 rounded-full">
-                        {channel.icon}
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-sbtp-green-100 p-3 rounded-full">
+                          <MessageCircle className="h-6 w-6 text-sbtp-green-600" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-sbtp-green-700">{server.name}</CardTitle>
+                          <CardDescription className="text-xs text-sbtp-brown-500">
+                            {server.memberCount.toLocaleString()} members
+                          </CardDescription>
+                        </div>
                       </div>
-                      <div>
-                        <CardTitle className="text-sbtp-green-700 text-xl">{channel.name}</CardTitle>
-                        <CardDescription className="text-xs text-sbtp-brown-500">
-                          {channel.memberCount.toLocaleString()} members
-                        </CardDescription>
-                      </div>
+                      {server.featured && (
+                        <Badge className="bg-sbtp-yellow text-sbtp-brown-700">
+                          <Star className="h-3 w-3 mr-1" />
+                          Featured
+                        </Badge>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sbtp-brown-500 text-sm">{channel.description}</p>
-                    <Button asChild className="w-full mt-4 bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                      <a href="https://discord.com" target="_blank" rel="noopener noreferrer">Join Channel</a>
+                    <p className="text-sbtp-brown-500 text-sm mb-4">{server.description}</p>
+                    <Button className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Join Server
                     </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Regional Channels</h2>
-            <p className="text-sbtp-brown-500 mb-8">Connect with people in your geographic region to discuss local growing conditions and resources.</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {regions.map((region, index) => (
-                <Card key={index} className="border-sbtp-green-200">
+            {/* Community Guidelines */}
+            <div className="bg-sbtp-green-50 rounded-lg p-8 mb-16">
+              <h3 className="text-2xl font-bold text-sbtp-green-800 mb-6">Community Guidelines</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {communityGuidelines.map((guideline, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="bg-sbtp-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mt-0.5">
+                      {index + 1}
+                    </div>
+                    <p className="text-sbtp-brown-700">{guideline}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Upcoming Events */}
+            <h3 className="text-2xl font-bold text-sbtp-green-800 mb-8">Upcoming Community Events</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+              {upcomingEvents.map((event, index) => (
+                <Card key={index} className="border-sbtp-green-200 hover:shadow-lg transition-all">
                   <CardHeader>
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-3">
                       <div className="bg-sbtp-blue/20 p-3 rounded-full">
-                        {region.icon}
+                        <Calendar className="h-6 w-6 text-sbtp-blue" />
                       </div>
                       <div>
-                        <CardTitle className="text-sbtp-green-700 text-xl">{region.name}</CardTitle>
-                        <CardDescription className="text-xs text-sbtp-brown-500">
-                          {region.memberCount.toLocaleString()} members
+                        <CardTitle className="text-sbtp-green-700">{event.title}</CardTitle>
+                        <CardDescription className="text-sm text-sbtp-brown-500">
+                          {event.date} • {event.time}
                         </CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sbtp-brown-500 text-sm">{region.description}</p>
-                    <Button asChild className="w-full mt-4 bg-sbtp-blue hover:bg-sbtp-blue/80">
-                      <a href="https://discord.com" target="_blank" rel="noopener noreferrer">Join Region</a>
+                    <div className="flex items-center gap-2 mb-3">
+                      <MapPin className="h-4 w-4 text-sbtp-brown-400" />
+                      <span className="text-sm text-sbtp-brown-600">{event.location}</span>
+                    </div>
+                    <p className="text-sm text-sbtp-brown-500 mb-4">{event.description}</p>
+                    <Button variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Add to Calendar
                     </Button>
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            {/* Community Showcase */}
+            <div className="bg-gradient-to-r from-sbtp-green-100 to-sbtp-beige rounded-lg overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                <div className="p-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Star className="h-5 w-5 text-sbtp-yellow" />
+                    <span className="text-sm font-medium text-sbtp-brown-600">Community Showcase</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-sbtp-green-800 mb-2">{currentShowcase.title}</h3>
+                  <div className="flex items-center gap-2 mb-4">
+                    <MapPin className="h-4 w-4 text-sbtp-brown-500" />
+                    <span className="text-sm text-sbtp-brown-600">{currentShowcase.location}</span>
+                  </div>
+                  <p className="text-sbtp-brown-700 mb-6">{currentShowcase.description}</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    {currentShowcase.highlights.map((highlight, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <div className="bg-sbtp-green-500 rounded-full w-2 h-2 mt-2"></div>
+                        <span className="text-sm text-sbtp-brown-600">{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <p className="text-xs text-sbtp-brown-500 italic">
+                    Featured community showcase rotates weekly
+                  </p>
+                </div>
+                <div className="h-64 lg:h-auto">
+                  <img 
+                    src={currentShowcase.image} 
+                    alt={currentShowcase.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Join Discord CTA */}
-      <section className="py-12 bg-sbtp-green-100">
+      <section className="py-12 bg-sbtp-green-800 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-6">Ready to Join the Conversation?</h2>
-            <p className="text-lg text-sbtp-brown-700 mb-8">
-              Our Discord server is a vibrant community of gardeners, farmers, educators, and food enthusiasts sharing knowledge and inspiration.
+            <h2 className="text-3xl font-bold mb-6">Ready to Join the Conversation?</h2>
+            <p className="text-lg opacity-90 mb-8">
+              Our Discord community is a vibrant space for gardeners, farmers, educators, and food enthusiasts sharing knowledge and inspiration.
             </p>
-            <Button asChild className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white text-lg py-6 px-10">
+            <Button asChild className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 text-lg py-6 px-10">
               <a href="https://discord.com" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 inline-block"><circle cx="9" cy="12" r="1"></circle><circle cx="15" cy="12" r="1"></circle><path d="M7.5 7.2c.3-.4 2.9-2.5 4.5-2.5 1.6.1 3 .7 4.9 2.5"></path><path d="M7.5 16.8c.3.4 2.9 2.5 4.5 2.5 1.6-.1 3-.7 4.9-2.5"></path><path d="M15.5 17c.3 1.3.2 2.5-1.5 4.5"></path><path d="M8.5 17c-.3 1.3-.2 2.5 1.5 4.5"></path><path d="M12 4v16"></path><path d="M20 10c0-4.4-1.8-6-4-6-2 0-4.5 2-4.5 2-1 .5-5 .5-6 0 0 0-2.5-2-4.5-2-2.5 0-4 2-4 6 0 4.1 2 8 2 8 1.4 1.4 4.5 3 7.5 3v-3h2v3c3 0 6.1-1.6 7.5-3 0 0 2-3.9 2-8z"></path></svg>
+                <MessageCircle className="mr-2 h-5 w-5" />
                 Join our Discord
               </a>
             </Button>

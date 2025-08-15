@@ -4,8 +4,94 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Star, ShoppingCart } from "lucide-react";
+import { MapPin, Clock, Star, ShoppingCart, Package, Sprout, Wrench, HelpCircle, Truck, Leaf } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+
+// Individual Seeds
+const seeds = [
+  {
+    id: 4,
+    name: "Heirloom Tomato Seeds (5 varieties)",
+    price: 12.99,
+    image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
+    description: "Premium heirloom tomato varieties perfect for container growing.",
+    tags: ["Heirloom", "Tomatoes"]
+  }
+];
+
+// Tools
+const tools = [
+  {
+    id: 6,
+    name: "Bamboo Garden Tools Set",
+    price: 34.99,
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+    description: "Eco-friendly garden tool set made from sustainable bamboo.",
+    tags: ["Tools", "Sustainable"]
+  }
+];
+
+// Produce
+const produce = [
+  {
+    id: 8,
+    name: "Fresh Herb Bundle",
+    price: 8.99,
+    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
+    description: "Weekly fresh herb delivery from local NYC urban farms.",
+    tags: ["Fresh", "Local", "Weekly"]
+  }
+];
+
+// CSA Programs
+const csaPrograms = [
+  {
+    id: 10,
+    name: "Brooklyn Grange CSA",
+    price: 25,
+    recurrence: "weekly",
+    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+    description: "Weekly box of seasonal vegetables from NYC's largest rooftop farm.",
+    location: "Brooklyn/Queens"
+  }
+];
+
+// Featured Collections
+const featuredCollections = [
+  {
+    name: "Balcony Garden Collection",
+    description: "Everything you need for a productive balcony garden",
+    items: 8,
+    image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
+    price: "From $49.99"
+  },
+  {
+    name: "Seasonal Seed Collection",
+    description: "Curated seeds for each growing season in NYC",
+    items: 12,
+    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+    price: "From $34.99"
+  },
+  {
+    name: "Indoor Herb Garden",
+    description: "Complete setup for year-round indoor herbs",
+    items: 6,
+    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
+    price: "From $39.99"
+  }
+];
+
+// FAQ Data
+const faqData = [
+  {
+    question: "How do I know which seeds are right for my space?",
+    answer: "Our seed descriptions include space requirements and growing conditions. For personalized recommendations, use our Garden Planner tool or join our Discord community for advice."
+  },
+  {
+    question: "Do you offer delivery throughout NYC?",
+    answer: "Yes! We deliver to all five boroughs. Fresh produce and live plants typically arrive within 24-48 hours, while seeds and tools ship within 3-5 business days."
+  }
+];
 
 
 // Sample products data
@@ -178,103 +264,156 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Urban Garden Marketplace</h1>
-            <p className="text-xl opacity-90">
-              Shop for seeds, supplies, and fresh produce from local NYC urban farmers and gardeners.
+            <p className="text-xl opacity-90 mb-8">
+              Shop for seeds, supplies, tools, fresh produce, and CSA programs from local NYC urban farmers and gardeners.
             </p>
+            <Button variant="secondary" size="lg">
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              Start Shopping
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Marketplace Section */}
-      <section className="py-10">
+      {/* Featured Collections */}
+      <section className="py-16 bg-sbtp-green-50">
         <div className="container mx-auto px-4">
-          <Tabs defaultValue="seeds" className="w-full">
-            <div className="text-center mb-8">
-              <TabsList className="bg-sbtp-green-100 inline-flex h-auto p-1">
-                <TabsTrigger value="seeds" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                  Seed Kits
-                </TabsTrigger>
-                <TabsTrigger value="supplies" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                  Gardening Supplies
-                </TabsTrigger>
-                <TabsTrigger value="csa" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                  CSA Subscriptions
-                </TabsTrigger>
-                <TabsTrigger value="courses" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                  Premium Courses
-                </TabsTrigger>
-              </TabsList>
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Featured Collections</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+              {featuredCollections.map((collection, index) => (
+                <Card key={index} className="border-sbtp-green-200 hover:shadow-lg transition-all group overflow-hidden">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src={collection.image} 
+                      alt={collection.name}
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    />
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-sbtp-green-700">{collection.name}</CardTitle>
+                    <CardDescription className="text-sbtp-brown-500">
+                      {collection.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-sm text-sbtp-brown-600">{collection.items} items included</span>
+                      <span className="font-semibold text-sbtp-green-700">{collection.price}</span>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
+                      <Package className="h-4 w-4 mr-2" />
+                      View Collection
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
-
-            <TabsContent value="seeds" className="pt-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {seedKits.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="supplies" className="pt-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {supplies.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="csa" className="pt-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {csaOptions.map((product) => (
-                  <ProductCard key={product.id} product={product} buttonText="Subscribe" />
-                ))}
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="courses" className="pt-4">
-              <div className="bg-sbtp-yellow/30 rounded-lg p-6 mb-8">
-                <h3 className="font-semibold flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-sbtp-brown-700"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="12" y1="8" x2="12" y2="16"></line><line x1="12" y1="8" x2="12" y2="8"></line><line x1="12" y1="16" x2="12" y2="16"></line></svg>
-                  Premium Content
-                </h3>
-                <p className="text-sbtp-brown-700 mt-2">
-                  These advanced courses are available exclusively to our premium subscribers or for individual purchase. 
-                  <Button variant="link" className="text-sbtp-green-700 font-medium px-1 py-0 h-auto">
-                    Upgrade to premium
-                  </Button>
-                  for $10/month or $100/year to access all courses.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {premiumCourses.map((product) => (
-                  <ProductCard key={product.id} product={product} buttonText="Purchase Course" isPremium={true} />
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+          </div>
         </div>
       </section>
-      
-      {/* Cart Summary */}
-      <section className="py-10 bg-sbtp-green-100">
+
+      {/* Products Section */}
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto bg-white rounded-lg shadow p-6 border border-sbtp-green-200">
-            <h2 className="text-2xl font-bold text-sbtp-green-800 mb-4">Shopping Cart</h2>
-            <p className="text-sbtp-brown-500 mb-6">
-              Your cart is currently empty. Browse our products and add items to your cart.
-            </p>
-            <div className="flex justify-between items-center">
-              <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700">
-                Continue Shopping
-              </Button>
-              <Button disabled className="bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                Checkout
-              </Button>
+          <div className="max-w-6xl mx-auto">
+            <Tabs defaultValue="seed-kits" className="w-full">
+              <div className="text-center mb-8">
+                <TabsList className="bg-sbtp-green-100 inline-flex h-auto p-1 flex-wrap">
+                  <TabsTrigger value="seed-kits" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
+                    <Package className="h-4 w-4 mr-2" />
+                    Seed Kits
+                  </TabsTrigger>
+                  <TabsTrigger value="seeds" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
+                    <Sprout className="h-4 w-4 mr-2" />
+                    Seeds
+                  </TabsTrigger>
+                  <TabsTrigger value="tools" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
+                    <Wrench className="h-4 w-4 mr-2" />
+                    Tools
+                  </TabsTrigger>
+                  <TabsTrigger value="produce" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
+                    <Leaf className="h-4 w-4 mr-2" />
+                    Produce
+                  </TabsTrigger>
+                  <TabsTrigger value="csa" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
+                    <Truck className="h-4 w-4 mr-2" />
+                    CSA Programs
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="seed-kits" className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {seedKits.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="seeds" className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {seeds.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="tools" className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {tools.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="produce" className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {produce.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="csa" className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {csaPrograms.map((product) => (
+                    <ProductCard key={product.id} product={product} buttonText="Subscribe" />
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 bg-sbtp-green-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8 text-center">Frequently Asked Questions</h2>
+            <div className="space-y-6">
+              {faqData.map((faq, index) => (
+                <Card key={index} className="border-sbtp-green-200">
+                  <CardHeader>
+                    <CardTitle className="text-sbtp-green-700 flex items-start gap-3">
+                      <HelpCircle className="h-5 w-5 mt-1 text-sbtp-green-500" />
+                      {faq.question}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sbtp-brown-600 ml-8">{faq.answer}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>

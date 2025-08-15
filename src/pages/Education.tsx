@@ -3,7 +3,90 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Video, Download, Clock, Star, Play, FileText } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+
+// Featured Articles
+const featuredArticles = [
+  {
+    title: "Container Gardening in Small NYC Apartments",
+    excerpt: "Maximize your growing potential with these space-saving container gardening techniques perfect for NYC living.",
+    author: "Sarah Green",
+    readTime: "8 min read",
+    image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
+    category: "Urban Gardening"
+  },
+  {
+    title: "Seasonal Growing Guide for Zone 7a",
+    excerpt: "A complete month-by-month guide to growing vegetables in New York's climate zone.",
+    author: "Mike Rodriguez",
+    readTime: "12 min read",
+    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+    category: "Seasonal Guides"
+  },
+  {
+    title: "Building Community Through Urban Farming",
+    excerpt: "How neighborhood gardens are strengthening communities across the five boroughs.",
+    author: "Lisa Chen",
+    readTime: "6 min read",
+    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
+    category: "Community"
+  }
+];
+
+// Video Tutorials
+const videoTutorials = [
+  {
+    title: "Setting Up Your First Balcony Garden",
+    duration: "15:30",
+    instructor: "Garden Expert Maria",
+    views: "24.5K",
+    thumbnail: "https://images.unsplash.com/photo-1426604966848-d7adac402bff",
+    difficulty: "Beginner"
+  },
+  {
+    title: "Composting in Small Spaces",
+    duration: "12:45",
+    instructor: "Eco-Warrior Jake",
+    views: "18.2K",
+    thumbnail: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+    difficulty: "Beginner"
+  },
+  {
+    title: "Advanced Companion Planting Techniques",
+    duration: "22:15",
+    instructor: "Dr. Plant Science",
+    views: "31.8K",
+    thumbnail: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
+    difficulty: "Advanced"
+  }
+];
+
+// Downloadable Guides
+const downloadableGuides = [
+  {
+    title: "NYC Planting Calendar PDF",
+    description: "Month-by-month planting guide specifically for New York City's climate",
+    fileSize: "2.3 MB",
+    downloads: "5.2K",
+    format: "PDF"
+  },
+  {
+    title: "Pest Identification Handbook",
+    description: "Identify and treat common garden pests in urban environments",
+    fileSize: "4.1 MB",
+    downloads: "3.8K",
+    format: "PDF"
+  },
+  {
+    title: "Seed Starting Checklist",
+    description: "Complete checklist for starting seeds indoors successfully",
+    fileSize: "1.5 MB",
+    downloads: "7.1K",
+    format: "PDF"
+  }
+];
 
 
 // Sample course data
@@ -71,94 +154,159 @@ const premiumCourses = [
 
 const Education = () => {
   return (
-    <>
     <div className="min-h-screen bg-background">
       <Navbar />
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Learn to Grow</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Urban Gardening Education Hub</h1>
             <p className="text-xl opacity-90 mb-8">
-              Master the art of urban farming with our comprehensive courses designed for New York City gardeners.
+              Learn, grow, and thrive with our comprehensive collection of articles, videos, guides, and premium courses.
             </p>
             <Button variant="secondary" size="lg">
-              <a href="#courses">Browse Courses</a>
+              <BookOpen className="mr-2 h-5 w-5" />
+              Start Learning
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Courses Section */}
-      <section id="courses" className="py-16">
+      {/* Featured Articles Section */}
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <Tabs defaultValue="free" className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <TabsList className="bg-sbtp-green-100">
-                <TabsTrigger value="free" className="data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                  Free Courses
-                </TabsTrigger>
-                <TabsTrigger value="premium" className="data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                  Premium Courses
-                </TabsTrigger>
-              </TabsList>
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Featured Articles</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {featuredArticles.map((article, index) => (
+                <Card key={index} className="border-sbtp-green-200 overflow-hidden hover:shadow-lg transition-all group">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src={article.image} 
+                      alt={article.title} 
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    />
+                  </div>
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="secondary" className="text-xs bg-sbtp-green-100 text-sbtp-green-700">
+                        {article.category}
+                      </Badge>
+                      <div className="flex items-center text-xs text-sbtp-brown-500">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {article.readTime}
+                      </div>
+                    </div>
+                    <CardTitle className="text-sbtp-green-700 group-hover:text-sbtp-green-600 transition-colors">
+                      {article.title}
+                    </CardTitle>
+                    <CardDescription className="text-sbtp-brown-500">
+                      {article.excerpt}
+                    </CardDescription>
+                    <div className="text-xs text-sbtp-brown-400 mt-2">
+                      By {article.author}
+                    </div>
+                  </CardHeader>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Read Article
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
 
-            <TabsContent value="free">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {freeCourses.map((course, index) => (
-                  <Card key={index} className="border-sbtp-green-200 overflow-hidden hover:shadow-md transition-all">
-                    <div className="h-48 overflow-hidden">
-                      <img 
-                        src={course.imageUrl} 
-                        alt={course.title} 
-                        className="w-full h-full object-cover transition-transform hover:scale-105"
-                      />
-                    </div>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-sbtp-green-700">{course.title}</CardTitle>
-                        <span className="bg-sbtp-blue text-white text-xs px-2 py-1 rounded-full">
-                          {course.platform}
-                        </span>
+            {/* Video Tutorials Section */}
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Video Tutorials</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {videoTutorials.map((video, index) => (
+                <Card key={index} className="border-sbtp-green-200 overflow-hidden hover:shadow-lg transition-all group">
+                  <div className="h-48 overflow-hidden relative">
+                    <img 
+                      src={video.thumbnail} 
+                      alt={video.title} 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="bg-white/90 rounded-full p-3">
+                        <Play className="h-6 w-6 text-sbtp-green-700" />
                       </div>
-                      <CardDescription className="text-sm text-gray-500">{course.duration}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-sbtp-brown-500">{course.description}</p>
-                    </CardContent>
-                    <CardFooter>
-                      <Button asChild variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
-                        <a href={course.link} target="_blank" rel="noopener noreferrer">Watch Course</a>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
+                    </div>
+                    <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                      {video.duration}
+                    </div>
+                    <div className="absolute top-2 left-2">
+                      <Badge className={video.difficulty === 'Beginner' ? 'bg-sbtp-green-500' : 'bg-sbtp-blue'}>
+                        {video.difficulty}
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-sbtp-green-700">{video.title}</CardTitle>
+                    <CardDescription className="text-sbtp-brown-500">
+                      By {video.instructor} • {video.views} views
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
+                      <Video className="h-4 w-4 mr-2" />
+                      Watch Video
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
 
-            <TabsContent value="premium">
-              <div className="bg-sbtp-yellow/30 rounded-lg p-6 mb-8">
-                <h3 className="font-semibold flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-sbtp-brown-700"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="12" y1="8" x2="12" y2="16"></line><line x1="12" y1="8" x2="12" y2="8"></line><line x1="12" y1="16" x2="12" y2="16"></line></svg>
-                  Premium Content
-                </h3>
-                <p className="text-sbtp-brown-700 mt-2">
-                  These advanced courses are available exclusively to our premium subscribers. 
-                  <Link to="/premium" className="ml-1 underline text-sbtp-green-700 font-medium">
-                    Upgrade now
-                  </Link> to access all premium content for just $10/month or $100/year.
-                </p>
-              </div>
+            {/* Downloadable Guides Section */}
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Downloadable Guides</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {downloadableGuides.map((guide, index) => (
+                <Card key={index} className="border-sbtp-green-200 hover:shadow-lg transition-all">
+                  <CardHeader className="text-center">
+                    <div className="w-16 h-16 bg-sbtp-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Download className="h-8 w-8 text-sbtp-green-600" />
+                    </div>
+                    <CardTitle className="text-sbtp-green-700">{guide.title}</CardTitle>
+                    <CardDescription className="text-sbtp-brown-500">
+                      {guide.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <div className="flex justify-between text-xs text-sbtp-brown-400 mb-4">
+                      <span>{guide.format} • {guide.fileSize}</span>
+                      <span>{guide.downloads} downloads</span>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Free
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
 
+            {/* Premium Courses Section */}
+            <div className="bg-sbtp-yellow/20 rounded-lg p-8 mb-8">
+              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Courses</h2>
+              <p className="text-lg text-sbtp-brown-700 mb-6">
+                Take your gardening skills to the next level with our comprehensive premium courses. 
+                <Link to="/premium" className="ml-1 underline text-sbtp-green-700 font-medium">
+                  Upgrade to premium
+                </Link> for $10/month or $100/year to access all advanced content.
+              </p>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {premiumCourses.map((course, index) => (
                   <Card key={index} className="border-sbtp-green-200 overflow-hidden opacity-90 hover:shadow-md transition-all">
                     <div className="h-48 overflow-hidden relative">
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white">
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white z-10">
                         <div className="text-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                          <span className="text-sm">Premium</span>
+                          <Star className="mx-auto mb-2 h-6 w-6" />
+                          <span className="text-sm font-medium">Premium</span>
                         </div>
                       </div>
                       <img 
@@ -170,11 +318,10 @@ const Education = () => {
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <CardTitle className="text-sbtp-green-700">{course.title}</CardTitle>
-                        <span className="bg-sbtp-yellow text-sbtp-brown-700 text-xs px-2 py-1 rounded-full">
-                          {course.platform}
-                        </span>
+                        <Badge className="bg-sbtp-yellow text-sbtp-brown-700">
+                          {course.duration}
+                        </Badge>
                       </div>
-                      <CardDescription className="text-sm text-gray-500">{course.duration}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-sbtp-brown-500">{course.description}</p>
@@ -187,14 +334,11 @@ const Education = () => {
                   </Card>
                 ))}
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </div>
       </section>
-      
     </div>
-    
-    </>
   );
 };
 
