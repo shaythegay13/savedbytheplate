@@ -22,20 +22,32 @@ const WaitingList = () => {
   };
 
   const submitEmailToNewsletter = async (emailAddress: string) => {
-    const { data, error } = await supabase.functions.invoke('subscribe-to-beehiiv', {
-      body: { email: emailAddress }
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke('subscribe-to-beehiiv', {
+        body: { email: emailAddress }
+      });
 
-    if (error) {
-      console.error("Supabase function error:", error);
-      throw new Error(error.message || "Failed to subscribe to newsletter");
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || "Network error. Please check your connection and try again.");
+      }
+
+      if (!data) {
+        throw new Error("No response received. Please try again.");
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || "Subscription failed. Please try again.");
+      }
+
+      return data;
+    } catch (error: any) {
+      console.error("Network or parsing error:", error);
+      if (error.message) {
+        throw error;
+      }
+      throw new Error("Unable to connect. Please check your internet connection and try again.");
     }
-
-    if (!data.success) {
-      throw new Error(data.error || "Failed to subscribe to newsletter");
-    }
-
-    return data;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
