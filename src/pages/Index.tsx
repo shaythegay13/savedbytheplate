@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Book, ShoppingBag, Leaf, Users } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
+import gardenPlanningImage from "@/assets/garden-planning.jpg";
 
 const Index = () => {
   return (
@@ -142,7 +143,7 @@ const Index = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1598901865264-4f19dfa8ceaf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
+                  src={gardenPlanningImage} 
                   alt="Garden planning" 
                   className="w-full h-full object-cover" 
                 />
