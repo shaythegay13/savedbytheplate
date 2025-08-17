@@ -106,7 +106,7 @@ const faqData = [
   },
   {
     question: "Do you offer local delivery?",
-    answer: "Yes! We deliver throughout your local area. Fresh produce and live plants typically arrive within 24-48 hours, while seeds and tools ship within 3-5 business days."
+    answer: "Yes! We deliver throughout your local area. Fresh farmer's products and live plants typically arrive within 24-48 hours, while seeds and tools ship within 3-5 business days."
   }
 ];
 
@@ -182,7 +182,7 @@ const csaOptions = [
     price: 30,
     recurrence: "biweekly",
     image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
-    description: "Bi-weekly delivery of urban-grown produce with focus on unique varieties and specialty crops.",
+    description: "Bi-weekly delivery of urban-grown farmer's products with focus on unique varieties and specialty crops.",
     location: "Central"
   },
   {
@@ -303,7 +303,7 @@ const Marketplace = () => {
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Marketplace</h1>
             <p className="text-xl opacity-90 mb-8">
-              Shop for seeds, supplies, tools, fresh produce, and CSA programs from local urban farmers and gardeners.
+              Shop for seeds, supplies, tools, fresh farmer's products, and CSA programs from local urban farmers and gardeners.
             </p>
             <div className="max-w-md mx-auto mb-8">
               <div className="flex gap-2">
