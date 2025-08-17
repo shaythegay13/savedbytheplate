@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { MapPin, Clock, Star, ShoppingCart, Package, Sprout, Wrench, HelpCircle, Truck, Leaf } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
@@ -38,7 +39,7 @@ const produce = [
     name: "Fresh Herb Bundle",
     price: 8.99,
     image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
-    description: "Weekly fresh herb delivery from local NYC urban farms.",
+    description: "Weekly fresh herb delivery from local urban farms.",
     tags: ["Fresh", "Local", "Weekly"]
   }
 ];
@@ -47,12 +48,12 @@ const produce = [
 const csaPrograms = [
   {
     id: 10,
-    name: "Brooklyn Grange CSA",
+    name: "Urban Rooftop Farm CSA",
     price: 25,
     recurrence: "weekly",
     image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
-    description: "Weekly box of seasonal vegetables from NYC's largest rooftop farm.",
-    location: "Brooklyn/Queens"
+    description: "Weekly box of seasonal vegetables from rooftop farms.",
+    location: "Local Area"
   }
 ];
 
@@ -67,7 +68,7 @@ const featuredCollections = [
   },
   {
     name: "Seasonal Seed Collection",
-    description: "Curated seeds for each growing season in NYC",
+    description: "Curated seeds for each growing season in your area",
     items: 12,
     image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
     price: "From $34.99"
@@ -88,8 +89,8 @@ const faqData = [
     answer: "Our seed descriptions include space requirements and growing conditions. For personalized recommendations, use our Garden Planner tool or join our Discord community for advice."
   },
   {
-    question: "Do you offer delivery throughout NYC?",
-    answer: "Yes! We deliver to all five boroughs. Fresh produce and live plants typically arrive within 24-48 hours, while seeds and tools ship within 3-5 business days."
+    question: "Do you offer local delivery?",
+    answer: "Yes! We deliver throughout your local area. Fresh produce and live plants typically arrive within 24-48 hours, while seeds and tools ship within 3-5 business days."
   }
 ];
 
@@ -261,6 +262,21 @@ const ProductCard = ({ product, buttonText = "Add to Cart", isPremium = false })
 };
 
 const Marketplace = () => {
+  const [zipCode, setZipCode] = useState("");
+  const [localSources, setLocalSources] = useState([]);
+
+  const handleZipCodeSubmit = () => {
+    if (zipCode.length === 5) {
+      // In a real application, this would make an API call to find local sources
+      setLocalSources([
+        "Green Valley Farm Co-op",
+        "Local Community Garden Center", 
+        "Organic Seeds & Supplies",
+        "Farm Fresh Delivery Service"
+      ]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -269,10 +285,42 @@ const Marketplace = () => {
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Urban Garden Marketplace</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Marketplace</h1>
             <p className="text-xl opacity-90 mb-8">
-              Shop for seeds, supplies, tools, fresh produce, and CSA programs from local NYC urban farmers and gardeners.
+              Shop for seeds, supplies, tools, fresh produce, and CSA programs from local urban farmers and gardeners.
             </p>
+            <div className="max-w-md mx-auto mb-8">
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="Enter your zip code"
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
+                  maxLength={5}
+                  className="bg-white/20 text-white placeholder:text-white/70 border-white/30"
+                />
+                <Button 
+                  onClick={handleZipCodeSubmit}
+                  variant="secondary"
+                  disabled={zipCode.length !== 5}
+                >
+                  Find Local Sources
+                </Button>
+              </div>
+              {localSources.length > 0 && (
+                <div className="mt-4 p-4 bg-white/10 rounded-lg">
+                  <h3 className="font-semibold mb-2">Local sources in {zipCode}:</h3>
+                  <ul className="text-sm space-y-1">
+                    {localSources.map((source, index) => (
+                      <li key={index} className="flex items-center">
+                        <MapPin className="h-3 w-3 mr-2" />
+                        {source}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
             <Button variant="secondary" size="lg">
               <ShoppingCart className="mr-2 h-5 w-5" />
               Start Shopping
