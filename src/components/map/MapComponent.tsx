@@ -131,14 +131,6 @@ const MapComponent = () => {
             </div>
           )}
           
-          {/* Location count display */}
-          {!loading && locations.length > 0 && (
-            <div className="absolute top-4 right-4 bg-white px-3 py-2 rounded-md shadow-md">
-              <span className="text-sm font-medium text-sbtp-green-700">
-                {locations.length} locations found
-              </span>
-            </div>
-          )}
           
           {/* Render markers once map is loaded */}
           {mapLoaded && map.current && locations.map(location => (

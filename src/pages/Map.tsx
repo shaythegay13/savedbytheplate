@@ -50,8 +50,8 @@ const Map = () => {
               <h1 className="text-3xl font-bold text-sbtp-green-800 mb-2">Local Food Access Map</h1>
               <p className="text-sbtp-brown-500">
                 {!loading && locationCounts ? 
-                  `Showing ${Object.values(locationCounts).reduce((a: number, b: number) => a + b, 0)} verified locations` : 
-                  'Loading food access locations'} across NYC
+                  `Showing ${Object.values(locationCounts).reduce((a: number, b: number) => a + b, 0)} verified locations in your area` : 
+                  'Loading food access locations in your area'}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -166,8 +166,8 @@ const Map = () => {
         <div className="flex-1 relative">
           <MapComponent />
           
-          {/* Map Overlay Controls */}
-          <div className="absolute top-4 right-4 flex flex-col gap-2">
+          {/* Map Overlay Controls - moved to avoid overlap */}
+          <div className="absolute top-20 right-4 flex flex-col gap-2">
             <Button size="sm" variant="outline" className="bg-white shadow-md">
               <Settings className="h-4 w-4" />
             </Button>
@@ -176,8 +176,8 @@ const Map = () => {
             </Button>
           </div>
 
-          {/* Bottom Action Bar */}
-          <div className="absolute bottom-4 left-4 right-4">
+          {/* Bottom Action Bar - adjusted positioning */}
+          <div className="absolute bottom-4 left-4 right-20">
             <div className="bg-white rounded-lg shadow-lg border border-sbtp-green-200 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">

@@ -141,11 +141,6 @@ const UnifiedMapLegend = ({ locationCounts, isLoading }: UnifiedMapLegendProps) 
               </div>
             ))}
             
-            <div className="mt-4 pt-3 border-t border-sbtp-green-200">
-              <p className="text-xs text-sbtp-brown-500">
-                Data sources: NYC Open Data, GrowNYC, Food Bank NYC, and community organizations
-              </p>
-            </div>
           </>
         )}
       </CardContent>
