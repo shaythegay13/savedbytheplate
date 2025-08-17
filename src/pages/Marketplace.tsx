@@ -32,15 +32,31 @@ const tools = [
   }
 ];
 
-// Produce
-const produce = [
+// Farmer's Products
+const farmersProducts = [
   {
     id: 8,
     name: "Fresh Herb Bundle",
     price: 8.99,
     image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
-    description: "Weekly fresh herb delivery from local urban farms.",
+    description: "Weekly fresh herb delivery from local sustainable farms.",
     tags: ["Fresh", "Local", "Weekly"]
+  },
+  {
+    id: 9,
+    name: "Artisan Strawberry Jam",
+    price: 12.50,
+    image: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d",
+    description: "Small-batch strawberry jam made from organically grown berries.",
+    tags: ["Artisan", "Organic", "Preserves"]
+  },
+  {
+    id: 10,
+    name: "Farm Fresh Vegetables Box",
+    price: 24.99,
+    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+    description: "Weekly box of seasonal vegetables, fruits, and herbs from local farms.",
+    tags: ["Seasonal", "Local", "Fresh"]
   }
 ];
 
@@ -390,7 +406,7 @@ const Marketplace = () => {
                   </TabsTrigger>
                   <TabsTrigger value="produce" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
                     <Leaf className="h-4 w-4 mr-2" />
-                    Produce
+                    Farmer's Products
                   </TabsTrigger>
                   <TabsTrigger value="csa" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
                     <Truck className="h-4 w-4 mr-2" />
@@ -425,7 +441,7 @@ const Marketplace = () => {
               
               <TabsContent value="produce" className="pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {produce.map((product) => (
+                  {farmersProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
