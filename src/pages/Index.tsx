@@ -12,18 +12,17 @@ const Index = () => {
         <div className="absolute inset-0 overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-            alt="Urban garden in NYC" 
+            alt="Urban garden" 
             className="w-full h-full object-cover opacity-20" 
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Grow Local, Eat Local in NYC
+              Grow Local, Eat Local
             </h1>
             <p className="text-xl mb-8">
-              Connecting New Yorkers with sustainable food options across the
-              five boroughs.
+              Connecting communities with sustainable food options and local agriculture.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link 
@@ -65,8 +64,7 @@ const Index = () => {
                   <h3 className="text-xl font-semibold">Local Food Finder</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Discover farmers markets, CSAs, and urban farms across all
-                  five boroughs of NYC.
+                  Discover farmers markets, CSAs, and urban farms in your local area.
                 </p>
                 <Link 
                   to="/map" 
