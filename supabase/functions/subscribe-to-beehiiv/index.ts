@@ -20,6 +20,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email }: SubscriptionRequest = await req.json();
     console.log("Processing subscription request for email:", email);
+    console.log("Environment check - BEEHIIV_API_KEY exists:", !!Deno.env.get("BEEHIIV_API_KEY"));
 
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
