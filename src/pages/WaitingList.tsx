@@ -161,45 +161,32 @@ const WaitingList = () => {
               We're building something amazing to empower your food choices.
             </p>
             
-            {!isHeroSubmitted ? (
-              <div className="bg-sbtp-yellow px-6 py-6 rounded-lg text-sbtp-brown-700 inline-block mb-8 shadow-lg">
-                <div className="flex items-center justify-center mb-4">
-                  <span className="text-2xl mr-2">🚀</span>
-                  <span className="text-lg font-semibold">Join Our Waiting List & Newsletter!</span>
-                </div>
-                <p className="text-sm text-sbtp-brown-600 mb-4 max-w-md mx-auto">
-                  Sign up now to get early access to our website and receive exclusive updates from our upcoming newsletter.
-                </p>
-                <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <Input
-                    type="email"
-                    placeholder="Enter your email address"
-                    value={heroEmail}
-                    onChange={(e) => setHeroEmail(e.target.value)}
-                    className="flex-1 bg-white text-gray-900 border-0"
-                    required
-                    disabled={isHeroLoading}
-                  />
-                  <Button 
-                    type="submit" 
-                    className="bg-sbtp-green-600 text-white hover:bg-sbtp-green-700 font-semibold px-6"
-                    disabled={isHeroLoading}
-                  >
-                    {isHeroLoading ? "Joining..." : "Join Now"}
-                  </Button>
-                </form>
+            <div className="bg-sbtp-yellow px-6 py-6 rounded-lg text-sbtp-brown-700 inline-block mb-8 shadow-lg">
+              <div className="flex items-center justify-center mb-4">
+                <span className="text-2xl mr-2">🚀</span>
+                <span className="text-lg font-semibold">Join Our Waiting List & Newsletter!</span>
               </div>
-            ) : (
-              <div className="bg-sbtp-green-600 text-white px-6 py-6 rounded-lg inline-block mb-8 shadow-lg">
-                <div className="flex items-center justify-center mb-2">
-                  <span className="text-2xl mr-2">🎉</span>
-                  <span className="text-lg font-semibold">You're on the list!</span>
-                </div>
-                <p className="text-sbtp-beige">
-                  Thank you for joining! We'll keep you updated on our progress.
-                </p>
-              </div>
-            )}
+              <p className="text-sm text-sbtp-brown-600 mb-4 max-w-md mx-auto">
+                Sign up now to get early access to our website and receive exclusive updates from our upcoming newsletter.
+              </p>
+              <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
+              <iframe 
+                src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
+                className="beehiiv-embed" 
+                data-test-id="beehiiv-embed" 
+                frameBorder="0" 
+                scrolling="no" 
+                style={{
+                  width: '100%', 
+                  height: '415px', 
+                  margin: 0, 
+                  borderRadius: '0px 0px 0px 0px', 
+                  backgroundColor: 'transparent', 
+                  boxShadow: '0 0 #0000', 
+                  maxWidth: '100%'
+                }}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -287,33 +274,25 @@ const WaitingList = () => {
               Plus, receive updates on local food initiatives in your area.
             </p>
             
-            {!isSubmitted ? (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <Input
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white text-gray-900 border-0"
-                  required
-                  disabled={isLoading}
-                />
-                <Button 
-                  type="submit" 
-                  className="bg-sbtp-yellow text-sbtp-green-800 hover:bg-sbtp-yellow/90 font-semibold px-8"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Joining..." : "Join Now"}
-                </Button>
-              </form>
-            ) : (
-              <div className="bg-white/10 p-6 rounded-lg backdrop-blur-sm">
-                <h3 className="text-2xl font-semibold mb-2">🎉 You're on the list!</h3>
-                <p className="text-sbtp-beige">
-                  Thank you for joining! We'll keep you updated on our progress and let you know as soon as we launch.
-                </p>
-              </div>
-            )}
+            <div className="max-w-md mx-auto">
+              <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
+              <iframe 
+                src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
+                className="beehiiv-embed" 
+                data-test-id="beehiiv-embed" 
+                frameBorder="0" 
+                scrolling="no" 
+                style={{
+                  width: '100%', 
+                  height: '415px', 
+                  margin: 0, 
+                  borderRadius: '0px 0px 0px 0px', 
+                  backgroundColor: 'transparent', 
+                  boxShadow: '0 0 #0000', 
+                  maxWidth: '100%'
+                }}
+              />
+            </div>
             
             <p className="text-sm text-sbtp-beige mt-4">
               We respect your privacy. Unsubscribe at any time.
