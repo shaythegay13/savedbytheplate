@@ -50,6 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("API key found, making request to Beehiiv...");
+    console.log("Using publication ID: pub_7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e");
 
     // Make request to Beehiiv API with correct headers and endpoint
     const beehiivUrl = `https://api.beehiiv.com/v2/publications/pub_7c9ca1e0-7a3f-49e3-8d2a-9c4ae8bb963e/subscriptions`;
