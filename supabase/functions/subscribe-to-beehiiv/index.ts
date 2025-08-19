@@ -38,6 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
     const beehiivApiKey = Deno.env.get("BEEHIIV_API_KEY");
     if (!beehiivApiKey) {
       console.error("BEEHIIV_API_KEY not found in environment variables");
+      console.error("Available env vars:", Object.keys(Deno.env.toObject()));
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         {
