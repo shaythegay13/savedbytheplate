@@ -161,14 +161,7 @@ const WaitingList = () => {
               We're building something amazing to empower your food choices.
             </p>
             
-            <div className="bg-sbtp-yellow px-6 py-6 rounded-lg text-sbtp-brown-700 inline-block mb-8 shadow-lg">
-              <div className="flex items-center justify-center mb-4">
-                <span className="text-2xl mr-2">🚀</span>
-                <span className="text-lg font-semibold">Join Our Waiting List & Newsletter!</span>
-              </div>
-              <p className="text-sm text-sbtp-brown-600 mb-4 max-w-md mx-auto">
-                Sign up now to get early access to our website and receive exclusive updates from our upcoming newsletter.
-              </p>
+            <div className="mb-8">
               <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
               <iframe 
                 src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
