@@ -1,7 +1,8 @@
 import { GardenPlanFormData, GardenPlan } from './types';
 
 export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
-  const plantRecommendations = [
+  // Define plant categories based on user preferences
+  const vegetables = [
     {
       name: "Cherry Tomatoes",
       variety: "Sweet 100",
@@ -23,16 +24,6 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
       yield: "1-2 heads per plant"
     },
     {
-      name: "Basil",
-      variety: "Genovese",
-      plantingTime: "After soil warms to 60°F",
-      harvestTime: "Continuous harvest after 60 days",
-      spacing: "12 inches apart",
-      careInstructions: "Pinch flowers to encourage leaf growth. Water at base of plant.",
-      difficulty: "Easy" as const,
-      yield: "1-2 cups fresh leaves per week"
-    },
-    {
       name: "Bell Peppers",
       variety: "California Wonder",
       plantingTime: "2 weeks after last frost",
@@ -43,6 +34,107 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
       yield: "6-8 peppers per plant"
     }
   ];
+
+  const fruits = [
+    {
+      name: "Strawberries",
+      variety: "Ever-bearing",
+      plantingTime: "Early spring or fall",
+      harvestTime: "60-90 days from planting",
+      spacing: "12-18 inches apart",
+      careInstructions: "Mulch around plants to retain moisture and suppress weeds. Remove runners for larger berries.",
+      difficulty: "Easy" as const,
+      yield: "1-2 cups per plant per season"
+    },
+    {
+      name: "Blueberries",
+      variety: "Lowbush",
+      plantingTime: "Early spring or fall",
+      harvestTime: "2-3 years from planting (perennial)",
+      spacing: "4-6 feet apart",
+      careInstructions: "Requires acidic soil (pH 4.5-5.5). Water regularly and mulch well.",
+      difficulty: "Medium" as const,
+      yield: "5-10 lbs per mature bush"
+    },
+    {
+      name: "Dwarf Apple Tree",
+      variety: "Honeycrisp",
+      plantingTime: "Early spring or fall",
+      harvestTime: "2-4 years from planting",
+      spacing: "8-10 feet apart",
+      careInstructions: "Prune annually in late winter. Requires cross-pollination for best fruit set.",
+      difficulty: "Hard" as const,
+      yield: "50-100 apples per tree"
+    }
+  ];
+
+  const flowers = [
+    {
+      name: "Marigolds",
+      variety: "French Marigold",
+      plantingTime: "After last frost",
+      harvestTime: "Continuous blooms until frost",
+      spacing: "6-12 inches apart",
+      careInstructions: "Deadhead regularly for continuous blooms. Very drought tolerant once established.",
+      difficulty: "Easy" as const,
+      yield: "Continuous colorful blooms"
+    },
+    {
+      name: "Zinnias",
+      variety: "State Fair Mix",
+      plantingTime: "After soil warms to 60°F",
+      harvestTime: "Blooms 60-70 days from seed",
+      spacing: "6-12 inches apart",
+      careInstructions: "Deadhead for more blooms. Excellent cut flowers. Heat and drought tolerant.",
+      difficulty: "Easy" as const,
+      yield: "Abundant cut flowers"
+    },
+    {
+      name: "Sunflowers",
+      variety: "Mammoth",
+      plantingTime: "After last frost",
+      harvestTime: "80-120 days from seed",
+      spacing: "12-24 inches apart",
+      careInstructions: "Provide support for tall varieties. Deep watering encourages strong root system.",
+      difficulty: "Easy" as const,
+      yield: "Large flower heads with edible seeds"
+    }
+  ];
+
+  const herbs = [
+    {
+      name: "Basil",
+      variety: "Genovese",
+      plantingTime: "After soil warms to 60°F",
+      harvestTime: "Continuous harvest after 60 days",
+      spacing: "12 inches apart",
+      careInstructions: "Pinch flowers to encourage leaf growth. Water at base of plant.",
+      difficulty: "Easy" as const,
+      yield: "1-2 cups fresh leaves per week"
+    }
+  ];
+
+  // Filter plants based on user preferences
+  let plantRecommendations: any[] = [];
+  const preferences = formData.preferred_plants.toLowerCase();
+  
+  if (preferences.includes('vegetable') || preferences.includes('veggies')) {
+    plantRecommendations.push(...vegetables);
+  }
+  if (preferences.includes('fruit')) {
+    plantRecommendations.push(...fruits);
+  }
+  if (preferences.includes('flower')) {
+    plantRecommendations.push(...flowers);
+  }
+  if (preferences.includes('herb')) {
+    plantRecommendations.push(...herbs);
+  }
+  
+  // If no specific preferences or if empty, include a mix
+  if (plantRecommendations.length === 0) {
+    plantRecommendations = [...vegetables.slice(0, 2), ...fruits.slice(0, 1), ...flowers.slice(0, 1)];
+  }
 
   const gardenLayout = [
     {
