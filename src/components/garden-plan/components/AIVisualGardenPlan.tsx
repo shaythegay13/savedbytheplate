@@ -179,34 +179,41 @@ const AIVisualGardenPlan: React.FC<AIVisualGardenPlanProps> = ({
     // Clear canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    // Draw background image if uploaded
+    // Draw background image if uploaded (full opacity for aerial view)
     if (uploadedImage) {
       const img = new Image();
       img.onload = () => {
-        ctx.globalAlpha = 0.3;
+        // Draw the full image as background
         ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-        ctx.globalAlpha = 1.0;
         drawOverlays(ctx);
       };
       img.src = uploadedImage.previewUrl;
     } else {
-      // Draw default garden background
-      drawDefaultBackground(ctx);
+      // Draw default aerial garden view
+      drawDefaultAerialBackground(ctx);
       drawOverlays(ctx);
     }
   };
 
-  const drawDefaultBackground = (ctx: CanvasRenderingContext2D) => {
-    // Garden soil background
-    ctx.fillStyle = '#8B4513';
+  const drawDefaultAerialBackground = (ctx: CanvasRenderingContext2D) => {
+    // Create gradient for aerial grass view
+    const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+    gradient.addColorStop(0, '#2D5016');
+    gradient.addColorStop(0.3, '#3A5F23');
+    gradient.addColorStop(0.7, '#47702F');
+    gradient.addColorStop(1, '#2D5016');
+    
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     
-    // Add texture pattern
-    ctx.fillStyle = '#A0522D';
-    for (let i = 0; i < canvasWidth; i += 20) {
-      for (let j = 0; j < canvasHeight; j += 20) {
-        if ((i + j) % 40 === 0) {
-          ctx.fillRect(i, j, 10, 10);
+    // Add grass texture pattern
+    ctx.fillStyle = '#4A7C3A';
+    for (let i = 0; i < canvasWidth; i += 30) {
+      for (let j = 0; j < canvasHeight; j += 30) {
+        if (Math.random() > 0.7) {
+          ctx.beginPath();
+          ctx.arc(i + Math.random() * 30, j + Math.random() * 30, 2, 0, 2 * Math.PI);
+          ctx.fill();
         }
       }
     }
@@ -253,6 +260,9 @@ const AIVisualGardenPlan: React.FC<AIVisualGardenPlanProps> = ({
   };
 
   const drawSections = (ctx: CanvasRenderingContext2D) => {
+    // Only draw subtle sections if no uploaded image
+    if (uploadedImage) return;
+    
     const sectionsPerRow = Math.ceil(Math.sqrt(gardenLayout.length));
     const sectionWidth = canvasWidth / sectionsPerRow;
     const sectionHeight = canvasHeight / Math.ceil(gardenLayout.length / sectionsPerRow);
@@ -261,41 +271,67 @@ const AIVisualGardenPlan: React.FC<AIVisualGardenPlanProps> = ({
       const x = (index % sectionsPerRow) * sectionWidth;
       const y = Math.floor(index / sectionsPerRow) * sectionHeight;
       
-      // Draw section border
-      ctx.strokeStyle = '#059669';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
+      // Draw subtle section border
+      ctx.strokeStyle = 'rgba(5, 150, 105, 0.3)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
       ctx.strokeRect(x + 5, y + 5, sectionWidth - 10, sectionHeight - 10);
       ctx.setLineDash([]);
       
-      // Draw section label
-      ctx.fillStyle = '#065F46';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(section.section, x + 10, y + 20);
+      // Draw section label with background
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      ctx.fillRect(x + 8, y + 8, ctx.measureText(section.section).width + 6, 16);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText(section.section, x + 11, y + 20);
     });
   };
 
   const drawPlants = (ctx: CanvasRenderingContext2D) => {
     plantPositions.forEach(plant => {
+      // Draw planting area circle with subtle background
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.beginPath();
+      ctx.arc(plant.x, plant.y, plant.size + 6, 0, 2 * Math.PI);
+      ctx.fill();
+      
       // Draw plant circle
       ctx.fillStyle = plant.color;
       ctx.beginPath();
       ctx.arc(plant.x, plant.y, plant.size, 0, 2 * Math.PI);
       ctx.fill();
       
+      // Draw border for all plants for better visibility on photos
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
       // Draw border for selected plant
       if (selectedPlant?.id === plant.id) {
         ctx.strokeStyle = '#FFD700';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.stroke();
       }
       
-      // Draw plant icon
-      ctx.fillStyle = '#000000';
+      // Draw plant icon with shadow for better visibility
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
       ctx.font = `${plant.size + 4}px sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.fillText(plant.icon, plant.x + 1, plant.y + 1);
+      
+      ctx.fillStyle = '#FFFFFF';
       ctx.fillText(plant.icon, plant.x, plant.y);
+      
+      // Draw plant name label
+      if (uploadedImage) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.fillRect(plant.x - 25, plant.y + plant.size + 8, 50, 14);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 8px sans-serif';
+        const plantName = plant.name.split(' ')[0]; // First word only
+        ctx.fillText(plantName, plant.x, plant.y + plant.size + 18);
+      }
     });
   };
 
@@ -378,7 +414,10 @@ const AIVisualGardenPlan: React.FC<AIVisualGardenPlanProps> = ({
           </div>
         </div>
         <p className="text-sm text-sbtp-brown-600">
-          Interactive visual layout optimized for sunlight, spacing, and companion planting
+          {uploadedImage ? 
+            "Aerial view showing optimal planting locations on your garden space" :
+            "Interactive visual layout optimized for sunlight, spacing, and companion planting"
+          }
         </p>
       </CardHeader>
       
@@ -524,10 +563,10 @@ const AIVisualGardenPlan: React.FC<AIVisualGardenPlanProps> = ({
           <div className="mt-4 p-3 bg-sbtp-blue/10 border border-sbtp-blue/20 rounded-lg">
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-sbtp-blue" />
-              <span className="text-sm font-medium text-sbtp-blue">AI Enhanced with Your Photo</span>
+              <span className="text-sm font-medium text-sbtp-blue">Aerial Garden Plan</span>
             </div>
             <p className="text-xs text-sbtp-blue mt-1">
-              This layout has been optimized based on the uploaded image of your garden area
+              Click on any crop marker to see planting details. This layout shows exactly where to plant each recommended crop in your garden space.
             </p>
           </div>
         )}
