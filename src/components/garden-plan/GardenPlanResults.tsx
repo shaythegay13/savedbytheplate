@@ -12,6 +12,8 @@ import PlantingCalendarComponent from './components/PlantingCalendar';
 import CareInstructions from './components/CareInstructions';
 import ExpertTips from './components/ExpertTips';
 import FeedbackModal from './components/FeedbackModal';
+import AIVisualGardenPlan from './components/AIVisualGardenPlan';
+import { GardenPlanFormData } from './types';
 
 interface PlantRecommendation {
   name: string;
@@ -43,13 +45,7 @@ interface GardenPlanResultsProps {
   careInstructions: string;
   expertTips: string[];
   planId?: string;
-  formData?: {
-    spaceType: string;
-    spaceSize: string;
-    sunlight: string;
-    goals: string;
-    space_description?: string;
-  };
+  formData?: GardenPlanFormData;
 }
 
 const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
@@ -105,12 +101,19 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           onShareExperience={setSelectedPlantFeedback}
         />
 
+        <AIVisualGardenPlan 
+          gardenLayout={currentGardenLayout}
+          plantRecommendations={currentPlantRecommendations}
+          formData={formData}
+          uploadedImage={formData?.gardenImage}
+        />
+
         {formData && (
           <IntelligentGardenPlotVisualizer 
             gardenLayout={currentGardenLayout}
             spaceType={formData.spaceType}
             spaceSize={formData.spaceSize}
-            locationDescription={formData.space_description}
+            locationDescription={formData.space_description || formData.city}
           />
         )}
 

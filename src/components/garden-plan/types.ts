@@ -13,6 +13,10 @@ export interface GardenPlanFormData {
   preferred_plants: string;
   time_commitment: string;
   structures?: string[]; // Garden structures like greenhouse, cold frames, etc.
+  latitude?: number;
+  longitude?: number;
+  city?: string;
+  gardenImage?: { file: File; previewUrl: string } | null;
 }
 
 export interface PlantRecommendation {

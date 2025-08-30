@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
+import ImageUpload from './components/ImageUpload';
 
 interface GardenPlanFormData {
   spaceType: string;
@@ -27,6 +28,7 @@ interface GardenPlanFormData {
   latitude?: number;
   longitude?: number;
   city?: string;
+  gardenImage?: { file: File; previewUrl: string } | null;
 }
 
 interface GardenPlanFormProps {
@@ -36,6 +38,7 @@ interface GardenPlanFormProps {
 
 const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) => {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<{ file: File; previewUrl: string } | null>(null);
   const { toast } = useToast();
   
   const form = useForm<GardenPlanFormData>({
@@ -55,7 +58,8 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
       time_commitment: "",
       latitude: undefined,
       longitude: undefined,
-      city: ""
+      city: "",
+      gardenImage: null
     }
   });
   const watchSoilContaminated = form.watch("soil_contaminated");
@@ -143,6 +147,20 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
       console.error('Location error:', error);
       setIsGettingLocation(false);
     }
+  };
+
+  const handleImageUpload = (file: File, previewUrl: string) => {
+    const imageData = { file, previewUrl };
+    setUploadedImage(imageData);
+    form.setValue('gardenImage', imageData);
+  };
+
+  const handleRemoveImage = () => {
+    if (uploadedImage) {
+      URL.revokeObjectURL(uploadedImage.previewUrl);
+    }
+    setUploadedImage(null);
+    form.setValue('gardenImage', null);
   };
 
   return (
@@ -465,6 +483,13 @@ const GardenPlanForm: React.FC<GardenPlanFormProps> = ({ onSubmit, isLoading }) 
                   <FormMessage />
                 </FormItem>
               )}
+            />
+
+            {/* Image Upload Component */}
+            <ImageUpload
+              onImageUpload={handleImageUpload}
+              uploadedImage={uploadedImage}
+              onRemoveImage={handleRemoveImage}
             />
 
             <Button type="submit" disabled={isLoading} className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
