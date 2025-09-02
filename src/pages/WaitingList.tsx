@@ -241,7 +241,7 @@ const WaitingList = () => {
               href="https://forms.gle/iNS2s9rTZpHAsFji7" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-center font-semibold text-lg"
+              className="block bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white px-16 py-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-center font-semibold text-2xl"
             >
               Tell Us About Your Local Food Spaces!
             </a>
