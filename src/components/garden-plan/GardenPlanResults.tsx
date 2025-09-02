@@ -13,6 +13,9 @@ import CareInstructions from './components/CareInstructions';
 import ExpertTips from './components/ExpertTips';
 import FeedbackModal from './components/FeedbackModal';
 import AIVisualGardenPlan from './components/AIVisualGardenPlan';
+import DragDropGardenLayout from './components/DragDropGardenLayout';
+import PlantDiseaseIdentifier from './components/PlantDiseaseIdentifier';
+import SeasonalRecommendations from './components/SeasonalRecommendations';
 import { GardenPlanFormData } from './types';
 
 interface PlantRecommendation {
@@ -108,6 +111,17 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           uploadedImage={formData?.gardenImage}
         />
 
+        <DragDropGardenLayout 
+          plantRecommendations={currentPlantRecommendations}
+          gardenSize={{ width: 6, height: 4 }}
+          onLayoutUpdate={(layout) => console.log('Garden layout updated:', layout)}
+        />
+
+        <SeasonalRecommendations 
+          formData={formData}
+          onPlantSelect={(plants) => console.log('Seasonal plants selected:', plants)}
+        />
+
         {formData && (
           <IntelligentGardenPlotVisualizer 
             gardenLayout={currentGardenLayout}
@@ -128,6 +142,8 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         <CareInstructions careInstructions={careInstructions} />
 
         <ExpertTips expertTips={expertTips} />
+
+        <PlantDiseaseIdentifier />
       </div>
 
       <FeedbackModal
