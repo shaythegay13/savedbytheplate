@@ -7,8 +7,80 @@ import GardenPlanGenerator from "@/components/garden-plan/GardenPlanGenerator";
 import LocationInput from "@/components/garden-plan/LocationInput";
 import GardenQuestions from "@/components/garden-plan/GardenQuestions";
 import GardenGoals from "@/components/garden-plan/GardenGoals";
+import PlantSelectionStep from "@/components/garden-plan/components/PlantSelectionStep";
+import VisualGardenLayout from "@/components/garden-plan/components/VisualGardenLayout";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+
+// Mock plant data for the selection step
+const mockPlantRecommendations = [
+  {
+    name: "Cherry Tomato",
+    variety: "Sweet 100",
+    plantingTime: "Late spring after last frost",
+    harvestTime: "75-80 days",
+    spacing: "18-24 inches apart",
+    careInstructions: "Regular watering, support with stakes",
+    difficulty: "Easy" as const,
+    yield: "High yield, continuous harvest",
+    companions: ["Basil", "Marigold", "Pepper"]
+  },
+  {
+    name: "Lettuce",
+    variety: "Buttercrunch",
+    plantingTime: "Early spring, cool weather",
+    harvestTime: "45-55 days",
+    spacing: "6-8 inches apart",
+    careInstructions: "Keep soil moist, partial shade in summer",
+    difficulty: "Easy" as const,
+    yield: "Multiple harvests",
+    companions: ["Carrot", "Radish", "Onion"]
+  },
+  {
+    name: "Basil",
+    variety: "Genovese",
+    plantingTime: "After soil warms in spring",
+    harvestTime: "60-90 days",
+    spacing: "12 inches apart",
+    careInstructions: "Pinch flowers, regular harvesting",
+    difficulty: "Easy" as const,
+    yield: "Continuous harvest",
+    companions: ["Tomato", "Pepper"]
+  },
+  {
+    name: "Bell Pepper",
+    variety: "California Wonder",
+    plantingTime: "Late spring, warm soil",
+    harvestTime: "70-80 days",
+    spacing: "18-24 inches apart",
+    careInstructions: "Regular watering, mulch around base",
+    difficulty: "Medium" as const,
+    yield: "4-6 peppers per plant",
+    companions: ["Tomato", "Basil"]
+  },
+  {
+    name: "Carrot",
+    variety: "Nantes",
+    plantingTime: "Early spring through summer",
+    harvestTime: "70-80 days",
+    spacing: "2-3 inches apart",
+    careInstructions: "Thin seedlings, loose soil required",
+    difficulty: "Medium" as const,
+    yield: "Good storage crop",
+    companions: ["Lettuce", "Onion", "Radish"]
+  },
+  {
+    name: "Cucumber",
+    variety: "Boston Pickling",
+    plantingTime: "Late spring, warm soil",
+    harvestTime: "50-60 days",
+    spacing: "12-18 inches apart",
+    careInstructions: "Trellis support, consistent watering",
+    difficulty: "Medium" as const,
+    yield: "High yield with proper care",
+    companions: ["Bean", "Radish", "Marigold"]
+  }
+];
 
 const GardenPlan = () => {
   // For demo purposes, let's assume the user is subscribed
@@ -19,7 +91,9 @@ const GardenPlan = () => {
   const [formData, setFormData] = useState({
     location: {},
     questions: {},
-    goals: {}
+    goals: {},
+    selectedPlants: [],
+    gardenLayout: []
   });
 
   const handleLocationSubmit = (location: any) => {
@@ -35,6 +109,16 @@ const GardenPlan = () => {
   const handleGoalsComplete = (goals: any) => {
     setFormData(prev => ({ ...prev, goals }));
     setCurrentStep(3);
+  };
+
+  const handlePlantsSelected = (plants: any) => {
+    setFormData(prev => ({ ...prev, selectedPlants: plants }));
+    setCurrentStep(4);
+  };
+
+  const handleLayoutComplete = (layout: any) => {
+    setFormData(prev => ({ ...prev, gardenLayout: layout }));
+    setCurrentStep(5);
   };
 
   if (isSubscribed) {
@@ -70,6 +154,21 @@ const GardenPlan = () => {
                 <GardenGoals onGoalsComplete={handleGoalsComplete} />
               )}
               {currentStep === 3 && (
+                <PlantSelectionStep 
+                  availablePlants={mockPlantRecommendations}
+                  season={(formData.questions as any)?.season || 'spring'}
+                  experience={(formData.questions as any)?.experience_level || 'beginner'}
+                  onPlantsSelected={handlePlantsSelected}
+                />
+              )}
+              {currentStep === 4 && (
+                <VisualGardenLayout 
+                  plantRecommendations={formData.selectedPlants as any}
+                  spaceSize={(formData.questions as any)?.spaceSize || '8x6 feet'}
+                  onLayoutComplete={handleLayoutComplete}
+                />
+              )}
+              {currentStep === 5 && (
                 <GardenPlanGenerator />
               )}
             </div>
