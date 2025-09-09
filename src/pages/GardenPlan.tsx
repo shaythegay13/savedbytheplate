@@ -12,7 +12,7 @@ import SatelliteGardenPlanner from "@/components/garden-plan/components/Satellit
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
-// Mock plant data for the selection step
+// Mock plant data for the selection step - focusing on vegetables only
 const mockPlantRecommendations = [
   {
     name: "Cherry Tomato",

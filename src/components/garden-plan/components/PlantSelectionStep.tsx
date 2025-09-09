@@ -68,6 +68,7 @@ const PlantSelectionStep: React.FC<PlantSelectionStepProps> = ({
 
   const handleContinue = () => {
     if (selectedPlants.length === 0) return;
+    console.log('Selected plants:', selectedPlants);
     onPlantsSelected(selectedPlants);
   };
 

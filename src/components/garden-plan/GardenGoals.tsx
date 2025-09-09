@@ -26,12 +26,9 @@ const GardenGoals: React.FC<GardenGoalsProps> = ({ onGoalsComplete }) => {
     'Peppers',
     'Root Vegetables (carrots, radishes, beets)',
     'Microgreens',
-    'Flowers (edible and ornamental)',
-    'Fruits (strawberries, dwarf fruit trees)',
     'Onions and Garlic',
     'Beans and Peas',
-    'Squash and Cucumbers',
-    'Medicinal Plants'
+    'Squash and Cucumbers'
   ];
 
   const preferenceOptions = [
