@@ -48,8 +48,8 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
 
   // Check for Mapbox token
   useEffect(() => {
-    // In a real app, this would come from Supabase Edge Function secrets
-    const token = process.env.VITE_MAPBOX_TOKEN || '';
+    // In Vite, environment variables are accessed via import.meta.env
+    const token = import.meta.env.VITE_MAPBOX_TOKEN || '';
     if (token) {
       setMapboxToken(token);
       setIsTokenMissing(false);
