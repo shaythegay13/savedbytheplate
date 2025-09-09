@@ -57,8 +57,9 @@ const PlantSelectionStep: React.FC<PlantSelectionStepProps> = ({
   });
 
   const getRecommendedPlants = () => {
-    if (experience === 'beginner') {
-      return filteredPlants.filter(p => p.difficulty === 'Easy');
+    if (experience === 'beginner' && filter === 'all') {
+      // For beginners, show easy plants first, but still allow them to see all
+      return [...filteredPlants.filter(p => p.difficulty === 'Easy'), ...filteredPlants.filter(p => p.difficulty !== 'Easy')];
     }
     return filteredPlants;
   };
@@ -121,11 +122,11 @@ const PlantSelectionStep: React.FC<PlantSelectionStepProps> = ({
         </div>
 
         {/* Experience-based recommendations */}
-        {experience === 'beginner' && (
+        {experience === 'beginner' && filter === 'all' && (
           <Alert>
             <Leaf className="h-4 w-4" />
             <AlertDescription>
-              As a beginner, we recommend starting with easy-to-grow plants. You can always add more challenging varieties in future seasons!
+              As a beginner, we've arranged easy-to-grow plants first, but you can still explore all difficulty levels using the filters above.
             </AlertDescription>
           </Alert>
         )}

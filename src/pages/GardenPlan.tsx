@@ -79,6 +79,28 @@ const mockPlantRecommendations = [
     difficulty: "Medium" as const,
     yield: "High yield with proper care",
     companions: ["Bean", "Radish", "Marigold"]
+  },
+  {
+    name: "Eggplant",
+    variety: "Black Beauty",
+    plantingTime: "Late spring, very warm soil",
+    harvestTime: "85-95 days",
+    spacing: "24-30 inches apart",
+    careInstructions: "Requires heat, stake heavy plants",
+    difficulty: "Hard" as const,
+    yield: "4-6 fruits per plant",
+    companions: ["Pepper", "Tomato"]
+  },
+  {
+    name: "Artichoke",
+    variety: "Green Globe",
+    plantingTime: "Early spring or fall",
+    harvestTime: "120-150 days",
+    spacing: "36-48 inches apart",
+    careInstructions: "Long growing season, winter protection needed",
+    difficulty: "Hard" as const,
+    yield: "6-8 artichokes per plant",
+    companions: ["Asparagus", "Tarragon"]
   }
 ];
 
