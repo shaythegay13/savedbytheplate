@@ -75,7 +75,12 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
 
     // Add click handler for placing plants
     map.current.on('click', (e) => {
-      if (!selectedPlant) return;
+      console.log('Map clicked at:', e.lngLat);
+      if (!selectedPlant) {
+        console.log('No plant selected');
+        return;
+      }
+      console.log('Placing plant:', selectedPlant.name);
 
       const placement: PlantPlacement = {
         id: `plant-${Date.now()}`,
@@ -124,7 +129,11 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
       // Store marker reference in placement
       (placement as any).marker = marker;
 
-      setPlantPlacements(prev => [...prev, placement]);
+      setPlantPlacements(prev => {
+        const updated = [...prev, placement];
+        console.log('Updated plant placements:', updated);
+        return updated;
+      });
     });
 
     // Geocode address if provided
@@ -212,6 +221,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
   };
 
   const handleComplete = () => {
+    console.log('Completing layout with placements:', plantPlacements);
     onLayoutComplete(plantPlacements);
   };
 
