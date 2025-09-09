@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MapPin, Satellite, Info } from "lucide-react";
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { MAPBOX_TOKEN } from "@/components/map/MapConfig";
 
 interface PlantRecommendation {
   name: string;
@@ -40,27 +41,17 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState('');
   const [selectedPlant, setSelectedPlant] = useState<PlantRecommendation | null>(null);
   const [plantPlacements, setPlantPlacements] = useState<PlantPlacement[]>([]);
   const [address, setAddress] = useState(userAddress);
-  const [isTokenMissing, setIsTokenMissing] = useState(true);
-
-  // Check for Mapbox token
-  useEffect(() => {
-    // In Vite, environment variables are accessed via import.meta.env
-    const token = import.meta.env.VITE_MAPBOX_TOKEN || '';
-    if (token) {
-      setMapboxToken(token);
-      setIsTokenMissing(false);
-    }
-  }, []);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || !mapboxToken || isTokenMissing) return;
+    if (!mapContainer.current || !MAPBOX_TOKEN) return;
 
-    mapboxgl.accessToken = mapboxToken;
+    console.log('Initializing map with token:', MAPBOX_TOKEN);
+    mapboxgl.accessToken = MAPBOX_TOKEN;
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -68,6 +59,12 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
       center: [-74.006, 40.7128], // Default to NYC
       zoom: 18,
       pitch: 0
+    });
+
+    // Wait for map to load before setting up interactions
+    map.current.on('load', () => {
+      console.log('Map loaded successfully');
+      setIsMapReady(true);
     });
 
     // Add navigation controls
@@ -144,7 +141,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
     return () => {
       map.current?.remove();
     };
-  }, [mapboxToken, isTokenMissing]);
+  }, []);
 
   // Global function to remove plants (called from popup)
   useEffect(() => {
@@ -189,7 +186,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
 
     try {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(addressToGeocode)}.json?access_token=${mapboxToken}&limit=1`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(addressToGeocode)}.json?access_token=${MAPBOX_TOKEN}&limit=1`
       );
       
       const data = await response.json();
@@ -225,56 +222,6 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
     onLayoutComplete(plantPlacements);
   };
 
-  if (isTokenMissing) {
-    return (
-      <Card className="w-full max-w-6xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl text-sbtp-green-800">Satellite Garden Planner Setup</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              To use the satellite garden planner, you need a Mapbox access token. 
-              <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">
-                Get your free token from Mapbox
-              </a>
-            </AlertDescription>
-          </Alert>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Enter your Mapbox Public Token:</label>
-              <Input
-                value={mapboxToken}
-                onChange={(e) => setMapboxToken(e.target.value)}
-                placeholder="pk.eyJ1IjoieW91cnVzZXJuYW1lIiwiYSI6ImNsZjR3..."
-                className="font-mono text-sm"
-              />
-            </div>
-            <Button 
-              onClick={() => setIsTokenMissing(false)}
-              disabled={!mapboxToken}
-              className="bg-sbtp-green-500 hover:bg-sbtp-green-600"
-            >
-              Continue with Satellite View
-            </Button>
-          </div>
-          
-          <div className="bg-sbtp-green-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-sbtp-green-800 mb-2">How to get your Mapbox token:</h4>
-            <ol className="text-sm text-sbtp-green-700 space-y-1 list-decimal list-inside">
-              <li>Visit <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">mapbox.com</a> and create a free account</li>
-              <li>Go to your Account Dashboard</li>
-              <li>Find the "Access Tokens" section</li>
-              <li>Copy your "Default public token" (starts with "pk.")</li>
-              <li>Paste it above to continue</li>
-            </ol>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -350,7 +297,9 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            {selectedPlant 
+            {!isMapReady 
+              ? "Loading satellite map..."
+              : selectedPlant 
               ? `Click anywhere on your property to place ${selectedPlant.name}. Click on existing plants to see details or remove them.`
               : "Select a plant above, then click on your property to place it. Use satellite view to see the exact layout of your garden space."
             }
@@ -360,7 +309,15 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
         {/* Map Container */}
         <div className="relative h-96 w-full rounded-lg overflow-hidden border border-gray-300">
           <div ref={mapContainer} className="absolute inset-0" />
-          {plantPlacements.length === 0 && (
+          {!isMapReady && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-center">
+              <div>
+                <Satellite className="h-12 w-12 mx-auto mb-2 opacity-70" />
+                <p>Loading satellite view...</p>
+              </div>
+            </div>
+          )}
+          {isMapReady && plantPlacements.length === 0 && !address && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white text-center">
               <div>
                 <Satellite className="h-12 w-12 mx-auto mb-2 opacity-70" />
