@@ -9,6 +9,7 @@ import GardenQuestions from "@/components/garden-plan/GardenQuestions";
 import GardenGoals from "@/components/garden-plan/GardenGoals";
 import PlantSelectionStep from "@/components/garden-plan/components/PlantSelectionStep";
 import SatelliteGardenPlanner from "@/components/garden-plan/components/SatelliteGardenPlanner";
+import AIGardenPhotoPlanner from "@/components/garden-plan/components/AIGardenPhotoPlanner";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
@@ -115,7 +116,8 @@ const GardenPlan = () => {
     questions: {},
     goals: {},
     selectedPlants: [],
-    gardenLayout: []
+    gardenLayout: [],
+    photoLayout: []
   });
 
   const handleLocationSubmit = (location: any) => {
@@ -141,6 +143,11 @@ const GardenPlan = () => {
   const handleLayoutComplete = (layout: any) => {
     setFormData(prev => ({ ...prev, gardenLayout: layout }));
     setCurrentStep(5);
+  };
+
+  const handlePhotoLayoutComplete = (layout: any, uploadedImage?: any) => {
+    setFormData(prev => ({ ...prev, photoLayout: layout, uploadedImage }));
+    setCurrentStep(6);
   };
 
   if (isSubscribed) {
@@ -191,6 +198,12 @@ const GardenPlan = () => {
                 />
               )}
               {currentStep === 5 && (
+                <AIGardenPhotoPlanner 
+                  plantRecommendations={formData.selectedPlants as any}
+                  onLayoutComplete={handlePhotoLayoutComplete}
+                />
+              )}
+              {currentStep === 6 && (
                 <GardenPlanGenerator />
               )}
             </div>
