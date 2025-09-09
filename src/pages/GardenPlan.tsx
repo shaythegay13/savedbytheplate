@@ -8,7 +8,7 @@ import LocationInput from "@/components/garden-plan/LocationInput";
 import GardenQuestions from "@/components/garden-plan/GardenQuestions";
 import GardenGoals from "@/components/garden-plan/GardenGoals";
 import PlantSelectionStep from "@/components/garden-plan/components/PlantSelectionStep";
-import VisualGardenLayout from "@/components/garden-plan/components/VisualGardenLayout";
+import SatelliteGardenPlanner from "@/components/garden-plan/components/SatelliteGardenPlanner";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
@@ -162,9 +162,9 @@ const GardenPlan = () => {
                 />
               )}
               {currentStep === 4 && (
-                <VisualGardenLayout 
+                <SatelliteGardenPlanner 
                   plantRecommendations={formData.selectedPlants as any}
-                  spaceSize={(formData.questions as any)?.spaceSize || '8x6 feet'}
+                  userAddress={(formData.location as any)?.address || ''}
                   onLayoutComplete={handleLayoutComplete}
                 />
               )}
