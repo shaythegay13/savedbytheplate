@@ -17,24 +17,24 @@ const Index = () => {
             className="w-full h-full object-cover opacity-20" 
           />
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
               Grow Local, Eat Local
             </h1>
-            <p className="text-xl mb-8">
+            <p className="text-lg sm:text-xl mb-6 sm:mb-8">
               Connecting communities with sustainable food options and local agriculture.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
               <Link 
                 to="/map" 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
               >
                 Find Local Food
               </Link>
               <Link 
                 to="/garden-plan" 
-                className="bg-white hover:bg-green-100 text-green-800 px-6 py-3 rounded-lg font-medium"
+                className="bg-white hover:bg-green-100 text-green-800 px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
               >
                 Plan Your Garden
               </Link>
@@ -44,12 +44,12 @@ const Index = () => {
       </section>
 
       {/* Feature Sections */}
-      <section className="py-16 bg-stone-50">
+      <section className="py-12 sm:py-16 bg-stone-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12 text-green-800">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-green-800 px-2">
             Discover What We Offer
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Local Food Finder */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
@@ -203,18 +203,18 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-green-700 text-white py-16">
+      <section className="bg-green-700 text-white py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 px-2">
             Ready to grow your own food?
           </h2>
-          <p className="text-xl max-w-3xl mx-auto mb-8">
+          <p className="text-lg sm:text-xl max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
             Start your urban gardening journey today with our AI-powered garden
             planner.
           </p>
           <Link 
             to="/garden-plan" 
-            className="bg-white text-green-700 hover:bg-green-100 px-8 py-3 rounded-lg font-medium text-lg"
+            className="bg-white text-green-700 hover:bg-green-100 px-6 sm:px-8 py-3 rounded-lg font-medium text-base sm:text-lg inline-block"
           >
             Create Your Garden Plan
           </Link>

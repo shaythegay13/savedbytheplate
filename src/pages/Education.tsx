@@ -158,11 +158,11 @@ const Education = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Urban Gardening Education Hub</h1>
-            <p className="text-xl opacity-90 mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Urban Gardening Education Hub</h1>
+            <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
               Learn, grow, and thrive with our comprehensive collection of articles, videos, guides, and premium courses.
             </p>
             <Button variant="secondary" size="lg">
@@ -174,11 +174,11 @@ const Education = () => {
       </section>
 
       {/* Featured Articles Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Featured Articles</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800 mb-6 sm:mb-8 px-2">Featured Articles</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
               {featuredArticles.map((article, index) => (
                 <Card key={index} className="border-sbtp-green-200 overflow-hidden hover:shadow-lg transition-all group">
                   <div className="h-48 overflow-hidden">

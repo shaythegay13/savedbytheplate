@@ -298,27 +298,28 @@ const Marketplace = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Marketplace</h1>
-            <p className="text-xl opacity-90 mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Marketplace</h1>
+            <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
               Shop for seeds, supplies, tools, fresh farmer's products, and CSA programs from local urban farmers and gardeners.
             </p>
-            <div className="max-w-md mx-auto mb-8">
-              <div className="flex gap-2">
+            <div className="max-w-md mx-auto mb-6 sm:mb-8 px-4">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   type="text"
                   placeholder="Enter your zip code"
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
                   maxLength={5}
-                  className="bg-white/20 text-white placeholder:text-white/70 border-white/30"
+                  className="bg-white/20 text-white placeholder:text-white/70 border-white/30 flex-1"
                 />
                 <Button 
                   onClick={handleZipCodeSubmit}
                   variant="secondary"
                   disabled={zipCode.length !== 5}
+                  className="w-full sm:w-auto"
                 >
                   Find Local Sources
                 </Button>
@@ -386,37 +387,37 @@ const Marketplace = () => {
       </section>
 
       {/* Products Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <Tabs defaultValue="seed-kits" className="w-full">
-              <div className="text-center mb-8">
-                <TabsList className="bg-sbtp-green-100 inline-flex h-auto p-1 flex-wrap">
-                  <TabsTrigger value="seed-kits" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                    <Package className="h-4 w-4 mr-2" />
-                    Seed Kits
+              <div className="text-center mb-6 sm:mb-8">
+                <TabsList className="bg-sbtp-green-100 inline-flex h-auto p-1 flex-wrap gap-1">
+                  <TabsTrigger value="seed-kits" className="px-2 sm:px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white text-xs sm:text-sm">
+                    <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Seed </span>Kits
                   </TabsTrigger>
-                  <TabsTrigger value="seeds" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                    <Sprout className="h-4 w-4 mr-2" />
+                  <TabsTrigger value="seeds" className="px-2 sm:px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white text-xs sm:text-sm">
+                    <Sprout className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     Seeds
                   </TabsTrigger>
-                  <TabsTrigger value="tools" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                    <Wrench className="h-4 w-4 mr-2" />
+                  <TabsTrigger value="tools" className="px-2 sm:px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white text-xs sm:text-sm">
+                    <Wrench className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     Tools
                   </TabsTrigger>
-                  <TabsTrigger value="produce" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                    <Leaf className="h-4 w-4 mr-2" />
-                    Farmer's Products
+                  <TabsTrigger value="produce" className="px-2 sm:px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white text-xs sm:text-sm">
+                    <Leaf className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Farmer's </span>Products
                   </TabsTrigger>
-                  <TabsTrigger value="csa" className="px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white">
-                    <Truck className="h-4 w-4 mr-2" />
-                    CSA Programs
+                  <TabsTrigger value="csa" className="px-2 sm:px-4 py-2 data-[state=active]:bg-sbtp-green-500 data-[state=active]:text-white text-xs sm:text-sm">
+                    <Truck className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    CSA<span className="hidden sm:inline"> Programs</span>
                   </TabsTrigger>
                 </TabsList>
               </div>
 
               <TabsContent value="seed-kits" className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                   {seedKits.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -424,7 +425,7 @@ const Marketplace = () => {
               </TabsContent>
               
               <TabsContent value="seeds" className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                   {seeds.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -432,7 +433,7 @@ const Marketplace = () => {
               </TabsContent>
               
               <TabsContent value="tools" className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                   {tools.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -440,7 +441,7 @@ const Marketplace = () => {
               </TabsContent>
               
               <TabsContent value="produce" className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                   {farmersProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -448,7 +449,7 @@ const Marketplace = () => {
               </TabsContent>
               
               <TabsContent value="csa" className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                   {csaPrograms.map((product) => (
                     <ProductCard key={product.id} product={product} buttonText="Subscribe" />
                   ))}

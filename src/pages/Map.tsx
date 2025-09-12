@@ -48,9 +48,9 @@ const Map = () => {
       
       {/* Enhanced Header */}
       <div className="bg-white border-b border-sbtp-green-200">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
               {isMobile && (
                 <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
                   <SheetTrigger asChild>
@@ -147,25 +147,25 @@ const Map = () => {
                   </SheetContent>
                 </Sheet>
               )}
-              <div>
-                <h1 className={`${isMobile ? 'text-xl' : 'text-3xl'} font-bold text-sbtp-green-800 mb-2`}>Local Food Access Map</h1>
-                <p className="text-sbtp-brown-500 text-sm md:text-base">
+              <div className="min-w-0 flex-1">
+                <h1 className={`${isMobile ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl'} font-bold text-sbtp-green-800 mb-1 sm:mb-2 truncate`}>Local Food Access Map</h1>
+                <p className="text-sbtp-brown-500 text-xs sm:text-sm md:text-base">
                   {!loading && locationCounts ? 
                     `Showing ${Object.values(locationCounts).reduce((a: number, b: number) => a + b, 0)} verified locations in your area` : 
                     'Loading food access locations in your area'}
                 </p>
               </div>
             </div>
-            <div className={`flex items-center gap-2 ${isMobile ? 'gap-1' : 'gap-3'}`}>
-              <Button variant="outline" size="sm" className={`${isMobile ? 'px-2' : 'flex items-center gap-2'}`}>
+            <div className={`flex items-center ${isMobile ? 'gap-1' : 'gap-2 sm:gap-3'} flex-shrink-0`}>
+              <Button variant="outline" size="sm" className={`${isMobile ? 'px-2 min-w-0' : 'flex items-center gap-2'}`}>
                 <Share className="h-4 w-4" />
-                {!isMobile && 'Share Map'}
+                {!isMobile && <span className="hidden sm:inline">Share Map</span>}
               </Button>
-              <Button variant="outline" size="sm" className={`${isMobile ? 'px-2' : 'flex items-center gap-2'}`}>
+              <Button variant="outline" size="sm" className={`${isMobile ? 'px-2 min-w-0' : 'flex items-center gap-2'}`}>
                 <Heart className="h-4 w-4" />
-                {!isMobile && 'Save'}
+                {!isMobile && <span className="hidden sm:inline">Save</span>}
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="px-2 min-w-0">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </div>

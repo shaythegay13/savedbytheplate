@@ -28,8 +28,8 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/index" className="flex items-center">
-              <Sprout className="h-8 w-8 mr-2" />
-              <span className="font-bold text-xl">Saved by the Plate</span>
+              <Sprout className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
+              <span className="font-bold text-lg sm:text-xl truncate">Saved by the Plate</span>
             </Link>
           </div>
           

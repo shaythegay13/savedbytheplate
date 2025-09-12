@@ -61,20 +61,20 @@ const Premium = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16 lg:py-20">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="bg-accent text-accent-foreground px-4 py-2 rounded-full font-semibold flex items-center gap-2">
-                <Star className="h-5 w-5" />
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="bg-accent text-accent-foreground px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 text-sm sm:text-base">
+                <Star className="h-4 w-4 sm:h-5 sm:w-5" />
                 Premium Features
               </div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Unlock Premium</h1>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Unlock Premium</h1>
+            <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6 px-4">
               Get access to advanced garden planning, expert courses, and exclusive community features
             </p>
-            <div className="bg-white/10 rounded-lg p-6 inline-block">
+            <div className="bg-white/10 rounded-lg p-4 sm:p-6 inline-block mx-4">
               <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
               <p className="text-sbtp-beige mb-4">Standard, Educator, and Institution options</p>
               <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 font-semibold py-6 px-10 text-lg">

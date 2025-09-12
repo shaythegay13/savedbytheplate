@@ -155,14 +155,14 @@ const GardenPlan = () => {
       <div className="min-h-screen bg-background">
         <Navbar />
         {/* Hero Section for Subscribed Users */}
-        <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
-          <div className="container mx-auto px-4">
+        <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-3xl mx-auto text-center">
               <span className="inline-block bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
                 Premium Feature
               </span>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">AI Garden Planner</h1>
-              <p className="text-xl opacity-90">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">AI Garden Planner</h1>
+              <p className="text-lg sm:text-xl opacity-90 px-4">
                 Get a personalized garden plan tailored to your space, location, and preferences using advanced AI.
               </p>
             </div>
@@ -170,8 +170,8 @@ const GardenPlan = () => {
         </section>
 
         {/* Garden Planning Steps */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
+        <section className="py-12 sm:py-16">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-2xl mx-auto">
               {currentStep === 0 && (
                 <LocationInput onLocationSubmit={handleLocationSubmit} />
@@ -218,14 +218,14 @@ const GardenPlan = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       {/* Hero Section - Premium Feature */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
             <span className="inline-block bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
               Premium Feature
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">AI Garden Planner</h1>
-            <p className="text-xl opacity-90 mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">AI Garden Planner</h1>
+            <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
               Get a personalized garden plan tailored to your space, location, and preferences using advanced AI.
             </p>
           </div>
@@ -233,8 +233,8 @@ const GardenPlan = () => {
       </section>
 
       {/* Premium Lock Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto">
             <Card className="border-sbtp-yellow mb-8 overflow-hidden">
               <div className="bg-sbtp-yellow/20 px-6 py-8 text-center">

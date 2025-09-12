@@ -139,29 +139,29 @@ const WaitingList = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground overflow-hidden py-20 md:py-32">
+      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground overflow-hidden py-12 sm:py-16 md:py-20 lg:py-32">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-sbtp-green-200 to-sbtp-beige pointer-events-none"></div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-6 sm:mb-8">
               <img 
                 src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
                 alt="Saved by the Plate Logo" 
-                className="w-32 h-32 md:w-48 md:h-48 object-contain rounded-full bg-white p-4 shadow-lg"
+                className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 object-contain rounded-full bg-white p-3 sm:p-4 shadow-lg"
               />
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-bold text-sbtp-green-800 mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-sbtp-green-800 mb-4 sm:mb-6 px-2">
               Saved by the <span className="text-sbtp-blue">Plate</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-sbtp-brown-700 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-sbtp-brown-700 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
               Connect with local food sources and sustainable agriculture. 
               We're building something amazing to empower your food choices.
             </p>
             
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8 px-4">
               <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
               <iframe 
                 src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
@@ -185,14 +185,14 @@ const WaitingList = () => {
       </section>
 
       {/* What We're Building Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-sbtp-green-800 text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sbtp-green-800 text-center mb-8 sm:mb-12 px-2">
               What We're Building
             </h2>
             
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
               <Card className="border-sbtp-green-300 hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
                   <MapPin className="h-12 w-12 text-sbtp-green-500 mx-auto mb-4" />
