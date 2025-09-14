@@ -353,7 +353,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
             disabled={plantPlacements.length === 0}
             className="bg-sbtp-green-500 hover:bg-sbtp-green-600"
           >
-            Continue with Garden Plan ({plantPlacements.length} plants)
+            Save Satellite Layout ({plantPlacements.length} plants)
           </Button>
         </div>
       </CardContent>

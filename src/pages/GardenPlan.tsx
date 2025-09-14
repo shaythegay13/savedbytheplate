@@ -142,12 +142,12 @@ const GardenPlan = () => {
 
   const handleLayoutComplete = (layout: any) => {
     setFormData(prev => ({ ...prev, gardenLayout: layout }));
-    setCurrentStep(5);
+    // Stay on this step to allow photo upload below
   };
 
   const handlePhotoLayoutComplete = (layout: any, uploadedImage?: any) => {
     setFormData(prev => ({ ...prev, photoLayout: layout, uploadedImage }));
-    setCurrentStep(6);
+    setCurrentStep(5);
   };
 
   if (isSubscribed) {
@@ -191,19 +191,19 @@ const GardenPlan = () => {
                 />
               )}
               {currentStep === 4 && (
-                <SatelliteGardenPlanner 
-                  plantRecommendations={formData.selectedPlants as any}
-                  userAddress={(formData.location as any)?.address || ''}
-                  onLayoutComplete={handleLayoutComplete}
-                />
+                <div className="space-y-8">
+                  <SatelliteGardenPlanner 
+                    plantRecommendations={formData.selectedPlants as any}
+                    userAddress={(formData.location as any)?.address || ''}
+                    onLayoutComplete={handleLayoutComplete}
+                  />
+                  <AIGardenPhotoPlanner 
+                    plantRecommendations={formData.selectedPlants as any}
+                    onLayoutComplete={handlePhotoLayoutComplete}
+                  />
+                </div>
               )}
               {currentStep === 5 && (
-                <AIGardenPhotoPlanner 
-                  plantRecommendations={formData.selectedPlants as any}
-                  onLayoutComplete={handlePhotoLayoutComplete}
-                />
-              )}
-              {currentStep === 6 && (
                 <GardenPlanGenerator />
               )}
             </div>

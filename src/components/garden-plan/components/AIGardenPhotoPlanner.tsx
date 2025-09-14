@@ -239,6 +239,7 @@ const AIGardenPhotoPlanner: React.FC<AIGardenPhotoPlannerProps> = ({
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              capture="environment"
               onChange={handleFileInputChange}
               className="hidden"
             />
