@@ -27,11 +27,23 @@ const App = () => (
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">
             <Routes>
+              {/* Main landing page redirects to waiting list */}
+              <Route path="/" element={<Navigate to="/waiting-list" replace />} />
+              
               {/* Waiting list page */}
               <Route path="/waiting-list" element={<WaitingList />} />
               
-              {/* All routes redirect to waiting list */}
-              <Route path="*" element={<Navigate to="/waiting-list" replace />} />
+              {/* All other pages remain accessible for development */}
+              <Route path="/index" element={<Index />} />
+              <Route path="/map" element={<Map />} />
+              <Route path="/garden-plan" element={<GardenPlan />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/education" element={<Education />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/premium" element={<Premium />} />
+              
+              {/* 404 page for truly unknown routes */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />
           </main>
