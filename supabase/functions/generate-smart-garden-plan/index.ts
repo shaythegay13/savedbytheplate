@@ -423,7 +423,7 @@ Perenual Database (${plantData.perenualData?.length || 0} entries):
 ${plantData.perenualData?.slice(0, 5).map(plant => `- ${plant.commonName} (${plant.scientificName}): Cycle: ${plant.cycle}, Watering: ${plant.watering}, Care Level: ${plant.careLevel}, Sunlight: ${plant.sunlight?.join?.(', ') || plant.sunlight}`).join('\n') || 'No Perenual data found'}
 ` : 'External plant data not available'}
 
-Please provide 8-12 diverse plant recommendations in this exact JSON format:
+Please provide 15-20 diverse plant recommendations in this exact JSON format:
 [
   {
     "name": "Plant Name",

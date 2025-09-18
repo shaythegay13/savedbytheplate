@@ -1,7 +1,7 @@
 import { GardenPlanFormData, GardenPlan } from './types';
 
 export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
-  // Define plant categories based on user preferences
+  // Define comprehensive plant categories with more options
   const vegetables = [
     {
       name: "Cherry Tomatoes",
@@ -32,6 +32,76 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
       careInstructions: "Consistent watering and full sun. May need support when fruiting.",
       difficulty: "Medium" as const,
       yield: "6-8 peppers per plant"
+    },
+    {
+      name: "Spinach",
+      variety: "Space",
+      plantingTime: "Early spring or fall",
+      harvestTime: "40-50 days from seed",
+      spacing: "4-6 inches apart",
+      careInstructions: "Cool weather crop. Bolt-resistant varieties for summer growing.",
+      difficulty: "Easy" as const,
+      yield: "4-6 oz per plant"
+    },
+    {
+      name: "Radishes",
+      variety: "Cherry Belle",
+      plantingTime: "Early spring through fall",
+      harvestTime: "25-30 days from seed",
+      spacing: "2 inches apart",
+      careInstructions: "Fast-growing. Keep soil moist but not waterlogged.",
+      difficulty: "Easy" as const,
+      yield: "20-30 radishes per sq ft"
+    },
+    {
+      name: "Carrots",
+      variety: "Nantes",
+      plantingTime: "Early spring through summer",
+      harvestTime: "70-80 days from seed",
+      spacing: "2-3 inches apart",
+      careInstructions: "Requires loose, deep soil. Thin seedlings for proper development.",
+      difficulty: "Medium" as const,
+      yield: "1-2 lbs per sq ft"
+    },
+    {
+      name: "Green Beans",
+      variety: "Blue Lake Bush",
+      plantingTime: "After soil warms to 60°F",
+      harvestTime: "50-60 days from seed",
+      spacing: "4-6 inches apart",
+      careInstructions: "Don't over-water. Pick frequently to encourage production.",
+      difficulty: "Easy" as const,
+      yield: "½ lb per plant"
+    },
+    {
+      name: "Kale",
+      variety: "Lacinato",
+      plantingTime: "Early spring or late summer",
+      harvestTime: "55-75 days from seed",
+      spacing: "12-18 inches apart",
+      careInstructions: "Cold-hardy. Harvest outer leaves first. Sweetens after frost.",
+      difficulty: "Easy" as const,
+      yield: "1-2 lbs per plant"
+    },
+    {
+      name: "Zucchini",
+      variety: "Black Beauty",
+      plantingTime: "After last frost",
+      harvestTime: "50-60 days from seed",
+      spacing: "36 inches apart",
+      careInstructions: "Needs plenty of space. Harvest when 6-8 inches long.",
+      difficulty: "Easy" as const,
+      yield: "6-10 lbs per plant"
+    },
+    {
+      name: "Broccoli",
+      variety: "Calabrese",
+      plantingTime: "Early spring or late summer",
+      harvestTime: "60-90 days from seed",
+      spacing: "18-24 inches apart",
+      careInstructions: "Cool weather crop. Harvest central head first, then side shoots.",
+      difficulty: "Medium" as const,
+      yield: "1-2 lbs per plant"
     }
   ];
 
@@ -65,6 +135,16 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
       careInstructions: "Prune annually in late winter. Requires cross-pollination for best fruit set.",
       difficulty: "Hard" as const,
       yield: "50-100 apples per tree"
+    },
+    {
+      name: "Raspberries",
+      variety: "Heritage",
+      plantingTime: "Early spring or fall",
+      harvestTime: "July and September (everbearing)",
+      spacing: "18-24 inches apart",
+      careInstructions: "Support with trellis. Prune spent canes in winter.",
+      difficulty: "Medium" as const,
+      yield: "1-2 cups per plant"
     }
   ];
 
@@ -98,6 +178,26 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
       careInstructions: "Provide support for tall varieties. Deep watering encourages strong root system.",
       difficulty: "Easy" as const,
       yield: "Large flower heads with edible seeds"
+    },
+    {
+      name: "Cosmos",
+      variety: "Sensation Mix",
+      plantingTime: "After last frost",
+      harvestTime: "Blooms 70-80 days from seed",
+      spacing: "12-18 inches apart",
+      careInstructions: "Drought tolerant once established. Self-seeds readily.",
+      difficulty: "Easy" as const,
+      yield: "Continuous delicate blooms"
+    },
+    {
+      name: "Nasturtiums",
+      variety: "Alaska Mix",
+      plantingTime: "After last frost",
+      harvestTime: "Continuous blooms and edible flowers",
+      spacing: "8-12 inches apart",
+      careInstructions: "Edible flowers and leaves. Poor soil produces more flowers.",
+      difficulty: "Easy" as const,
+      yield: "Edible flowers and peppery leaves"
     }
   ];
 
@@ -111,29 +211,123 @@ export const generateMockPlan = (formData: GardenPlanFormData): GardenPlan => {
       careInstructions: "Pinch flowers to encourage leaf growth. Water at base of plant.",
       difficulty: "Easy" as const,
       yield: "1-2 cups fresh leaves per week"
+    },
+    {
+      name: "Cilantro",
+      variety: "Slow Bolt",
+      plantingTime: "Early spring or fall",
+      harvestTime: "Continuous harvest after 40 days",
+      spacing: "4-6 inches apart",
+      careInstructions: "Cool weather herb. Succession plant every 2 weeks.",
+      difficulty: "Easy" as const,
+      yield: "Multiple harvests per plant"
+    },
+    {
+      name: "Oregano",
+      variety: "Greek",
+      plantingTime: "Spring after frost danger",
+      harvestTime: "Continuous harvest (perennial)",
+      spacing: "12 inches apart",
+      careInstructions: "Drought tolerant once established. Divide every 3 years.",
+      difficulty: "Easy" as const,
+      yield: "Fresh herbs all season"
+    },
+    {
+      name: "Thyme",
+      variety: "Common",
+      plantingTime: "Spring after frost danger",
+      harvestTime: "Continuous harvest (perennial)",
+      spacing: "8-12 inches apart",
+      careInstructions: "Very drought tolerant. Trim after flowering.",
+      difficulty: "Easy" as const,
+      yield: "Small amounts, very flavorful"
+    },
+    {
+      name: "Parsley",
+      variety: "Flat-leaf",
+      plantingTime: "Early spring",
+      harvestTime: "Continuous harvest (biennial)",
+      spacing: "6-8 inches apart",
+      careInstructions: "Prefers consistent moisture. Cut outer stems first.",
+      difficulty: "Easy" as const,
+      yield: "Multiple harvests per plant"
+    },
+    {
+      name: "Chives",
+      variety: "Common",
+      plantingTime: "Early spring",
+      harvestTime: "Continuous harvest (perennial)",
+      spacing: "6 inches apart",
+      careInstructions: "Very low maintenance. Divide clumps every 3 years.",
+      difficulty: "Easy" as const,
+      yield: "Continuous mild onion flavor"
     }
   ];
 
-  // Filter plants based on user preferences
+  // Create more diverse plant selection logic with randomization
+  const getAllPlants = () => [...vegetables, ...fruits, ...flowers, ...herbs];
+  const allPlants = getAllPlants();
+  
+  // Shuffle array to provide variety
+  const shuffleArray = (array: any[]) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // Filter plants based on user preferences and experience level
   let plantRecommendations: any[] = [];
-  const preferences = formData.preferred_plants.toLowerCase();
+  const preferences = formData.preferred_plants?.toLowerCase() || '';
+  const experience = formData.experience_level?.toLowerCase() || 'beginner';
   
+  // Determine base selection based on experience
+  let minPlants = 15;
+  let maxPlants = 20;
+  
+  if (experience === 'beginner') {
+    // Beginners get more easy plants
+    const easyPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Easy'));
+    const mediumPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Medium'));
+    plantRecommendations = [...easyPlants.slice(0, 12), ...mediumPlants.slice(0, 5)];
+  } else if (experience === 'intermediate') {
+    // Intermediate gets balanced mix
+    const easyPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Easy'));
+    const mediumPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Medium'));
+    const hardPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Hard'));
+    plantRecommendations = [...easyPlants.slice(0, 8), ...mediumPlants.slice(0, 7), ...hardPlants.slice(0, 2)];
+  } else {
+    // Advanced gets more challenging plants
+    const easyPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Easy'));
+    const mediumPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Medium'));
+    const hardPlants = shuffleArray(allPlants.filter(p => p.difficulty === 'Hard'));
+    plantRecommendations = [...easyPlants.slice(0, 5), ...mediumPlants.slice(0, 8), ...hardPlants.slice(0, 4)];
+  }
+  
+  // If specific preferences mentioned, adjust selection
   if (preferences.includes('vegetable') || preferences.includes('veggies')) {
-    plantRecommendations.push(...vegetables);
-  }
-  if (preferences.includes('fruit')) {
-    plantRecommendations.push(...fruits);
-  }
-  if (preferences.includes('flower')) {
-    plantRecommendations.push(...flowers);
-  }
-  if (preferences.includes('herb')) {
-    plantRecommendations.push(...herbs);
+    const shuffledVeg = shuffleArray(vegetables);
+    plantRecommendations = [...shuffledVeg, ...shuffleArray([...fruits, ...herbs, ...flowers]).slice(0, 8)];
+  } else if (preferences.includes('fruit')) {
+    const shuffledFruit = shuffleArray(fruits);
+    plantRecommendations = [...shuffledFruit, ...shuffleArray([...vegetables, ...herbs, ...flowers]).slice(0, 13)];
+  } else if (preferences.includes('flower')) {
+    const shuffledFlowers = shuffleArray(flowers);
+    plantRecommendations = [...shuffledFlowers, ...shuffleArray([...vegetables, ...herbs, ...fruits]).slice(0, 12)];
+  } else if (preferences.includes('herb')) {
+    const shuffledHerbs = shuffleArray(herbs);
+    plantRecommendations = [...shuffledHerbs, ...shuffleArray([...vegetables, ...flowers, ...fruits]).slice(0, 11)];
   }
   
-  // If no specific preferences or if empty, include a mix
-  if (plantRecommendations.length === 0) {
-    plantRecommendations = [...vegetables.slice(0, 2), ...fruits.slice(0, 1), ...flowers.slice(0, 1)];
+  // Ensure we have at least 15 plants and shuffle final selection
+  if (plantRecommendations.length < minPlants) {
+    plantRecommendations = shuffleArray(allPlants).slice(0, maxPlants);
+  } else if (plantRecommendations.length > maxPlants) {
+    plantRecommendations = shuffleArray(plantRecommendations).slice(0, maxPlants);
+  } else {
+    plantRecommendations = shuffleArray(plantRecommendations);
   }
 
   const gardenLayout = [
