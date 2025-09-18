@@ -28,7 +28,8 @@ const GardenGoals: React.FC<GardenGoalsProps> = ({ onGoalsComplete }) => {
     'Microgreens',
     'Onions and Garlic',
     'Beans and Peas',
-    'Squash and Cucumbers'
+    'Squash and Cucumbers',
+    "I don't know - suggest crops for me"
   ];
 
   const preferenceOptions = [
@@ -71,10 +72,20 @@ const GardenGoals: React.FC<GardenGoalsProps> = ({ onGoalsComplete }) => {
   ];
 
   const handleGrowChange = (item: string, checked: boolean) => {
-    if (checked) {
-      setWhatToGrow(prev => [...prev, item]);
+    if (item === "I don't know - suggest crops for me") {
+      // If "I don't know" is selected, clear other selections and only keep this one
+      if (checked) {
+        setWhatToGrow(["I don't know - suggest crops for me"]);
+      } else {
+        setWhatToGrow([]);
+      }
     } else {
-      setWhatToGrow(prev => prev.filter(i => i !== item));
+      // If any other option is selected, remove "I don't know" if it exists
+      if (checked) {
+        setWhatToGrow(prev => [...prev.filter(i => i !== "I don't know - suggest crops for me"), item]);
+      } else {
+        setWhatToGrow(prev => prev.filter(i => i !== item));
+      }
     }
   };
 
@@ -176,7 +187,9 @@ const GardenGoals: React.FC<GardenGoalsProps> = ({ onGoalsComplete }) => {
           disabled={whatToGrow.length === 0}
           className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600"
         >
-          Generate My Garden Plan
+          {whatToGrow.includes("I don't know - suggest crops for me") 
+            ? "Get AI Crop Suggestions" 
+            : "Generate My Garden Plan"}
         </Button>
       </CardContent>
     </Card>
