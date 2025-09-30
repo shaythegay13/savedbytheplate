@@ -7,6 +7,7 @@ export const locationColors = {
   business: '#9C27B0', // purple
   fridge: '#FF5722', // orange for community fridges
   foodbank: '#F59E0B', // amber for food banks
+  csa: '#FF8C00', // dark orange for CSAs
 };
 
 // Set your Mapbox token

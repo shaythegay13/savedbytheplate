@@ -12,6 +12,7 @@ const getIconPath = (type: string) => {
     business: '<path d="M2 20h20"/><path d="M4 20V10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M8 14h8"/><path d="M8 18h8"/>',
     fridge: '<rect width="4" height="15" x="2" y="4" rx="2"/><rect width="4" height="15" x="6" y="4" rx="2"/><rect width="4" height="15" x="10" y="4" rx="2"/><rect width="4" height="15" x="14" y="4" rx="2"/><rect width="4" height="15" x="18" y="4" rx="2"/><path d="M2 2v20"/><path d="M22 2v20"/>',
     foodbank: '<path d="M9 2v6h6V2"/><path d="M4 8v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M2 8h20"/><path d="M7 12h10"/><path d="M7 16h10"/>',
+    csa: '<path d="M2 20 12 4l10 16H2z"/><path d="M8 20h8"/><path d="M12 6v6"/><path d="M9 10h6"/>',
   };
   
   return iconPaths[type as keyof typeof iconPaths] || iconPaths.farm;
@@ -26,6 +27,7 @@ interface UnifiedMapLegendProps {
     farms: number;
     urbanfarms: number;
     businesses: number;
+    csas: number;
   };
   isLoading?: boolean;
 }
@@ -80,6 +82,13 @@ const UnifiedMapLegend = ({ locationCounts, isLoading }: UnifiedMapLegendProps) 
       description: 'Food retailers and restaurants',
       color: locationColors.business,
       count: locationCounts?.businesses || 0
+    },
+    {
+      type: 'csa',
+      label: 'CSA Programs',
+      description: 'Community Supported Agriculture',
+      color: locationColors.csa,
+      count: locationCounts?.csas || 0
     }
   ];
 

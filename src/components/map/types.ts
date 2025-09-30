@@ -2,7 +2,7 @@
 export interface MapLocation {
   id: string;
   name: string;
-  type: 'farm' | 'market' | 'garden' | 'urbanfarm' | 'business' | 'fridge' | 'foodbank';
+  type: 'farm' | 'market' | 'garden' | 'urbanfarm' | 'business' | 'fridge' | 'foodbank' | 'csa';
   description: string;
   tags: string[];
   details?: string;

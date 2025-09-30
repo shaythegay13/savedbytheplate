@@ -31,7 +31,8 @@ const Map = () => {
           foodbanks: categorized.foodbanks.length,
           farms: categorized.farms.length,
           urbanfarms: categorized.urbanfarms.length,
-          businesses: categorized.businesses.length
+          businesses: categorized.businesses.length,
+          csas: 0 // Will be populated when you add the data
         });
       } catch (error) {
         console.error('Error loading location counts:', error);
