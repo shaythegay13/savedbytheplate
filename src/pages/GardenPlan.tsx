@@ -3,7 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import GardenPlanGenerator from "@/components/garden-plan/GardenPlanGenerator";
+import GardenPlanResults from "@/components/garden-plan/GardenPlanResults";
+import LoadingState from "@/components/garden-plan/LoadingState";
+import { generateMockPlan } from "@/components/garden-plan/mockPlanGenerator";
+import type { GardenPlan as GardenPlanType } from "@/components/garden-plan/types";
+import { supabase } from '@/integrations/supabase/client';
 import LocationInput from "@/components/garden-plan/LocationInput";
 import GardenQuestions from "@/components/garden-plan/GardenQuestions";
 import GardenGoals from "@/components/garden-plan/GardenGoals";
@@ -20,6 +24,8 @@ const GardenPlan = () => {
   const isSubscribed = true; // This would come from your authentication/subscription context
   
   const [currentStep, setCurrentStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [gardenPlan, setGardenPlan] = useState<GardenPlanType | null>(null);
   const [formData, setFormData] = useState({
     location: {},
     questions: {},
@@ -48,9 +54,80 @@ const GardenPlan = () => {
     // Stay on this step to allow photo upload below
   };
 
-  const handlePhotoLayoutComplete = (layout: any, uploadedImage?: any) => {
-    setFormData(prev => ({ ...prev, photoLayout: layout, uploadedImage }));
-    setCurrentStep(4);
+  const handlePhotoLayoutComplete = async (layout: any, uploadedImage?: any) => {
+    const updatedFormData = { ...formData, photoLayout: layout, uploadedImage };
+    setFormData(updatedFormData);
+    
+    // Generate the garden plan automatically
+    await generateGardenPlan(updatedFormData);
+  };
+
+  const generateGardenPlan = async (finalFormData: any) => {
+    setIsLoading(true);
+    
+    try {
+      console.log('Calling AI garden plan generation with:', finalFormData);
+      
+      // Transform the data to match the expected format
+      const planRequest = {
+        spaceType: finalFormData.questions?.spaceType || 'garden',
+        spaceSize: finalFormData.questions?.spaceSize || 'medium',
+        sunlight: finalFormData.questions?.sunlight || 'full_sun',
+        soil_contaminated: finalFormData.questions?.soil_contaminated || false,
+        soil_type: finalFormData.questions?.soil_type || 'loamy',
+        growing_options: finalFormData.questions?.growing_options || 'traditional',
+        season: finalFormData.questions?.season || 'spring',
+        rainfall: finalFormData.questions?.rainfall || 'moderate',
+        experience_level: finalFormData.questions?.experience_level || 'beginner',
+        preferred_plants: finalFormData.goals?.preferred_plants || 'vegetables',
+        goals: finalFormData.goals?.goals || 'food production',
+        space_description: finalFormData.questions?.space_description || '',
+        time_commitment: finalFormData.goals?.time_commitment || 'moderate',
+        address: finalFormData.location?.address || '',
+        latitude: finalFormData.location?.latitude,
+        longitude: finalFormData.location?.longitude,
+        user_id: 'demo-user'
+      };
+      
+      // Call the AI-powered edge function using Supabase client
+      const { data: aiPlan, error } = await supabase.functions.invoke('generate-smart-garden-plan', {
+        body: planRequest
+      });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`AI function failed: ${error.message}`);
+      }
+
+      if (!aiPlan) {
+        throw new Error('No plan data returned from AI');
+      }
+
+      console.log('AI plan generated successfully:', aiPlan);
+      setGardenPlan(aiPlan);
+    } catch (error) {
+      console.error('Error generating garden plan:', error);
+      console.log('Falling back to mock plan');
+      // Fallback to mock plan
+      const mockPlan = generateMockPlan({
+        spaceType: finalFormData.questions?.spaceType || 'garden',
+        spaceSize: finalFormData.questions?.spaceSize || 'medium',
+        sunlight: finalFormData.questions?.sunlight || 'full_sun',
+        soil_contaminated: finalFormData.questions?.soil_contaminated || false,
+        soil_type: finalFormData.questions?.soil_type || 'loamy',
+        growing_options: finalFormData.questions?.growing_options || 'traditional',
+        season: finalFormData.questions?.season || 'spring',
+        rainfall: finalFormData.questions?.rainfall || 'moderate',
+        experience_level: finalFormData.questions?.experience_level || 'beginner',
+        preferred_plants: finalFormData.goals?.preferred_plants || 'vegetables',
+        goals: finalFormData.goals?.goals || 'food production',
+        space_description: finalFormData.questions?.space_description || '',
+        time_commitment: finalFormData.goals?.time_commitment || 'moderate',
+      });
+      setGardenPlan(mockPlan);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubscribed) {
@@ -85,7 +162,7 @@ const GardenPlan = () => {
               {currentStep === 2 && (
                 <GardenGoals onGoalsComplete={handleGoalsComplete} />
               )}
-              {currentStep === 3 && (
+              {currentStep === 3 && !isLoading && !gardenPlan && (
                 <div className="space-y-8">
                   <SatelliteGardenPlanner 
                     plantRecommendations={[]}
@@ -98,8 +175,17 @@ const GardenPlan = () => {
                   />
                 </div>
               )}
-              {currentStep === 4 && (
-                <GardenPlanGenerator />
+              {isLoading && (
+                <LoadingState />
+              )}
+              {gardenPlan && (
+                <div className="space-y-6">
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Your AI-Enhanced Personalized Garden Plan</h2>
+                    <p className="text-sbtp-brown-600">Here's your data-driven garden plan that gets smarter with every gardener who shares their experience</p>
+                  </div>
+                  <GardenPlanResults {...gardenPlan} planId={gardenPlan.planId} formData={null} />
+                </div>
               )}
             </div>
           </div>
