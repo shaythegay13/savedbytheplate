@@ -146,7 +146,7 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
 
         <PlantDiseaseIdentifier />
 
-        <EducationSuggestions />
+        <EducationSuggestions plantRecommendations={currentPlantRecommendations} />
       </div>
 
       <FeedbackModal
