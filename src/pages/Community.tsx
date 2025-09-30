@@ -72,7 +72,7 @@ const currentShowcase = {
   title: "Brooklyn Grange Rooftop Farm",
   location: "Long Island City, Queens",
   description: "This week we're featuring Brooklyn Grange, one of NYC's largest rooftop soil farms. Spanning over 2.5 acres across multiple locations, they demonstrate how urban agriculture can thrive in unexpected places.",
-  image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+  image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800",
   highlights: [
     "Over 80,000 lbs of produce grown annually",
     "Hosts educational programs for 10,000+ visitors yearly", 
