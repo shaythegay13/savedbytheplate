@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 
 const features = [
   {
-    title: "Education",
-    description: "Learn about sustainable agriculture and living with our courses on YouTube and Skillshare.",
+    title: "School Garden Tours",
+    description: "Connect your students with local food justice work through educational community garden tours.",
     icon: (
       <div className="bg-sbtp-green-100 p-3 rounded-full mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2Z"></path><path d="M10 7v10"></path><path d="m15 7-3 5 3 5"></path></svg>

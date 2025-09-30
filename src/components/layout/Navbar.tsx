@@ -16,7 +16,7 @@ const Navbar = () => {
   const navItems = [
     { href: "/index", label: "Home" },
     { href: "/map", label: "Local Food" },
-    { href: "/education", label: "Learn to Grow" },
+    { href: "/education", label: "School Garden Tours" },
     { href: "/marketplace", label: "Marketplace" },
     { href: "/garden-plan", label: "Garden Planner" },
     { href: "/community", label: "Community" },

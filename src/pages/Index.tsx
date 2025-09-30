@@ -91,17 +91,17 @@ const Index = () => {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Book className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Learn to Grow</h3>
+                  <h3 className="text-xl font-semibold">School Garden Tours</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Educational resources to help you grow food sustainably, even
-                  in small urban spaces.
+                  Connect your students with local food justice work through 
+                  educational community garden tours in your neighborhood.
                 </p>
                 <Link 
                   to="/education" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Start learning
+                  Contact Shay for tours
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
