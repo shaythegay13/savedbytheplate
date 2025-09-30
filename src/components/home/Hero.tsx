@@ -24,10 +24,10 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button asChild className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white py-6 px-8 text-lg">
-                <Link to="/map">Find Local Food</Link>
+                <Link to="/local-food">Local Food Resources</Link>
               </Button>
               <Button asChild variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-100 py-6 px-8 text-lg">
-                <Link to="/garden-plan">Start Your Garden</Link>
+                <Link to="/education">Schedule a Tour</Link>
               </Button>
             </div>
           </div>
