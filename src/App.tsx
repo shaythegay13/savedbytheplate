@@ -14,6 +14,7 @@ import Community from "./pages/Community";
 import Education from "./pages/Education";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
+import AboutUs from "./pages/AboutUs";
 import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/local-food/garden-planner" element={<GardenPlan />} />
               <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
+              <Route path="/about" element={<AboutUs />} />
               
               <Route path="/premium" element={<Premium />} />
               

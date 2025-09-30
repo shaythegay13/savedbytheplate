@@ -18,6 +18,7 @@ const Navbar = () => {
     { href: "/local-food", label: "Local Food" },
     { href: "/education", label: "School Garden Tours" },
     { href: "/community", label: "Community" },
+    { href: "/about", label: "About" },
   ];
 
   return (
