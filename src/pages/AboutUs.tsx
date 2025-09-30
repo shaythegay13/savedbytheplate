@@ -1,5 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
+import shayPhoto from "@/assets/shay-bouchles.jpeg";
+import hebatallahPhoto from "@/assets/hebatallah-tharhan.jpeg";
 
 const AboutUs = () => {
   return (
@@ -50,43 +52,61 @@ const AboutUs = () => {
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6">Leadership</h2>
               
               <div className="space-y-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-sbtp-green-600 mb-4">
-                    Shay Bouchles, Executive Director & Founder
-                  </h3>
-                  
-                  <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
-                    <p>
-                      As Executive Director and Founder of Saved by the Plate Inc., Shay drives the mission to make food justice education accessible, engaging, and actionable for communities across New York City and beyond. Combining a foundation in academic research with real-world experience in social impact entrepreneurship, Shay leads initiatives that bridge sustainable agriculture, digital innovation, and hands-on learning for students and educators.
-                    </p>
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src={shayPhoto} 
+                      alt="Shay Bouchles, Executive Director & Founder" 
+                      className="w-48 h-48 rounded-lg object-cover shadow-md"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-sbtp-green-600 mb-4">
+                      Shay Bouchles, Executive Director & Founder
+                    </h3>
                     
-                    <p>
-                      Shay specializes in launching transformative educational programs, building powerful cross-sector partnerships, and guiding multidisciplinary teams toward impactful, systemic change. From developing youth-focused online courses and producing community storytelling series, to organizing food policy forums and garden tours, Shay brings a creative and collaborative approach to every project—always centering equity, inclusion, and local empowerment.
-                    </p>
-                    
-                    <p>
-                      Recognized for expertise in project management, grant writing, and digital strategy, Shay is dedicated to advancing equitable food systems and nurturing the next generation of changemakers. Enthusiastic about collaboration, she welcomes new connections with educators, advocates, and founders working to elevate social good at the intersection of technology and community.
-                    </p>
+                    <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
+                      <p>
+                        As Executive Director and Founder of Saved by the Plate Inc., Shay drives the mission to make food justice education accessible, engaging, and actionable for communities across New York City and beyond. Combining a foundation in academic research with real-world experience in social impact entrepreneurship, Shay leads initiatives that bridge sustainable agriculture, digital innovation, and hands-on learning for students and educators.
+                      </p>
+                      
+                      <p>
+                        Shay specializes in launching transformative educational programs, building powerful cross-sector partnerships, and guiding multidisciplinary teams toward impactful, systemic change. From developing youth-focused online courses and producing community storytelling series, to organizing food policy forums and garden tours, Shay brings a creative and collaborative approach to every project—always centering equity, inclusion, and local empowerment.
+                      </p>
+                      
+                      <p>
+                        Recognized for expertise in project management, grant writing, and digital strategy, Shay is dedicated to advancing equitable food systems and nurturing the next generation of changemakers. Enthusiastic about collaboration, she welcomes new connections with educators, advocates, and founders working to elevate social good at the intersection of technology and community.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-sbtp-green-600 mb-4">
-                    Hebatallah Tharhan, Full Stack Developer
-                  </h3>
-                  
-                  <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
-                    <p>
-                      Hebatallah Tharhan is the talented Full Stack Developer at Saved by the Plate Inc., where she drives the development of accessible, user-focused technology that powers the organization's educational mission. With a broad background across startups, edtech, and analytics, Hebatallah leads the design, implementation, and optimization of the digital tools that make food justice education engaging and effective.
-                    </p>
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src={hebatallahPhoto} 
+                      alt="Hebatallah Tharhan, Full Stack Developer" 
+                      className="w-48 h-48 rounded-lg object-cover shadow-md"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-sbtp-green-600 mb-4">
+                      Hebatallah Tharhan, Full Stack Developer
+                    </h3>
                     
-                    <p>
-                      Her extensive experience includes shaping innovative platforms, enhancing analytics dashboards, and streamlining product workflows—all with a focus on creating meaningful impact through technology. Beyond her technical expertise, Hebatallah contributes as a leader in the social impact and education space, serving as Vice CTO at the Youth Psychology Society and curriculum designer at BrightSparks Academy.
-                    </p>
-                    
-                    <p>
-                      Known for her initiative, creativity, and collaborative approach, Hebatallah is central to advancing Saved by the Plate's vision of empowering communities through technology-driven learning.
-                    </p>
+                    <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
+                      <p>
+                        Hebatallah Tharhan is the talented Full Stack Developer at Saved by the Plate Inc., where she drives the development of accessible, user-focused technology that powers the organization's educational mission. With a broad background across startups, edtech, and analytics, Hebatallah leads the design, implementation, and optimization of the digital tools that make food justice education engaging and effective.
+                      </p>
+                      
+                      <p>
+                        Her extensive experience includes shaping innovative platforms, enhancing analytics dashboards, and streamlining product workflows—all with a focus on creating meaningful impact through technology. Beyond her technical expertise, Hebatallah contributes as a leader in the social impact and education space, serving as Vice CTO at the Youth Psychology Society and curriculum designer at BrightSparks Academy.
+                      </p>
+                      
+                      <p>
+                        Known for her initiative, creativity, and collaborative approach, Hebatallah is central to advancing Saved by the Plate's vision of empowering communities through technology-driven learning.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
