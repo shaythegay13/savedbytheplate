@@ -7,11 +7,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import WaitingList from "./pages/WaitingList";
 import Index from "./pages/Index";
+import LocalFood from "./pages/LocalFood";
 import Map from "./pages/Map";
 import GardenPlan from "./pages/GardenPlan";
 import Community from "./pages/Community";
 import Education from "./pages/Education";
-
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import Footer from "@/components/layout/Footer";
@@ -35,8 +35,9 @@ const App = () => (
               
               {/* All other pages remain accessible for development */}
               <Route path="/index" element={<Index />} />
-              <Route path="/map" element={<Map />} />
-              <Route path="/garden-plan" element={<GardenPlan />} />
+              <Route path="/local-food" element={<LocalFood />} />
+              <Route path="/local-food/map" element={<Map />} />
+              <Route path="/local-food/garden-planner" element={<GardenPlan />} />
               <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
               
