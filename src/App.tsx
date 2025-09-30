@@ -11,7 +11,7 @@ import Map from "./pages/Map";
 import GardenPlan from "./pages/GardenPlan";
 import Community from "./pages/Community";
 import Education from "./pages/Education";
-import Marketplace from "./pages/Marketplace";
+
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import Footer from "@/components/layout/Footer";
@@ -39,7 +39,7 @@ const App = () => (
               <Route path="/garden-plan" element={<GardenPlan />} />
               <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
-              <Route path="/marketplace" element={<Marketplace />} />
+              
               <Route path="/premium" element={<Premium />} />
               
               {/* 404 page for truly unknown routes */}

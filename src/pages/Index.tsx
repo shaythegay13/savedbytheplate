@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { MapPin, Book, ShoppingBag, Leaf, Users } from 'lucide-react';
+import { MapPin, Book, Leaf, Users } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 
@@ -109,35 +109,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Marketplace */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1526346698789-22fd84314424?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
-                  alt="Seeds and gardening tools" 
-                  className="w-full h-full object-cover" 
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <ShoppingBag className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Marketplace</h3>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Shop for seeds, tools, and locally grown produce to support
-                  urban farmers.
-                </p>
-                <Link 
-                  to="/marketplace" 
-                  className="text-green-700 font-medium hover:text-green-800 flex items-center"
-                >
-                  Shop now
-                  <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
 
             {/* Garden Planner */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
