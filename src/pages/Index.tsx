@@ -141,25 +141,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="bg-green-700 text-white py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 px-2">
-            Ready to grow your own food?
-          </h2>
-          <p className="text-lg sm:text-xl max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
-            Start your urban gardening journey today with our AI-powered garden
-            planner.
-          </p>
-          <Link 
-            to="/local-food/garden-planner"
-            className="bg-white text-green-700 hover:bg-green-100 px-6 sm:px-8 py-3 rounded-lg font-medium text-base sm:text-lg inline-block"
-          >
-            Create Your Garden Plan
-          </Link>
-        </div>
-      </section>
     </div>
   );
 };
