@@ -5,42 +5,54 @@ import { Badge } from "@/components/ui/badge";
 import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout, ExternalLink, Clock, Star } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
-// Discord Servers (specific to your requirements)
-const discordServers = [
+// Discussion Forums
+const discussionForums = [
   {
-    name: "NYC Urban Gardeners",
+    name: "NYC Urban Gardening",
     description: "Connect with fellow urban gardeners across the five boroughs",
-    memberCount: 3200,
+    topics: 342,
+    posts: 3200,
+    latestPost: "2 hours ago",
     featured: true
   },
   {
-    name: "Container Gardening",
+    name: "Container Gardening Tips",
     description: "Master the art of growing in small spaces and containers",
-    memberCount: 2850,
+    topics: 215,
+    posts: 2850,
+    latestPost: "3 hours ago",
     featured: false
   },
   {
-    name: "Permaculture Principles",
+    name: "Permaculture & Sustainability",
     description: "Learn sustainable design principles for urban environments",
-    memberCount: 1940,
+    topics: 156,
+    posts: 1940,
+    latestPost: "5 hours ago",
     featured: false
   },
   {
-    name: "Soil Health",
+    name: "Soil Health & Composting",
     description: "Everything about building and maintaining healthy soil",
-    memberCount: 2120,
+    topics: 189,
+    posts: 2120,
+    latestPost: "1 day ago",
     featured: false
   },
   {
-    name: "Rooftop Farming",
+    name: "Rooftop & Vertical Farming",
     description: "Specialized community for rooftop and vertical growing",
-    memberCount: 1580,
+    topics: 124,
+    posts: 1580,
+    latestPost: "1 day ago",
     featured: false
   },
   {
-    name: "Seasonal Harvests",
+    name: "Seasonal Harvests & Recipes",
     description: "Share your harvests and seasonal growing experiences",
-    memberCount: 2340,
+    topics: 201,
+    posts: 2340,
+    latestPost: "4 hours ago",
     featured: false
   }
 ];
@@ -109,7 +121,7 @@ const Community = () => {
             <div className="bg-white/10 p-4 sm:p-6 rounded-lg inline-flex items-center mx-4">
               <MessageCircle className="mr-3 h-8 w-8" />
               <div className="text-left">
-                <h3 className="font-semibold">Discord Community</h3>
+                <h3 className="font-semibold">Discussion Forums</h3>
                 <p className="text-sm opacity-80">14,000+ members and growing</p>
               </div>
             </div>
@@ -117,15 +129,15 @@ const Community = () => {
         </div>
       </section>
 
-      {/* Discord Servers Section */}
+      {/* Discussion Forums Section */}
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800 mb-6 sm:mb-8 px-2">Discord Communities</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800 mb-6 sm:mb-8 px-2">Discussion Forums</h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
-              {discordServers.map((server, index) => (
-                <Card key={index} className={`border-sbtp-green-200 hover:shadow-lg transition-all ${server.featured ? 'ring-2 ring-sbtp-yellow' : ''}`}>
+              {discussionForums.map((forum, index) => (
+                <Card key={index} className={`border-sbtp-green-200 hover:shadow-lg transition-all ${forum.featured ? 'ring-2 ring-sbtp-yellow' : ''}`}>
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
@@ -133,25 +145,31 @@ const Community = () => {
                           <MessageCircle className="h-6 w-6 text-sbtp-green-600" />
                         </div>
                         <div>
-                          <CardTitle className="text-sbtp-green-700">{server.name}</CardTitle>
-                          <CardDescription className="text-xs text-sbtp-brown-500">
-                            {server.memberCount.toLocaleString()} members
+                          <CardTitle className="text-sbtp-green-700">{forum.name}</CardTitle>
+                          <CardDescription className="text-xs text-sbtp-brown-500 flex items-center gap-2 mt-1">
+                            <span>{forum.topics} topics</span>
+                            <span>•</span>
+                            <span>{forum.posts} posts</span>
                           </CardDescription>
                         </div>
                       </div>
-                      {server.featured && (
+                      {forum.featured && (
                         <Badge className="bg-sbtp-yellow text-sbtp-brown-700">
                           <Star className="h-3 w-3 mr-1" />
-                          Featured
+                          Popular
                         </Badge>
                       )}
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sbtp-brown-500 text-sm mb-4">{server.description}</p>
+                    <p className="text-sbtp-brown-500 text-sm mb-3">{forum.description}</p>
+                    <div className="flex items-center gap-2 text-xs text-sbtp-brown-400 mb-4">
+                      <Clock className="h-3 w-3" />
+                      <span>Latest post: {forum.latestPost}</span>
+                    </div>
                     <Button className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Join Server
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      View Forum
                     </Button>
                   </CardContent>
                 </Card>
@@ -247,20 +265,58 @@ const Community = () => {
         </div>
       </section>
 
-      {/* Join Discord CTA */}
-      <section className="py-12 bg-sbtp-green-800 text-white">
+      {/* Premium Community Access CTA */}
+      <section className="py-16 bg-gradient-to-br from-sbtp-green-800 to-sbtp-green-700 text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">Ready to Join the Conversation?</h2>
-            <p className="text-lg opacity-90 mb-8">
-              Our Discord community is a vibrant space for gardeners, farmers, educators, and food enthusiasts sharing knowledge and inspiration.
-            </p>
-            <Button asChild className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 text-lg py-6 px-10">
-              <a href="https://discord.com" target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="mr-2 h-5 w-5" />
-                Join our Discord
-              </a>
-            </Button>
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 sm:p-12 border border-white/20">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center bg-sbtp-yellow text-sbtp-brown-700 rounded-full px-4 py-2 mb-4">
+                  <Star className="h-4 w-4 mr-2" />
+                  <span className="font-semibold text-sm">Premium Access</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4">Want to Connect with Community Gardeners Directly?</h2>
+                <p className="text-lg sm:text-xl opacity-90 mb-8">
+                  Get exclusive access to our private Discord community of experienced gardeners and our centralized event calendar
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white/5 rounded-lg p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="bg-sbtp-yellow/20 p-2 rounded-lg">
+                      <MessageCircle className="h-5 w-5 text-sbtp-yellow" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Private Discord Community</h3>
+                      <p className="text-sm opacity-80">Chat directly with experienced community gardeners, get personalized advice, and join live Q&A sessions</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-lg p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="bg-sbtp-yellow/20 p-2 rounded-lg">
+                      <Calendar className="h-5 w-5 text-sbtp-yellow" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Centralized Event Calendar</h3>
+                      <p className="text-sm opacity-80">Never miss a workshop, seed swap, or community gathering with our comprehensive event calendar</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Button asChild size="lg" className="bg-sbtp-yellow hover:bg-sbtp-yellow/90 text-sbtp-brown-700 text-lg px-8 py-6">
+                  <a href="/premium">
+                    <Sprout className="mr-2 h-5 w-5" />
+                    Subscribe for Premium Access
+                  </a>
+                </Button>
+                <p className="text-sm opacity-70 mt-4">Join hundreds of community gardeners already growing together</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
