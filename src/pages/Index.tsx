@@ -27,16 +27,16 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
               <Link 
-                to="/map" 
+                to="/local-food" 
                 className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
               >
-                Find Local Food
+                Local Food Resources
               </Link>
               <Link 
-                to="/garden-plan" 
+                to="/education" 
                 className="bg-white hover:bg-green-100 text-green-800 px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
               >
-                Plan Your Garden
+                Schedule a Tour
               </Link>
             </div>
           </div>
@@ -68,7 +68,7 @@ const Index = () => {
                   Discover farmers markets, CSAs, and urban farms in your local area.
                 </p>
                 <Link 
-                  to="/map" 
+                  to="/local-food/map"
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
                   Explore local options
@@ -129,7 +129,7 @@ const Index = () => {
                   and preferences.
                 </p>
                 <Link 
-                  to="/garden-plan" 
+                  to="/local-food/garden-planner"
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
                   Plan your garden
@@ -184,7 +184,7 @@ const Index = () => {
             planner.
           </p>
           <Link 
-            to="/garden-plan" 
+            to="/local-food/garden-planner"
             className="bg-white text-green-700 hover:bg-green-100 px-6 sm:px-8 py-3 rounded-lg font-medium text-base sm:text-lg inline-block"
           >
             Create Your Garden Plan
