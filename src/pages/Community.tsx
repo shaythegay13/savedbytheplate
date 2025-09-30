@@ -66,30 +66,6 @@ const communityGuidelines = [
   "Help maintain a positive, inclusive environment for learning"
 ];
 
-// Upcoming Community Events
-const upcomingEvents = [
-  {
-    title: "Seed Swap Saturday",
-    date: "March 15, 2024",
-    time: "10:00 AM - 2:00 PM",
-    location: "Brooklyn Botanic Garden",
-    description: "Bring seeds to trade and meet fellow gardeners"
-  },
-  {
-    title: "Container Gardening Workshop",
-    date: "March 22, 2024", 
-    time: "1:00 PM - 4:00 PM",
-    location: "Queens Community Center",
-    description: "Hands-on workshop for apartment gardening"
-  },
-  {
-    title: "Urban Composting Demo",
-    date: "March 29, 2024",
-    time: "11:00 AM - 1:00 PM", 
-    location: "Central Park Conservatory",
-    description: "Learn composting techniques for small spaces"
-  }
-];
 
 // Community Showcase (weekly rotation)
 const currentShowcase = {
@@ -191,38 +167,6 @@ const Community = () => {
               </div>
             </div>
 
-            {/* Upcoming Events */}
-            <h3 className="text-2xl font-bold text-sbtp-green-800 mb-8">Upcoming Community Events</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-              {upcomingEvents.map((event, index) => (
-                <Card key={index} className="border-sbtp-green-200 hover:shadow-lg transition-all">
-                  <CardHeader>
-                    <div className="flex items-start gap-3">
-                      <div className="bg-sbtp-blue/20 p-3 rounded-full">
-                        <Calendar className="h-6 w-6 text-sbtp-blue" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-sbtp-green-700">{event.title}</CardTitle>
-                        <CardDescription className="text-sm text-sbtp-brown-500">
-                          {event.date} • {event.time}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-2 mb-3">
-                      <MapPin className="h-4 w-4 text-sbtp-brown-400" />
-                      <span className="text-sm text-sbtp-brown-600">{event.location}</span>
-                    </div>
-                    <p className="text-sm text-sbtp-brown-500 mb-4">{event.description}</p>
-                    <Button variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Add to Calendar
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
 
             {/* Community Showcase */}
             <div className="bg-gradient-to-r from-sbtp-green-100 to-sbtp-beige rounded-lg overflow-hidden">
