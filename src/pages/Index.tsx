@@ -50,28 +50,28 @@ const Index = () => {
             Discover What We Offer
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Local Food Finder */}
+            {/* Local Food Resources */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                  alt="Local farmers market" 
+                  alt="Local food resources" 
                   className="w-full h-full object-cover" 
                 />
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <MapPin className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Local Food Finder</h3>
+                  <h3 className="text-xl font-semibold">Local Food Resources</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Discover farmers markets, CSAs, and urban farms in your local area.
+                  Find local food sources and plan your garden space with our comprehensive tools.
                 </p>
                 <Link 
-                  to="/local-food/map"
+                  to="/local-food" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Explore local options
+                  Explore resources
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -102,37 +102,6 @@ const Index = () => {
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
                   Contact Shay for tours
-                  <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
-
-            {/* Garden Planner */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={gardenPlanningImage} 
-                  alt="Garden planning" 
-                  className="w-full h-full object-cover" 
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <Leaf className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Garden Planner</h3>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Get a customized garden plan based on your location, space,
-                  and preferences.
-                </p>
-                <Link 
-                  to="/local-food/garden-planner"
-                  className="text-green-700 font-medium hover:text-green-800 flex items-center"
-                >
-                  Plan your garden
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
