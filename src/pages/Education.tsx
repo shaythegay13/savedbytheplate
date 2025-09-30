@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Video, Download, Clock, Star, Play, FileText } from "lucide-react";
+import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
 // Featured Articles
@@ -161,178 +161,150 @@ const Education = () => {
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Urban Gardening Education Hub</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">School Garden Tours</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Learn, grow, and thrive with our comprehensive collection of articles, videos, guides, and premium courses.
+              Connect your students with local food justice work through community garden tours
             </p>
-            <Button variant="secondary" size="lg">
-              <BookOpen className="mr-2 h-5 w-5" />
-              Start Learning
+            <Button variant="secondary" size="lg" asChild>
+              <a href="mailto:shay@savedbytheplate.org">
+                <Mail className="mr-2 h-5 w-5" />
+                Contact Shay
+              </a>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Featured Articles Section */}
+      {/* School Garden Tours Section */}
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800 mb-6 sm:mb-8 px-2">Featured Articles</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
-              {featuredArticles.map((article, index) => (
-                <Card key={index} className="border-sbtp-green-200 overflow-hidden hover:shadow-lg transition-all group">
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={article.image} 
-                      alt={article.title} 
-                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                    />
+          <div className="max-w-4xl mx-auto">
+            
+            {/* Contact Shay Section */}
+            <div className="text-center mb-12">
+              <Card className="border-2 border-primary/20 shadow-lg">
+                <CardHeader className="pb-4">
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-10 w-10 text-primary" />
                   </div>
+                  <CardTitle className="text-2xl text-primary">Contact Shay Bouchles</CardTitle>
+                  <CardDescription className="text-lg">
+                    Executive Director - School Garden Tour Programs
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-center text-muted-foreground">
+                    Schedule a consultation to discuss bringing educational garden tours to your school
+                  </p>
+                  <div className="flex justify-center">
+                    <Button size="lg" asChild>
+                      <a href="mailto:shay@savedbytheplate.org" className="inline-flex items-center">
+                        <Mail className="mr-2 h-5 w-5" />
+                        Email Shay Directly
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Program Information */}
+            <div className="space-y-8">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-primary mb-4">School Garden Tour Program</h2>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                  Now, schools can contact Shay Bouchles - the executive director - to set up a contract 
+                  to give kids within their schools tours of their closest community garden as a way to 
+                  show the children what is going on in their local communities.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card className="border-primary/20">
                   <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="text-xs bg-sbtp-green-100 text-sbtp-green-700">
-                        {article.category}
-                      </Badge>
-                      <div className="flex items-center text-xs text-sbtp-brown-500">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {article.readTime}
-                      </div>
-                    </div>
-                    <CardTitle className="text-sbtp-green-700 group-hover:text-sbtp-green-600 transition-colors">
-                      {article.title}
+                    <CardTitle className="flex items-center text-xl">
+                      <MapPin className="mr-3 h-6 w-6 text-primary" />
+                      Local Community Impact
                     </CardTitle>
-                    <CardDescription className="text-sbtp-brown-500">
-                      {article.excerpt}
-                    </CardDescription>
-                    <div className="text-xs text-sbtp-brown-400 mt-2">
-                      By {article.author}
-                    </div>
                   </CardHeader>
-                  <CardFooter>
-                    <Button variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
-                      <FileText className="h-4 w-4 mr-2" />
-                      Read Article
-                    </Button>
-                  </CardFooter>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      This will show kids that there is food justice work going on in their local communities 
+                      and potentially down the block from them. Students will discover the amazing efforts 
+                      happening right in their neighborhood.
+                    </p>
+                  </CardContent>
                 </Card>
-              ))}
-            </div>
 
-            {/* Video Tutorials Section */}
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Video Tutorials</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {videoTutorials.map((video, index) => (
-                <Card key={index} className="border-sbtp-green-200 overflow-hidden hover:shadow-lg transition-all group">
-                  <div className="h-48 overflow-hidden relative">
-                    <img 
-                      src={video.thumbnail} 
-                      alt={video.title} 
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="bg-white/90 rounded-full p-3">
-                        <Play className="h-6 w-6 text-sbtp-green-700" />
+                <Card className="border-primary/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-xl">
+                      <Users className="mr-3 h-6 w-6 text-primary" />
+                      Educational Benefits
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      These tours provide hands-on learning experiences that connect students with sustainable 
+                      agriculture, food security, and community organizing. Students learn about growing food, 
+                      environmental stewardship, and community engagement.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="bg-primary/5 border-primary/20">
+                <CardHeader>
+                  <CardTitle className="text-center text-2xl text-primary">Program Features</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <MapPin className="h-8 w-8 text-primary" />
                       </div>
+                      <h3 className="font-semibold mb-2">Local Garden Tours</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Visit community gardens in your neighborhood to see food justice in action
+                      </p>
                     </div>
-                    <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                      {video.duration}
+                    <div>
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Users className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="font-semibold mb-2">Community Connection</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Meet local gardeners and learn about grassroots food access initiatives
+                      </p>
                     </div>
-                    <div className="absolute top-2 left-2">
-                      <Badge className={video.difficulty === 'Beginner' ? 'bg-sbtp-green-500' : 'bg-sbtp-blue'}>
-                        {video.difficulty}
-                      </Badge>
+                    <div>
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <BookOpen className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="font-semibold mb-2">Educational Impact</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Hands-on learning about sustainability, nutrition, and community organizing
+                      </p>
                     </div>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-sbtp-green-700">{video.title}</CardTitle>
-                    <CardDescription className="text-sbtp-brown-500">
-                      By {video.instructor} • {video.views} views
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter>
-                    <Button variant="outline" className="w-full border-sbtp-green-500 text-sbtp-green-700">
-                      <Video className="h-4 w-4 mr-2" />
-                      Watch Video
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
+                </CardContent>
+              </Card>
 
-            {/* Downloadable Guides Section */}
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-8">Downloadable Guides</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {downloadableGuides.map((guide, index) => (
-                <Card key={index} className="border-sbtp-green-200 hover:shadow-lg transition-all">
-                  <CardHeader className="text-center">
-                    <div className="w-16 h-16 bg-sbtp-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Download className="h-8 w-8 text-sbtp-green-600" />
-                    </div>
-                    <CardTitle className="text-sbtp-green-700">{guide.title}</CardTitle>
-                    <CardDescription className="text-sbtp-brown-500">
-                      {guide.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <div className="flex justify-between text-xs text-sbtp-brown-400 mb-4">
-                      <span>{guide.format} • {guide.fileSize}</span>
-                      <span>{guide.downloads} downloads</span>
-                    </div>
+              <div className="text-center">
+                <Card className="inline-block border-primary/20 bg-primary/5">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-lg mb-2">Ready to Get Started?</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Contact Shay to discuss bringing this program to your school
+                    </p>
+                    <Button asChild>
+                      <a href="mailto:shay@savedbytheplate.org">
+                        <Mail className="mr-2 h-4 w-4" />
+                        Schedule a Consultation
+                      </a>
+                    </Button>
                   </CardContent>
-                  <CardFooter>
-                    <Button className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download Free
-                    </Button>
-                  </CardFooter>
                 </Card>
-              ))}
-            </div>
-
-            {/* Premium Courses Section */}
-            <div className="bg-sbtp-yellow/20 rounded-lg p-8 mb-8">
-              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Courses</h2>
-              <p className="text-lg text-sbtp-brown-700 mb-6">
-                Take your gardening skills to the next level with our comprehensive premium courses. 
-                <Link to="/premium" className="ml-1 underline text-sbtp-green-700 font-medium">
-                  Upgrade to premium
-                </Link> for $10/month or $100/year to access all advanced content.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {premiumCourses.map((course, index) => (
-                  <Card key={index} className="border-sbtp-green-200 overflow-hidden opacity-90 hover:shadow-md transition-all">
-                    <div className="h-48 overflow-hidden relative">
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white z-10">
-                        <div className="text-center">
-                          <Star className="mx-auto mb-2 h-6 w-6" />
-                          <span className="text-sm font-medium">Premium</span>
-                        </div>
-                      </div>
-                      <img 
-                        src={course.imageUrl} 
-                        alt={course.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-sbtp-green-700">{course.title}</CardTitle>
-                        <Badge className="bg-sbtp-yellow text-sbtp-brown-700">
-                          {course.duration}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-sbtp-brown-500">{course.description}</p>
-                    </CardContent>
-                    <CardFooter>
-                      <Button asChild className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                        <Link to="/premium">Unlock Premium</Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
               </div>
             </div>
           </div>

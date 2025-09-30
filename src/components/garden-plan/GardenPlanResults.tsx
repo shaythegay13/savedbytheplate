@@ -16,6 +16,7 @@ import AIVisualGardenPlan from './components/AIVisualGardenPlan';
 import DragDropGardenLayout from './components/DragDropGardenLayout';
 import PlantDiseaseIdentifier from './components/PlantDiseaseIdentifier';
 import SeasonalRecommendations from './components/SeasonalRecommendations';
+import EducationSuggestions from './components/EducationSuggestions';
 import { GardenPlanFormData } from './types';
 
 interface PlantRecommendation {
@@ -144,6 +145,8 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         <ExpertTips expertTips={expertTips} />
 
         <PlantDiseaseIdentifier />
+
+        <EducationSuggestions />
       </div>
 
       <FeedbackModal
