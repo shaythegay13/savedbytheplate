@@ -15,6 +15,10 @@ import Education from "./pages/Education";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
+import Forum from "./pages/Forum";
+import ForumCategory from "./pages/ForumCategory";
+import ForumDiscussion from "./pages/ForumDiscussion";
+import NewDiscussion from "./pages/NewDiscussion";
 import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
@@ -42,6 +46,11 @@ const App = () => (
               <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
               <Route path="/about" element={<AboutUs />} />
+              
+              <Route path="/forum" element={<Forum />} />
+              <Route path="/forum/category/:slug" element={<ForumCategory />} />
+              <Route path="/forum/discussion/:id" element={<ForumDiscussion />} />
+              <Route path="/forum/new" element={<NewDiscussion />} />
               
               <Route path="/premium" element={<Premium />} />
               

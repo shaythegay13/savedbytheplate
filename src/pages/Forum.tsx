@@ -124,9 +124,13 @@ export default function Forum() {
             </p>
           </div>
           
-          <Button onClick={handleCreateDiscussion} size="lg">
+          <Button 
+            onClick={handleCreateDiscussion} 
+            size="lg"
+            className="transition-all hover:scale-105"
+          >
             <Plus className="mr-2 h-5 w-5" />
-            New Discussion
+            Start a New Topic
           </Button>
         </div>
 
@@ -142,87 +146,18 @@ export default function Forum() {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="w-full justify-start overflow-x-auto">
-            <TabsTrigger value="all">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              All Discussions
-            </TabsTrigger>
-            {categories.map((category) => (
-              <TabsTrigger key={category.id} value={category.slug}>
-                {category.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value={activeTab} className="mt-6">
-            <div className="space-y-4">
-              {discussions.length === 0 ? (
-                <Card className="p-8 text-center">
-                  <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-lg font-medium mb-2">No discussions yet</p>
-                  <p className="text-muted-foreground mb-4">
-                    Be the first to start a conversation!
-                  </p>
-                  <Button onClick={handleCreateDiscussion}>Create Discussion</Button>
-                </Card>
-              ) : (
-                discussions.map((discussion) => (
-                  <Card
-                    key={discussion.id}
-                    className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => navigate(`/forum/discussion/${discussion.id}`)}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          {discussion.is_pinned && (
-                            <Pin className="h-4 w-4 text-primary" />
-                          )}
-                          <h3 className="text-xl font-semibold hover:text-primary transition-colors">
-                            {discussion.title}
-                          </h3>
-                        </div>
-                        
-                        <p className="text-muted-foreground mb-4 line-clamp-2">
-                          {discussion.content}
-                        </p>
-                        
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            {new Date(discussion.created_at).toLocaleDateString()}
-                          </span>
-                          
-                          <span className="flex items-center gap-1">
-                            <MessageCircle className="h-4 w-4" />
-                            {discussion.reply_count} replies
-                          </span>
-                          
-                          <span>
-                            by <span className="font-medium text-foreground">
-                              {discussion.profiles?.username}
-                            </span>
-                          </span>
-                          
-                          {discussion.tags && discussion.tags.length > 0 && (
-                            <div className="flex gap-2">
-                              {discussion.tags.map((tag, idx) => (
-                                <Badge key={idx} variant="secondary">
-                                  {tag}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {categories.map((category) => (
+            <Card
+              key={category.id}
+              className="p-6 cursor-pointer transition-all hover:shadow-lg hover:scale-105 hover:border-primary"
+              onClick={() => navigate(`/forum/category/${category.slug}`)}
+            >
+              <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
+              <p className="text-muted-foreground text-sm">{category.description}</p>
+            </Card>
+          ))}
+        </div>
       </main>
     </div>
   );
