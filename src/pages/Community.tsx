@@ -5,58 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout, ExternalLink, Clock, Star } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import brooklynNavyYard from "@/assets/brooklyn-navy-yard.webp";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
-// Discussion Forums
-const discussionForums = [
-  {
-    name: "NYC Urban Gardening",
-    description: "Connect with fellow urban gardeners across the five boroughs",
-    topics: 342,
-    posts: 3200,
-    latestPost: "2 hours ago",
-    featured: true
-  },
-  {
-    name: "Container Gardening Tips",
-    description: "Master the art of growing in small spaces and containers",
-    topics: 215,
-    posts: 2850,
-    latestPost: "3 hours ago",
-    featured: false
-  },
-  {
-    name: "Permaculture & Sustainability",
-    description: "Learn sustainable design principles for urban environments",
-    topics: 156,
-    posts: 1940,
-    latestPost: "5 hours ago",
-    featured: false
-  },
-  {
-    name: "Soil Health & Composting",
-    description: "Everything about building and maintaining healthy soil",
-    topics: 189,
-    posts: 2120,
-    latestPost: "1 day ago",
-    featured: false
-  },
-  {
-    name: "Rooftop & Vertical Farming",
-    description: "Specialized community for rooftop and vertical growing",
-    topics: 124,
-    posts: 1580,
-    latestPost: "1 day ago",
-    featured: false
-  },
-  {
-    name: "Seasonal Harvests & Recipes",
-    description: "Share your harvests and seasonal growing experiences",
-    topics: 201,
-    posts: 2340,
-    latestPost: "4 hours ago",
-    featured: false
-  }
-];
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  icon: string;
+}
 
 // Community Guidelines
 const communityGuidelines = [
@@ -83,6 +42,26 @@ const currentShowcase = {
 };
 
 const Community = () => {
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data } = await supabase
+        .from('discussion_categories')
+        .select('*')
+        .order('sort_order');
+      
+      if (data) {
+        setCategories(data);
+      }
+      setLoading(false);
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -110,48 +89,70 @@ const Community = () => {
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800 mb-6 sm:mb-8 px-2">Discussion Forums</h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
-              {discussionForums.map((forum, index) => (
-                <Card key={index} className={`border-sbtp-green-200 hover:shadow-lg transition-all ${forum.featured ? 'ring-2 ring-sbtp-yellow' : ''}`}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <div className="bg-sbtp-green-100 p-3 rounded-full">
-                          <MessageCircle className="h-6 w-6 text-sbtp-green-600" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-sbtp-green-700">{forum.name}</CardTitle>
-                          <CardDescription className="text-xs text-sbtp-brown-500 flex items-center gap-2 mt-1">
-                            <span>{forum.topics} topics</span>
-                            <span>•</span>
-                            <span>{forum.posts} posts</span>
-                          </CardDescription>
-                        </div>
-                      </div>
-                      {forum.featured && (
-                        <Badge className="bg-sbtp-yellow text-sbtp-brown-700">
-                          <Star className="h-3 w-3 mr-1" />
-                          Popular
-                        </Badge>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sbtp-brown-500 text-sm mb-3">{forum.description}</p>
-                    <div className="flex items-center gap-2 text-xs text-sbtp-brown-400 mb-4">
-                      <Clock className="h-3 w-3" />
-                      <span>Latest post: {forum.latestPost}</span>
-                    </div>
-                    <Button className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      View Forum
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8 px-2">
+              <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800">Discussion Forums</h2>
+              <Button 
+                onClick={() => navigate('/forum')}
+                variant="outline"
+                className="border-sbtp-green-600 text-sbtp-green-700 hover:bg-sbtp-green-50 hover:text-sbtp-green-800 transition-colors"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Browse All Topics
+              </Button>
             </div>
+            
+            {loading ? (
+              <div className="text-center py-12">
+                <p className="text-sbtp-brown-500">Loading forums...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
+                {categories.map((category, index) => (
+                  <Card 
+                    key={category.id} 
+                    className="border-sbtp-green-200 hover:shadow-lg hover:border-sbtp-green-400 transition-all cursor-pointer"
+                    onClick={() => navigate(`/forum/category/${category.slug}`)}
+                  >
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <div className="bg-sbtp-green-100 p-3 rounded-full">
+                            <MessageCircle className="h-6 w-6 text-sbtp-green-600" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-sbtp-green-700 hover:text-sbtp-green-800 transition-colors">
+                              {category.name}
+                            </CardTitle>
+                            <CardDescription className="text-xs text-sbtp-brown-500 mt-1">
+                              Click to explore
+                            </CardDescription>
+                          </div>
+                        </div>
+                        {index === 0 && (
+                          <Badge className="bg-sbtp-yellow text-sbtp-brown-700">
+                            <Star className="h-3 w-3 mr-1" />
+                            Popular
+                          </Badge>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sbtp-brown-500 text-sm mb-4">{category.description}</p>
+                      <Button 
+                        className="w-full bg-sbtp-green-500 hover:bg-sbtp-green-600 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/forum/category/${category.slug}`);
+                        }}
+                      >
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        View Category
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
             {/* Community Guidelines */}
             <div className="bg-sbtp-green-50 rounded-lg p-8 mb-16">
