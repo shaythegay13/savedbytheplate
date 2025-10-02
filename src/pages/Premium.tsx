@@ -107,10 +107,13 @@ const Premium = () => {
                       <span>Local Food Map</span>
                     </li>
                     <li className="flex items-center">
-                      <span>Basic Garden Tools</span>
+                      <span>School Garden Tours</span>
                     </li>
                     <li className="flex items-center">
-                      <span>AI Garden Planning</span>
+                      <span>Community Forums</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span>AI Garden Planner</span>
                     </li>
                     <li className="flex items-center">
                       <span>Educational Resources</span>
@@ -136,6 +139,9 @@ const Premium = () => {
                     </li>
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </li>
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -174,6 +180,9 @@ const Premium = () => {
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
+                    <li className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </li>
                   </ul>
                   <Button className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600">
                     Get Premium
@@ -189,15 +198,12 @@ const Premium = () => {
                     </li>
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span className="text-sm">All content</span>
                     </li>
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span className="text-sm">Priority</span>
                     </li>
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span className="text-sm">Enhanced</span>
                     </li>
                     <li className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
