@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
 import MapImprovementForm from "@/components/map/MapImprovementForm";
+import AddLocationForm from "@/components/map/AddLocationForm";
 import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
 import { fetchEnhancedMapData, categorizeLocations } from "@/services/enhancedMapDataService";
 import { useState, useEffect } from "react";
@@ -18,6 +19,7 @@ const Map = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [improvementFormOpen, setImprovementFormOpen] = useState(false);
+  const [addLocationFormOpen, setAddLocationFormOpen] = useState(false);
   const isMobile = useIsMobile();
 
   // Fetch data to get location counts for the legend
@@ -270,7 +272,10 @@ const Map = () => {
 
           {/* Action Buttons - Top Left */}
           <div className="absolute top-4 left-4 flex gap-3">
-            <Button className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg">
+            <Button 
+              onClick={() => setAddLocationFormOpen(true)}
+              className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg"
+            >
               <MapPin className="h-4 w-4 mr-2" />
               Add Location
             </Button>
@@ -290,6 +295,12 @@ const Map = () => {
       <MapImprovementForm 
         open={improvementFormOpen} 
         onOpenChange={setImprovementFormOpen} 
+      />
+
+      {/* Add Location Form Modal */}
+      <AddLocationForm 
+        open={addLocationFormOpen} 
+        onOpenChange={setAddLocationFormOpen} 
       />
     </div>
   );
