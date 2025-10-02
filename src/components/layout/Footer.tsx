@@ -24,7 +24,7 @@ const Footer = () => {
               />
               <span className="text-lg font-bold">Saved by the Plate</span>
             </Link>
-            <p className="text-sm text-gray-300 mt-2">
+            <p className="text-sm text-gray-300 mt-2 max-w-xs">
               Inspiring the next generation to grow, learn, and lead by connecting youth and communities to local gardens, sustainable food education, and hands-on experiences in urban agriculture.
             </p>
           </div>
