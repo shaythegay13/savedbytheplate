@@ -26,7 +26,7 @@ const AboutUs = () => {
                 Our Mission
               </h2>
               <p className="text-sbtp-brown-500 leading-relaxed">
-                Saved by the Plate empowers individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education with the long-term goal of shifting consumer food acquisition patterns towards local options like farmers markets and growing food themselves.
+                Empower the next generation to build a resilient food future by connecting children and families to community gardens, sustainable eating education, and food justice initiatives across New York City and beyond. We provide experiential programs and resources that make urban gardening accessible, foster curiosity, and strengthen local communities.
               </p>
             </CardContent>
           </Card>
@@ -41,7 +41,7 @@ const AboutUs = () => {
                 Our Values
               </h2>
               <p className="text-sbtp-brown-500 leading-relaxed">
-                A future where every community has access to fresh, locally grown food and the knowledge to sustain it.
+                Create cities where every child and neighborhood has the opportunity to grow fresh food, learn the value of sustainability, and participate in a thriving, equitable local food system. Our vision is to cultivate lifelong advocates for healthy food, green spaces, and justice—reshaping cities with gardens at their hearts.
               </p>
             </CardContent>
           </Card>
