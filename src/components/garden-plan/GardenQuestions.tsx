@@ -3,29 +3,41 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Sprout, Sun, Home, User } from "lucide-react";
+import { Sprout, Sun, Home, User, ShieldCheck, Droplets, Clock } from "lucide-react";
 
 interface GardenQuestionsProps {
   onQuestionsComplete: (answers: {
-    gardenType: string;
+    spaceType: string;
     spaceSize: string;
     sunlight: string;
-    experience: string;
+    experience_level: string;
+    soil_contaminated: string;
+    soil_type: string;
+    growing_options: string;
+    rainfall: string;
+    season: string;
+    time_commitment: string;
   }) => void;
 }
 
 const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({
-    gardenType: '',
+    spaceType: '',
     spaceSize: '',
     sunlight: '',
-    experience: ''
+    experience_level: '',
+    soil_contaminated: '',
+    soil_type: '',
+    growing_options: '',
+    rainfall: '',
+    season: '',
+    time_commitment: ''
   });
 
   const questions = [
     {
-      id: 'gardenType',
+      id: 'spaceType',
       icon: <Sprout className="h-8 w-8 text-sbtp-green-600" />,
       title: 'What type of garden are you planting?',
       description: 'Tell us about the style of garden you want to create',
@@ -64,7 +76,79 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
       ]
     },
     {
-      id: 'experience',
+      id: 'soil_contaminated',
+      icon: <ShieldCheck className="h-8 w-8 text-sbtp-green-600" />,
+      title: 'Is your soil potentially contaminated?',
+      description: 'Urban soil can contain lead or other contaminants',
+      options: [
+        { value: 'no', label: 'No - My soil is safe' },
+        { value: 'yes', label: 'Yes - I need container/raised bed solutions' },
+        { value: 'unknown', label: "I'm not sure" }
+      ]
+    },
+    {
+      id: 'soil_type',
+      icon: <Sprout className="h-8 w-8 text-sbtp-green-600" />,
+      title: 'What type of soil do you have?',
+      description: 'Soil type affects drainage and plant selection',
+      options: [
+        { value: 'sandy', label: 'Sandy (drains quickly)' },
+        { value: 'clay', label: 'Clay (heavy, drains slowly)' },
+        { value: 'loamy', label: 'Loamy (balanced, ideal)' },
+        { value: 'potting-mix', label: 'Potting Mix (container garden)' },
+        { value: 'unknown', label: "I don't know" }
+      ]
+    },
+    {
+      id: 'growing_options',
+      icon: <Home className="h-8 w-8 text-sbtp-green-600" />,
+      title: 'What growing method will you use?',
+      description: 'Different methods suit different spaces',
+      options: [
+        { value: 'traditional', label: 'Traditional In-Ground' },
+        { value: 'raised-beds', label: 'Raised Beds' },
+        { value: 'containers', label: 'Containers/Pots' },
+        { value: 'vertical', label: 'Vertical Growing' },
+        { value: 'hydroponic', label: 'Hydroponic' }
+      ]
+    },
+    {
+      id: 'rainfall',
+      icon: <Droplets className="h-8 w-8 text-sbtp-green-600" />,
+      title: 'How much rainfall does your area get?',
+      description: 'This helps determine watering needs',
+      options: [
+        { value: 'low', label: 'Low (dry climate)' },
+        { value: 'moderate', label: 'Moderate (regular rain)' },
+        { value: 'high', label: 'High (rainy climate)' },
+        { value: 'indoor', label: 'Indoor/No natural rainfall' }
+      ]
+    },
+    {
+      id: 'season',
+      icon: <Sun className="h-8 w-8 text-sbtp-green-600" />,
+      title: 'When are you planning to start?',
+      description: 'Season affects what you can plant',
+      options: [
+        { value: 'spring', label: 'Spring (March-May)' },
+        { value: 'summer', label: 'Summer (June-August)' },
+        { value: 'fall', label: 'Fall (September-November)' },
+        { value: 'winter', label: 'Winter (December-February)' }
+      ]
+    },
+    {
+      id: 'time_commitment',
+      icon: <Clock className="h-8 w-8 text-sbtp-green-600" />,
+      title: 'How much time can you dedicate?',
+      description: 'We\'ll match plants to your schedule',
+      options: [
+        { value: 'minimal', label: 'Minimal (check weekly)' },
+        { value: 'moderate', label: 'Moderate (few times per week)' },
+        { value: 'dedicated', label: 'Dedicated (daily care)' }
+      ]
+    },
+    {
+      id: 'experience_level',
       icon: <User className="h-8 w-8 text-sbtp-green-600" />,
       title: 'What is your gardening experience level?',
       description: 'We\'ll tailor our recommendations to your skill level',

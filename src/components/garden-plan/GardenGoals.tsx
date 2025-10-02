@@ -8,9 +8,9 @@ import { Target, Leaf, Droplets, ShieldCheck, Clock } from "lucide-react";
 
 interface GardenGoalsProps {
   onGoalsComplete: (goals: {
-    whatToGrow: string[];
-    preferences: string[];
-    additionalNotes: string;
+    preferred_plants: string;
+    goals: string;
+    space_description: string;
   }) => void;
 }
 
@@ -98,10 +98,16 @@ const GardenGoals: React.FC<GardenGoalsProps> = ({ onGoalsComplete }) => {
   };
 
   const handleSubmit = () => {
+    // Combine whatToGrow and preferences into goals
+    const combinedGoals = [
+      ...whatToGrow,
+      ...preferences.map(p => preferenceOptions.find(opt => opt.value === p)?.label || p)
+    ].join(', ');
+
     onGoalsComplete({
-      whatToGrow,
-      preferences,
-      additionalNotes
+      preferred_plants: whatToGrow.join(', '),
+      goals: combinedGoals,
+      space_description: additionalNotes
     });
   };
 

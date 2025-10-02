@@ -26,12 +26,8 @@ const GardenPlan = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [gardenPlan, setGardenPlan] = useState<GardenPlanType | null>(null);
-  const [formData, setFormData] = useState({
-    location: {},
-    questions: {},
-    goals: {},
-    gardenLayout: [],
-    photoLayout: []
+  const [formData, setFormData] = useState<any>({
+    location: {}
   });
 
   const handleLocationSubmit = (location: any) => {
@@ -45,12 +41,12 @@ const GardenPlan = () => {
   };
 
   const handleQuestionsComplete = (questions: any) => {
-    setFormData(prev => ({ ...prev, questions }));
+    setFormData(prev => ({ ...prev, ...questions }));
     setCurrentStep(3);
   };
 
   const handleGoalsComplete = (goals: any) => {
-    setFormData(prev => ({ ...prev, goals }));
+    setFormData(prev => ({ ...prev, ...goals }));
     setCurrentStep(4);
   };
 
@@ -70,26 +66,29 @@ const GardenPlan = () => {
     try {
       console.log('Calling AI garden plan generation with:', finalFormData);
       
-      // Transform the data to match the expected format
+      // Data is now flat, no nesting needed
       const planRequest = {
-        spaceType: finalFormData.questions?.spaceType || 'garden',
-        spaceSize: finalFormData.questions?.spaceSize || 'medium',
-        sunlight: finalFormData.questions?.sunlight || 'full_sun',
-        soil_contaminated: finalFormData.questions?.soil_contaminated || false,
-        soil_type: finalFormData.questions?.soil_type || 'loamy',
-        growing_options: finalFormData.questions?.growing_options || 'traditional',
-        season: finalFormData.questions?.season || 'spring',
-        rainfall: finalFormData.questions?.rainfall || 'moderate',
-        experience_level: finalFormData.questions?.experience_level || 'beginner',
-        preferred_plants: finalFormData.goals?.preferred_plants || 'vegetables',
-        goals: finalFormData.goals?.goals || 'food production',
-        space_description: finalFormData.questions?.space_description || '',
-        time_commitment: finalFormData.goals?.time_commitment || 'moderate',
+        spaceType: finalFormData.spaceType || 'garden',
+        spaceSize: finalFormData.spaceSize || 'medium',
+        sunlight: finalFormData.sunlight || 'full-sun',
+        soil_contaminated: finalFormData.soil_contaminated || 'no',
+        soil_type: finalFormData.soil_type || 'loamy',
+        growing_options: finalFormData.growing_options || 'traditional',
+        season: finalFormData.season || 'spring',
+        rainfall: finalFormData.rainfall || 'moderate',
+        experience_level: finalFormData.experience_level || 'beginner',
+        preferred_plants: finalFormData.preferred_plants || 'vegetables',
+        goals: finalFormData.goals || 'food production',
+        space_description: finalFormData.space_description || '',
+        time_commitment: finalFormData.time_commitment || 'moderate',
         address: finalFormData.location?.address || '',
-        latitude: finalFormData.location?.latitude,
-        longitude: finalFormData.location?.longitude,
+        latitude: finalFormData.location?.lat,
+        longitude: finalFormData.location?.lng,
+        city: finalFormData.location?.address || '',
         user_id: 'demo-user'
       };
+      
+      console.log('Sending to backend:', planRequest);
       
       // Call the AI-powered edge function using Supabase client
       const { data: aiPlan, error } = await supabase.functions.invoke('generate-smart-garden-plan', {
@@ -112,19 +111,19 @@ const GardenPlan = () => {
       console.log('Falling back to mock plan');
       // Fallback to mock plan
       const mockPlan = generateMockPlan({
-        spaceType: finalFormData.questions?.spaceType || 'garden',
-        spaceSize: finalFormData.questions?.spaceSize || 'medium',
-        sunlight: finalFormData.questions?.sunlight || 'full_sun',
-        soil_contaminated: finalFormData.questions?.soil_contaminated || false,
-        soil_type: finalFormData.questions?.soil_type || 'loamy',
-        growing_options: finalFormData.questions?.growing_options || 'traditional',
-        season: finalFormData.questions?.season || 'spring',
-        rainfall: finalFormData.questions?.rainfall || 'moderate',
-        experience_level: finalFormData.questions?.experience_level || 'beginner',
-        preferred_plants: finalFormData.goals?.preferred_plants || 'vegetables',
-        goals: finalFormData.goals?.goals || 'food production',
-        space_description: finalFormData.questions?.space_description || '',
-        time_commitment: finalFormData.goals?.time_commitment || 'moderate',
+        spaceType: finalFormData.spaceType || 'garden',
+        spaceSize: finalFormData.spaceSize || 'medium',
+        sunlight: finalFormData.sunlight || 'full-sun',
+        soil_contaminated: finalFormData.soil_contaminated || 'no',
+        soil_type: finalFormData.soil_type || 'loamy',
+        growing_options: finalFormData.growing_options || 'traditional',
+        season: finalFormData.season || 'spring',
+        rainfall: finalFormData.rainfall || 'moderate',
+        experience_level: finalFormData.experience_level || 'beginner',
+        preferred_plants: finalFormData.preferred_plants || 'vegetables',
+        goals: finalFormData.goals || 'food production',
+        space_description: finalFormData.space_description || '',
+        time_commitment: finalFormData.time_commitment || 'moderate',
       });
       setGardenPlan(mockPlan);
     } finally {
