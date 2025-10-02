@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu } from 'lucide-react';
+import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
-
+import MapImprovementForm from "@/components/map/MapImprovementForm";
 import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
 import { fetchEnhancedMapData, categorizeLocations } from "@/services/enhancedMapDataService";
 import { useState, useEffect } from "react";
@@ -17,6 +17,7 @@ const Map = () => {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [improvementFormOpen, setImprovementFormOpen] = useState(false);
   const isMobile = useIsMobile();
 
   // Fetch data to get location counts for the legend
@@ -267,27 +268,34 @@ const Map = () => {
         <div className="flex-1 relative">
           <MapComponent />
 
-          {/* Bottom Action Bar - positioned above Mapbox attribution */}
-          <div className={`absolute bottom-12 ${isMobile ? 'left-4 right-4' : 'left-4 right-32'}`}>
-            <div className={`flex items-center ${isMobile ? 'justify-center gap-2' : 'justify-between'}`}>
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
-                <Button className={`bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg ${isMobile ? 'text-sm px-3' : ''}`}>
-                  <MapPin className="h-4 w-4 mr-2" />
-                  {isMobile ? 'Add' : 'Add Location'}
-                </Button>
-                <Button variant="outline" className={`border-sbtp-green-300 text-sbtp-green-700 bg-white shadow-lg ${isMobile ? 'text-sm px-3' : ''}`}>
-                  {isMobile ? 'Report' : 'Report Issue'}
-                </Button>
-              </div>
-              {!isMobile && lastUpdated && (
-                <div className="text-sm text-sbtp-brown-700 bg-white px-3 py-2 rounded-md shadow-lg">
-                  Last updated: {lastUpdated.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at {lastUpdated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
-                </div>
-              )}
-            </div>
+          {/* Add Location Button - Top Left */}
+          <div className="absolute top-4 left-4">
+            <Button className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg">
+              <MapPin className="h-4 w-4 mr-2" />
+              Add Location
+            </Button>
+          </div>
+
+          {/* Improve Map Button - Bottom Left */}
+          <div className="absolute bottom-12 left-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setImprovementFormOpen(true)}
+              className="bg-white border-sbtp-green-300 text-sbtp-green-700 shadow-lg hover:bg-sbtp-green-50"
+            >
+              <MessageSquarePlus className="h-4 w-4 mr-2" />
+              Improve this map
+            </Button>
           </div>
         </div>
       </div>
+
+      {/* Map Improvement Form Modal */}
+      <MapImprovementForm 
+        open={improvementFormOpen} 
+        onOpenChange={setImprovementFormOpen} 
+      />
     </div>
   );
 };
