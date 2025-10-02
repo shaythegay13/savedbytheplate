@@ -157,8 +157,7 @@ const WaitingList = () => {
             </h1>
             
             <p className="text-lg sm:text-xl md:text-2xl text-sbtp-brown-700 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
-              Connect with local food sources and sustainable agriculture. 
-              We're building something amazing to empower your food choices.
+              Get ready to inspire young minds and grow greener communities! We're bringing hands-on garden adventures and urban food education to kids, families, and schools—sign up to join the movement and be first to experience what's growing near you.
             </p>
             
             <div className="mb-6 sm:mb-8 px-4">
