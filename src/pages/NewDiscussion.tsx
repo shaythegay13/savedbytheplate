@@ -58,10 +58,10 @@ export default function NewDiscussion() {
     if (!user) {
       toast({
         title: "Authentication required",
-        description: "Please log in to create a discussion",
+        description: "Please log in to create a discussion. Authentication is coming soon!",
         variant: "destructive",
       });
-      navigate("/auth");
+      navigate("/forum");
       return;
     }
     setUser(user);
@@ -82,10 +82,10 @@ export default function NewDiscussion() {
     if (!user) {
       toast({
         title: "Authentication required",
-        description: "Please log in to create a discussion",
+        description: "Please log in to create a discussion. Authentication is coming soon!",
         variant: "destructive",
       });
-      navigate("/auth");
+      navigate("/forum");
       return;
     }
 

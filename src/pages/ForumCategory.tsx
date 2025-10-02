@@ -96,10 +96,9 @@ export default function ForumCategory() {
     if (!user) {
       toast({
         title: "Authentication required",
-        description: "Please log in to create a discussion",
+        description: "Please log in to create a discussion. Authentication is coming soon!",
         variant: "destructive",
       });
-      navigate("/auth");
       return;
     }
     navigate(`/forum/new?category=${slug}`);
