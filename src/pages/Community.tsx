@@ -2,12 +2,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout, ExternalLink, Clock, Star } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout, ExternalLink, Clock, Star, Search, Plus } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import brooklynNavyYard from "@/assets/brooklyn-navy-yard.webp";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Category {
   id: string;
@@ -43,24 +45,45 @@ const currentShowcase = {
 
 const Community = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const { data } = await supabase
-        .from('discussion_categories')
-        .select('*')
-        .order('sort_order');
-      
-      if (data) {
-        setCategories(data);
-      }
-      setLoading(false);
-    };
-
+    checkUser();
     fetchCategories();
   }, []);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
+
+  const fetchCategories = async () => {
+    const { data } = await supabase
+      .from('discussion_categories')
+      .select('*')
+      .order('sort_order');
+    
+    if (data) {
+      setCategories(data);
+    }
+    setLoading(false);
+  };
+
+  const handleCreateDiscussion = () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to create a discussion. Authentication is coming soon!",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate("/forum/new");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,12 +97,22 @@ const Community = () => {
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
               Connect with fellow urban gardeners, share experiences, and learn from experts across NYC's five boroughs.
             </p>
-            <div className="bg-white/10 p-4 sm:p-6 rounded-lg inline-flex items-center mx-4">
-              <MessageCircle className="mr-3 h-8 w-8" />
-              <div className="text-left">
-                <h3 className="font-semibold">Discussion Forums</h3>
-                <p className="text-sm opacity-80">14,000+ members and growing</p>
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
+              <div className="bg-white/10 p-4 sm:p-6 rounded-lg inline-flex items-center mx-4">
+                <MessageCircle className="mr-3 h-8 w-8" />
+                <div className="text-left">
+                  <h3 className="font-semibold">Discussion Forums</h3>
+                  <p className="text-sm opacity-80">14,000+ members and growing</p>
+                </div>
               </div>
+              <Button 
+                onClick={handleCreateDiscussion}
+                size="lg"
+                className="bg-white text-primary hover:bg-white/90 transition-all"
+              >
+                <Plus className="mr-2 h-5 w-5" />
+                Start a New Topic
+              </Button>
             </div>
           </div>
         </div>
@@ -91,14 +124,19 @@ const Community = () => {
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8 px-2">
               <h2 className="text-2xl sm:text-3xl font-bold text-sbtp-green-800">Discussion Forums</h2>
-              <Button 
-                onClick={() => navigate('/forum')}
-                variant="outline"
-                className="border-sbtp-green-600 text-sbtp-green-700 hover:bg-sbtp-green-50 hover:text-sbtp-green-800 transition-colors"
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Browse All Topics
-              </Button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mb-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Search discussions, topics, or tags..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
             
             {loading ? (

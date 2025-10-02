@@ -47,7 +47,7 @@ const App = () => (
               <Route path="/education" element={<Education />} />
               <Route path="/about" element={<AboutUs />} />
               
-              <Route path="/forum" element={<Forum />} />
+              <Route path="/forum" element={<Navigate to="/community" replace />} />
               <Route path="/forum/category/:slug" element={<ForumCategory />} />
               <Route path="/forum/discussion/:id" element={<ForumDiscussion />} />
               <Route path="/forum/new" element={<NewDiscussion />} />
