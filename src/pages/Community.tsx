@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, MessageCircle, Calendar, MapPin, Leaf, Sprout, ExternalLink, Clock, Star } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+import brooklynNavyYard from "@/assets/brooklyn-navy-yard.webp";
 
 // Discussion Forums
 const discussionForums = [
@@ -70,9 +71,9 @@ const communityGuidelines = [
 // Community Showcase (weekly rotation)
 const currentShowcase = {
   title: "Brooklyn Grange Rooftop Farm",
-  location: "Long Island City, Queens",
+  location: "Brooklyn Navy Yard",
   description: "This week we're featuring Brooklyn Grange, one of NYC's largest rooftop soil farms. Spanning over 2.5 acres across multiple locations, they demonstrate how urban agriculture can thrive in unexpected places.",
-  image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800",
+  image: brooklynNavyYard,
   highlights: [
     "Over 80,000 lbs of produce grown annually",
     "Hosts educational programs for 10,000+ visitors yearly", 
