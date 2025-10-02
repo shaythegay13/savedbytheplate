@@ -61,14 +61,14 @@ const MapComponent = () => {
       zoom: defaultMapConfig.zoom
     });
 
-    // Add controls to the map
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // Add controls to the map - positioned bottom-right to avoid overlap
+    map.current.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
     map.current.addControl(new mapboxgl.GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true
       },
       trackUserLocation: true
-    }));
+    }), 'bottom-right');
 
     map.current.on('load', () => {
       setMapLoaded(true);

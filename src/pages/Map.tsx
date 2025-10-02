@@ -264,21 +264,9 @@ const Map = () => {
         {/* Map Container */}
         <div className="flex-1 relative">
           <MapComponent />
-          
-          {/* Map Overlay Controls */}
-          <div className={`absolute ${isMobile ? 'top-4 right-4' : 'top-20 right-4'} flex flex-col gap-2`}>
-            <Button size="sm" variant="outline" className="bg-white shadow-md">
-              <Settings className="h-4 w-4" />
-            </Button>
-            {!isMobile && (
-              <Button size="sm" variant="outline" className="bg-white shadow-md">
-                <Filter className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
 
-          {/* Bottom Action Bar */}
-          <div className={`absolute bottom-4 ${isMobile ? 'left-4 right-4' : 'left-4 right-20'}`}>
+          {/* Bottom Action Bar - positioned to not overlap with map controls */}
+          <div className={`absolute bottom-4 ${isMobile ? 'left-4 right-4' : 'left-4 right-32'}`}>
             <div className="bg-white rounded-lg shadow-lg border border-sbtp-green-200 p-4">
               <div className={`flex items-center ${isMobile ? 'justify-center gap-2' : 'justify-between'}`}>
                 <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
