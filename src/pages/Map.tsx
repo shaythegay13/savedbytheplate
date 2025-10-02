@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
-import MapFilters from "@/components/map/MapFilters";
+
 import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
 import { fetchEnhancedMapData, categorizeLocations } from "@/services/enhancedMapDataService";
 import { useState, useEffect } from "react";
@@ -139,9 +139,6 @@ const Map = () => {
                         </CardContent>
                       </Card>
 
-                      {/* Filters */}
-                      <MapFilters />
-                      
                       {/* Legend */}
                       <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
                     </div>
@@ -258,9 +255,6 @@ const Map = () => {
                 </CardContent>
               </Card>
 
-              {/* Filters */}
-              <MapFilters />
-              
               {/* Legend */}
               <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
             </div>
