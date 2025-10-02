@@ -25,7 +25,7 @@ const Footer = () => {
               <span className="text-lg font-bold">Saved by the Plate</span>
             </Link>
             <p className="text-sm text-gray-300 mt-2">
-              Empowering individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education.
+              Inspiring the next generation to grow, learn, and lead by connecting youth and communities to local gardens, sustainable food education, and hands-on experiences in urban agriculture.
             </p>
           </div>
 
