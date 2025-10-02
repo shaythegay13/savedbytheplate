@@ -31,12 +31,14 @@ interface PlantPlacement {
 interface SatelliteGardenPlannerProps {
   plantRecommendations: PlantRecommendation[];
   userAddress?: string;
+  initialLocation?: { address?: string; lat?: number; lng?: number };
   onLayoutComplete: (placements: PlantPlacement[]) => void;
 }
 
 const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
   plantRecommendations,
   userAddress = "",
+  initialLocation,
   onLayoutComplete
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -53,12 +55,18 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
     console.log('Initializing map with token:', MAPBOX_TOKEN);
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
+    // Determine initial center from location
+    let initialCenter: [number, number] = [-74.006, 40.7128];
+    if (initialLocation?.lng && initialLocation?.lat) {
+      initialCenter = [initialLocation.lng, initialLocation.lat];
+    }
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/satellite-v9',
-      center: [-74.006, 40.7128], // Default to NYC
-      zoom: 18,
-      pitch: 0
+      center: initialCenter,
+      zoom: 19,
+      pitch: 45
     });
 
     // Wait for map to load before setting up interactions
@@ -133,8 +141,19 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
       });
     });
 
-    // Geocode address if provided
-    if (address) {
+    // Auto-geocode if we have initial location with address
+    if (initialLocation?.address && !initialLocation?.lat) {
+      geocodeAddress(initialLocation.address);
+    } else if (initialLocation?.lat && initialLocation?.lng) {
+      // If we have coordinates, add a marker
+      map.current.on('load', () => {
+        const propertyMarker = new mapboxgl.Marker({ color: '#ef4444' })
+          .setLngLat([initialLocation.lng!, initialLocation.lat!])
+          .setPopup(new mapboxgl.Popup().setHTML(`<div class="p-2"><strong>Your Property</strong></div>`))
+          .addTo(map.current!);
+      });
+    } else if (address) {
+      // Fallback to address state
       geocodeAddress(address);
     }
 
@@ -231,7 +250,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
           Satellite Garden Planner
         </CardTitle>
         <p className="text-sbtp-brown-600">
-          View your actual property from above and place plants exactly where you want them in your garden.
+          Verify your location and place plants exactly where you want them in your garden.
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -344,16 +363,12 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
         )}
 
         {/* Navigation */}
-        <div className="flex justify-between items-center pt-4">
-          <div className="text-sm text-sbtp-brown-600">
-            Tip: Use the map controls to zoom and rotate for the best view of your property
-          </div>
+        <div className="flex justify-end items-center pt-4 gap-3">
           <Button 
             onClick={handleComplete}
-            disabled={plantPlacements.length === 0}
             className="bg-sbtp-green-500 hover:bg-sbtp-green-600"
           >
-            Save Satellite Layout ({plantPlacements.length} plants)
+            Confirm Location & Continue
           </Button>
         </div>
       </CardContent>

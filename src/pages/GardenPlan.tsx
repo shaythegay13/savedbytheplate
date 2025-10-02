@@ -39,27 +39,29 @@ const GardenPlan = () => {
     setCurrentStep(1);
   };
 
+  const handleLayoutComplete = (layout: any) => {
+    setFormData(prev => ({ ...prev, gardenLayout: layout }));
+    setCurrentStep(2);
+  };
+
   const handleQuestionsComplete = (questions: any) => {
     setFormData(prev => ({ ...prev, questions }));
-    setCurrentStep(2);
+    setCurrentStep(3);
   };
 
   const handleGoalsComplete = (goals: any) => {
     setFormData(prev => ({ ...prev, goals }));
-    setCurrentStep(3);
-  };
-
-  const handleLayoutComplete = (layout: any) => {
-    setFormData(prev => ({ ...prev, gardenLayout: layout }));
-    // Stay on this step to allow photo upload below
+    setCurrentStep(4);
   };
 
   const handlePhotoLayoutComplete = async (layout: any, uploadedImage?: any) => {
     const updatedFormData = { ...formData, photoLayout: layout, uploadedImage };
     setFormData(updatedFormData);
-    
-    // Generate the garden plan automatically
     await generateGardenPlan(updatedFormData);
+  };
+
+  const handleSkipPhoto = async () => {
+    await generateGardenPlan(formData);
   };
 
   const generateGardenPlan = async (finalFormData: any) => {
@@ -157,22 +159,32 @@ const GardenPlan = () => {
                 <LocationInput onLocationSubmit={handleLocationSubmit} />
               )}
               {currentStep === 1 && (
-                <GardenQuestions onQuestionsComplete={handleQuestionsComplete} />
+                <SatelliteGardenPlanner 
+                  plantRecommendations={[]}
+                  userAddress={(formData.location as any)?.address || ''}
+                  initialLocation={formData.location}
+                  onLayoutComplete={handleLayoutComplete}
+                />
               )}
               {currentStep === 2 && (
+                <GardenQuestions onQuestionsComplete={handleQuestionsComplete} />
+              )}
+              {currentStep === 3 && (
                 <GardenGoals onGoalsComplete={handleGoalsComplete} />
               )}
-              {currentStep === 3 && !isLoading && !gardenPlan && (
-                <div className="space-y-8">
-                  <SatelliteGardenPlanner 
-                    plantRecommendations={[]}
-                    userAddress={(formData.location as any)?.address || ''}
-                    onLayoutComplete={handleLayoutComplete}
-                  />
+              {currentStep === 4 && !isLoading && !gardenPlan && (
+                <div className="space-y-6">
                   <AIGardenPhotoPlanner 
                     plantRecommendations={[]}
                     onLayoutComplete={handlePhotoLayoutComplete}
                   />
+                  <Button
+                    onClick={handleSkipPhoto}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Skip Photo Upload & Generate Plan
+                  </Button>
                 </div>
               )}
               {isLoading && (
