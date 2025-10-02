@@ -42,7 +42,28 @@ serve(async (req) => {
 
     const formData: GardenPlanRequest = await req.json();
 
+    const requestPayload = {
+      space_type: formData.spaceType,
+      space_size: formData.spaceSize,
+      sunlight: formData.sunlight,
+      soil_contaminated: formData.soil_contaminated === 'yes',
+      soil_type: formData.soil_type,
+      growing_options: formData.growing_options,
+      rainfall: formData.rainfall,
+      season: formData.season,
+      experience_level: formData.experience_level,
+      goals: formData.goals,
+      space_description: formData.space_description,
+      preferred_plants: formData.preferred_plants.split(',').map(p => p.trim()),
+      time_commitment: formData.time_commitment,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      city: formData.city
+    };
+
     console.log('Calling Python API for garden plan generation...');
+    console.log('API URL:', `${PYTHON_API_URL}/api/v1/garden-plan/generate`);
+    console.log('Request payload:', JSON.stringify(requestPayload, null, 2));
     
     // Call the Python FastAPI to generate the garden plan
     const pythonResponse = await fetch(`${PYTHON_API_URL}/api/v1/garden-plan/generate`, {
@@ -50,34 +71,24 @@ serve(async (req) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        space_type: formData.spaceType,
-        space_size: formData.spaceSize,
-        sunlight: formData.sunlight,
-        soil_contaminated: formData.soil_contaminated === 'yes',
-        soil_type: formData.soil_type,
-        growing_options: formData.growing_options,
-        rainfall: formData.rainfall,
-        season: formData.season,
-        experience_level: formData.experience_level,
-        goals: formData.goals,
-        space_description: formData.space_description,
-        preferred_plants: formData.preferred_plants.split(',').map(p => p.trim()),
-        time_commitment: formData.time_commitment,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        city: formData.city
-      }),
+      body: JSON.stringify(requestPayload),
     });
+
+    console.log('Python API response status:', pythonResponse.status);
 
     if (!pythonResponse.ok) {
       const errorText = await pythonResponse.text();
-      console.error('Python API error:', pythonResponse.status, errorText);
+      console.error('Python API error details:', {
+        status: pythonResponse.status,
+        statusText: pythonResponse.statusText,
+        errorBody: errorText
+      });
       throw new Error(`Python API failed: ${pythonResponse.status} - ${errorText}`);
     }
 
     const gardenPlan = await pythonResponse.json();
     console.log('Garden plan generated successfully from Python API');
+    console.log('Response data:', JSON.stringify(gardenPlan, null, 2));
 
     // Save the plan to database if user is authenticated
     if (formData.user_id) {
