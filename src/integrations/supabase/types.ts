@@ -679,6 +679,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_discussion_views: {
+        Args: { discussion_id: string }
+        Returns: undefined
+      }
       is_user_banned: {
         Args: { _user_id: string }
         Returns: boolean

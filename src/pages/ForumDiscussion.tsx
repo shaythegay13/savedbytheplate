@@ -93,12 +93,12 @@ export default function ForumDiscussion() {
       .from("discussions")
       .select(`
         *,
-        profiles(username, points, bio)
+        profiles!discussions_user_id_fkey(username, points, bio)
       `)
       .eq("id", id)
       .single();
 
-    if (data) setDiscussion(data);
+    if (data) setDiscussion(data as any);
   };
 
   const fetchReplies = async () => {
@@ -106,12 +106,12 @@ export default function ForumDiscussion() {
       .from("discussion_replies")
       .select(`
         *,
-        profiles(username, points)
+        profiles!discussion_replies_user_id_fkey(username, points)
       `)
       .eq("discussion_id", id)
       .order("created_at", { ascending: true });
 
-    if (data) setReplies(data);
+    if (data) setReplies(data as any);
   };
 
   const incrementViewCount = async () => {

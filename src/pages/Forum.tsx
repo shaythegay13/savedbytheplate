@@ -70,7 +70,7 @@ export default function Forum() {
       .from("discussions")
       .select(`
         *,
-        profiles(username, points)
+        profiles!discussions_user_id_fkey(username, points)
       `)
       .order("is_pinned", { ascending: false })
       .order("created_at", { ascending: false });
@@ -87,7 +87,7 @@ export default function Forum() {
     }
 
     const { data, error } = await query;
-    if (data) setDiscussions(data);
+    if (data) setDiscussions(data as any);
   };
 
   useEffect(() => {
