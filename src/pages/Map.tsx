@@ -265,8 +265,8 @@ const Map = () => {
         <div className="flex-1 relative">
           <MapComponent />
 
-          {/* Bottom Action Bar - positioned to not overlap with map controls */}
-          <div className={`absolute bottom-4 ${isMobile ? 'left-4 right-4' : 'left-4 right-32'}`}>
+          {/* Bottom Action Bar - positioned above Mapbox attribution */}
+          <div className={`absolute bottom-12 ${isMobile ? 'left-4 right-4' : 'left-4 right-32'}`}>
             <div className="bg-white rounded-lg shadow-lg border border-sbtp-green-200 p-4">
               <div className={`flex items-center ${isMobile ? 'justify-center gap-2' : 'justify-between'}`}>
                 <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
