@@ -58,7 +58,9 @@ const MapComponent = () => {
       container: mapContainer.current,
       style: defaultMapConfig.style,
       center: defaultMapConfig.center,
-      zoom: defaultMapConfig.zoom
+      zoom: defaultMapConfig.zoom,
+      attributionControl: true,
+      customAttribution: '<a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a> <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
     });
 
     // Add controls to the map - positioned bottom-right to avoid overlap

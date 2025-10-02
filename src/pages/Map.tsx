@@ -268,24 +268,19 @@ const Map = () => {
         <div className="flex-1 relative">
           <MapComponent />
 
-          {/* Add Location Button - Top Left */}
-          <div className="absolute top-4 left-4">
+          {/* Action Buttons - Top Left */}
+          <div className="absolute top-4 left-4 flex gap-3">
             <Button className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg">
               <MapPin className="h-4 w-4 mr-2" />
               Add Location
             </Button>
-          </div>
-
-          {/* Improve Map Button - Bottom Left */}
-          <div className="absolute bottom-12 left-4">
             <Button 
-              variant="outline" 
-              size="sm"
+              variant="outline"
               onClick={() => setImprovementFormOpen(true)}
               className="bg-white border-sbtp-green-300 text-sbtp-green-700 shadow-lg hover:bg-sbtp-green-50"
             >
               <MessageSquarePlus className="h-4 w-4 mr-2" />
-              Improve this map
+              Suggestion Box
             </Button>
           </div>
         </div>
