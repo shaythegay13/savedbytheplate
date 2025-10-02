@@ -16,6 +16,7 @@ const Map = () => {
   const [locationCounts, setLocationCounts] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const isMobile = useIsMobile();
 
   // Fetch data to get location counts for the legend
@@ -34,6 +35,7 @@ const Map = () => {
           businesses: categorized.businesses.length,
           csas: 0 // Will be populated when you add the data
         });
+        setLastUpdated(new Date());
       } catch (error) {
         console.error('Error loading location counts:', error);
       } finally {
@@ -267,23 +269,21 @@ const Map = () => {
 
           {/* Bottom Action Bar - positioned above Mapbox attribution */}
           <div className={`absolute bottom-12 ${isMobile ? 'left-4 right-4' : 'left-4 right-32'}`}>
-            <div className="bg-white rounded-lg shadow-lg border border-sbtp-green-200 p-4">
-              <div className={`flex items-center ${isMobile ? 'justify-center gap-2' : 'justify-between'}`}>
-                <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
-                  <Button className={`bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white ${isMobile ? 'text-sm px-3' : ''}`}>
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {isMobile ? 'Add' : 'Add Location'}
-                  </Button>
-                  <Button variant="outline" className={`border-sbtp-green-300 text-sbtp-green-700 ${isMobile ? 'text-sm px-3' : ''}`}>
-                    {isMobile ? 'Report' : 'Report Issue'}
-                  </Button>
-                </div>
-                {!isMobile && (
-                  <div className="text-sm text-sbtp-brown-500">
-                    Last updated: Today
-                  </div>
-                )}
+            <div className={`flex items-center ${isMobile ? 'justify-center gap-2' : 'justify-between'}`}>
+              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
+                <Button className={`bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg ${isMobile ? 'text-sm px-3' : ''}`}>
+                  <MapPin className="h-4 w-4 mr-2" />
+                  {isMobile ? 'Add' : 'Add Location'}
+                </Button>
+                <Button variant="outline" className={`border-sbtp-green-300 text-sbtp-green-700 bg-white shadow-lg ${isMobile ? 'text-sm px-3' : ''}`}>
+                  {isMobile ? 'Report' : 'Report Issue'}
+                </Button>
               </div>
+              {!isMobile && lastUpdated && (
+                <div className="text-sm text-sbtp-brown-700 bg-white px-3 py-2 rounded-md shadow-lg">
+                  Last updated: {lastUpdated.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at {lastUpdated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                </div>
+              )}
             </div>
           </div>
         </div>
