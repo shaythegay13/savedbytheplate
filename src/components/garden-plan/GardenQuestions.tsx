@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Sprout, Sun, Home, User, ShieldCheck, Droplets, Clock } from "lucide-react";
 
 interface GardenQuestionsProps {
@@ -13,9 +14,8 @@ interface GardenQuestionsProps {
     experience_level: string;
     soil_contaminated: string;
     soil_type: string;
-    growing_options: string;
     rainfall: string;
-    season: string;
+    season: string[];
     time_commitment: string;
   }) => void;
 }
@@ -29,9 +29,8 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
     experience_level: '',
     soil_contaminated: '',
     soil_type: '',
-    growing_options: '',
     rainfall: '',
-    season: '',
+    season: [] as string[],
     time_commitment: ''
   });
 
@@ -40,14 +39,15 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
       id: 'spaceType',
       icon: <Sprout className="h-8 w-8 text-sbtp-green-600" />,
       title: 'What type of garden are you planting?',
-      description: 'Tell us about the style of garden you want to create',
+      description: 'Tell us about the style and growing method you want to use',
       options: [
         { value: 'container', label: 'Container Garden (pots, planters)' },
         { value: 'raised-bed', label: 'Raised Bed Garden' },
-        { value: 'in-ground', label: 'In-Ground Garden' },
+        { value: 'in-ground', label: 'Traditional In-Ground Garden' },
         { value: 'vertical', label: 'Vertical Garden (wall-mounted)' },
         { value: 'indoor', label: 'Indoor Garden (windowsill, grow lights)' },
-        { value: 'rooftop', label: 'Rooftop Garden' }
+        { value: 'rooftop', label: 'Rooftop Garden' },
+        { value: 'hydroponic', label: 'Hydroponic' }
       ]
     },
     {
@@ -100,19 +100,6 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
       ]
     },
     {
-      id: 'growing_options',
-      icon: <Home className="h-8 w-8 text-sbtp-green-600" />,
-      title: 'What growing method will you use?',
-      description: 'Different methods suit different spaces',
-      options: [
-        { value: 'traditional', label: 'Traditional In-Ground' },
-        { value: 'raised-beds', label: 'Raised Beds' },
-        { value: 'containers', label: 'Containers/Pots' },
-        { value: 'vertical', label: 'Vertical Growing' },
-        { value: 'hydroponic', label: 'Hydroponic' }
-      ]
-    },
-    {
       id: 'rainfall',
       icon: <Droplets className="h-8 w-8 text-sbtp-green-600" />,
       title: 'How much rainfall does your area get?',
@@ -127,14 +114,15 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
     {
       id: 'season',
       icon: <Sun className="h-8 w-8 text-sbtp-green-600" />,
-      title: 'When are you planning to start?',
-      description: 'Season affects what you can plant',
+      title: 'Which seasons do you want to grow in?',
+      description: 'Select all seasons you plan to garden (you can choose multiple)',
       options: [
         { value: 'spring', label: 'Spring (March-May)' },
         { value: 'summer', label: 'Summer (June-August)' },
         { value: 'fall', label: 'Fall (September-November)' },
         { value: 'winter', label: 'Winter (December-February)' }
-      ]
+      ],
+      multiSelect: true
     },
     {
       id: 'time_commitment',
@@ -171,6 +159,19 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
     }));
   };
 
+  const handleMultiSelectChange = (value: string) => {
+    setAnswers(prev => {
+      const currentValues = prev.season as string[];
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(v => v !== value)
+        : [...currentValues, value];
+      return {
+        ...prev,
+        season: newValues
+      };
+    });
+  };
+
   const handleNext = () => {
     if (isLastStep) {
       onQuestionsComplete(answers);
@@ -184,6 +185,8 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
   };
 
   const currentAnswer = answers[currentQuestion.id as keyof typeof answers];
+  const isMultiSelect = currentQuestion.multiSelect;
+  const hasAnswer = isMultiSelect ? (answers.season as string[]).length > 0 : !!currentAnswer;
 
   return (
     <Card className="border-sbtp-green-200">
@@ -202,11 +205,15 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <RadioGroup value={currentAnswer} onValueChange={handleAnswerChange}>
+        {isMultiSelect ? (
           <div className="space-y-3">
             {currentQuestion.options.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
-                <RadioGroupItem value={option.value} id={option.value} />
+                <Checkbox 
+                  id={option.value}
+                  checked={(answers.season as string[]).includes(option.value)}
+                  onCheckedChange={() => handleMultiSelectChange(option.value)}
+                />
                 <Label 
                   htmlFor={option.value} 
                   className="cursor-pointer flex-1 p-3 rounded-lg border border-gray-200 hover:bg-sbtp-green-50 transition-colors"
@@ -216,7 +223,23 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
               </div>
             ))}
           </div>
-        </RadioGroup>
+        ) : (
+          <RadioGroup value={currentAnswer as string} onValueChange={handleAnswerChange}>
+            <div className="space-y-3">
+              {currentQuestion.options.map((option) => (
+                <div key={option.value} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option.value} id={option.value} />
+                  <Label 
+                    htmlFor={option.value} 
+                    className="cursor-pointer flex-1 p-3 rounded-lg border border-gray-200 hover:bg-sbtp-green-50 transition-colors"
+                  >
+                    {option.label}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </RadioGroup>
+        )}
 
         <div className="flex gap-3">
           {currentStep > 0 && (
@@ -230,7 +253,7 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
           )}
           <Button
             onClick={handleNext}
-            disabled={!currentAnswer}
+            disabled={!hasAnswer}
             className="flex-1 bg-sbtp-green-500 hover:bg-sbtp-green-600"
           >
             {isLastStep ? 'Continue' : 'Next'}
