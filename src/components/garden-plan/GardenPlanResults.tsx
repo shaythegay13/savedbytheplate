@@ -109,6 +109,7 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
         <SeasonalRecommendations 
           formData={formData}
           onPlantSelect={(plants) => console.log('Seasonal plants selected:', plants)}
+          plantRecommendations={currentPlantRecommendations}
         />
 
         {formData && (

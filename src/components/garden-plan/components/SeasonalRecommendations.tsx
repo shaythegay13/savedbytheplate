@@ -17,14 +17,27 @@ interface SeasonalPlant {
   emoji: string;
 }
 
+interface PlantRecommendation {
+  name: string;
+  variety: string;
+  plantingTime: string;
+  harvestTime: string;
+  spacing: string;
+  careInstructions: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  yield: string;
+}
+
 interface SeasonalRecommendationsProps {
   formData?: GardenPlanFormData;
   onPlantSelect?: (plants: SeasonalPlant[]) => void;
+  plantRecommendations?: PlantRecommendation[];
 }
 
 const SeasonalRecommendations: React.FC<SeasonalRecommendationsProps> = ({
   formData,
-  onPlantSelect
+  onPlantSelect,
+  plantRecommendations = []
 }) => {
   const [currentSeason, setCurrentSeason] = useState<string>('spring');
   const [selectedPlants, setSelectedPlants] = useState<SeasonalPlant[]>([]);
@@ -224,6 +237,18 @@ const SeasonalRecommendations: React.FC<SeasonalRecommendationsProps> = ({
     setCurrentSeason(getCurrentSeason());
   }, []);
 
+  // Filter seasonal plants to only show those that the AI recommended
+  const getFilteredSeasonalPlants = (seasonPlants: SeasonalPlant[]) => {
+    if (!plantRecommendations || plantRecommendations.length === 0) {
+      return seasonPlants;
+    }
+    
+    const recommendedPlantNames = plantRecommendations.map(p => p.name.toLowerCase());
+    return seasonPlants.filter(plant => 
+      recommendedPlantNames.includes(plant.name.toLowerCase())
+    );
+  };
+
   const togglePlantSelection = (plant: SeasonalPlant) => {
     const newSelection = selectedPlants.includes(plant)
       ? selectedPlants.filter(p => p !== plant)
@@ -314,27 +339,37 @@ const SeasonalRecommendations: React.FC<SeasonalRecommendationsProps> = ({
             <TabsTrigger value="winter">❄️ Winter</TabsTrigger>
           </TabsList>
           
-          {Object.entries(seasonalPlants).map(([season, plants]) => (
-            <TabsContent key={season} value={season} className="mt-6">
-              <div className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-800 mb-1">
-                    {season.charAt(0).toUpperCase() + season.slice(1)} Planting Tips
-                  </h4>
-                  <p className="text-sm text-blue-700">
-                    {season === 'spring' && 'Start cool-season crops early. Watch for last frost dates.'}
-                    {season === 'summer' && 'Plant heat-loving crops after soil warms. Provide adequate water.'}
-                    {season === 'fall' && 'Perfect time for cool-season crops. Many taste better after light frost.'}
-                    {season === 'winter' && 'Focus on cold-hardy varieties and season extension techniques.'}
-                  </p>
+          {Object.entries(seasonalPlants).map(([season, plants]) => {
+            const filteredPlants = getFilteredSeasonalPlants(plants);
+            
+            return (
+              <TabsContent key={season} value={season} className="mt-6">
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-800 mb-1">
+                      {season.charAt(0).toUpperCase() + season.slice(1)} Planting Tips
+                    </h4>
+                    <p className="text-sm text-blue-700">
+                      {season === 'spring' && 'Start cool-season crops early. Watch for last frost dates.'}
+                      {season === 'summer' && 'Plant heat-loving crops after soil warms. Provide adequate water.'}
+                      {season === 'fall' && 'Perfect time for cool-season crops. Many taste better after light frost.'}
+                      {season === 'winter' && 'Focus on cold-hardy varieties and season extension techniques.'}
+                    </p>
+                  </div>
+                  
+                  {filteredPlants.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredPlants.map(renderPlantCard)}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-slate-500">
+                      <p>No recommended plants for this season</p>
+                    </div>
+                  )}
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {plants.map(renderPlantCard)}
-                </div>
-              </div>
-            </TabsContent>
-          ))}
+              </TabsContent>
+            );
+          })}
         </Tabs>
         
         {selectedPlants.length > 0 && (
