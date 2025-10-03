@@ -95,16 +95,9 @@ const Community = () => {
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Join Our Growing Community</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Connect with fellow urban gardeners, share experiences, and learn from experts across NYC's five boroughs.
+              Connect with fellow urban gardeners, share experiences, and learn from experts.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
-              <div className="bg-white/10 p-4 sm:p-6 rounded-lg inline-flex items-center mx-4">
-                <MessageCircle className="mr-3 h-8 w-8" />
-                <div className="text-left">
-                  <h3 className="font-semibold">Discussion Forums</h3>
-                  <p className="text-sm opacity-80">14,000+ members and growing</p>
-                </div>
-              </div>
+            <div className="flex justify-center">
               <Button 
                 onClick={handleCreateDiscussion}
                 size="lg"
