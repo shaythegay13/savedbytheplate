@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import NotificationPreferences from './NotificationPreferences';
 import IntelligentGardenPlotVisualizer from './components/IntelligentGardenPlotVisualizer';
-import PlanCustomizer from './components/PlanCustomizer';
 import MultiYearPlanning from './components/MultiYearPlanning';
 import WeatherBasedNotifications from './components/WeatherBasedNotifications';
 import PDFExport from './components/PDFExport';
@@ -72,9 +71,8 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
     // In real app, save to database
   };
 
-  const handlePlanUpdate = (updatedPlan: { plantRecommendations: PlantRecommendation[], gardenLayout: GardenLayout[] }) => {
-    setCurrentPlantRecommendations(updatedPlan.plantRecommendations);
-    setCurrentGardenLayout(updatedPlan.gardenLayout);
+  const handlePlantUpdate = (updatedPlants: PlantRecommendation[]) => {
+    setCurrentPlantRecommendations(updatedPlants);
   };
 
   return (
@@ -94,15 +92,10 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           </div>
         )}
 
-        <PlanCustomizer 
-          plantRecommendations={currentPlantRecommendations}
-          gardenLayout={currentGardenLayout}
-          onPlanUpdate={handlePlanUpdate}
-        />
-
         <PlantRecommendations 
           plantRecommendations={currentPlantRecommendations}
           onShareExperience={setSelectedPlantFeedback}
+          onPlanUpdate={handlePlantUpdate}
         />
 
         <AIVisualGardenPlan 
