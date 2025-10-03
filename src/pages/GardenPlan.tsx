@@ -195,7 +195,12 @@ const GardenPlan = () => {
                     <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">Your AI-Enhanced Personalized Garden Plan</h2>
                     <p className="text-sbtp-brown-600">Here's your data-driven garden plan that gets smarter with every gardener who shares their experience</p>
                   </div>
-                  <GardenPlanResults {...gardenPlan} planId={gardenPlan.planId} formData={null} />
+                  <GardenPlanResults 
+                    {...gardenPlan} 
+                    planId={gardenPlan.planId} 
+                    formData={formData}
+                    companionPlantingData={(gardenPlan as any).companion_planting}
+                  />
                 </div>
               )}
             </div>

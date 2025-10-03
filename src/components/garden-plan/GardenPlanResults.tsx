@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import NotificationPreferences from './NotificationPreferences';
 import IntelligentGardenPlotVisualizer from './components/IntelligentGardenPlotVisualizer';
+import AIGeneratedGardenLayout from './components/AIGeneratedGardenLayout';
 import MultiYearPlanning from './components/MultiYearPlanning';
 import WeatherBasedNotifications from './components/WeatherBasedNotifications';
 import PDFExport from './components/PDFExport';
@@ -11,8 +12,6 @@ import PlantingCalendarComponent from './components/PlantingCalendar';
 import CareInstructions from './components/CareInstructions';
 import ExpertTips from './components/ExpertTips';
 import FeedbackModal from './components/FeedbackModal';
-import AIVisualGardenPlan from './components/AIVisualGardenPlan';
-import DragDropGardenLayout from './components/DragDropGardenLayout';
 import PlantDiseaseIdentifier from './components/PlantDiseaseIdentifier';
 import SeasonalRecommendations from './components/SeasonalRecommendations';
 import EducationSuggestions from './components/EducationSuggestions';
@@ -49,6 +48,7 @@ interface GardenPlanResultsProps {
   expertTips: string[];
   planId?: string;
   formData?: GardenPlanFormData;
+  companionPlantingData?: any;
 }
 
 const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
@@ -58,7 +58,8 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
   careInstructions,
   expertTips,
   planId,
-  formData
+  formData,
+  companionPlantingData
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedPlantFeedback, setSelectedPlantFeedback] = useState<string | null>(null);
@@ -98,17 +99,11 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           onPlanUpdate={handlePlantUpdate}
         />
 
-        <AIVisualGardenPlan 
-          gardenLayout={currentGardenLayout}
+        <AIGeneratedGardenLayout 
           plantRecommendations={currentPlantRecommendations}
           formData={formData}
           uploadedImage={formData?.gardenImage}
-        />
-
-        <DragDropGardenLayout 
-          plantRecommendations={currentPlantRecommendations}
-          gardenSize={{ width: 6, height: 4 }}
-          onLayoutUpdate={(layout) => console.log('Garden layout updated:', layout)}
+          companionPlantingData={companionPlantingData}
         />
 
         <SeasonalRecommendations 

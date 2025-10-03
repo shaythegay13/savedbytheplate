@@ -58,7 +58,9 @@ serve(async (req) => {
       time_commitment: formData.time_commitment,
       latitude: formData.latitude,
       longitude: formData.longitude,
-      city: formData.city
+      city: formData.city,
+      include_companion_planting: true,
+      generate_layout_positions: true
     };
 
     console.log('Calling Python API for garden plan generation...');
