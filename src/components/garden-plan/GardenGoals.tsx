@@ -62,12 +62,6 @@ const GardenGoals: React.FC<GardenGoalsProps> = ({ onGoalsComplete }) => {
       label: 'Fast Growing', 
       icon: <Target className="h-4 w-4" />,
       description: 'Quick results and fast harvests'
-    },
-    { 
-      value: 'year-round', 
-      label: 'Year-Round Growing', 
-      icon: <Leaf className="h-4 w-4" />,
-      description: 'Plants for continuous harvests'
     }
   ];
 
