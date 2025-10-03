@@ -8,7 +8,7 @@ import { Sprout, Sun, Home, User, ShieldCheck, Droplets, Clock } from "lucide-re
 
 interface GardenQuestionsProps {
   onQuestionsComplete: (answers: {
-    spaceType: string;
+    spaceType: string[];
     spaceSize: string;
     sunlight: string;
     experience_level: string;
@@ -23,7 +23,7 @@ interface GardenQuestionsProps {
 const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({
-    spaceType: '',
+    spaceType: [] as string[],
     spaceSize: '',
     sunlight: '',
     experience_level: '',
@@ -39,7 +39,7 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
       id: 'spaceType',
       icon: <Sprout className="h-8 w-8 text-sbtp-green-600" />,
       title: 'What type of garden are you planting?',
-      description: 'Tell us about the style and growing method you want to use',
+      description: 'Select all growing methods you plan to use (you can choose multiple)',
       options: [
         { value: 'container', label: 'Container Garden (pots, planters)' },
         { value: 'raised-bed', label: 'Raised Bed Garden' },
@@ -48,7 +48,8 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
         { value: 'indoor', label: 'Indoor Garden (windowsill, grow lights)' },
         { value: 'rooftop', label: 'Rooftop Garden' },
         { value: 'hydroponic', label: 'Hydroponic' }
-      ]
+      ],
+      multiSelect: true
     },
     {
       id: 'spaceSize',
@@ -159,15 +160,15 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
     }));
   };
 
-  const handleMultiSelectChange = (value: string) => {
+  const handleMultiSelectChange = (value: string, fieldId: string) => {
     setAnswers(prev => {
-      const currentValues = prev.season as string[];
+      const currentValues = prev[fieldId as keyof typeof prev] as string[];
       const newValues = currentValues.includes(value)
         ? currentValues.filter(v => v !== value)
         : [...currentValues, value];
       return {
         ...prev,
-        season: newValues
+        [fieldId]: newValues
       };
     });
   };
@@ -186,7 +187,8 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
 
   const currentAnswer = answers[currentQuestion.id as keyof typeof answers];
   const isMultiSelect = currentQuestion.multiSelect;
-  const hasAnswer = isMultiSelect ? (answers.season as string[]).length > 0 : !!currentAnswer;
+  const multiSelectValues = isMultiSelect ? (answers[currentQuestion.id as keyof typeof answers] as string[]) : [];
+  const hasAnswer = isMultiSelect ? multiSelectValues.length > 0 : !!currentAnswer;
 
   return (
     <Card className="border-sbtp-green-200">
@@ -211,8 +213,8 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
               <div key={option.value} className="flex items-center space-x-2">
                 <Checkbox 
                   id={option.value}
-                  checked={(answers.season as string[]).includes(option.value)}
-                  onCheckedChange={() => handleMultiSelectChange(option.value)}
+                  checked={multiSelectValues.includes(option.value)}
+                  onCheckedChange={() => handleMultiSelectChange(option.value, currentQuestion.id)}
                 />
                 <Label 
                   htmlFor={option.value} 
