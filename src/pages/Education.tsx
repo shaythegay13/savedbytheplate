@@ -165,12 +165,6 @@ const Education = () => {
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
               Connect your students with local food justice work through community garden tours
             </p>
-            <Button variant="secondary" size="lg" asChild>
-              <a href="mailto:shay@savedbytheplate.org">
-                <Mail className="mr-2 h-5 w-5" />
-                Contact Shay
-              </a>
-            </Button>
           </div>
         </div>
       </section>
@@ -198,7 +192,7 @@ const Education = () => {
                   </p>
                   <div className="flex justify-center">
                     <Button size="lg" asChild>
-                      <a href="mailto:shay@savedbytheplate.org" className="inline-flex items-center">
+                      <a href="mailto:info@savedbytheplate.com" className="inline-flex items-center">
                         <Mail className="mr-2 h-5 w-5" />
                         Email Shay Directly
                       </a>
@@ -298,7 +292,7 @@ const Education = () => {
                       Contact Shay to discuss bringing this program to your school
                     </p>
                     <Button asChild>
-                      <a href="mailto:shay@savedbytheplate.org">
+                      <a href="mailto:info@savedbytheplate.com">
                         <Mail className="mr-2 h-4 w-4" />
                         Schedule a Consultation
                       </a>
