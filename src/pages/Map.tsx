@@ -177,7 +177,7 @@ const Map = () => {
       </div>
 
       {/* Enhanced Map Layout */}
-      <div className={`flex ${isMobile ? 'flex-col' : ''} h-[calc(100vh-200px)]`}>
+      <div className="flex h-[calc(100vh-200px)]">
         {/* Desktop Sidebar */}
         {!isMobile && (
           <div className="w-80 bg-white border-r border-sbtp-green-200 overflow-y-auto">
