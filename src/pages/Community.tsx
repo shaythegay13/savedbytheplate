@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { getCurrentSpotlight } from "@/data/communitySpotlights";
 
 interface Category {
   id: string;
@@ -29,19 +30,8 @@ const communityGuidelines = [
 ];
 
 
-// Community Showcase (weekly rotation)
-const currentShowcase = {
-  title: "Brooklyn Grange Rooftop Farm",
-  location: "Brooklyn Navy Yard",
-  description: "This week we're featuring Brooklyn Grange, one of NYC's largest rooftop soil farms. Spanning over 2.5 acres across multiple locations, they demonstrate how urban agriculture can thrive in unexpected places.",
-  image: brooklynNavyYard,
-  highlights: [
-    "Over 80,000 lbs of produce grown annually",
-    "Hosts educational programs for 10,000+ visitors yearly", 
-    "Creates habitat for local wildlife and pollinators",
-    "Demonstrates sustainable urban farming practices"
-  ]
-};
+// Community Showcase - rotates weekly automatically
+const currentShowcase = getCurrentSpotlight();
 
 const Community = () => {
   const navigate = useNavigate();
@@ -231,7 +221,7 @@ const Community = () => {
                 </div>
                 <div className="h-64 lg:h-auto">
                   <img 
-                    src={currentShowcase.image} 
+                    src={currentShowcase.image || brooklynNavyYard} 
                     alt={currentShowcase.title}
                     className="w-full h-full object-cover"
                   />
