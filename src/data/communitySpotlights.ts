@@ -198,8 +198,8 @@ export const getAllSpotlightLocations = async (): Promise<CommunitySpotlight[]> 
 };
 
 /**
- * Get the current community spotlight based on a weekly rotation
- * Cycles through ALL locations on the map every 7 days
+ * Get the current community spotlight based on a daily rotation
+ * Cycles through ALL locations on the map every day
  */
 export const getCurrentSpotlight = async (): Promise<CommunitySpotlight> => {
   const allSpotlights = await getAllSpotlightLocations();
@@ -213,12 +213,11 @@ export const getCurrentSpotlight = async (): Promise<CommunitySpotlight> => {
   const epoch = new Date('2025-01-01').getTime();
   const now = Date.now();
   const daysSinceEpoch = Math.floor((now - epoch) / (1000 * 60 * 60 * 24));
-  const weeksSinceEpoch = Math.floor(daysSinceEpoch / 7);
   
-  // Rotate through ALL spotlights every 7 days
-  const currentIndex = weeksSinceEpoch % allSpotlights.length;
+  // Rotate through ALL spotlights every day
+  const currentIndex = daysSinceEpoch % allSpotlights.length;
   
-  console.log(`🎯 Current spotlight (week ${weeksSinceEpoch}): ${allSpotlights[currentIndex].title} (${currentIndex + 1}/${allSpotlights.length})`);
+  console.log(`🎯 Current spotlight (day ${daysSinceEpoch}): ${allSpotlights[currentIndex].title} (${currentIndex + 1}/${allSpotlights.length})`);
   
   return allSpotlights[currentIndex];
 };

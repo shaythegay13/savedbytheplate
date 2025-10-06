@@ -223,7 +223,7 @@ const Community = () => {
                     </div>
                     
                     <p className="text-xs text-sbtp-brown-500 italic">
-                      Featured community showcase rotates weekly through all locations
+                      Featured community showcase rotates daily through all locations
                     </p>
                   </div>
                   <div className="h-64 lg:h-auto">
