@@ -30,9 +30,6 @@ const communityGuidelines = [
 ];
 
 
-// Community Showcase - rotates weekly automatically
-const currentShowcase = getCurrentSpotlight();
-
 const Community = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -40,16 +37,25 @@ const Community = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [currentShowcase, setCurrentShowcase] = useState<any>(null);
 
   useEffect(() => {
     checkUser();
     fetchCategories();
+    loadCurrentSpotlight();
   }, []);
+
+  const loadCurrentSpotlight = async () => {
+    const { getCurrentSpotlight } = await import("@/data/communitySpotlights");
+    const spotlight = await getCurrentSpotlight();
+    setCurrentShowcase(spotlight);
+  };
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
   };
+
 
   const fetchCategories = async () => {
     const { data } = await supabase
@@ -192,42 +198,44 @@ const Community = () => {
 
 
             {/* Community Showcase */}
-            <div className="bg-gradient-to-r from-sbtp-green-100 to-sbtp-beige rounded-lg overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="p-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Star className="h-5 w-5 text-sbtp-yellow" />
-                    <span className="text-sm font-medium text-sbtp-brown-600">Community Showcase</span>
+            {currentShowcase && (
+              <div className="bg-gradient-to-r from-sbtp-green-100 to-sbtp-beige rounded-lg overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  <div className="p-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Star className="h-5 w-5 text-sbtp-yellow" />
+                      <span className="text-sm font-medium text-sbtp-brown-600">Community Showcase</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-sbtp-green-800 mb-2">{currentShowcase.title}</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                      <MapPin className="h-4 w-4 text-sbtp-brown-500" />
+                      <span className="text-sm text-sbtp-brown-600">{currentShowcase.location}</span>
+                    </div>
+                    <p className="text-sbtp-brown-700 mb-6">{currentShowcase.description}</p>
+                    
+                    <div className="space-y-2 mb-6">
+                      {currentShowcase.highlights.map((highlight: string, index: number) => (
+                        <div key={index} className="flex items-start gap-2">
+                          <div className="bg-sbtp-green-500 rounded-full w-2 h-2 mt-2"></div>
+                          <span className="text-sm text-sbtp-brown-600">{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <p className="text-xs text-sbtp-brown-500 italic">
+                      Featured community showcase rotates weekly through all locations
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-bold text-sbtp-green-800 mb-2">{currentShowcase.title}</h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <MapPin className="h-4 w-4 text-sbtp-brown-500" />
-                    <span className="text-sm text-sbtp-brown-600">{currentShowcase.location}</span>
+                  <div className="h-64 lg:h-auto">
+                    <img 
+                      src={currentShowcase.image || brooklynNavyYard} 
+                      alt={currentShowcase.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <p className="text-sbtp-brown-700 mb-6">{currentShowcase.description}</p>
-                  
-                  <div className="space-y-2 mb-6">
-                    {currentShowcase.highlights.map((highlight, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <div className="bg-sbtp-green-500 rounded-full w-2 h-2 mt-2"></div>
-                        <span className="text-sm text-sbtp-brown-600">{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <p className="text-xs text-sbtp-brown-500 italic">
-                    Featured community showcase rotates weekly
-                  </p>
-                </div>
-                <div className="h-64 lg:h-auto">
-                  <img 
-                    src={currentShowcase.image || brooklynNavyYard} 
-                    alt={currentShowcase.title}
-                    className="w-full h-full object-cover"
-                  />
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
