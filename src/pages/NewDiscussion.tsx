@@ -37,19 +37,17 @@ export default function NewDiscussion() {
   useEffect(() => {
     checkUser();
     fetchCategories();
-    
+  }, []);
+
+  useEffect(() => {
     // Pre-select category from URL parameter if present
     const params = new URLSearchParams(window.location.search);
     const categorySlug = params.get('category');
-    if (categorySlug) {
-      // Set category after categories are loaded
-      const timer = setTimeout(() => {
-        const foundCategory = categories.find(c => c.slug === categorySlug);
-        if (foundCategory) {
-          setCategoryId(foundCategory.id);
-        }
-      }, 100);
-      return () => clearTimeout(timer);
+    if (categorySlug && categories.length > 0) {
+      const foundCategory = categories.find(c => c.slug === categorySlug);
+      if (foundCategory) {
+        setCategoryId(foundCategory.id);
+      }
     }
   }, [categories]);
 
