@@ -117,16 +117,34 @@ export default function ForumDiscussion() {
   };
 
   const fetchReplies = async () => {
-    const { data, error } = await supabase
+    const { data: repliesData, error } = await supabase
       .from("discussion_replies")
-      .select(`
-        *,
-        profiles!discussion_replies_user_id_fkey(username, points)
-      `)
+      .select("*")
       .eq("discussion_id", id)
       .order("created_at", { ascending: true });
 
-    if (data) setReplies(data as any);
+    if (!repliesData) {
+      setReplies([]);
+      return;
+    }
+
+    // Fetch profiles separately for each reply
+    const repliesWithProfiles = await Promise.all(
+      repliesData.map(async (reply) => {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username, points")
+          .eq("id", reply.user_id)
+          .single();
+
+        return {
+          ...reply,
+          profiles: profile || { username: "User", points: 0 }
+        };
+      })
+    );
+
+    setReplies(repliesWithProfiles as any);
   };
 
   const incrementViewCount = async () => {
