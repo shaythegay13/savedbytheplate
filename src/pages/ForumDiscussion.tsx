@@ -65,6 +65,7 @@ export default function ForumDiscussion() {
   const [user, setUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     checkUser();
@@ -89,16 +90,30 @@ export default function ForumDiscussion() {
   };
 
   const fetchDiscussion = async () => {
-    const { data, error } = await supabase
+    if (!id) return;
+    setIsLoading(true);
+
+    const { data: base, error: baseError } = await supabase
       .from("discussions")
-      .select(`
-        *,
-        profiles!discussions_user_id_fkey(username, points, bio)
-      `)
+      .select("*")
       .eq("id", id)
       .single();
 
-    if (data) setDiscussion(data as any);
+    if (baseError || !base) {
+      setDiscussion(null);
+      setIsLoading(false);
+      return;
+    }
+
+    // Try to fetch profile separately; don't fail the page if relation is missing
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username, points, bio")
+      .eq("id", base.user_id)
+      .single();
+
+    setDiscussion({ ...(base as any), profiles: profile || { username: "User", points: 0, bio: "" } } as any);
+    setIsLoading(false);
   };
 
   const fetchReplies = async () => {
@@ -183,8 +198,30 @@ export default function ForumDiscussion() {
 
   const canModerate = userRole === "admin" || userRole === "moderator";
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 max-w-4xl">
+          <Card className="p-8">Loading discussion...</Card>
+        </main>
+      </div>
+    );
+  }
+
   if (!discussion) {
-    return <div className="min-h-screen bg-background"><Navbar /></div>;
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 max-w-4xl">
+          <Card className="p-8">
+            <h1 className="text-2xl font-bold mb-2">Discussion not found</h1>
+            <p className="text-muted-foreground mb-4">It may have been removed or the link is invalid.</p>
+            <Button variant="outline" onClick={() => navigate("/forum")}>Back to Forum</Button>
+          </Card>
+        </main>
+      </div>
+    );
   }
 
   return (
