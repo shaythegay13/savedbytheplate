@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Sprout, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import DonationButton from "@/components/DonationButton";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const Navbar = () => {
@@ -74,6 +75,8 @@ const Navbar = () => {
               </Link>
             ))}
             
+            <DonationButton />
+            
             {user ? (
               <div className="flex items-center gap-2">
                 <span className="text-sm flex items-center gap-1">
@@ -134,6 +137,10 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+            
+            <div className="px-3 py-2">
+              <DonationButton />
+            </div>
             
             {user ? (
               <div className="px-3 py-2 space-y-2">
