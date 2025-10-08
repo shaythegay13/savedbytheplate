@@ -1,11 +1,36 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sprout } from "lucide-react";
+import { Menu, X, Sprout, LogOut, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -47,6 +72,35 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+            
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  {user.email?.split('@')[0]}
+                </span>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  size="sm"
+                  className="bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                >
+                  <LogOut className="h-4 w-4 mr-1" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                >
+                  <User className="h-4 w-4 mr-1" />
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -79,6 +133,38 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+            
+            {user ? (
+              <div className="px-3 py-2 space-y-2">
+                <div className="text-sm flex items-center gap-1 text-white">
+                  <User className="h-4 w-4" />
+                  {user.email?.split('@')[0]}
+                </div>
+                <Button
+                  onClick={() => {
+                    handleLogout();
+                    toggleMenu();
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                >
+                  <LogOut className="h-4 w-4 mr-1" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth" onClick={toggleMenu}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-transparent border-white text-white hover:bg-sbtp-green-700 mx-3"
+                >
+                  <User className="h-4 w-4 mr-1" />
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       )}

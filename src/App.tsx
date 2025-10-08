@@ -19,6 +19,7 @@ import Forum from "./pages/Forum";
 import ForumCategory from "./pages/ForumCategory";
 import ForumDiscussion from "./pages/ForumDiscussion";
 import NewDiscussion from "./pages/NewDiscussion";
+import Auth from "./pages/Auth";
 import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,9 @@ const App = () => (
             <Routes>
               {/* Main landing page redirects to waiting list */}
               <Route path="/" element={<Navigate to="/waiting-list" replace />} />
+              
+              {/* Authentication page */}
+              <Route path="/auth" element={<Auth />} />
               
               {/* Waiting list page */}
               <Route path="/waiting-list" element={<WaitingList />} />
