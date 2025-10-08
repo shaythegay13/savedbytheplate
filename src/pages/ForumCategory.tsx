@@ -76,10 +76,7 @@ export default function ForumCategory() {
 
     let query = supabase
       .from("discussions")
-      .select(`
-        *,
-        profiles!discussions_user_id_fkey(username, points)
-      `)
+      .select("*")
       .eq("category_id", category.id)
       .order("is_pinned", { ascending: false })
       .order("created_at", { ascending: false });
@@ -204,11 +201,13 @@ export default function ForumCategory() {
                         {discussion.reply_count} replies
                       </span>
                       
-                      <span>
-                        by <span className="font-medium text-foreground">
-                          {discussion.profiles?.username}
+                      {discussion.profiles?.username && (
+                        <span>
+                          by <span className="font-medium text-foreground">
+                            {discussion.profiles.username}
+                          </span>
                         </span>
-                      </span>
+                      )}
                       
                       {discussion.tags && discussion.tags.length > 0 && (
                         <div className="flex gap-2">
