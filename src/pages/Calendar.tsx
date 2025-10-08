@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Plus, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, MapPin, Lock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/Navbar';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -33,11 +34,14 @@ interface Location {
 
 const Calendar = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+  const [hasSubscription, setHasSubscription] = useState(false);
 
   // Form state
   const [title, setTitle] = useState('');
@@ -48,9 +52,45 @@ const Calendar = () => {
 
   useEffect(() => {
     checkUser();
-    fetchEvents();
-    fetchLocations();
+    checkSubscription();
   }, []);
+
+  useEffect(() => {
+    if (hasSubscription) {
+      fetchEvents();
+      fetchLocations();
+    }
+  }, [hasSubscription]);
+
+  const checkSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setCheckingSubscription(false);
+        setHasSubscription(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Error checking subscription:', error);
+        setHasSubscription(false);
+      } else {
+        setHasSubscription(data?.subscribed || false);
+      }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      setHasSubscription(false);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  };
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -142,6 +182,41 @@ const Calendar = () => {
     setEndDate('');
     setLocationId('');
   };
+
+  if (checkingSubscription) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">
+        <Navbar />
+        <main className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto flex justify-center items-center min-h-[50vh]">
+            <p className="text-muted-foreground">Checking subscription status...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!hasSubscription) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">
+        <Navbar />
+        <main className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-12 text-center">
+              <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+              <h1 className="text-3xl font-bold mb-4">Premium Feature</h1>
+              <p className="text-muted-foreground mb-6">
+                The Community Calendar is available exclusively to Premium members.
+              </p>
+              <Button onClick={() => navigate('/premium')} size="lg">
+                Upgrade to Premium
+              </Button>
+            </Card>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">

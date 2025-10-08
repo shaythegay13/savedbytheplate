@@ -1,7 +1,10 @@
+import { useState, useEffect } from "react";
 import { Check, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 
 const PremiumFeatures = () => (
@@ -56,7 +59,102 @@ const PremiumFeatures = () => (
   </div>
 );
 
+const PREMIUM_PRICE_ID = "price_1SG1U8ChJRCHBzGFN7GB3S3g";
+
 const Premium = () => {
+  const [loading, setLoading] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+
+  useEffect(() => {
+    checkSubscription();
+  }, []);
+
+  const checkSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setCheckingSubscription(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Error checking subscription:', error);
+      } else {
+        setIsSubscribed(data?.subscribed || false);
+      }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    try {
+      setLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Please log in to subscribe");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { price_id: PREMIUM_PRICE_ID },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      console.error('Error creating checkout:', error);
+      toast.error(error.message || "Failed to start checkout");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      setLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Please log in to manage subscription");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('customer-portal', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      console.error('Error opening customer portal:', error);
+      toast.error(error.message || "Failed to open customer portal");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -184,9 +282,26 @@ const Premium = () => {
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
                   </ul>
-                  <Button className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                    Get Premium
-                  </Button>
+                  {!checkingSubscription && (
+                    isSubscribed ? (
+                      <Button 
+                        className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600"
+                        variant="outline"
+                        onClick={handleManageSubscription}
+                        disabled={loading}
+                      >
+                        Manage Subscription
+                      </Button>
+                    ) : (
+                      <Button 
+                        className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600"
+                        onClick={handleSubscribe}
+                        disabled={loading}
+                      >
+                        {loading ? "Processing..." : "Get Premium"}
+                      </Button>
+                    )
+                  )}
                 </div>
 
                 <div className="p-8 bg-sbtp-blue/5 border-l border-sbtp-blue">
