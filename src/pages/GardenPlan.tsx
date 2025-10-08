@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GardenPlanResults from "@/components/garden-plan/GardenPlanResults";
 import LoadingState from "@/components/garden-plan/LoadingState";
 import { generateMockPlan } from "@/components/garden-plan/mockPlanGenerator";
@@ -19,16 +19,48 @@ import Navbar from "@/components/layout/Navbar";
 
 
 const GardenPlan = () => {
-  // For demo purposes, let's assume the user is subscribed
-  // In a real app, this would check the user's subscription status
-  const isSubscribed = true; // This would come from your authentication/subscription context
-  
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [gardenPlan, setGardenPlan] = useState<GardenPlanType | null>(null);
   const [formData, setFormData] = useState<any>({
     location: {}
   });
+
+  useEffect(() => {
+    checkSubscription();
+  }, []);
+
+  const checkSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setCheckingSubscription(false);
+        setIsSubscribed(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Error checking subscription:', error);
+        setIsSubscribed(false);
+      } else {
+        setIsSubscribed(data?.subscribed || false);
+      }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      setIsSubscribed(false);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  };
 
   const handleLocationSubmit = (location: any) => {
     setFormData(prev => ({ ...prev, location }));
@@ -130,6 +162,21 @@ const GardenPlan = () => {
       setIsLoading(false);
     }
   };
+
+  if (checkingSubscription) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <section className="py-12 sm:py-16">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-2xl mx-auto text-center">
+              <p className="text-muted-foreground">Checking subscription status...</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   if (isSubscribed) {
     return (
