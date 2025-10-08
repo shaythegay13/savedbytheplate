@@ -86,7 +86,7 @@ const Calendar = () => {
     const { data, error } = await supabase
       .from('locations')
       .select('id, name, address')
-      .eq('type', 'community_garden')
+      .in('type', ['community_garden', 'urbanfarm'])
       .eq('status', 'active')
       .order('name');
 
