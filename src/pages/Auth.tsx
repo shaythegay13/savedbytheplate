@@ -169,9 +169,19 @@ const Auth = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-primary/10 p-1">
+              <TabsTrigger 
+                value="login"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                Login
+              </TabsTrigger>
+              <TabsTrigger 
+                value="signup"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                Sign Up
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
