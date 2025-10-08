@@ -199,56 +199,60 @@ const Premium = () => {
             <div className="mt-12 bg-white rounded-lg border border-sbtp-green-200 overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-4">
                 <div className="p-8 bg-sbtp-green-600 text-white">
-                  <h3 className="text-2xl font-bold mb-6">Comparison</h3>
+                  <div className="h-[88px] flex items-end mb-6">
+                    <h3 className="text-2xl font-bold">Comparison</h3>
+                  </div>
                   <ul className="space-y-4">
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>Local Food Map</span>
                     </li>
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>School Garden Tours</span>
                     </li>
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>Community Forums</span>
                     </li>
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>AI Garden Planner</span>
                     </li>
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>Educational Resources</span>
                     </li>
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>Discord Community</span>
                     </li>
-                    <li className="flex items-center">
+                    <li className="flex items-center min-h-[40px]">
                       <span>Event Calendar</span>
                     </li>
                   </ul>
                 </div>
                 
                 <div className="p-8">
-                  <h3 className="text-2xl font-bold text-sbtp-green-700 mb-2">Free</h3>
-                  <p className="text-sbtp-brown-500 mb-6">Basic access</p>
+                  <div className="h-[88px] mb-6">
+                    <h3 className="text-2xl font-bold text-sbtp-green-700 mb-2">Free</h3>
+                    <p className="text-sbtp-brown-500">Basic access</p>
+                  </div>
                   <ul className="space-y-4">
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300 mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </li>
                   </ul>
                   <Button variant="outline" className="w-full mt-8 border-sbtp-green-500 text-sbtp-green-700">
@@ -257,29 +261,31 @@ const Premium = () => {
                 </div>
 
                 <div className="p-8 bg-sbtp-green-50 border-l border-sbtp-green-200">
-                  <h3 className="text-2xl font-bold text-sbtp-green-700 mb-2">Premium</h3>
-                  <p className="text-sbtp-brown-500 mb-6">Full access</p>
+                  <div className="h-[88px] mb-6">
+                    <h3 className="text-2xl font-bold text-sbtp-green-700 mb-2">Premium</h3>
+                    <p className="text-sbtp-brown-500">Full access</p>
+                  </div>
                   <ul className="space-y-4">
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
                   </ul>
                   {!checkingSubscription && (
@@ -305,29 +311,31 @@ const Premium = () => {
                 </div>
 
                 <div className="p-8 bg-sbtp-blue/5 border-l border-sbtp-blue">
-                  <h3 className="text-2xl font-bold text-sbtp-blue mb-2">Educator</h3>
-                  <p className="text-sbtp-brown-500 mb-6">Special pricing</p>
+                  <div className="h-[88px] mb-6">
+                    <h3 className="text-2xl font-bold text-sbtp-blue mb-2">Educator</h3>
+                    <p className="text-sbtp-brown-500">Special pricing</p>
+                  </div>
                   <ul className="space-y-4">
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
-                    <li className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500 mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <li className="flex items-center justify-center min-h-[40px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
                   </ul>
                   <Button className="w-full mt-8 bg-sbtp-blue hover:bg-sbtp-blue/80 text-white">
