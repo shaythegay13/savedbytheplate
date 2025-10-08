@@ -19,15 +19,27 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email }: SubscriptionRequest = await req.json();
-    console.log("Processing subscription request for email:", email);
+    console.log("Processing subscription request");
     console.log("Environment check - BEEHIIV_API_KEY exists:", !!Deno.env.get("BEEHIIV_API_KEY"));
 
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      console.log("Invalid email format:", email);
+    // Server-side validation
+    if (!email || typeof email !== 'string') {
+      console.log("Email is required");
       return new Response(
-        JSON.stringify({ error: "Invalid email address" }),
+        JSON.stringify({ error: "Email is required" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Validate email format and length
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email) || email.length > 255) {
+      console.log("Invalid email format or length");
+      return new Response(
+        JSON.stringify({ error: "Invalid email address format" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json", ...corsHeaders },

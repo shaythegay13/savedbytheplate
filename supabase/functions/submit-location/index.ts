@@ -19,6 +19,67 @@ interface LocationSubmission {
   socialMedia?: string;
 }
 
+// Server-side validation function
+const validateLocationSubmission = (data: any): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  
+  // Required fields
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.push('Name is required and must be a non-empty string');
+  } else if (data.name.length > 200) {
+    errors.push('Name must be less than 200 characters');
+  }
+  
+  if (!data.type || typeof data.type !== 'string') {
+    errors.push('Type is required');
+  }
+  
+  if (!data.owner || typeof data.owner !== 'string' || data.owner.trim().length === 0) {
+    errors.push('Owner is required');
+  } else if (data.owner.length > 200) {
+    errors.push('Owner must be less than 200 characters');
+  }
+  
+  if (!data.address || typeof data.address !== 'string' || data.address.trim().length === 0) {
+    errors.push('Address is required');
+  } else if (data.address.length > 500) {
+    errors.push('Address must be less than 500 characters');
+  }
+  
+  if (!data.neighborhood || typeof data.neighborhood !== 'string' || data.neighborhood.trim().length === 0) {
+    errors.push('Neighborhood is required');
+  } else if (data.neighborhood.length > 200) {
+    errors.push('Neighborhood must be less than 200 characters');
+  }
+  
+  // Optional fields - validate if present
+  if (data.openHours && (typeof data.openHours !== 'string' || data.openHours.length > 500)) {
+    errors.push('Open hours must be a string less than 500 characters');
+  }
+  
+  if (data.contact && (typeof data.contact !== 'string' || data.contact.length > 200)) {
+    errors.push('Contact must be a string less than 200 characters');
+  }
+  
+  if (data.localItems && (typeof data.localItems !== 'string' || data.localItems.length > 1000)) {
+    errors.push('Local items must be a string less than 1000 characters');
+  }
+  
+  if (data.description && (typeof data.description !== 'string' || data.description.length > 2000)) {
+    errors.push('Description must be a string less than 2000 characters');
+  }
+  
+  if (data.website && (typeof data.website !== 'string' || data.website.length > 500)) {
+    errors.push('Website must be a string less than 500 characters');
+  }
+  
+  if (data.socialMedia && (typeof data.socialMedia !== 'string' || data.socialMedia.length > 500)) {
+    errors.push('Social media must be a string less than 500 characters');
+  }
+  
+  return { valid: errors.length === 0, errors };
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -26,7 +87,21 @@ serve(async (req) => {
 
   try {
     const locationData: LocationSubmission = await req.json();
-    console.log('Received location submission:', locationData);
+    
+    // Server-side validation
+    const validation = validateLocationSubmission(locationData);
+    if (!validation.valid) {
+      console.error('Validation errors:', validation.errors);
+      return new Response(
+        JSON.stringify({ error: 'Validation failed', details: validation.errors }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      );
+    }
+    
+    console.log('Received valid location submission:', locationData.name);
 
     // Get Google Sheets credentials from environment
     const googleCredentials = Deno.env.get('GOOGLE_SHEETS_CREDENTIALS');

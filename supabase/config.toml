@@ -34,22 +34,25 @@ jwt_expiry = 3600
 enable_signup = true
 
 [functions.generate-smart-garden-plan]
-verify_jwt = false
+verify_jwt = true
 
 [functions.get-climate-data]
-verify_jwt = false
+verify_jwt = true
 
 [functions.subscribe-to-beehiiv]
 verify_jwt = false
 
-[functions.send-garden-notifications]
+[functions.submit-location]
 verify_jwt = false
+
+[functions.send-garden-notifications]
+verify_jwt = true
 
 [functions.get-weather-alerts]
-verify_jwt = false
+verify_jwt = true
 
 [functions.get-usda-climate-data]
-verify_jwt = false
+verify_jwt = true
 
 [functions.get-education-resources]
-verify_jwt = false
+verify_jwt = true
