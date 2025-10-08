@@ -199,8 +199,8 @@ const Premium = () => {
             <div className="mt-12 bg-white rounded-lg border border-sbtp-green-200 overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-4">
                 <div className="p-8 bg-sbtp-green-600 text-white">
-                  <div className="h-[88px] mb-6">
-                    {/* Empty header space for alignment */}
+                  <div className="h-[88px] flex items-end mb-6">
+                    <h3 className="text-2xl font-bold">Feature</h3>
                   </div>
                   <ul className="space-y-4">
                     <li className="flex items-center min-h-[40px]">
