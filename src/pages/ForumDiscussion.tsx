@@ -190,6 +190,10 @@ export default function ForumDiscussion() {
     } else {
       setNewReply("");
       fetchReplies();
+      // Optimistically update reply count locally
+      setDiscussion((prev) => (prev ? ({ ...prev, reply_count: (prev.reply_count ?? 0) + 1 } as any) : prev));
+      // Sync with server in background
+      fetchDiscussion();
       toast({
         title: "Success",
         description: "Reply posted successfully",

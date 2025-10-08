@@ -45,16 +45,16 @@ export default function ForumCategory() {
   useEffect(() => {
     checkUser();
     fetchCategory();
-    fetchDiscussions();
   }, [slug]);
 
   useEffect(() => {
+    if (!category?.id) return;
     const delayDebounceFn = setTimeout(() => {
       fetchDiscussions();
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
+  }, [category?.id, searchQuery]);
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
