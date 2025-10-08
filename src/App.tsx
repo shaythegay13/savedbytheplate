@@ -20,6 +20,7 @@ import ForumCategory from "./pages/ForumCategory";
 import ForumDiscussion from "./pages/ForumDiscussion";
 import NewDiscussion from "./pages/NewDiscussion";
 import Auth from "./pages/Auth";
+import Calendar from "./pages/Calendar";
 import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,9 @@ const App = () => (
               
               {/* Authentication page */}
               <Route path="/auth" element={<Auth />} />
+              
+              {/* Calendar page */}
+              <Route path="/calendar" element={<Calendar />} />
               
               {/* Waiting list page */}
               <Route path="/waiting-list" element={<WaitingList />} />
