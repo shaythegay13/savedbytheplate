@@ -25,14 +25,12 @@ const DonationButton = () => {
     script.setAttribute("data-donately-fetch-config", "true");
     script.async = true;
 
-    if (formContainerRef.current) {
-      formContainerRef.current.appendChild(script);
-    }
+    document.body.appendChild(script);
 
     return () => {
       // Cleanup script when modal closes
-      if (formContainerRef.current && formContainerRef.current.contains(script)) {
-        formContainerRef.current.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
       }
     };
   }, [open]);
@@ -55,8 +53,10 @@ const DonationButton = () => {
         <div 
           ref={formContainerRef} 
           className="min-h-[400px] w-full"
-          data-donately-embed="true"
-        />
+          id="dntly-embed-form"
+        >
+          <div className="donately-form-embed" data-form-id="frm_0a25c5b94edd"></div>
+        </div>
       </DialogContent>
     </Dialog>
   );
