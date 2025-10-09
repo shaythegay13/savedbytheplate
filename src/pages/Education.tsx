@@ -161,15 +161,15 @@ const Education = () => {
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">School Garden Tours</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Education</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Connect your students with local food justice work through community garden tours
+              Bring our afterschool program to your school and empower students with hands-on food justice education
             </p>
           </div>
         </div>
       </section>
 
-      {/* School Garden Tours Section */}
+      {/* Afterschool Program Section */}
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
@@ -183,12 +183,12 @@ const Education = () => {
                   </div>
                   <CardTitle className="text-2xl text-primary">Contact Shay Bouchles</CardTitle>
                   <CardDescription className="text-lg">
-                    Executive Director - School Garden Tour Programs
+                    Executive Director - Afterschool Program Coordinator
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-center text-muted-foreground">
-                    Schedule a consultation to discuss bringing educational garden tours to your school
+                    Schedule a consultation to discuss bringing our afterschool program to your school
                   </p>
                   <div className="flex justify-center">
                     <Button size="lg" asChild>
@@ -205,27 +205,117 @@ const Education = () => {
             {/* Program Information */}
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-primary mb-4">School Garden Tour Program</h2>
+                <h2 className="text-3xl font-bold text-primary mb-4">6-Week Afterschool Program</h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  Now, schools can contact Shay Bouchles - the executive director - to set up a contract 
-                  to give kids within their schools tours of their closest community garden as a way to 
-                  show the children what is going on in their local communities.
+                  Our comprehensive afterschool program teaches students about community gardens, urban agriculture, 
+                  environmental justice, and sustainable growing practices through hands-on learning experiences.
                 </p>
               </div>
+
+              <Card className="bg-primary/5 border-primary/20">
+                <CardHeader>
+                  <CardTitle className="text-center text-2xl text-primary">Program Curriculum</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        1
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">History of Community Gardens</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Explore the rich history of community gardens and their role in food justice movements
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        2
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Community Gardens Today</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Discover what community gardens are doing in NYC today and their impact on neighborhoods
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        3
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Urban Growing Strategies</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Learn essential techniques including composting and other sustainable practices for urban settings
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        4
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Urban Biodiversity & Environmental Benefits</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Understand how urban gardens reduce the heat island effect and naturally filter the air
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        5
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Environmental Justice & Community Gardens</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Explore the intersection of environmental justice, equity, and community gardening
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        6
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Additional Topics & Wrap-Up</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Deep dive into additional urban agriculture topics and reflect on what students have learned
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-xl justify-center">
+                    <MapPin className="mr-3 h-6 w-6 text-primary" />
+                    Optional 7th Week: Community Garden Tour
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground text-center">
+                    As we get closer to the opening season of the city's community gardens, there could be an 
+                    optional 7th week where we take a tour of the nearest community garden during the normal 
+                    session time. This hands-on field trip brings everything students have learned to life!
+                  </p>
+                </CardContent>
+              </Card>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card className="border-primary/20">
                   <CardHeader>
                     <CardTitle className="flex items-center text-xl">
-                      <MapPin className="mr-3 h-6 w-6 text-primary" />
-                      Local Community Impact
+                      <BookOpen className="mr-3 h-6 w-6 text-primary" />
+                      Educational Impact
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      This will show kids that there is food justice work going on in their local communities 
-                      and potentially down the block from them. Students will discover the amazing efforts 
-                      happening right in their neighborhood.
+                      Students gain comprehensive knowledge about urban agriculture, environmental science, 
+                      and social justice while developing practical skills in sustainable living and community engagement.
                     </p>
                   </CardContent>
                 </Card>
@@ -234,55 +324,17 @@ const Education = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center text-xl">
                       <Users className="mr-3 h-6 w-6 text-primary" />
-                      Educational Benefits
+                      Community Connection
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      These tours provide hands-on learning experiences that connect students with sustainable 
-                      agriculture, food security, and community organizing. Students learn about growing food, 
-                      environmental stewardship, and community engagement.
+                      This program connects students with food justice work happening in their local communities, 
+                      showing them that meaningful change is happening right in their own neighborhoods.
                     </p>
                   </CardContent>
                 </Card>
               </div>
-
-              <Card className="bg-primary/5 border-primary/20">
-                <CardHeader>
-                  <CardTitle className="text-center text-2xl text-primary">Program Features</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                    <div>
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <MapPin className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold mb-2">Local Garden Tours</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Visit community gardens in your neighborhood to see food justice in action
-                      </p>
-                    </div>
-                    <div>
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Users className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold mb-2">Community Connection</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Meet local gardeners and learn about grassroots food access initiatives
-                      </p>
-                    </div>
-                    <div>
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <BookOpen className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold mb-2">Educational Impact</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Hands-on learning about sustainability, nutrition, and community organizing
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
 
               <div className="text-center">
                 <Card className="inline-block border-primary/20 bg-primary/5">
