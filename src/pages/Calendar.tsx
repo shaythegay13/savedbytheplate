@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Plus, MapPin, Lock } from 'lucide-react';
+import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday } from 'date-fns';
+import { Calendar as CalendarIcon, Plus, MapPin, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/Navbar';
@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 interface Event {
   id: string;
@@ -51,7 +51,12 @@ const Calendar = () => {
   const [description, setDescription] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [locationId, setLocationId] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const [locationAddress, setLocationAddress] = useState('');
+  
+  // Calendar view state
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     checkUser();
@@ -61,7 +66,6 @@ const Calendar = () => {
   useEffect(() => {
     if (hasSubscription || DEV_BYPASS_SUBSCRIPTION) {
       fetchEvents();
-      fetchLocations();
     }
   }, [hasSubscription]);
 
@@ -125,20 +129,6 @@ const Calendar = () => {
     setIsLoading(false);
   };
 
-  const fetchLocations = async () => {
-    const { data, error } = await supabase
-      .from('locations')
-      .select('id, name, address')
-      .in('type', ['community_garden', 'urbanfarm'])
-      .eq('status', 'active')
-      .order('name');
-
-    if (error) {
-      console.error('Error loading locations:', error);
-    } else {
-      setLocations(data || []);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,12 +142,36 @@ const Calendar = () => {
       return;
     }
 
+    // Create a location entry with the typed name and address
+    let locationId = null;
+    if (locationName) {
+      const { data: locationData, error: locationError } = await supabase
+        .from('locations')
+        .insert({
+          name: locationName,
+          address: locationAddress || null,
+          type: 'community_garden',
+          status: 'active',
+          // Default NYC coordinates - users can update via map later
+          latitude: 40.7128,
+          longitude: -74.0060,
+        })
+        .select()
+        .single();
+
+      if (locationError) {
+        console.error('Error creating location:', locationError);
+      } else {
+        locationId = locationData?.id;
+      }
+    }
+
     const { error } = await supabase.from('events').insert({
       title,
       description,
       event_date: eventDate,
       end_date: endDate || null,
-      location_id: locationId || null,
+      location_id: locationId,
       created_by: user.id,
     });
 
@@ -183,7 +197,34 @@ const Calendar = () => {
     setDescription('');
     setEventDate('');
     setEndDate('');
-    setLocationId('');
+    setLocationName('');
+    setLocationAddress('');
+  };
+
+  const getEventsForDate = (date: Date) => {
+    return events.filter(event => isSameDay(new Date(event.event_date), date));
+  };
+
+  const previousMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const nextMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const getDaysInMonth = () => {
+    const start = startOfMonth(currentMonth);
+    const end = endOfMonth(currentMonth);
+    const days = eachDayOfInterval({ start, end });
+    
+    // Get the day of week for the first day (0 = Sunday, 6 = Saturday)
+    const firstDayOfWeek = start.getDay();
+    
+    // Add empty cells for days before the month starts
+    const emptyDays = Array(firstDayOfWeek).fill(null);
+    
+    return [...emptyDays, ...days];
   };
 
   if (checkingSubscription && !DEV_BYPASS_SUBSCRIPTION) {
@@ -297,19 +338,23 @@ const Calendar = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="location">Garden Location</Label>
-                      <Select value={locationId} onValueChange={setLocationId}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a garden" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {locations.map((location) => (
-                            <SelectItem key={location.id} value={location.id}>
-                              {location.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="location-name">Garden Name</Label>
+                      <Input
+                        id="location-name"
+                        value={locationName}
+                        onChange={(e) => setLocationName(e.target.value)}
+                        placeholder="East Village Community Garden"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="location-address">Garden Address (Optional)</Label>
+                      <Input
+                        id="location-address"
+                        value={locationAddress}
+                        onChange={(e) => setLocationAddress(e.target.value)}
+                        placeholder="123 Main St, Brooklyn, NY"
+                      />
                     </div>
                   </div>
                   
@@ -325,47 +370,107 @@ const Calendar = () => {
             <div className="text-center py-12">
               <p className="text-muted-foreground">Loading events...</p>
             </div>
-          ) : events.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <CalendarIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No events scheduled yet. Be the first to add one!</p>
-              </CardContent>
-            </Card>
           ) : (
-            <div className="space-y-4">
-              {events.map((event) => (
-                <Card key={event.id}>
-                  <CardHeader>
-                    <CardTitle className="flex items-start justify-between">
-                      <span>{event.title}</span>
-                      <span className="text-sm font-normal text-muted-foreground">
-                        {format(new Date(event.event_date), 'MMM dd, yyyy')}
-                      </span>
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-2">
-                      <CalendarIcon className="h-4 w-4" />
-                      {format(new Date(event.event_date), 'h:mm a')}
-                      {event.end_date && ` - ${format(new Date(event.end_date), 'h:mm a')}`}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {event.description && (
-                      <p className="text-sm">{event.description}</p>
-                    )}
-                    {event.locations && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span>{event.locations.name}</span>
-                        {event.locations.address && (
-                          <span className="text-xs">• {event.locations.address}</span>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                <Button variant="outline" size="icon" onClick={previousMonth}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <CardTitle className="text-2xl font-bold">
+                  {format(currentMonth, 'MMMM yyyy')}
+                </CardTitle>
+                <Button variant="outline" size="icon" onClick={nextMonth}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-2">
+                  {/* Day headers */}
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-center text-sm font-semibold text-muted-foreground py-2">
+                      {day}
+                    </div>
+                  ))}
+                  
+                  {/* Calendar days */}
+                  {getDaysInMonth().map((day, index) => {
+                    if (!day) {
+                      return <div key={`empty-${index}`} className="aspect-square" />;
+                    }
+                    
+                    const dayEvents = getEventsForDate(day);
+                    const isCurrentMonth = isSameMonth(day, currentMonth);
+                    const isSelected = selectedDate && isSameDay(day, selectedDate);
+                    const isTodayDate = isToday(day);
+                    
+                    return (
+                      <button
+                        key={day.toISOString()}
+                        onClick={() => setSelectedDate(day)}
+                        className={cn(
+                          "aspect-square p-2 rounded-lg border transition-colors relative",
+                          isCurrentMonth ? "bg-background" : "bg-muted/50 text-muted-foreground",
+                          isSelected && "border-primary bg-primary/10",
+                          isTodayDate && "border-primary font-bold",
+                          !isSelected && !isTodayDate && "border-border hover:border-primary/50"
                         )}
+                      >
+                        <div className="text-sm">{format(day, 'd')}</div>
+                        {dayEvents.length > 0 && (
+                          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+                            {dayEvents.slice(0, 3).map((_, i) => (
+                              <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary" />
+                            ))}
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Selected date events */}
+                {selectedDate && (
+                  <div className="mt-6 pt-6 border-t">
+                    <h3 className="font-semibold mb-4">
+                      Events on {format(selectedDate, 'MMMM d, yyyy')}
+                    </h3>
+                    {getEventsForDate(selectedDate).length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No events scheduled for this day.</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {getEventsForDate(selectedDate).map((event) => (
+                          <Card key={event.id}>
+                            <CardHeader className="pb-3">
+                              <CardTitle className="text-base">{event.title}</CardTitle>
+                              <CardDescription className="flex items-center gap-2">
+                                <CalendarIcon className="h-3 w-3" />
+                                {format(new Date(event.event_date), 'h:mm a')}
+                                {event.end_date && ` - ${format(new Date(event.end_date), 'h:mm a')}`}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2 pb-3">
+                              {event.description && (
+                                <p className="text-sm">{event.description}</p>
+                              )}
+                              {event.locations && (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <MapPin className="h-3 w-3" />
+                                  <span>{event.locations.name}</span>
+                                  {event.locations.address && (
+                                    <span className="text-xs">• {event.locations.address}</span>
+                                  )}
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
                       </div>
                     )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           )}
         </div>
       </main>
