@@ -286,16 +286,29 @@ const fetchComprehensiveData = async (): Promise<MapLocation[]> => {
   }
 };
 
-// Enhanced data fetcher that prioritizes the comprehensive CSV
+// Enhanced data fetcher that combines all data sources
 export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
-    console.log('🌱 Fetching enhanced map data from comprehensive CSV...');
+    console.log('🌱 Fetching enhanced map data from all sources...');
     
     const allLocations: MapLocation[] = [];
     
     // Primary source: comprehensive CSV with all data
     const comprehensiveData = await fetchComprehensiveData();
     allLocations.push(...comprehensiveData);
+    
+    // Legacy data sources (will be deduplicated)
+    const [fridges, markets, foodBanks, nycData] = await Promise.all([
+      fetchCommunityFridges(),
+      fetchFarmersMarkets(),
+      fetchFoodBanks(),
+      fetchNYCMapData()
+    ]);
+    
+    allLocations.push(...fridges);
+    allLocations.push(...markets);
+    allLocations.push(...foodBanks);
+    allLocations.push(...nycData);
     
     console.log(`📊 Total locations loaded before deduplication: ${allLocations.length}`);
     
