@@ -16,6 +16,7 @@ import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
 import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import ForumCategory from "./pages/ForumCategory";
 import ForumDiscussion from "./pages/ForumDiscussion";
 import NewDiscussion from "./pages/NewDiscussion";
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/education" element={<Education />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
               
               <Route path="/forum" element={<Navigate to="/community" replace />} />
               <Route path="/forum/category/:slug" element={<ForumCategory />} />
