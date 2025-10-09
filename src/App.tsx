@@ -15,7 +15,6 @@ import Education from "./pages/Education";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
-import Forum from "./pages/Forum";
 import ForumCategory from "./pages/ForumCategory";
 import ForumDiscussion from "./pages/ForumDiscussion";
 import NewDiscussion from "./pages/NewDiscussion";
