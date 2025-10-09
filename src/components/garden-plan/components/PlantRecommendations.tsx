@@ -57,18 +57,20 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
 
   const displayPlants = isEditing ? editedPlants : plantRecommendations;
 
-  // Categorize plants
-  const fruits = displayPlants.filter(p => 
-    ['tomato', 'strawberry', 'raspberry', 'blueberry', 'melon', 'cucumber', 'squash', 'pumpkin', 'zucchini'].some(f => 
-      p.name.toLowerCase().includes(f)
-    )
-  );
+  // Categorize plants - check lowercase name for accurate categorization
+  const fruitKeywords = ['strawberr', 'raspberr', 'blueberr', 'tomato', 'melon', 'cucumber'];
+  const flowerHerbKeywords = ['marigold', 'sunflower', 'zinnia', 'petunia', 'rose', 'lavender', 'cosmos', 'basil', 'parsley', 'cilantro', 'mint', 'thyme', 'oregano', 'chive'];
+  const veggieKeywords = ['pepper', 'carrot', 'lettuce', 'spinach', 'broccoli', 'radish', 'kale'];
   
-  const flowers = displayPlants.filter(p => 
-    ['marigold', 'sunflower', 'zinnia', 'petunia', 'rose', 'lavender', 'basil', 'parsley', 'cilantro', 'mint', 'thyme', 'oregano', 'cosmos'].some(f => 
-      p.name.toLowerCase().includes(f)
-    )
-  );
+  const fruits = displayPlants.filter(p => {
+    const lowerName = p.name.toLowerCase();
+    return fruitKeywords.some(keyword => lowerName.includes(keyword));
+  });
+  
+  const flowers = displayPlants.filter(p => {
+    const lowerName = p.name.toLowerCase();
+    return flowerHerbKeywords.some(keyword => lowerName.includes(keyword));
+  });
   
   const veggies = displayPlants.filter(p => 
     !fruits.includes(p) && !flowers.includes(p)
@@ -79,15 +81,15 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
     
     return (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-sbtp-green-700 flex items-center gap-2">
-          <span className="text-2xl">{emoji}</span>
+        <h3 className="text-xl font-bold text-sbtp-green-700 flex items-center gap-2 mb-4">
+          <span className="text-3xl">{emoji}</span>
           {title}
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-3">
           {plants.map((plant, index) => {
             const globalIndex = displayPlants.indexOf(plant);
             return (
-              <div key={globalIndex} className="border border-sbtp-green-200 rounded-lg p-4">
+              <div key={globalIndex} className="border border-sbtp-green-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
                 {isEditing ? (
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
@@ -221,10 +223,18 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-8">
-        {renderPlantSection('🍅 Fruits', fruits, '🍓')}
-        {renderPlantSection('🥕 Vegetables', veggies, '🥬')}
-        {renderPlantSection('🌻 Flowers & Herbs', flowers, '🌸')}
+      <CardContent>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-6 border-2 border-red-200">
+            {renderPlantSection('Fruits', fruits, '🍓')}
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border-2 border-green-200">
+            {renderPlantSection('Vegetables', veggies, '🥬')}
+          </div>
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-purple-200">
+            {renderPlantSection('Flowers & Herbs', flowers, '🌸')}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
