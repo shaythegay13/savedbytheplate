@@ -100,11 +100,37 @@ async function getGardeningCourses(searchTerms: string) {
       type: "Workshop",
       url: "https://www.bbg.org/education/adult",
       price: "Paid"
+    },
+    {
+      title: "Organic Gardening Methods",
+      institution: "GrowNYC",
+      description: "Explore organic practices for sustainable and chemical-free food production.",
+      duration: "3 weeks",
+      type: "Online Course",
+      url: "https://www.grownyc.org/gardening",
+      price: "Free"
+    },
+    {
+      title: "Permaculture Design Certificate",
+      institution: "NYC Permaculture",
+      description: "Comprehensive training in permaculture principles and sustainable garden design.",
+      duration: "10 weeks",
+      type: "Certificate",
+      url: "https://www.nycpermaculture.org/",
+      price: "Paid"
+    },
+    {
+      title: "Seed Starting and Propagation",
+      institution: "New York Botanical Garden",
+      description: "Learn professional techniques for starting plants from seeds and cuttings.",
+      duration: "1 day",
+      type: "Workshop",
+      url: "https://www.nybg.org/adult-education/",
+      price: "Paid"
     }
   ];
 
-  // Return courses relevant to the search terms
-  return courses.slice(0, 2);
+  return courses;
 }
 
 function getCuratedYouTubeVideos(query: string) {
@@ -129,10 +155,31 @@ function getCuratedYouTubeVideos(query: string) {
       channel: "Roots and Refuge Farm",
       duration: "18:45",
       difficulty: "Beginner"
+    },
+    {
+      title: "Raised Bed Gardening for Beginners",
+      url: "https://www.youtube.com/watch?v=jR2u7LFlNt0",
+      channel: "GrowVeg",
+      duration: "12:20",
+      difficulty: "Beginner"
+    },
+    {
+      title: "Organic Gardening Tips and Tricks",
+      url: "https://www.youtube.com/watch?v=DZGzbGVBCy0",
+      channel: "MI Gardener",
+      duration: "25:10",
+      difficulty: "Intermediate"
+    },
+    {
+      title: "Companion Planting Guide",
+      url: "https://www.youtube.com/watch?v=5tlhvkX_9p4",
+      channel: "CaliKim29 Garden & Home DIY",
+      duration: "16:35",
+      difficulty: "Intermediate"
     }
   ];
   
-  return videos.slice(0, 2);
+  return videos;
 }
 
 function getCuratedGardeningArticles(query: string) {
@@ -160,10 +207,34 @@ function getCuratedGardeningArticles(query: string) {
       source: "extension.org",
       readTime: "12 min read", 
       category: "University Extension"
+    },
+    {
+      title: "Companion Planting Chart for Vegetables",
+      url: "https://www.almanac.com/companion-planting-guide-vegetables",
+      excerpt: "Discover which vegetables grow well together and which combinations to avoid for a healthier garden.",
+      source: "almanac.com",
+      readTime: "6 min read",
+      category: "Companion Planting"
+    },
+    {
+      title: "Soil Preparation and Composting Basics",
+      url: "https://www.almanac.com/how-prepare-soil-planting",
+      excerpt: "Essential techniques for preparing healthy soil and creating nutrient-rich compost for your garden.",
+      source: "almanac.com",
+      readTime: "9 min read",
+      category: "Soil Health"
+    },
+    {
+      title: "Season Extension Techniques for Year-Round Growing",
+      url: "https://www.growveg.com/guides/season-extension-techniques/",
+      excerpt: "Methods to extend your growing season using cold frames, row covers, and other protective structures.",
+      source: "growveg.com",
+      readTime: "11 min read",
+      category: "Season Extension"
     }
   ];
   
-  return articles.slice(0, 2);
+  return articles;
 }
 
 function getMockVideos(query: string) {

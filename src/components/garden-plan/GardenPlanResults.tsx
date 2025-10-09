@@ -106,14 +106,6 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           companionPlantingData={companionPlantingData}
         />
 
-        {formData && (
-          <IntelligentGardenPlotVisualizer 
-            gardenLayout={currentGardenLayout}
-            spaceType={formData.spaceType}
-            spaceSize={formData.spaceSize}
-            locationDescription={formData.space_description || formData.city}
-          />
-        )}
 
         <ExpertTips expertTips={expertTips} careInstructions={careInstructions} />
 

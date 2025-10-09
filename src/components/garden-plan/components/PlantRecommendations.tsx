@@ -59,22 +59,19 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
 
   // Categorize plants
   const fruits = displayPlants.filter(p => 
-    ['tomato', 'pepper', 'strawberry', 'melon', 'cucumber', 'squash', 'pumpkin', 'zucchini'].some(f => 
-      p.name.toLowerCase().includes(f)
-    )
-  );
-  
-  const veggies = displayPlants.filter(p => 
-    !fruits.includes(p) && 
-    !['marigold', 'sunflower', 'zinnia', 'petunia', 'rose', 'lavender', 'basil', 'parsley', 'cilantro', 'mint', 'thyme', 'oregano'].some(f => 
+    ['tomato', 'strawberry', 'raspberry', 'blueberry', 'melon', 'cucumber', 'squash', 'pumpkin', 'zucchini'].some(f => 
       p.name.toLowerCase().includes(f)
     )
   );
   
   const flowers = displayPlants.filter(p => 
-    ['marigold', 'sunflower', 'zinnia', 'petunia', 'rose', 'lavender', 'basil', 'parsley', 'cilantro', 'mint', 'thyme', 'oregano'].some(f => 
+    ['marigold', 'sunflower', 'zinnia', 'petunia', 'rose', 'lavender', 'basil', 'parsley', 'cilantro', 'mint', 'thyme', 'oregano', 'cosmos'].some(f => 
       p.name.toLowerCase().includes(f)
     )
+  );
+  
+  const veggies = displayPlants.filter(p => 
+    !fruits.includes(p) && !flowers.includes(p)
   );
 
   const renderPlantSection = (title: string, plants: PlantRecommendation[], emoji: string) => {
