@@ -1,8 +1,52 @@
-
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+const PREMIUM_PRICE_ID = "price_1SG1U8ChJRCHBzGFN7GB3S3g";
 
 const PricingSection = () => {
+  const [loading, setLoading] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+
+  const handleSubscribe = async () => {
+    try {
+      setLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setShowLoginDialog(true);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { price_id: PREMIUM_PRICE_ID },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      console.error('Error creating checkout:', error);
+      toast.error(error.message || "Failed to start checkout");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section className="py-16 bg-sbtp-green-100">
       <div className="container mx-auto px-4">
@@ -56,8 +100,12 @@ const PricingSection = () => {
                       </div>
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Billed monthly</p>
-                    <Button className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2">
-                      Subscribe Monthly
+                    <Button 
+                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2"
+                      onClick={handleSubscribe}
+                      disabled={loading}
+                    >
+                      {loading ? "Processing..." : "Subscribe Monthly"}
                     </Button>
                   </div>
                   
@@ -75,8 +123,12 @@ const PricingSection = () => {
                       </div>
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Save $20 with annual billing</p>
-                    <Button className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2">
-                      Subscribe Yearly
+                    <Button 
+                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2"
+                      onClick={handleSubscribe}
+                      disabled={loading}
+                    >
+                      {loading ? "Processing..." : "Subscribe Yearly"}
                     </Button>
                   </div>
 
@@ -93,8 +145,13 @@ const PricingSection = () => {
                       </div>
                     </div>
                     <p className="text-xs text-sbtp-brown-500 text-center mb-4">Special pricing for educators</p>
-                    <Button variant="outline" className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2">
-                      Educator Plan
+                    <Button 
+                      variant="outline" 
+                      className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2"
+                      onClick={handleSubscribe}
+                      disabled={loading}
+                    >
+                      {loading ? "Processing..." : "Educator Plan"}
                     </Button>
                   </div>
                 </div>
@@ -104,7 +161,11 @@ const PricingSection = () => {
                   <p className="text-sm text-sbtp-brown-500 mb-3">
                     Are you interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses.
                   </p>
-                  <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm"
+                    onClick={() => window.location.href = "mailto:info@savedbytheplate.com?subject=Institutional Partnership with Saved by the Plate Inc."}
+                  >
                     Contact Us
                   </Button>
                 </div>
@@ -117,6 +178,31 @@ const PricingSection = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Please log in to subscribe</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to subscribe to our premium plans. Please log in or create an account to continue.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-4 mt-4">
+            <Button 
+              className="flex-1 bg-sbtp-green-500 hover:bg-sbtp-green-600"
+              onClick={() => window.location.href = '/auth'}
+            >
+              Log In / Sign Up
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => setShowLoginDialog(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
