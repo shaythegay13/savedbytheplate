@@ -46,7 +46,6 @@ const Footer = () => {
                 <h4 className="text-lg font-semibold mb-4">Premium</h4>
                 <ul className="space-y-2 text-gray-300">
                   <li><Link to="/premium" className="hover:text-white transition-colors">Premium Benefits</Link></li>
-                  <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
                   <li>
                     <div className="flex items-center gap-2">
                       <span className="hover:text-white transition-colors">Subscription</span>
