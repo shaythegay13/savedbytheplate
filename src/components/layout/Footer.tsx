@@ -8,7 +8,7 @@ const Footer = () => {
   // Choose layout class dynamically
   const layoutClass = isWaitingList
     ? "grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex lg:justify-between lg:gap-0"
-    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8";
 
   return (
     <footer className="bg-sbtp-green-800 text-white pt-12 pb-6">
@@ -40,6 +40,19 @@ const Footer = () => {
                   <li><Link to="/education" className="hover:text-white transition-colors">Education</Link></li>
                   <li><Link to="/community" className="hover:text-white transition-colors">Community</Link></li>
                   <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Premium</h4>
+                <ul className="space-y-2 text-gray-300">
+                  <li><Link to="/premium" className="hover:text-white transition-colors">Premium Benefits</Link></li>
+                  <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                  <li>
+                    <div className="flex items-center gap-2">
+                      <span className="hover:text-white transition-colors">Subscription</span>
+                      <span className="bg-sbtp-yellow text-sbtp-green-800 text-xs px-2 py-0.5 rounded-full">$10/mo</span>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </>
