@@ -43,7 +43,7 @@ const Navbar = () => {
     { href: "/index", label: "Home" },
     { href: "/local-food", label: "Local Food" },
     { href: "/calendar", label: "Events" },
-    { href: "/education", label: "School Garden Tours" },
+    { href: "/education", label: "Education" },
     { href: "/community", label: "Community" },
     { href: "/about", label: "About" },
   ];
