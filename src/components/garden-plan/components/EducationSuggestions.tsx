@@ -47,21 +47,15 @@ const EducationSuggestions: React.FC<EducationSuggestionsProps> = ({ plantRecomm
 
   return (
     <div className="space-y-6">
-      <div className="text-center border-4 border-white rounded-lg p-6 bg-gradient-to-br from-sbtp-blue-50 to-sbtp-green-50 shadow-lg">
+      <div className="text-center border-4 border-white rounded-lg p-6 bg-gradient-to-br from-sbtp-blue-50 to-sbtp-green-50 shadow-lg mb-6">
         <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2 flex items-center justify-center gap-3">
           <span className="text-4xl">🎓</span>
           Ready to Upskill?
           <span className="text-4xl">📚</span>
         </h2>
-        <p className="text-sbtp-brown-600 mb-4 text-lg">
+        <p className="text-sbtp-brown-600 text-lg">
           Discover real-world resources to master the gardening skills you need for your personalized plan
         </p>
-        <Button asChild variant="outline" className="mb-8 border-2 border-white bg-white text-sbtp-green-700 hover:bg-sbtp-green-50 shadow-md text-lg px-8 py-6">
-          <Link to="/education">
-            <BookOpen className="mr-2 h-5 w-5" />
-            🌱 Explore All Education Resources
-          </Link>
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
