@@ -16,7 +16,100 @@ interface CSVLocation {
   additional_info?: string;
 }
 
-// Parse CSV data into MapLocation format
+// Parse comprehensive CSV with multiple types
+const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
+  const lines = csvText.trim().split('\n');
+  if (lines.length < 2) {
+    console.warn('No data found in comprehensive CSV');
+    return [];
+  }
+  
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  console.log('📊 Parsing comprehensive CSV, headers:', headers);
+  
+  const locations: MapLocation[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
+    
+    // Enhanced CSV parser - handles quotes and commas better
+    const values: string[] = [];
+    let currentValue = '';
+    let inQuotes = false;
+    
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(currentValue.trim());
+        currentValue = '';
+      } else {
+        currentValue += char;
+      }
+    }
+    values.push(currentValue.trim());
+    
+    const row: any = {};
+    headers.forEach((header, j) => {
+      row[header] = values[j] || '';
+    });
+    
+    const lat = parseFloat(row.lat);
+    const lng = parseFloat(row.long);
+    
+    if (isNaN(lat) || isNaN(lng)) {
+      continue;
+    }
+    
+    // Map type from CSV to MapLocation type
+    const typeMapping: Record<string, MapLocation['type']> = {
+      'community_fridge': 'fridge',
+      'community_garden': 'garden',
+      'farmers_market': 'market',
+      'food_bank': 'foodbank',
+      'farm': 'farm',
+      'urban_farm': 'urbanfarm',
+      'csa': 'csa',
+      'local_business': 'business'
+    };
+    
+    const mappedType = typeMapping[row.type] || 'garden';
+    
+    // Build details from various fields
+    const detailsParts = [];
+    if (row.description) detailsParts.push(row.description);
+    if (row.owner) detailsParts.push(`Owner: ${row.owner}`);
+    if (row.local_items_selling) detailsParts.push(`Selling: ${row.local_items_selling}`);
+    if (row.contact_information) detailsParts.push(`Contact: ${row.contact_information}`);
+    
+    const location: MapLocation = {
+      id: `comprehensive-${i}`,
+      name: row.name || 'Unnamed Location',
+      type: mappedType,
+      description: row.description || row.address || '',
+      tags: [mappedType, row.neighborhood, row.owner].filter(Boolean),
+      lngLat: [lng, lat] as [number, number],
+      address: row.address,
+      website: row.social_media_website1 || row.social_media_website2,
+      details: detailsParts.join('\n') || undefined,
+      borough: row.neighborhood
+    };
+    
+    // Parse operating hours
+    if (row.open_hours && row.open_hours !== '24/7') {
+      location.operatingHours = { monday: row.open_hours };
+    }
+    
+    locations.push(location);
+  }
+  
+  console.log(`📍 Parsed ${locations.length} locations from comprehensive CSV`);
+  return locations;
+};
+
+// Legacy parser for old CSV format
 const parseCSVToLocations = (csvText: string, locationType: MapLocation['type']): MapLocation[] => {
   const lines = csvText.trim().split('\n');
   if (lines.length < 2) {
@@ -143,66 +236,32 @@ const fetchFoodBanks = async (): Promise<MapLocation[]> => {
   }
 };
 
-// Enhanced data fetcher that focuses on the 4 main processed CSV files
+// Fetch comprehensive NYC food access data
+const fetchComprehensiveData = async (): Promise<MapLocation[]> => {
+  try {
+    console.log('🔄 Fetching comprehensive NYC food access data...');
+    const response = await fetch('/processed/nyc_food_access_data_COMPLETE.csv');
+    if (!response.ok) throw new Error('Failed to fetch comprehensive data');
+    const csvText = await response.text();
+    const result = parseComprehensiveCSV(csvText);
+    console.log('✅ Comprehensive data loaded:', result.length);
+    return result;
+  } catch (error) {
+    console.error('Error fetching comprehensive data:', error);
+    return [];
+  }
+};
+
+// Enhanced data fetcher that prioritizes the comprehensive CSV
 export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
-    console.log('🌱 Fetching enhanced map data from 4 main processed CSV files...');
+    console.log('🌱 Fetching enhanced map data from comprehensive CSV...');
     
     const allLocations: MapLocation[] = [];
     
-    // Load each specific CSV file with its corresponding type
-    const csvSources = [
-      { 
-        path: '/processed/complete_comprehensive_food_access.csv', 
-        name: 'Complete Comprehensive Food Access',
-        parser: parseCSVFromMixedTypes
-      },
-      { 
-        path: '/processed/comprehensive_community_fridges.csv', 
-        name: 'Community Fridges',
-        parser: (csvText: string) => parseCSVToLocations(csvText, 'fridge')
-      },
-      { 
-        path: '/processed/farmers_markets.csv', 
-        name: 'Farmers Markets',
-        parser: (csvText: string) => parseCSVToLocations(csvText, 'market')
-      },
-      { 
-        path: '/processed/food_banks.csv', 
-        name: 'Food Banks',
-        parser: (csvText: string) => parseCSVToLocations(csvText, 'foodbank')
-      }
-    ];
-    
-    // Load each CSV file with proper parsing
-    for (const source of csvSources) {
-      try {
-        console.log(`🔄 Loading ${source.name} from ${source.path}...`);
-        const response = await fetch(source.path);
-        if (response.ok) {
-          const csvText = await response.text();
-          const locations = source.parser(csvText);
-          
-          if (locations.length > 0) {
-            allLocations.push(...locations);
-            console.log(`✅ Loaded ${locations.length} locations from ${source.name}`);
-            
-            // Log some example entries for debugging
-            const sampleCount = Math.min(3, locations.length);
-            for (let i = 0; i < sampleCount; i++) {
-              const loc = locations[i];
-              console.log(`   📍 Example: ${loc.name} (${loc.type}) at [${loc.lngLat[0]}, ${loc.lngLat[1]}]`);
-            }
-          } else {
-            console.warn(`⚠️ No valid locations found in ${source.name}`);
-          }
-        } else {
-          console.warn(`⚠️ Could not load ${source.name}: ${response.status}`);
-        }
-      } catch (error) {
-        console.error(`❌ Error loading ${source.name}:`, error);
-      }
-    }
+    // Primary source: comprehensive CSV with all data
+    const comprehensiveData = await fetchComprehensiveData();
+    allLocations.push(...comprehensiveData);
     
     console.log(`📊 Total locations loaded before deduplication: ${allLocations.length}`);
     
