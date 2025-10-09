@@ -167,34 +167,42 @@ const generateSpotlightForLocation = (location: MapLocation): CommunitySpotlight
   };
 };
 
-let allLocationsCache: MapLocation[] | null = null;
-let spotlightLocationsCache: CommunitySpotlight[] | null = null;
+let allLocationsCache: { data: MapLocation[], timestamp: number } | null = null;
+let spotlightLocationsCache: { data: CommunitySpotlight[], timestamp: number } | null = null;
+
+const CACHE_DURATION = 1000 * 60 * 60; // 1 hour cache
 
 /**
  * Get all spotlight-worthy locations from the map
  * Prioritizes gardens, farms, and urban farms as they make the best showcase content
  */
 export const getAllSpotlightLocations = async (): Promise<CommunitySpotlight[]> => {
-  if (spotlightLocationsCache) {
-    return spotlightLocationsCache;
+  const now = Date.now();
+  
+  // Check if cache is valid (less than 1 hour old)
+  if (spotlightLocationsCache && (now - spotlightLocationsCache.timestamp) < CACHE_DURATION) {
+    return spotlightLocationsCache.data;
   }
   
-  if (!allLocationsCache) {
-    allLocationsCache = await fetchEnhancedMapData();
+  // Fetch fresh data if cache is stale or doesn't exist
+  if (!allLocationsCache || (now - allLocationsCache.timestamp) >= CACHE_DURATION) {
+    const freshData = await fetchEnhancedMapData();
+    allLocationsCache = { data: freshData, timestamp: now };
   }
   
   // Filter for showcase-worthy location types
   const showcaseTypes: MapLocation['type'][] = ['garden', 'farm', 'urbanfarm', 'market'];
-  const showcaseLocations = allLocationsCache
+  const showcaseLocations = allLocationsCache.data
     .filter(loc => showcaseTypes.includes(loc.type))
     .sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically for consistency
   
   // Generate spotlights for all locations
-  spotlightLocationsCache = showcaseLocations.map(generateSpotlightForLocation);
+  const spotlights = showcaseLocations.map(generateSpotlightForLocation);
+  spotlightLocationsCache = { data: spotlights, timestamp: now };
   
-  console.log(`📍 Generated ${spotlightLocationsCache.length} community spotlights from map data`);
+  console.log(`📍 Generated ${spotlights.length} community spotlights from map data`);
   
-  return spotlightLocationsCache;
+  return spotlights;
 };
 
 /**
