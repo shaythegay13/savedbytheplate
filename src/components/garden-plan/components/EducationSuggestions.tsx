@@ -24,7 +24,10 @@ const EducationSuggestions: React.FC<EducationSuggestionsProps> = ({ plantRecomm
     try {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke('get-education-resources', {
-        body: { plantRecommendations }
+        body: { 
+          plantRecommendations,
+          limit: 6 
+        }
       });
 
       if (error) {
@@ -32,9 +35,9 @@ const EducationSuggestions: React.FC<EducationSuggestionsProps> = ({ plantRecomm
         return;
       }
 
-      setArticles(data?.articles || []);
-      setVideos(data?.videos || []);
-      setCourses(data?.courses || []);
+      setArticles(data?.articles?.slice(0, 6) || []);
+      setVideos(data?.videos?.slice(0, 6) || []);
+      setCourses(data?.courses?.slice(0, 6) || []);
     } catch (error) {
       console.error('Error fetching education resources:', error);
     } finally {
@@ -44,15 +47,19 @@ const EducationSuggestions: React.FC<EducationSuggestionsProps> = ({ plantRecomm
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">Ready to Upskill Yourself?</h2>
-        <p className="text-muted-foreground mb-6">
+      <div className="text-center border-4 border-white rounded-lg p-6 bg-gradient-to-br from-sbtp-blue-50 to-sbtp-green-50 shadow-lg">
+        <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2 flex items-center justify-center gap-3">
+          <span className="text-4xl">🎓</span>
+          Ready to Upskill?
+          <span className="text-4xl">📚</span>
+        </h2>
+        <p className="text-sbtp-brown-600 mb-4 text-lg">
           Discover real-world resources to master the gardening skills you need for your personalized plan
         </p>
-        <Button asChild variant="outline" className="mb-8">
+        <Button asChild variant="outline" className="mb-8 border-2 border-white bg-white text-sbtp-green-700 hover:bg-sbtp-green-50 shadow-md text-lg px-8 py-6">
           <Link to="/education">
-            <BookOpen className="mr-2 h-4 w-4" />
-            View All Education Resources
+            <BookOpen className="mr-2 h-5 w-5" />
+            🌱 Explore All Education Resources
           </Link>
         </Button>
       </div>

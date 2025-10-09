@@ -106,12 +106,6 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           companionPlantingData={companionPlantingData}
         />
 
-        <SeasonalRecommendations 
-          formData={formData}
-          onPlantSelect={(plants) => console.log('Seasonal plants selected:', plants)}
-          plantRecommendations={currentPlantRecommendations}
-        />
-
         {formData && (
           <IntelligentGardenPlotVisualizer 
             gardenLayout={currentGardenLayout}
@@ -121,17 +115,17 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
           />
         )}
 
-        <EnhancedGardenLayout gardenLayout={currentGardenLayout} />
+        <ExpertTips expertTips={expertTips} careInstructions={careInstructions} />
+
+        <SeasonalRecommendations 
+          formData={formData}
+          onPlantSelect={(plants) => console.log('Seasonal plants selected:', plants)}
+          plantRecommendations={currentPlantRecommendations}
+        />
 
         <MultiYearPlanning 
           gardenSections={currentGardenLayout}
         />
-
-        <PlantingCalendarComponent plantingCalendar={plantingCalendar} />
-
-        <CareInstructions careInstructions={careInstructions} />
-
-        <ExpertTips expertTips={expertTips} />
 
         <PlantDiseaseIdentifier />
 

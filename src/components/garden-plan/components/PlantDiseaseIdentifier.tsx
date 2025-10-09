@@ -53,29 +53,15 @@ const PlantDiseaseIdentifier: React.FC = () => {
         throw new Error(error.message);
       }
 
-      setAnalysis(data);
+      // Ensure we have valid analysis data before setting it
+      if (data && data.disease) {
+        setAnalysis(data);
+      } else {
+        throw new Error('Invalid analysis response');
+      }
     } catch (err: any) {
       console.error('Disease analysis error:', err);
-      // Fallback to mock analysis for demo
-      setAnalysis({
-        disease: 'Tomato Blight',
-        confidence: 0.87,
-        description: 'Early blight is a common fungal disease affecting tomato plants, characterized by dark spots with concentric rings on leaves.',
-        treatment: [
-          'Remove affected leaves immediately',
-          'Apply fungicide containing copper or chlorothalonil',
-          'Ensure proper air circulation around plants',
-          'Water at soil level to avoid wetting leaves'
-        ],
-        prevention: [
-          'Rotate crops annually',
-          'Provide adequate spacing between plants',
-          'Water early in the day',
-          'Apply mulch to prevent soil splash',
-          'Choose disease-resistant varieties'
-        ],
-        severity: 'medium'
-      });
+      setError('Unable to analyze the image at this time. Please try uploading a clearer photo with better lighting focused on the affected plant parts.');
     } finally {
       setIsAnalyzing(false);
     }

@@ -49,7 +49,7 @@ const PDFExport: React.FC<PDFExportProps> = ({ contentRef }) => {
     <div className="flex justify-end space-x-4 print:hidden">
       <Button
         onClick={exportToPDF}
-        className="bg-sbtp-blue-600 hover:bg-sbtp-blue-700 text-white"
+        className="bg-white hover:bg-slate-50 text-sbtp-green-700 border-2 border-sbtp-green-600"
       >
         <Download className="h-4 w-4 mr-2" />
         Export PDF

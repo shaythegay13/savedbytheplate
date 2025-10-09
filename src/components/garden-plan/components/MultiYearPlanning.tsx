@@ -207,24 +207,42 @@ const MultiYearPlanning: React.FC<MultiYearPlanningProps> = ({
               ))}
             </div>
 
-            <Card className="border-sbtp-blue/20 bg-sbtp-blue/5">
+            <Card className="border-2 border-sbtp-yellow/40 bg-gradient-to-br from-sbtp-yellow/10 to-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-base text-sbtp-green-700">Crop Family Quick Reference</CardTitle>
+                <CardTitle className="text-lg text-sbtp-green-700 flex items-center gap-2">
+                  <span className="text-2xl">🌾</span>
+                  Crop Family Quick Reference
+                </CardTitle>
+                <p className="text-sm text-sbtp-brown-600">Know your plant families for effective rotation!</p>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {Object.entries(cropFamilies).map(([family, crops]) => (
-                    <div key={family} className="space-y-2">
-                      <h5 className="font-medium text-sbtp-green-600">{family}</h5>
-                      <div className="flex flex-wrap gap-1">
-                        {crops.map(crop => (
-                          <Badge key={crop} variant="outline" className="text-xs">
-                            {crop}
-                          </Badge>
-                        ))}
+                  {Object.entries(cropFamilies).map(([family, crops]) => {
+                    const familyEmojis: Record<string, string> = {
+                      'Nightshade': '🍅',
+                      'Legume': '🫘',
+                      'Brassica': '🥬',
+                      'Root': '🥕',
+                      'Allium': '🧅',
+                      'Cucurbit': '🥒'
+                    };
+                    
+                    return (
+                      <div key={family} className="bg-white rounded-lg p-4 border-2 border-sbtp-green-200 hover:border-sbtp-green-400 transition-all hover:shadow-md">
+                        <h5 className="font-semibold text-sbtp-green-700 mb-3 flex items-center gap-2">
+                          <span className="text-2xl">{familyEmojis[family]}</span>
+                          {family}
+                        </h5>
+                        <div className="flex flex-wrap gap-2">
+                          {crops.map(crop => (
+                            <Badge key={crop} variant="outline" className="bg-sbtp-green-50 border-sbtp-green-300 text-sbtp-green-700 hover:bg-sbtp-green-100">
+                              {crop}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
