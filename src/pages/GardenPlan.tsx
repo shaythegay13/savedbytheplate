@@ -33,33 +33,9 @@ const GardenPlan = () => {
   }, []);
 
   const checkSubscription = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        setCheckingSubscription(false);
-        setIsSubscribed(false);
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('check-subscription', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('Error checking subscription:', error);
-        setIsSubscribed(false);
-      } else {
-        setIsSubscribed(data?.subscribed || false);
-      }
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-      setIsSubscribed(false);
-    } finally {
-      setCheckingSubscription(false);
-    }
+    // TEMPORARY: Bypass subscription check
+    setIsSubscribed(true);
+    setCheckingSubscription(false);
   };
 
   const handleLocationSubmit = (location: any) => {
