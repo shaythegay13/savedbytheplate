@@ -28,6 +28,12 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
   console.log('📊 Parsing comprehensive CSV, headers:', headers);
   
   const locations: MapLocation[] = [];
+  let skippedCount = 0;
+  let skippedReasons: Record<string, number> = {
+    'missing_coords': 0,
+    'invalid_coords': 0,
+    'missing_name': 0
+  };
   
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
@@ -56,10 +62,33 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
       row[header] = values[j] || '';
     });
     
+    // Skip if no name
+    if (!row.name || row.name.trim() === '') {
+      skippedCount++;
+      skippedReasons['missing_name']++;
+      continue;
+    }
+    
+    // Parse coordinates
     const lat = parseFloat(row.lat);
     const lng = parseFloat(row.long);
     
+    // Skip if coordinates are missing or invalid
+    if (!row.lat || !row.long || row.lat.trim() === '' || row.long.trim() === '') {
+      skippedCount++;
+      skippedReasons['missing_coords']++;
+      if (i <= 10 || skippedCount <= 5) {
+        console.warn(`⚠️ Skipping "${row.name}" - missing coordinates`);
+      }
+      continue;
+    }
+    
     if (isNaN(lat) || isNaN(lng)) {
+      skippedCount++;
+      skippedReasons['invalid_coords']++;
+      if (i <= 10 || skippedCount <= 5) {
+        console.warn(`⚠️ Skipping "${row.name}" - invalid coordinates: lat=${row.lat}, lng=${row.long}`);
+      }
       continue;
     }
     
@@ -105,7 +134,12 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
     locations.push(location);
   }
   
-  console.log(`📍 Parsed ${locations.length} locations from comprehensive CSV`);
+  console.log(`📍 Parsed ${locations.length} valid locations from comprehensive CSV (${lines.length - 1} total rows)`);
+  console.log(`⚠️ Skipped ${skippedCount} entries:`);
+  console.log(`   - Missing coordinates: ${skippedReasons['missing_coords']}`);
+  console.log(`   - Invalid coordinates: ${skippedReasons['invalid_coords']}`);
+  console.log(`   - Missing name: ${skippedReasons['missing_name']}`);
+  
   return locations;
 };
 
