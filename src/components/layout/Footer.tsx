@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
   const isWaitingList = location.pathname === "/waiting-list";
+  const isLegalPage = location.pathname === "/terms" || location.pathname === "/privacy";
   const currentYear = new Date().getFullYear();
 
   // Choose layout class dynamically
@@ -29,8 +30,8 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Conditionally show these columns if NOT on waiting list */}
-          {!isWaitingList && (
+          {/* Conditionally show these columns if NOT on waiting list or legal pages */}
+          {!isWaitingList && !isLegalPage && (
             <>
               <div>
                 <h4 className="text-lg font-semibold mb-4">Quick Links</h4>

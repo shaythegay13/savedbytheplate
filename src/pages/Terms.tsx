@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // Terms of Service page with working in-page anchor links
 // NOTE: This replaces previously pasted raw HTML that broke JSX parsing
@@ -76,8 +77,19 @@ const Terms: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <header className="mb-8">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6">
+        <Link to="/waiting-list" className="inline-flex items-center text-sbtp-green-700 hover:text-sbtp-green-800 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+            <path d="m12 19-7-7 7-7"/>
+            <path d="M19 12H5"/>
+          </svg>
+          Back to Saved by the Plate
+        </Link>
+      </div>
+      
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        <header className="mb-8">
         <h1 className="text-3xl font-bold text-sbtp-green-800">Terms of Service</h1>
         <p className="text-sm text-sbtp-brown-600 mt-2">Last updated: October 09, 2025</p>
       </header>
@@ -512,6 +524,7 @@ const Terms: React.FC = () => {
       <aside className="mt-12 text-sm text-sbtp-brown-600">
         Note: Links above use in-page anchors and smooth scrolling. If you reached this page via a direct #hash link, we auto-scrolled to the matching section.
       </aside>
+      </div>
     </div>
   );
 };
