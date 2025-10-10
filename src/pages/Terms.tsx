@@ -3,29 +3,29 @@ import React, { useEffect } from "react";
 // Terms of Service page with working in-page anchor links
 // NOTE: This replaces previously pasted raw HTML that broke JSX parsing
 
-const sections: { id: string; title: string; }[] = [
-  { id: "agreement", title: "1. Agreement to Our Legal Terms" },
-  { id: "services", title: "2. Our Services" },
-  { id: "ip", title: "3. Intellectual Property Rights" },
-  { id: "userreps", title: "4. User Representations" },
-  { id: "userreg", title: "5. User Registration" },
-  { id: "prohibited", title: "6. Prohibited Activities" },
+const sections: { id: string; title: string }[] = [
+  { id: "services", title: "1. Our Services" },
+  { id: "ip", title: "2. Intellectual Property Rights" },
+  { id: "user-representations", title: "3. User Representations" },
+  { id: "user-registration", title: "4. User Registration" },
+  { id: "subscriptions", title: "5. Subscriptions" },
+  { id: "prohibited-activities", title: "6. Prohibited Activities" },
   { id: "ugc", title: "7. User Generated Contributions" },
-  { id: "license", title: "8. Contribution License" },
-  { id: "thirdparty", title: "9. Third-Party Websites and Content" },
-  { id: "advertisers", title: "10. Advertisers" },
-  { id: "site_mgmt", title: "11. Site Management" },
-  { id: "pp_and_disclosure", title: "12. Privacy Policy" },
-  { id: "dmca", title: "13. Digital Millennium Copyright Act (DMCA)" },
+  { id: "contribution-license", title: "8. Contribution License" },
+  { id: "reviews", title: "9. Guidelines for Reviews" },
+  { id: "third-party", title: "10. Third-Party Websites and Content" },
+  { id: "services-management", title: "11. Services Management" },
+  { id: "privacy", title: "12. Privacy Policy" },
+  { id: "copyright", title: "13. Copyright Infringements" },
   { id: "term", title: "14. Term and Termination" },
-  { id: "mods", title: "15. Modifications and Interruptions" },
-  { id: "law", title: "16. Governing Law" },
-  { id: "disputes", title: "17. Dispute Resolution" },
+  { id: "modifications", title: "15. Modifications and Interruptions" },
+  { id: "governing-law", title: "16. Governing Law" },
+  { id: "dispute-resolution", title: "17. Dispute Resolution" },
   { id: "corrections", title: "18. Corrections" },
   { id: "disclaimer", title: "19. Disclaimer" },
   { id: "liability", title: "20. Limitations of Liability" },
   { id: "indemnification", title: "21. Indemnification" },
-  { id: "userdata", title: "22. User Data" },
+  { id: "user-data", title: "22. User Data" },
   { id: "electronic", title: "23. Electronic Communications, Transactions, and Signatures" },
   { id: "california", title: "24. California Users and Residents" },
   { id: "misc", title: "25. Miscellaneous" },
@@ -79,7 +79,7 @@ const Terms: React.FC = () => {
     <div className="max-w-5xl mx-auto px-4 py-10">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-sbtp-green-800">Terms of Service</h1>
-        <p className="text-sm text-sbtp-brown-600 mt-2">Last updated: October 9, 2025</p>
+        <p className="text-sm text-sbtp-brown-600 mt-2">Last updated: October 09, 2025</p>
       </header>
 
       <nav aria-label="Table of contents" className="mb-10">
