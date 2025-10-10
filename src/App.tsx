@@ -17,6 +17,8 @@ import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import LegalPrivacy from "./pages/LegalPrivacy";
+import LegalTerms from "./pages/LegalTerms";
 import ForumCategory from "./pages/ForumCategory";
 import ForumDiscussion from "./pages/ForumDiscussion";
 import NewDiscussion from "./pages/NewDiscussion";
@@ -57,6 +59,8 @@ const App = () => (
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/legal/privacy" element={<LegalPrivacy />} />
+              <Route path="/legal/terms" element={<LegalTerms />} />
               
               <Route path="/forum" element={<Navigate to="/community" replace />} />
               <Route path="/forum/category/:slug" element={<ForumCategory />} />

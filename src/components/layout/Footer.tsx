@@ -92,8 +92,8 @@ const Footer = () => {
         <div className="border-t border-sbtp-green-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-400">© {currentYear} Saved by the Plate. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
-            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to={isWaitingList ? "/legal/terms" : "/terms"} className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to={isWaitingList ? "/legal/privacy" : "/privacy"} className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </div>
