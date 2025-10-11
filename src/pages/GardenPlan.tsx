@@ -24,6 +24,7 @@ const GardenPlan = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [gardenPlan, setGardenPlan] = useState<GardenPlanType | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({
     location: {}
   });
@@ -61,11 +62,21 @@ const GardenPlan = () => {
   const handlePhotoLayoutComplete = async (layout: any, uploadedImage?: any) => {
     const updatedFormData = { ...formData, photoLayout: layout, uploadedImage };
     setFormData(updatedFormData);
-    await generateGardenPlan(updatedFormData);
+    try {
+      setErrorMessage(null);
+      await generateGardenPlan(updatedFormData);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
+    }
   };
 
   const handleSkipPhoto = async () => {
-    await generateGardenPlan(formData);
+    try {
+      setErrorMessage(null);
+      await generateGardenPlan(formData);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
+    }
   };
 
   const generateGardenPlan = async (finalFormData: any) => {
@@ -116,24 +127,8 @@ const GardenPlan = () => {
       setGardenPlan(aiPlan);
     } catch (error) {
       console.error('Error generating garden plan:', error);
-      console.log('Falling back to mock plan');
-      // Fallback to mock plan
-      const mockPlan = generateMockPlan({
-        spaceType: finalFormData.spaceType || 'garden',
-        spaceSize: finalFormData.spaceSize || 'medium',
-        sunlight: finalFormData.sunlight || 'full-sun',
-        soil_contaminated: finalFormData.soil_contaminated || 'no',
-        soil_type: finalFormData.soil_type || 'loamy',
-        growing_options: finalFormData.growing_options || 'traditional',
-        season: finalFormData.season || 'spring',
-        rainfall: finalFormData.rainfall || 'moderate',
-        experience_level: finalFormData.experience_level || 'beginner',
-        preferred_plants: finalFormData.preferred_plants || 'vegetables',
-        goals: finalFormData.goals || 'food production',
-        space_description: finalFormData.space_description || '',
-        time_commitment: finalFormData.time_commitment || 'moderate',
-      });
-      setGardenPlan(mockPlan);
+      // Don't fall back to mock plan - throw the error to show it to user
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -211,6 +206,31 @@ const GardenPlan = () => {
               )}
               {isLoading && (
                 <LoadingState />
+              )}
+              {errorMessage && !isLoading && (
+                <div className="bg-destructive/10 border border-destructive rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-destructive mb-3">Backend Error</h3>
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">The Python backend returned an error:</p>
+                    <pre className="bg-slate-900 text-white p-4 rounded text-xs overflow-x-auto whitespace-pre-wrap">
+                      {errorMessage}
+                    </pre>
+                    <div className="text-sm mt-4">
+                      <p className="font-medium mb-2">Please check:</p>
+                      <ol className="list-decimal ml-4 space-y-1">
+                        <li>Backend is deployed and running</li>
+                        <li>Backend expects the correct payload structure</li>
+                        <li>All required fields are being sent</li>
+                      </ol>
+                    </div>
+                    <Button 
+                      onClick={() => setErrorMessage(null)}
+                      className="w-full mt-4"
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                </div>
               )}
               {gardenPlan && (
                 <div className="space-y-6">
