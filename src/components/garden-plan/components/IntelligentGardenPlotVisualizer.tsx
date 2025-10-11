@@ -69,6 +69,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
           center: { lat: coords.lat, lng: coords.lng },
           zoom: coords.zoom,
           mapTypeId: 'satellite',
+          mapId: 'food-access-map', // Required for Advanced Markers and satellite view
           tilt: 0,
           heading: 0,
           mapTypeControl: true,

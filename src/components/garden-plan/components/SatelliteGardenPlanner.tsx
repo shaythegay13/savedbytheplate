@@ -42,6 +42,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
           center: initialCenter,
           zoom: 19,
           mapTypeId: 'satellite',
+          mapId: 'food-access-map', // Required for Advanced Markers
           tilt: 45,
           mapTypeControl: false,
           zoomControl: true,
