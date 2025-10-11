@@ -28,20 +28,32 @@ export const loadGoogleMaps = (): Promise<void> => {
       const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
       if (existingScript) existingScript.remove();
 
-      // Get key/client from Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('get-google-maps-key', {
-        method: 'GET',
-      });
+      // Get key/client from Supabase Edge Function (optional)
+      let value: string | undefined;
+      let type: 'apiKey' | 'clientId' = 'apiKey';
+      try {
+        const { data, error } = await supabase.functions.invoke('get-google-maps-key', {
+          method: 'GET',
+        });
+        if (!error && data?.value) {
+          value = String(data.value);
+          type = (data.type === 'clientId' ? 'clientId' : 'apiKey');
+        }
+      } catch (e) {
+        // ignore and fallback below
+      }
 
-      if (error) throw error;
-      const value: string | undefined = data?.value;
-      const type: 'apiKey' | 'clientId' = data?.type ?? 'apiKey';
+      // Fallback to static key in MapConfig if Supabase secret isn't usable
+      if (!value || !String(value).startsWith('AIza')) {
+        value = GOOGLE_MAPS_API_KEY;
+        type = 'apiKey';
+      }
 
       if (!value) throw new Error('Missing Google Maps credential');
 
       const script = document.createElement('script');
 
-      // Prefer API key flow; OAuth clientId flow is only supported on specific accounts
+      // Prefer API key flow; OAuth clientId (from GCP OAuth) is NOT supported for Maps JS
       const src = type === 'apiKey'
         ? `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(value)}&libraries=marker&v=weekly&auth_referrer_policy=origin`
         : `https://maps.googleapis.com/maps/api/js?client=${encodeURIComponent(value)}&libraries=marker&v=weekly`;
