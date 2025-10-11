@@ -301,51 +301,53 @@ serve(async (req) => {
 // Helper functions to parse the text-based plan into structured data
 function extractPlantRecommendations(plan: string): any[] {
   const recommendations: any[] = [];
-
-  // Helper to escape crop names for regex
   const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   
-  // 1) Extract the "Recommended Crops (top matches)" list as a baseline
-  const recommendedCropsMatch = plan.match(/Recommended Crops \(top matches\):([\s\S]*?)(?=📊|={3,}|\n\n)/);
-  const mainCrops: string[] = [];
+  // 1) Extract ALL recommended crops from main list
+  const recommendedCropsMatch = plan.match(/Recommended Crops \(top matches\):([\s\S]*?)(?=📊|={3,})/);
+  const mainCrops: Array<{name: string, description: string}> = [];
+  
   if (recommendedCropsMatch) {
     const cropLines = recommendedCropsMatch[1]
       .split('\n')
       .filter(line => line.trim().startsWith('-'));
+    
     cropLines.forEach(line => {
-      const cropName = line.match(/- ([^:]+):/);
-      if (cropName) {
-        mainCrops.push(cropName[1].trim());
+      const match = line.match(/- ([^:]+): (.+)/);
+      if (match) {
+        mainCrops.push({
+          name: match[1].trim(),
+          description: match[2].trim()
+        });
       }
     });
   }
 
-  // 2) Extract detailed variety recommendations sections
+  // 2) Extract detailed variety information (if available) and group by crop
+  const cropVarieties = new Map<string, any[]>();
   const varietySections = plan.split(/={70,}\nVARIETY RECOMMENDATIONS: ([A-Z\s]+)\n={70,}/);
+  
   for (let i = 1; i < varietySections.length; i += 2) {
     const cropType = varietySections[i].trim();
     const sectionContent = varietySections[i + 1];
+    const varieties: any[] = [];
 
-    // Extract all varieties for this crop type
-    const varieties = sectionContent.split(/📦 /).slice(1);
-    varieties.forEach(varietyText => {
+    const varietyBlocks = sectionContent.split(/📦 /).slice(1);
+    varietyBlocks.forEach(varietyText => {
       const lines = varietyText.split('\n').map(l => l.trim()).filter(l => l);
       if (lines.length === 0) return;
 
       const varietyName = lines[0];
-      const description = lines[1] || '';
-
+      const varietyDesc = lines[1] || '';
       const difficulty = extractField(varietyText, 'Difficulty');
       const daysMatch = varietyText.match(/Days to Maturity: (\d+) days/);
       const spacing = extractField(varietyText, 'Space Needed');
       const yieldInfo = extractField(varietyText, 'Expected Yield');
       const careTips = extractCareFromVariety(varietyText);
 
-      recommendations.push({
-        name: `${cropType} - ${varietyName}`,
-        variety: varietyName,
-        cropType: cropType,
-        description: description,
+      varieties.push({
+        varietyName,
+        varietyDesc,
         difficulty: difficulty || 'Easy',
         daysToHarvest: daysMatch ? parseInt(daysMatch[1]) : 60,
         spacing: spacing || '12 inches',
@@ -353,30 +355,30 @@ function extractPlantRecommendations(plan: string): any[] {
         careInstructions: careTips,
       });
     });
+
+    cropVarieties.set(cropType.toLowerCase(), varieties);
   }
 
-  // 3) Merge: add baseline entries for top-matched crops not covered by varieties
-  const hasCrop = (crop: string) =>
-    recommendations.some(r =>
-      r.cropType.toLowerCase().includes(crop.toLowerCase()) ||
-      r.name.toLowerCase().includes(crop.toLowerCase())
-    );
-
+  // 3) Create one recommendation per crop, merging variety details
   mainCrops.forEach(crop => {
-    if (!hasCrop(crop)) {
-      const descMatch = plan.match(new RegExp(`- ${escapeRegExp(crop)}: ([^\\n]+)`));
-      recommendations.push({
-        name: crop,
-        variety: crop,
-        cropType: crop,
-        description: descMatch ? descMatch[1] : '',
-        difficulty: 'Easy',
-        daysToHarvest: 60,
-        spacing: '12 inches',
-        yield: 'Varies',
-        careInstructions: '',
-      });
-    }
+    const cropNameLower = crop.name.toLowerCase();
+    const varieties = cropVarieties.get(cropNameLower) || [];
+    
+    // If we have varieties, use the first variety's details as defaults
+    const firstVariety = varieties[0];
+    
+    recommendations.push({
+      name: crop.name,
+      variety: varieties.length > 0 ? varieties.map(v => v.varietyName).join(', ') : crop.name,
+      cropType: crop.name,
+      description: crop.description,
+      difficulty: firstVariety?.difficulty || 'Easy',
+      daysToHarvest: firstVariety?.daysToHarvest || 60,
+      spacing: firstVariety?.spacing || '12 inches',
+      yield: firstVariety?.yield || 'Varies',
+      careInstructions: firstVariety?.careInstructions || '',
+      varieties: varieties, // Include all variety details
+    });
   });
 
   return recommendations;
