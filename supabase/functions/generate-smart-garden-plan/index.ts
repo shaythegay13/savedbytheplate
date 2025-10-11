@@ -42,14 +42,41 @@ serve(async (req) => {
 
     const formData: GardenPlanRequest = await req.json();
 
+    // Fetch climate data based on coordinates
+    let climateData = null;
+    if (formData.latitude && formData.longitude) {
+      try {
+        const { data: climate, error: climateError } = await supabase.functions.invoke('get-climate-data', {
+          body: { 
+            latitude: formData.latitude, 
+            longitude: formData.longitude 
+          }
+        });
+        
+        if (!climateError && climate) {
+          climateData = climate;
+          console.log('Climate data fetched:', climateData);
+        }
+      } catch (error) {
+        console.error('Error fetching climate data:', error);
+      }
+    }
+
+    // Determine soil type and rainfall from climate data
+    const soil_type = climateData ? determineSoilType(climateData) : 'loamy';
+    const rainfall = climateData ? determineRainfall(climateData) : 'moderate';
+    const soil_contaminated = formData.spaceType?.includes('container') || 
+                              formData.spaceType?.includes('raised-bed') || 
+                              formData.spaceType?.includes('hydroponic');
+
     const requestPayload = {
       space_type: formData.spaceType,
       space_size: formData.spaceSize,
       sunlight: formData.sunlight,
-      soil_contaminated: formData.soil_contaminated === 'yes',
-      soil_type: formData.soil_type,
+      soil_contaminated: soil_contaminated,
+      soil_type: soil_type,
       growing_options: formData.growing_options,
-      rainfall: formData.rainfall,
+      rainfall: rainfall,
       season: formData.season,
       experience_level: formData.experience_level,
       goals: formData.goals,
@@ -59,6 +86,7 @@ serve(async (req) => {
       latitude: formData.latitude,
       longitude: formData.longitude,
       city: formData.city,
+      hardiness_zone: climateData?.hardiness_zone,
       include_companion_planting: true,
       generate_layout_positions: true
     };
@@ -140,3 +168,26 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper function to determine soil type from climate data
+function determineSoilType(climateData: any): string {
+  const precipitation = climateData.precipitation_data?.annual_avg || 0;
+  
+  // High precipitation areas tend to have clay soil
+  if (precipitation > 50) return 'clay';
+  
+  // Low precipitation/arid areas tend to have sandy soil
+  if (precipitation < 20) return 'sandy';
+  
+  // Moderate precipitation areas often have loamy soil
+  return 'loamy';
+}
+
+// Helper function to determine rainfall from climate data
+function determineRainfall(climateData: any): string {
+  const precipitation = climateData.precipitation_data?.annual_avg || 0;
+  
+  if (precipitation < 20) return 'low';
+  if (precipitation > 50) return 'high';
+  return 'moderate';
+}

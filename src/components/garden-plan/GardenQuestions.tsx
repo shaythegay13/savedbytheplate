@@ -12,9 +12,6 @@ interface GardenQuestionsProps {
     spaceSize: string;
     sunlight: string;
     experience_level: string;
-    soil_contaminated: string;
-    soil_type: string;
-    rainfall: string;
     season: string[];
     time_commitment: string;
   }) => void;
@@ -27,9 +24,6 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
     spaceSize: '',
     sunlight: '',
     experience_level: '',
-    soil_contaminated: '',
-    soil_type: '',
-    rainfall: '',
     season: [] as string[],
     time_commitment: ''
   });
@@ -74,42 +68,6 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
         { value: 'partial-shade', label: 'Partial Shade (2-4 hours direct sunlight)' },
         { value: 'shade', label: 'Shade (less than 2 hours direct sunlight)' },
         { value: 'artificial', label: 'Artificial Light Only (grow lights)' }
-      ]
-    },
-    {
-      id: 'soil_contaminated',
-      icon: <ShieldCheck className="h-8 w-8 text-sbtp-green-600" />,
-      title: 'Is your soil potentially contaminated?',
-      description: 'Urban soil can contain lead or other contaminants',
-      options: [
-        { value: 'no', label: 'No - My soil is safe' },
-        { value: 'yes', label: 'Yes - I need container/raised bed solutions' },
-        { value: 'unknown', label: "I'm not sure" }
-      ]
-    },
-    {
-      id: 'soil_type',
-      icon: <Sprout className="h-8 w-8 text-sbtp-green-600" />,
-      title: 'What type of soil do you have?',
-      description: 'Soil type affects drainage and plant selection',
-      options: [
-        { value: 'sandy', label: 'Sandy (drains quickly)' },
-        { value: 'clay', label: 'Clay (heavy, drains slowly)' },
-        { value: 'loamy', label: 'Loamy (balanced, ideal)' },
-        { value: 'potting-mix', label: 'Potting Mix (container garden)' },
-        { value: 'unknown', label: "I don't know" }
-      ]
-    },
-    {
-      id: 'rainfall',
-      icon: <Droplets className="h-8 w-8 text-sbtp-green-600" />,
-      title: 'How much rainfall does your area get?',
-      description: 'This helps determine watering needs',
-      options: [
-        { value: 'low', label: 'Low (dry climate)' },
-        { value: 'moderate', label: 'Moderate (regular rain)' },
-        { value: 'high', label: 'High (rainy climate)' },
-        { value: 'indoor', label: 'Indoor/No natural rainfall' }
       ]
     },
     {
