@@ -100,22 +100,18 @@ const GardenPlanGenerator: React.FC = () => {
     } catch (error) {
       console.error('=== FRONTEND: Error Generating Garden Plan ===');
       console.error('Error:', error);
-      console.log('Falling back to mock plan...');
       
-      // Show user we're using mock data
-      setUsingMockData(true);
+      setIsLoading(false);
       
+      // Show the actual error instead of falling back to mock data
       toast({
-        title: "Using Sample Plan",
-        description: "AI service unavailable. Showing example garden plan instead.",
-        variant: "default",
+        title: "Backend Error",
+        description: error instanceof Error ? error.message : "Failed to generate garden plan",
+        variant: "destructive",
       });
       
-      // Fallback to mock plan
-      const mockPlan = generateMockPlan(formData);
-      setGardenPlan(mockPlan);
-    } finally {
-      setIsLoading(false);
+      // Set error details for display
+      setErrorDetails(error instanceof Error ? error.message : "Unknown error occurred");
     }
   };
 
@@ -129,33 +125,53 @@ const GardenPlanGenerator: React.FC = () => {
       <div className="space-y-6">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-sbtp-green-800 mb-2">
-            Your {usingMockData ? 'Sample' : 'AI-Enhanced Personalized'} Garden Plan
+            Your AI-Enhanced Personalized Garden Plan
           </h2>
           <p className="text-sbtp-brown-600">
-            {usingMockData 
-              ? 'This is an example plan. Try again in 30 seconds for an AI-powered plan tailored to your location.'
-              : "Here's your data-driven garden plan that gets smarter with every gardener who shares their experience"}
+            Here's your data-driven garden plan that gets smarter with every gardener who shares their experience
           </p>
         </div>
         
-        {usingMockData && errorDetails && (
-          <Alert variant="default" className="mb-6">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Using Sample Data</AlertTitle>
-            <AlertDescription>
-              {errorDetails}
-              <br />
-              <strong>To get a real AI-generated plan:</strong>
-              <ol className="list-decimal ml-4 mt-2">
-                <li>Wait 30-50 seconds for the backend to wake up</li>
-                <li>Try generating your plan again</li>
-                <li>If the issue persists, the Python backend may need redeployment</li>
-              </ol>
-            </AlertDescription>
-          </Alert>
-        )}
-        
         <GardenPlanResults {...gardenPlan} planId={gardenPlan.planId} formData={formData} />
+      </div>
+    );
+  }
+
+  // Show error if present
+  if (errorDetails && !isLoading) {
+    return (
+      <div className="space-y-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Backend Error</AlertTitle>
+          <AlertDescription className="mt-2">
+            <div className="space-y-2">
+              <p className="font-semibold">The Python backend returned an error:</p>
+              <pre className="bg-slate-900 text-white p-4 rounded text-xs overflow-x-auto">
+                {errorDetails}
+              </pre>
+              <p className="mt-4 text-sm">
+                Please check that:
+                <ol className="list-decimal ml-4 mt-2">
+                  <li>The backend is deployed and running</li>
+                  <li>The backend code expects the correct payload structure</li>
+                  <li>All required fields are being sent in the request</li>
+                </ol>
+              </p>
+            </div>
+          </AlertDescription>
+        </Alert>
+        <div className="flex justify-center">
+          <button 
+            onClick={() => {
+              setErrorDetails(null);
+              setGardenPlan(null);
+            }}
+            className="px-6 py-2 bg-sbtp-green-600 text-white rounded-lg hover:bg-sbtp-green-700"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
