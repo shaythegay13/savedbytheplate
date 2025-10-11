@@ -123,7 +123,7 @@ serve(async (req) => {
       rainfall: rainfall,
       season: formData.season,
       experience: formData.experience_level, // Backend expects "experience" not "experience_level"
-      crop_interests: formData.goals, // Backend expects "crop_interests"
+      crop_interests: formData.goals.split(',').map(g => g.trim()), // Backend expects array
       space_description: formData.space_description,
       preferred_plants: formData.preferred_plants.split(',').map(p => p.trim()),
       time_commitment: formData.time_commitment,
