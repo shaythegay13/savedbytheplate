@@ -22,100 +22,30 @@ serve(async (req) => {
       );
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const PYTHON_API_URL = Deno.env.get('PYTHON_API_URL') || 'https://farm-garden-4.onrender.com';
     
-    if (!openAIApiKey) {
-      console.log('OpenAI API key not found, using mock response');
-      // Return mock analysis for demo purposes
-      return new Response(
-        JSON.stringify({
-          disease: 'Tomato Early Blight',
-          confidence: 0.85,
-          description: 'Early blight is a common fungal disease affecting tomato plants, characterized by dark spots with concentric rings on leaves.',
-          treatment: [
-            'Remove affected leaves immediately',
-            'Apply fungicide containing copper or chlorothalonil',
-            'Ensure proper air circulation around plants',
-            'Water at soil level to avoid wetting leaves'
-          ],
-          prevention: [
-            'Rotate crops annually',
-            'Provide adequate spacing between plants',
-            'Water early in the day',
-            'Apply mulch to prevent soil splash',
-            'Choose disease-resistant varieties'
-          ],
-          severity: 'medium'
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    console.log('Calling Python backend disease identifier at:', `${PYTHON_API_URL}/api/v1/disease/identify`);
 
-    // Call OpenAI Vision API for plant disease analysis
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Call Python backend disease identification endpoint
+    const response = await fetch(`${PYTHON_API_URL}/api/v1/disease/identify`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an expert plant pathologist. Analyze the plant image and identify any diseases or problems. Return a JSON response with:
-            {
-              "disease": "Disease name or 'Healthy' if no issues",
-              "confidence": 0.0-1.0,
-              "description": "Detailed description of the condition",
-              "treatment": ["Array of treatment steps"],
-              "prevention": ["Array of prevention tips"],
-              "severity": "low|medium|high"
-            }`
-          },
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: 'Please analyze this plant image for any diseases or problems. Focus on leaf spots, discoloration, wilting, pests, or other issues.'
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: imageData
-                }
-              }
-            ]
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.1
+        image_data: imageData,
+        analysis_type: analysisType
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Python API error:', response.status, errorText);
+      throw new Error(`Python API error: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
-    const analysisText = data.choices[0].message.content;
-
-    // Parse JSON response from OpenAI
-    let analysis;
-    try {
-      analysis = JSON.parse(analysisText);
-    } catch (parseError) {
-      // If JSON parsing fails, create structured response from text
-      analysis = {
-        disease: 'Analysis Complete',
-        confidence: 0.75,
-        description: analysisText,
-        treatment: ['Follow general plant care guidelines', 'Monitor plant closely'],
-        prevention: ['Maintain good plant hygiene', 'Ensure proper growing conditions'],
-        severity: 'medium'
-      };
-    }
+    const analysis = await response.json();
+    console.log('Disease analysis successful:', analysis.disease);
 
     return new Response(
       JSON.stringify(analysis),
