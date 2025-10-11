@@ -114,16 +114,16 @@ serve(async (req) => {
 
     const requestPayload = {
       space_type: formData.spaceType,
-      space_size: formData.spaceSize,
+      size: formData.spaceSize, // Backend expects "size" not "space_size"
       sunlight: sunlight,
       growing_location: formData.growing_location,
       soil_contaminated: soil_contaminated,
       soil_type: soil_type,
-      growing_options: formData.growing_options,
+      method: formData.growing_options, // Backend expects "method" not "growing_options"
       rainfall: rainfall,
       season: formData.season,
-      experience_level: formData.experience_level,
-      goals: formData.goals,
+      experience: formData.experience_level, // Backend expects "experience" not "experience_level"
+      crop_interests: formData.goals, // Backend expects "crop_interests"
       space_description: formData.space_description,
       preferred_plants: formData.preferred_plants.split(',').map(p => p.trim()),
       time_commitment: formData.time_commitment,
