@@ -41,6 +41,9 @@ serve(async (req) => {
     );
 
     const formData: GardenPlanRequest = await req.json();
+    
+    console.log('=== GARDEN PLAN REQUEST START ===');
+    console.log('Request received:', JSON.stringify(formData, null, 2));
 
     // Determine if we need climate data based on growing location
     const needsClimateData = formData.growing_location === 'outdoors' || formData.growing_location === 'both';
@@ -143,15 +146,45 @@ serve(async (req) => {
     console.log('API URL:', `${PYTHON_API_URL}/api/v1/garden-plan/generate`);
     console.log('Request payload:', JSON.stringify(requestPayload, null, 2));
     
-    // Call the Python FastAPI to generate the garden plan
+    // Test Python backend health first
+    console.log('Testing Python backend health...');
+    const healthCheckTimeout = 10000; // 10 seconds
+    const healthController = new AbortController();
+    const healthTimeoutId = setTimeout(() => healthController.abort(), healthCheckTimeout);
+    
+    try {
+      const healthResponse = await fetch(`${PYTHON_API_URL}/health`, {
+        method: 'GET',
+        signal: healthController.signal,
+      });
+      clearTimeout(healthTimeoutId);
+      console.log('Python backend health status:', healthResponse.status);
+      
+      if (!healthResponse.ok) {
+        console.warn('Python backend health check failed:', healthResponse.status);
+      }
+    } catch (healthError) {
+      clearTimeout(healthTimeoutId);
+      console.error('Python backend health check error:', healthError);
+      throw new Error(`Python backend is not responding. The service may be sleeping (Render free tier cold start). Error: ${healthError.message}`);
+    }
+    
+    // Increase timeout for main request (Render free tier cold starts can take 30-50 seconds)
+    const requestTimeout = 60000; // 60 seconds
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
+    
+    console.log('Sending garden plan generation request to Python backend...');
     const pythonResponse = await fetch(`${PYTHON_API_URL}/api/v1/garden-plan/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestPayload),
+      signal: controller.signal,
     });
-
+    
+    clearTimeout(timeoutId);
     console.log('Python API response status:', pythonResponse.status);
 
     if (!pythonResponse.ok) {
@@ -206,12 +239,27 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error generating garden plan:', error);
+    console.error('=== ERROR in generate-smart-garden-plan ===');
+    console.error('Error type:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('=== ERROR END ===');
+    
+    // Determine if it's a timeout error
+    const isTimeout = error.name === 'AbortError' || error.message?.includes('aborted');
+    
     return new Response(JSON.stringify({ 
-      error: error.message,
-      details: 'Failed to generate garden plan. Please try again.'
+      error: isTimeout 
+        ? 'Python backend timeout - The service may be cold starting (Render free tier takes 30-50 seconds). Please try again.'
+        : error.message || 'Failed to generate garden plan',
+      details: error.toString(),
+      errorType: error.name,
+      pythonBackendUrl: PYTHON_API_URL,
+      suggestion: isTimeout 
+        ? 'Wait 30 seconds and try again. The backend service is waking up.'
+        : 'Please check your connection and try again.'
     }), {
-      status: 500,
+      status: isTimeout ? 504 : 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

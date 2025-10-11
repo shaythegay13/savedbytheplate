@@ -48,9 +48,9 @@ const createIconSvg = (type: string, color: string, zoom: number = 12) => {
 
 const MapComponent = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<google.maps.Map | null>(null);
-  const markers = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
-  const markersData = useRef<{ marker: google.maps.marker.AdvancedMarkerElement; location: MapLocation }[]>([]);
+  const map = useRef<any>(null);
+  const markers = useRef<any[]>([]);
+  const markersData = useRef<{ marker: any; location: MapLocation }[]>([]);
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [locations, setLocations] = useState<MapLocation[]>([]);
@@ -92,17 +92,17 @@ const MapComponent = () => {
     const initMap = async () => {
       try {
         await loadGoogleMaps();
-        const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
+        const { Map } = await (window as any).google.maps.importLibrary('maps');
         
         map.current = new Map(mapContainer.current!, {
           ...defaultMapConfig,
           mapTypeControl: true,
           mapTypeControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT,
+            position: (window as any).google.maps.ControlPosition.TOP_RIGHT,
           },
           zoomControl: true,
           zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+            position: (window as any).google.maps.ControlPosition.RIGHT_BOTTOM,
           },
           streetViewControl: true,
           fullscreenControl: true,
@@ -128,7 +128,7 @@ const MapComponent = () => {
     if (!mapLoaded || !map.current || locations.length === 0) return;
 
     const addMarkers = async () => {
-      const { AdvancedMarkerElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+      const { AdvancedMarkerElement } = await (window as any).google.maps.importLibrary('marker');
 
       // Clear existing markers
       markers.current.forEach(marker => marker.map = null);

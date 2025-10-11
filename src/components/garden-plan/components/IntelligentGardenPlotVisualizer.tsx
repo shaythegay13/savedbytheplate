@@ -32,7 +32,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
   locationDescription = "Your Garden Location"
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<google.maps.Map | null>(null);
+  const map = useRef<any>(null);
   const [locationData, setLocationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [mapInitialized, setMapInitialized] = useState(false);
@@ -63,7 +63,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     const initMap = async () => {
       try {
         await loadGoogleMaps();
-        const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
+        const { Map } = await (window as any).google.maps.importLibrary('maps');
         
         map.current = new Map(mapContainer.current!, {
           center: { lat: coords.lat, lng: coords.lng },
@@ -75,7 +75,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
           mapTypeControl: true,
           zoomControl: true,
           zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_CENTER,
+            position: (window as any).google.maps.ControlPosition.RIGHT_CENTER,
           },
         });
 
@@ -102,7 +102,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
             { lat: coords.lat + offsetLat + zoneSize, lng: coords.lng + offsetLng - zoneSize },
           ];
 
-          new google.maps.Polygon({
+          new (window as any).google.maps.Polygon({
             paths: zoneBounds,
             strokeColor: color,
             strokeOpacity: 1,
@@ -124,7 +124,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
             points.push({ lat: y, lng: x });
           }
 
-          new google.maps.Polygon({
+          new (window as any).google.maps.Polygon({
             paths: points,
             strokeColor: '#059669',
             strokeOpacity: 1,

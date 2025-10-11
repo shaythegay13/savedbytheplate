@@ -16,8 +16,8 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
   onLayoutComplete
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<google.maps.Map | null>(null);
-  const marker = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
+  const map = useRef<any>(null);
+  const marker = useRef<any>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
   // Initialize map
@@ -35,8 +35,8 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
     const initMap = async () => {
       try {
         await loadGoogleMaps();
-        const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
-        const { AdvancedMarkerElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+        const { Map } = await (window as any).google.maps.importLibrary('maps');
+        const { AdvancedMarkerElement } = await (window as any).google.maps.importLibrary('marker');
         
         map.current = new Map(mapContainer.current!, {
           center: initialCenter,
@@ -47,7 +47,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
           mapTypeControl: false,
           zoomControl: true,
           zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_CENTER,
+            position: (window as any).google.maps.ControlPosition.RIGHT_CENTER,
           },
           streetViewControl: false,
           fullscreenControl: true,
