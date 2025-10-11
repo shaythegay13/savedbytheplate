@@ -12,7 +12,7 @@ const PYTHON_API_URL = "https://agenticaigardenplanner.onrender.com";
 interface GardenPlanRequest {
   spaceType: string;
   spaceSize: string;
-  sunlight: string;
+  growing_location: string;
   soil_contaminated: string;
   soil_type: string;
   growing_options: string;
@@ -42,9 +42,14 @@ serve(async (req) => {
 
     const formData: GardenPlanRequest = await req.json();
 
-    // Fetch climate data based on coordinates
+    // Determine if we need climate data based on growing location
+    const needsClimateData = formData.growing_location === 'outdoors' || formData.growing_location === 'both';
+    
+    // Fetch climate data based on coordinates (only if growing outdoors)
     let climateData = null;
-    if (formData.latitude && formData.longitude) {
+    let sunlight = 'full-sun'; // default for indoors
+    
+    if (needsClimateData && formData.latitude && formData.longitude) {
       try {
         const { data: climate, error: climateError } = await supabase.functions.invoke('get-climate-data', {
           body: { 
@@ -56,23 +61,31 @@ serve(async (req) => {
         if (!climateError && climate) {
           climateData = climate;
           console.log('Climate data fetched:', climateData);
+          
+          // Determine sunlight based on climate/location data
+          sunlight = determineSunlight(formData.latitude, climateData);
         }
       } catch (error) {
         console.error('Error fetching climate data:', error);
       }
+    } else if (formData.growing_location === 'indoors') {
+      // For indoors, use artificial light
+      sunlight = 'artificial';
     }
 
-    // Determine soil type and rainfall from climate data
-    const soil_type = climateData ? determineSoilType(climateData) : 'loamy';
-    const rainfall = climateData ? determineRainfall(climateData) : 'moderate';
+    // Determine soil type and rainfall from climate data (only for outdoor growing)
+    const soil_type = (needsClimateData && climateData) ? determineSoilType(climateData) : 'potting-mix';
+    const rainfall = (needsClimateData && climateData) ? determineRainfall(climateData) : 'controlled';
     const soil_contaminated = formData.spaceType?.includes('container') || 
                               formData.spaceType?.includes('raised-bed') || 
-                              formData.spaceType?.includes('hydroponic');
+                              formData.spaceType?.includes('hydroponic') ||
+                              formData.growing_location === 'indoors';
 
     const requestPayload = {
       space_type: formData.spaceType,
       space_size: formData.spaceSize,
-      sunlight: formData.sunlight,
+      sunlight: sunlight,
+      growing_location: formData.growing_location,
       soil_contaminated: soil_contaminated,
       soil_type: soil_type,
       growing_options: formData.growing_options,
@@ -168,6 +181,25 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper function to determine sunlight based on location and climate
+function determineSunlight(latitude: number, climateData: any): string {
+  // In higher latitudes (further from equator), sunlight is generally less intense
+  const absLatitude = Math.abs(latitude);
+  
+  // Check cloud cover or precipitation patterns from climate data
+  const precipitation = climateData.precipitation_data?.annual_avg || 0;
+  
+  // High precipitation areas tend to have more cloud cover
+  if (precipitation > 60) return 'partial-shade';
+  if (precipitation > 40) return 'partial-sun';
+  
+  // Low precipitation/sunny climates
+  if (absLatitude < 35) return 'full-sun'; // Closer to equator
+  if (absLatitude < 45) return 'partial-sun';
+  
+  return 'partial-sun'; // Default
+}
 
 // Helper function to determine soil type from climate data
 function determineSoilType(climateData: any): string {

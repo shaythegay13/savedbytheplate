@@ -10,7 +10,7 @@ interface GardenQuestionsProps {
   onQuestionsComplete: (answers: {
     spaceType: string[];
     spaceSize: string;
-    sunlight: string;
+    growing_location: string;
     experience_level: string;
     season: string[];
     time_commitment: string;
@@ -22,7 +22,7 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
   const [answers, setAnswers] = useState({
     spaceType: [] as string[],
     spaceSize: '',
-    sunlight: '',
+    growing_location: '',
     experience_level: '',
     season: [] as string[],
     time_commitment: ''
@@ -58,16 +58,14 @@ const GardenQuestions: React.FC<GardenQuestionsProps> = ({ onQuestionsComplete }
       ]
     },
     {
-      id: 'sunlight',
+      id: 'growing_location',
       icon: <Sun className="h-8 w-8 text-sbtp-green-600" />,
-      title: 'How much sunlight does your space get?',
-      description: 'Sunlight exposure is crucial for plant selection',
+      title: 'Will you be growing indoors or outdoors?',
+      description: 'This helps us determine environmental conditions',
       options: [
-        { value: 'full-sun', label: 'Full Sun (6+ hours direct sunlight)' },
-        { value: 'partial-sun', label: 'Partial Sun (4-6 hours direct sunlight)' },
-        { value: 'partial-shade', label: 'Partial Shade (2-4 hours direct sunlight)' },
-        { value: 'shade', label: 'Shade (less than 2 hours direct sunlight)' },
-        { value: 'artificial', label: 'Artificial Light Only (grow lights)' }
+        { value: 'outdoors', label: 'Outdoors (natural sunlight and rainfall)' },
+        { value: 'indoors', label: 'Indoors (grow lights and controlled environment)' },
+        { value: 'both', label: 'Both (indoor and outdoor growing)' }
       ]
     },
     {
