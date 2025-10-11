@@ -21,13 +21,18 @@ const getIconPath = (type: string) => {
   return iconPaths[type as keyof typeof iconPaths] || iconPaths.farm;
 };
 
-// Create SVG icon for markers matching the legend
-const createIconSvg = (type: string, color: string) => {
+// Create SVG icon for markers matching the legend with dynamic sizing
+const createIconSvg = (type: string, color: string, zoom: number = 12) => {
   const iconPath = getIconPath(type);
+  // Scale icon size based on zoom level (smaller when zoomed out, larger when zoomed in)
+  // Zoom levels typically range from 1-20, we'll scale between 16px and 40px
+  const baseSize = Math.max(16, Math.min(40, 12 + (zoom - 10) * 3));
+  const size = Math.round(baseSize);
+  
   return `
     <svg 
-      width="32" 
-      height="32" 
+      width="${size}" 
+      height="${size}" 
       viewBox="0 0 24 24" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
@@ -45,10 +50,12 @@ const MapComponent = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const markers = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+  const markersData = useRef<{ marker: google.maps.marker.AdvancedMarkerElement; location: MapLocation }[]>([]);
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentZoom, setCurrentZoom] = useState(defaultMapConfig.zoom);
 
   // Fetch enhanced data from all sources
   useEffect(() => {
@@ -101,6 +108,12 @@ const MapComponent = () => {
           fullscreenControl: true,
         });
 
+        // Listen to zoom changes to update marker sizes
+        map.current.addListener('zoom_changed', () => {
+          const zoom = map.current?.getZoom() || defaultMapConfig.zoom;
+          setCurrentZoom(zoom);
+        });
+
         setMapLoaded(true);
       } catch (error) {
         console.error('Error loading Google Maps:', error);
@@ -120,12 +133,15 @@ const MapComponent = () => {
       // Clear existing markers
       markers.current.forEach(marker => marker.map = null);
       markers.current = [];
+      markersData.current = [];
+
+      const zoom = map.current?.getZoom() || defaultMapConfig.zoom;
 
       locations.forEach(location => {
         const color = locationColors[location.type] || '#4CAF50';
         
-        // Create custom SVG icon matching the legend
-        const iconSvg = createIconSvg(location.type, color);
+        // Create custom SVG icon matching the legend with zoom-based size
+        const iconSvg = createIconSvg(location.type, color, zoom);
         const parser = new DOMParser();
         const iconElement = parser.parseFromString(iconSvg, 'image/svg+xml').documentElement;
 
@@ -141,11 +157,25 @@ const MapComponent = () => {
         });
 
         markers.current.push(marker);
+        markersData.current.push({ marker, location });
       });
     };
 
     addMarkers();
   }, [mapLoaded, locations]);
+
+  // Update marker sizes when zoom changes
+  useEffect(() => {
+    if (!mapLoaded || markersData.current.length === 0) return;
+
+    markersData.current.forEach(({ marker, location }) => {
+      const color = locationColors[location.type] || '#4CAF50';
+      const iconSvg = createIconSvg(location.type, color, currentZoom);
+      const parser = new DOMParser();
+      const iconElement = parser.parseFromString(iconSvg, 'image/svg+xml').documentElement;
+      marker.content = iconElement;
+    });
+  }, [currentZoom, mapLoaded]);
 
   // Handle popup close
   const handlePopupClose = () => {
