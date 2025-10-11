@@ -45,28 +45,56 @@ serve(async (req) => {
     // Determine if we need climate data based on growing location
     const needsClimateData = formData.growing_location === 'outdoors' || formData.growing_location === 'both';
     
-    // Fetch climate data based on coordinates (only if growing outdoors)
+    // Fetch climate data and enhanced Google data based on coordinates
     let climateData = null;
+    let enhancedGoogleData = null;
     let sunlight = 'full-sun'; // default for indoors
     
     if (needsClimateData && formData.latitude && formData.longitude) {
       try {
-        const { data: climate, error: climateError } = await supabase.functions.invoke('get-climate-data', {
-          body: { 
-            latitude: formData.latitude, 
-            longitude: formData.longitude 
-          }
-        });
+        // Fetch both climate data and enhanced Google data in parallel
+        const [climateResult, googleResult] = await Promise.all([
+          supabase.functions.invoke('get-climate-data', {
+            body: { 
+              latitude: formData.latitude, 
+              longitude: formData.longitude 
+            }
+          }),
+          supabase.functions.invoke('get-google-enhanced-data', {
+            body: { 
+              latitude: formData.latitude, 
+              longitude: formData.longitude,
+              includeAirQuality: true,
+              includeSolar: true,
+              includeWeather: true,
+              includePollen: true,
+              includeElevation: true,
+              includeAerialView: true,
+              includeStreetView: false // Skip street view for performance
+            }
+          })
+        ]);
         
-        if (!climateError && climate) {
-          climateData = climate;
+        if (!climateResult.error && climateResult.data) {
+          climateData = climateResult.data;
           console.log('Climate data fetched:', climateData);
-          
-          // Determine sunlight based on climate/location data
-          sunlight = determineSunlight(formData.latitude, climateData);
         }
+        
+        if (!googleResult.error && googleResult.data) {
+          enhancedGoogleData = googleResult.data;
+          console.log('Enhanced Google data fetched:', {
+            hasAirQuality: !!enhancedGoogleData.airQuality,
+            hasSolar: !!enhancedGoogleData.solar,
+            hasWeather: !!enhancedGoogleData.weather,
+            hasPollen: !!enhancedGoogleData.pollen,
+            hasElevation: !!enhancedGoogleData.elevation
+          });
+        }
+        
+        // Determine sunlight based on climate/location data and solar data
+        sunlight = determineSunlightEnhanced(formData.latitude, climateData, enhancedGoogleData?.solar);
       } catch (error) {
-        console.error('Error fetching climate data:', error);
+        console.error('Error fetching climate/Google data:', error);
       }
     } else if (formData.growing_location === 'indoors') {
       // For indoors, use artificial light
@@ -101,7 +129,14 @@ serve(async (req) => {
       city: formData.city,
       hardiness_zone: climateData?.hardiness_zone,
       include_companion_planting: true,
-      generate_layout_positions: true
+      generate_layout_positions: true,
+      // Enhanced Google data for AI to use
+      air_quality: enhancedGoogleData?.airQuality,
+      solar_data: enhancedGoogleData?.solar,
+      weather_data: enhancedGoogleData?.weather,
+      pollen_data: enhancedGoogleData?.pollen,
+      elevation_data: enhancedGoogleData?.elevation,
+      aerial_view: enhancedGoogleData?.aerialView
     };
 
     console.log('Calling Python API for garden plan generation...');
@@ -182,13 +217,28 @@ serve(async (req) => {
   }
 });
 
-// Helper function to determine sunlight based on location and climate
+// Helper function to determine sunlight based on location, climate, and solar data
+function determineSunlightEnhanced(latitude: number, climateData: any, solarData: any): string {
+  // If we have solar data, use it for more accurate sunlight determination
+  if (solarData?.sunlightHoursPerDay) {
+    const avgSummerHours = solarData.sunlightHoursPerDay.summer;
+    if (avgSummerHours > 8) return 'full-sun';
+    if (avgSummerHours > 6) return 'partial-sun';
+    if (avgSummerHours > 4) return 'partial-shade';
+    return 'shade';
+  }
+  
+  // Fallback to original logic
+  return determineSunlight(latitude, climateData);
+}
+
+// Original helper function to determine sunlight based on location and climate
 function determineSunlight(latitude: number, climateData: any): string {
   // In higher latitudes (further from equator), sunlight is generally less intense
   const absLatitude = Math.abs(latitude);
   
   // Check cloud cover or precipitation patterns from climate data
-  const precipitation = climateData.precipitation_data?.annual_avg || 0;
+  const precipitation = climateData?.precipitation_data?.annual_avg || 0;
   
   // High precipitation areas tend to have more cloud cover
   if (precipitation > 60) return 'partial-shade';
