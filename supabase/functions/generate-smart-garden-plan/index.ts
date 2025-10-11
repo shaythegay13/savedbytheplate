@@ -301,44 +301,46 @@ serve(async (req) => {
 // Helper functions to parse the text-based plan into structured data
 function extractPlantRecommendations(plan: string): any[] {
   const recommendations: any[] = [];
+
+  // Helper to escape crop names for regex
+  const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   
-  // First, extract the main recommended crops list
-  const recommendedCropsMatch = plan.match(/Recommended Crops \(top matches\):([\s\S]*?)(?=📊|======)/);
-  const mainCrops = new Set<string>();
-  
+  // 1) Extract the "Recommended Crops (top matches)" list as a baseline
+  const recommendedCropsMatch = plan.match(/Recommended Crops \(top matches\):([\s\S]*?)(?=📊|={3,}|\n\n)/);
+  const mainCrops: string[] = [];
   if (recommendedCropsMatch) {
-    const cropLines = recommendedCropsMatch[1].split('\n').filter(line => line.trim().startsWith('-'));
+    const cropLines = recommendedCropsMatch[1]
+      .split('\n')
+      .filter(line => line.trim().startsWith('-'));
     cropLines.forEach(line => {
       const cropName = line.match(/- ([^:]+):/);
       if (cropName) {
-        mainCrops.add(cropName[1].trim());
+        mainCrops.push(cropName[1].trim());
       }
     });
   }
-  
-  // Extract detailed variety recommendations
+
+  // 2) Extract detailed variety recommendations sections
   const varietySections = plan.split(/={70,}\nVARIETY RECOMMENDATIONS: ([A-Z\s]+)\n={70,}/);
-  
   for (let i = 1; i < varietySections.length; i += 2) {
     const cropType = varietySections[i].trim();
     const sectionContent = varietySections[i + 1];
-    
+
     // Extract all varieties for this crop type
     const varieties = sectionContent.split(/📦 /).slice(1);
-    
     varieties.forEach(varietyText => {
       const lines = varietyText.split('\n').map(l => l.trim()).filter(l => l);
       if (lines.length === 0) return;
-      
+
       const varietyName = lines[0];
       const description = lines[1] || '';
-      
+
       const difficulty = extractField(varietyText, 'Difficulty');
       const daysMatch = varietyText.match(/Days to Maturity: (\d+) days/);
       const spacing = extractField(varietyText, 'Space Needed');
       const yieldInfo = extractField(varietyText, 'Expected Yield');
       const careTips = extractCareFromVariety(varietyText);
-      
+
       recommendations.push({
         name: `${cropType} - ${varietyName}`,
         variety: varietyName,
@@ -352,24 +354,30 @@ function extractPlantRecommendations(plan: string): any[] {
       });
     });
   }
-  
-  // If no detailed varieties found, create basic entries from main crops list
-  if (recommendations.length === 0 && mainCrops.size > 0) {
-    mainCrops.forEach(crop => {
-      const description = plan.match(new RegExp(`- ${crop}: ([^\\n]+)`));
+
+  // 3) Merge: add baseline entries for top-matched crops not covered by varieties
+  const hasCrop = (crop: string) =>
+    recommendations.some(r =>
+      r.cropType.toLowerCase().includes(crop.toLowerCase()) ||
+      r.name.toLowerCase().includes(crop.toLowerCase())
+    );
+
+  mainCrops.forEach(crop => {
+    if (!hasCrop(crop)) {
+      const descMatch = plan.match(new RegExp(`- ${escapeRegExp(crop)}: ([^\\n]+)`));
       recommendations.push({
         name: crop,
         variety: crop,
         cropType: crop,
-        description: description ? description[1] : '',
+        description: descMatch ? descMatch[1] : '',
         difficulty: 'Easy',
         daysToHarvest: 60,
         spacing: '12 inches',
         yield: 'Varies',
         careInstructions: '',
       });
-    });
-  }
+    }
+  });
 
   return recommendations;
 }
