@@ -8,6 +8,8 @@ interface ExpertTipsProps {
 }
 
 const ExpertTips: React.FC<ExpertTipsProps> = ({ expertTips, careInstructions }) => {
+  const tips = Array.isArray(expertTips) ? expertTips : [];
+  
   return (
     <Card className="border-4 border-red-500 shadow-xl">
       <CardHeader className="bg-red-50">
@@ -32,16 +34,18 @@ const ExpertTips: React.FC<ExpertTipsProps> = ({ expertTips, careInstructions })
           </div>
         )}
         
-        <div>
-          <h3 className="font-semibold text-sbtp-green-800 mb-4">Expert Tips & Troubleshooting</h3>
-          <div className="space-y-3">
-            {expertTips.map((tip, index) => (
-              <div key={index} className="bg-sbtp-yellow/10 border-l-4 border-sbtp-yellow p-4 rounded-r-lg hover:bg-sbtp-yellow/20 transition-colors">
-                <p className="text-sbtp-brown-700">{tip}</p>
-              </div>
-            ))}
+        {tips.length > 0 && (
+          <div>
+            <h3 className="font-semibold text-sbtp-green-800 mb-4">Expert Tips & Troubleshooting</h3>
+            <div className="space-y-3">
+              {tips.map((tip, index) => (
+                <div key={index} className="bg-sbtp-yellow/10 border-l-4 border-sbtp-yellow p-4 rounded-r-lg hover:bg-sbtp-yellow/20 transition-colors">
+                  <p className="text-sbtp-brown-700">{tip}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
