@@ -280,31 +280,88 @@ serve(async (req) => {
 // Helper functions to parse the text-based plan into structured data
 function extractPlantRecommendations(plan: string): any[] {
   const recommendations: any[] = [];
-  const varietySections = plan.match(/VARIETY RECOMMENDATIONS: [A-Z]+[\s\S]*?(?=VARIETY RECOMMENDATIONS:|Planting Calendar|$)/g);
   
-  if (!varietySections || varietySections.length === 0) return recommendations;
-
-  varietySections.forEach(section => {
-    const plantMatches = section.matchAll(/📦 (.*?)\n\s+(.*?)\n\s+Difficulty: (.*?)\n\s+Days to Maturity: (\d+) days/g);
+  // First, extract the main recommended crops list
+  const recommendedCropsMatch = plan.match(/Recommended Crops \(top matches\):([\s\S]*?)(?=📊|======)/);
+  const mainCrops = new Set<string>();
+  
+  if (recommendedCropsMatch) {
+    const cropLines = recommendedCropsMatch[1].split('\n').filter(line => line.trim().startsWith('-'));
+    cropLines.forEach(line => {
+      const cropName = line.match(/- ([^:]+):/);
+      if (cropName) {
+        mainCrops.add(cropName[1].trim());
+      }
+    });
+  }
+  
+  // Extract detailed variety recommendations
+  const varietySections = plan.split(/={70,}\nVARIETY RECOMMENDATIONS: ([A-Z\s]+)\n={70,}/);
+  
+  for (let i = 1; i < varietySections.length; i += 2) {
+    const cropType = varietySections[i].trim();
+    const sectionContent = varietySections[i + 1];
     
-    for (const match of plantMatches) {
-      const [, variety, description, difficulty, days] = match;
-      const plantName = variety.split('\n')[0].trim();
+    // Extract all varieties for this crop type
+    const varieties = sectionContent.split(/📦 /).slice(1);
+    
+    varieties.forEach(varietyText => {
+      const lines = varietyText.split('\n').map(l => l.trim()).filter(l => l);
+      if (lines.length === 0) return;
+      
+      const varietyName = lines[0];
+      const description = lines[1] || '';
+      
+      const difficulty = extractField(varietyText, 'Difficulty');
+      const daysMatch = varietyText.match(/Days to Maturity: (\d+) days/);
+      const spacing = extractField(varietyText, 'Space Needed');
+      const yieldInfo = extractField(varietyText, 'Expected Yield');
+      const careTips = extractCareFromVariety(varietyText);
       
       recommendations.push({
-        name: plantName,
-        variety: variety,
-        description: description.trim(),
-        difficulty: difficulty.trim(),
-        daysToHarvest: parseInt(days),
-        spacing: extractField(section, 'Space Needed') || '12 inches',
-        yield: extractField(section, 'Expected Yield') || 'Varies',
-        careInstructions: extractField(section, 'Care Tips') || '',
+        name: `${cropType} - ${varietyName}`,
+        variety: varietyName,
+        cropType: cropType,
+        description: description,
+        difficulty: difficulty || 'Easy',
+        daysToHarvest: daysMatch ? parseInt(daysMatch[1]) : 60,
+        spacing: spacing || '12 inches',
+        yield: yieldInfo || 'Varies',
+        careInstructions: careTips,
       });
-    }
-  });
+    });
+  }
+  
+  // If no detailed varieties found, create basic entries from main crops list
+  if (recommendations.length === 0 && mainCrops.size > 0) {
+    mainCrops.forEach(crop => {
+      const description = plan.match(new RegExp(`- ${crop}: ([^\\n]+)`));
+      recommendations.push({
+        name: crop,
+        variety: crop,
+        cropType: crop,
+        description: description ? description[1] : '',
+        difficulty: 'Easy',
+        daysToHarvest: 60,
+        spacing: '12 inches',
+        yield: 'Varies',
+        careInstructions: '',
+      });
+    });
+  }
 
   return recommendations;
+}
+
+function extractCareFromVariety(varietyText: string): string {
+  const careTipsMatch = varietyText.match(/Care Tips:([\s\S]*?)(?=\n\n|$)/);
+  if (!careTipsMatch) return '';
+  
+  return careTipsMatch[1]
+    .split('\n')
+    .map(line => line.trim().replace(/^•\s*/, ''))
+    .filter(line => line.length > 0)
+    .join('. ');
 }
 
 function extractGardenLayout(plan: string): any[] {
