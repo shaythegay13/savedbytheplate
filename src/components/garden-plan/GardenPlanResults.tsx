@@ -63,8 +63,8 @@ const GardenPlanResults: React.FC<GardenPlanResultsProps> = ({
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedPlantFeedback, setSelectedPlantFeedback] = useState<string | null>(null);
-  const [currentPlantRecommendations, setCurrentPlantRecommendations] = useState(plantRecommendations);
-  const [currentGardenLayout, setCurrentGardenLayout] = useState(gardenLayout);
+  const [currentPlantRecommendations, setCurrentPlantRecommendations] = useState<PlantRecommendation[]>(plantRecommendations ?? []);
+  const [currentGardenLayout, setCurrentGardenLayout] = useState(gardenLayout ?? []);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleFeedbackSubmit = (feedback: any) => {

@@ -28,9 +28,9 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
   onShareExperience,
   onPlanUpdate
 }) => {
+  const basePlants = Array.isArray(plantRecommendations) ? plantRecommendations : [];
   const [isEditing, setIsEditing] = useState(false);
-  const [editedPlants, setEditedPlants] = useState(plantRecommendations);
-
+  const [editedPlants, setEditedPlants] = useState<PlantRecommendation[]>(basePlants);
   const handleSaveChanges = () => {
     if (onPlanUpdate) {
       onPlanUpdate(editedPlants);
@@ -39,7 +39,7 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
   };
 
   const handleCancelEdit = () => {
-    setEditedPlants(plantRecommendations);
+    setEditedPlants(basePlants);
     setIsEditing(false);
   };
 
@@ -55,7 +55,7 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
     setEditedPlants(prev => prev.filter((_, i) => i !== index));
   };
 
-  const displayPlants = isEditing ? editedPlants : plantRecommendations;
+  const displayPlants = (isEditing ? editedPlants : basePlants) ?? [];
 
   // Categorize plants - check lowercase name for accurate categorization
   const fruitKeywords = ['strawberr', 'raspberr', 'blueberr', 'tomato', 'melon', 'cucumber'];
@@ -168,7 +168,7 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
                       <p><strong>Spacing:</strong> {plant.spacing}</p>
                       <p><strong>Expected Yield:</strong> {plant.yield}</p>
                       <p><strong>Care:</strong> {plant.careInstructions}</p>
-                      {(plant as any).aiInsights && (plant as any).aiInsights.commonIssues.length > 0 && (
+                      {(plant as any).aiInsights?.commonIssues?.length > 0 && (
                         <p><strong>Common Issues:</strong> {(plant as any).aiInsights.commonIssues.join(', ')}</p>
                       )}
                     </div>
