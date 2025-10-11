@@ -123,9 +123,9 @@ serve(async (req) => {
       rainfall: rainfall,
       season: formData.season,
       experience: formData.experience_level, // Backend expects "experience" not "experience_level"
-      crop_interests: formData.goals.split(',').map(g => g.trim()), // Backend expects array
+      crop_interests: Array.isArray(formData.goals) ? formData.goals : formData.goals.split(',').map(g => g.trim()), // Backend expects array
       space_description: formData.space_description,
-      preferred_plants: formData.preferred_plants.split(',').map(p => p.trim()),
+      preferred_plants: Array.isArray(formData.preferred_plants) ? formData.preferred_plants : formData.preferred_plants.split(',').map(p => p.trim()),
       time_commitment: formData.time_commitment,
       latitude: formData.latitude,
       longitude: formData.longitude,
@@ -139,7 +139,28 @@ serve(async (req) => {
       weather_data: enhancedGoogleData?.weather,
       pollen_data: enhancedGoogleData?.pollen,
       elevation_data: enhancedGoogleData?.elevation,
-      aerial_view: enhancedGoogleData?.aerialView
+      aerial_view: enhancedGoogleData?.aerialView,
+      // Add user_input wrapper for newer backend versions expecting this structure
+      user_input: {
+        space_type: formData.spaceType,
+        size: formData.spaceSize,
+        sunlight: sunlight,
+        growing_location: formData.growing_location,
+        soil_contaminated: soil_contaminated,
+        soil_type: soil_type,
+        method: formData.growing_options,
+        rainfall: rainfall,
+        season: formData.season,
+        experience: formData.experience_level,
+        crop_interests: Array.isArray(formData.goals) ? formData.goals : formData.goals.split(',').map(g => g.trim()),
+        preferences: Array.isArray(formData.preferred_plants) ? formData.preferred_plants : formData.preferred_plants.split(',').map(p => p.trim()),
+        space_description: formData.space_description,
+        time_commitment: formData.time_commitment,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        city: formData.city,
+        hardiness_zone: climateData?.hardiness_zone
+      }
     };
 
     console.log('Calling Python API for garden plan generation...');
