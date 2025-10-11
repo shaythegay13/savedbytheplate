@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { MAPBOX_TOKEN } from "@/components/map/MapConfig";
+import { GOOGLE_MAPS_API_KEY } from "@/components/map/MapConfig";
 
 interface SatelliteGardenPlannerProps {
   plantRecommendations: any[];
@@ -18,60 +16,74 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
   onLayoutComplete
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<google.maps.Map | null>(null);
+  const marker = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || !MAPBOX_TOKEN) return;
+    if (!mapContainer.current || !GOOGLE_MAPS_API_KEY) return;
 
-    console.log('Initializing map with token:', MAPBOX_TOKEN);
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-
+    console.log('Initializing Google Maps');
+    
     // Determine initial center from location
-    let initialCenter: [number, number] = [-74.006, 40.7128];
-    if (initialLocation?.lng && initialLocation?.lat) {
-      initialCenter = [initialLocation.lng, initialLocation.lat];
+    let initialCenter = { lat: 40.7128, lng: -74.006 };
+    if (initialLocation?.lat && initialLocation?.lng) {
+      initialCenter = { lat: initialLocation.lat, lng: initialLocation.lng };
     }
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-v9',
-      center: initialCenter,
-      zoom: 19,
-      pitch: 45
-    });
-
-    // Wait for map to load
-    map.current.on('load', () => {
-      console.log('Map loaded successfully');
-      setIsMapReady(true);
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker&v=weekly&callback=initGardenMap`;
+      script.async = true;
+      script.defer = true;
       
-      // Add a marker for the location
-      if (initialLocation?.lat && initialLocation?.lng) {
-        new mapboxgl.Marker({ color: '#22c55e' })
-          .setLngLat([initialLocation.lng, initialLocation.lat])
-          .setPopup(
-            new mapboxgl.Popup().setHTML(
-              `<div class="p-2"><strong>Your Garden Location</strong></div>`
-            )
-          )
-          .addTo(map.current!);
-      }
-    });
+      (window as any).initGardenMap = async () => {
+        const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
+        const { AdvancedMarkerElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+        
+        map.current = new Map(mapContainer.current!, {
+          center: initialCenter,
+          zoom: 19,
+          mapTypeId: 'satellite',
+          tilt: 45,
+          mapTypeControl: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER,
+          },
+          streetViewControl: false,
+          fullscreenControl: true,
+        });
 
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        console.log('Map loaded successfully');
+        setIsMapReady(true);
+        
+        // Add a marker for the location
+        if (initialLocation?.lat && initialLocation?.lng) {
+          marker.current = new AdvancedMarkerElement({
+            map: map.current,
+            position: initialCenter,
+            title: 'Your Garden Location',
+          });
+        }
+      };
+      
+      document.head.appendChild(script);
+    };
+
+    loadGoogleMapsScript();
 
     return () => {
-      map.current?.remove();
+      if (marker.current) {
+        marker.current.map = null;
+      }
     };
   }, [initialLocation]);
 
   const handleComplete = () => {
     onLayoutComplete([]);
   };
-
 
   return (
     <Card className="w-full max-w-4xl mx-auto">

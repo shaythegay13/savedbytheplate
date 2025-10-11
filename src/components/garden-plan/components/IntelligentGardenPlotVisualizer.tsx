@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Ruler, MapPin, Settings } from "lucide-react";
+import { Ruler, MapPin } from "lucide-react";
 import { researchLocationDimensions } from '@/services/locationResearchService';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { GOOGLE_MAPS_API_KEY } from '@/components/map/MapConfig';
 
 interface GardenLayout {
   section: string;
@@ -35,11 +32,9 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
   locationDescription = "Your Garden Location"
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<google.maps.Map | null>(null);
   const [locationData, setLocationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [mapboxToken, setMapboxToken] = useState('');
-  const [showTokenInput, setShowTokenInput] = useState(false);
   const [mapInitialized, setMapInitialized] = useState(false);
 
   useEffect(() => {
@@ -58,140 +53,98 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     fetchLocationData();
   }, [locationDescription]);
 
-  const initializeMap = (token: string) => {
+  useEffect(() => {
     if (!mapContainer.current || !locationData || mapInitialized) return;
 
-    mapboxgl.accessToken = token;
-
     // Get coordinates for the location
-    const normalizedLocation = locationDescription.toLowerCase();
     const coords = locationCoordinates["sheep's meadow"] || locationCoordinates["central park"] || 
                   { lat: 40.7829, lng: -73.9654, zoom: 15 };
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-streets-v12',
-      center: [coords.lng, coords.lat],
-      zoom: coords.zoom,
-      pitch: 0,
-      bearing: 0
-    });
-
-    map.current.on('load', () => {
-      if (!map.current) return;
-
-      // Add the garden area overlay
-      const centerLat = coords.lat;
-      const centerLng = coords.lng;
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&v=weekly&callback=initPlotMap`;
+      script.async = true;
+      script.defer = true;
       
-      // Calculate approximate bounds for the area (rough estimation)
-      const lengthInDegrees = (locationData.estimatedLength || 500) * 0.000009; // feet to degrees (very rough)
-      const widthInDegrees = (locationData.estimatedWidth || 300) * 0.000009;
-
-      // Create garden zone overlays
-      gardenLayout.forEach((section, index) => {
-        const zoneColors = ['#16a34a', '#059669', '#dc2626', '#2563eb'];
-        const color = zoneColors[index % 4];
+      (window as any).initPlotMap = async () => {
+        const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
         
-        // Position zones around the area
-        const angle = (index * Math.PI * 2) / gardenLayout.length;
-        const offsetLat = Math.sin(angle) * widthInDegrees * 0.3;
-        const offsetLng = Math.cos(angle) * lengthInDegrees * 0.3;
-        
-        const zoneSize = lengthInDegrees * 0.15;
-        
-        map.current?.addSource(`garden-zone-${index}`, {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {
-              name: section.section,
-              plants: section.plants.length
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [centerLng + offsetLng - zoneSize, centerLat + offsetLat - zoneSize],
-                [centerLng + offsetLng + zoneSize, centerLat + offsetLat - zoneSize],
-                [centerLng + offsetLng + zoneSize, centerLat + offsetLat + zoneSize],
-                [centerLng + offsetLng - zoneSize, centerLat + offsetLat + zoneSize],
-                [centerLng + offsetLng - zoneSize, centerLat + offsetLat - zoneSize]
-              ]]
-            }
-          }
+        map.current = new Map(mapContainer.current!, {
+          center: { lat: coords.lat, lng: coords.lng },
+          zoom: coords.zoom,
+          mapTypeId: 'satellite',
+          tilt: 0,
+          heading: 0,
+          mapTypeControl: true,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER,
+          },
         });
 
-        map.current?.addLayer({
-          id: `garden-zone-fill-${index}`,
-          type: 'fill',
-          source: `garden-zone-${index}`,
-          paint: {
-            'fill-color': color,
-            'fill-opacity': 0.3
-          }
+        // Calculate approximate bounds for the area
+        const lengthInDegrees = (locationData.estimatedLength || 500) * 0.000009;
+        const widthInDegrees = (locationData.estimatedWidth || 300) * 0.000009;
+
+        // Create garden zone overlays
+        gardenLayout.forEach((section, index) => {
+          const zoneColors = ['#16a34a', '#059669', '#dc2626', '#2563eb'];
+          const color = zoneColors[index % 4];
+          
+          // Position zones around the area
+          const angle = (index * Math.PI * 2) / gardenLayout.length;
+          const offsetLat = Math.sin(angle) * widthInDegrees * 0.3;
+          const offsetLng = Math.cos(angle) * lengthInDegrees * 0.3;
+          
+          const zoneSize = lengthInDegrees * 0.15;
+          
+          const zoneBounds = [
+            { lat: coords.lat + offsetLat - zoneSize, lng: coords.lng + offsetLng - zoneSize },
+            { lat: coords.lat + offsetLat - zoneSize, lng: coords.lng + offsetLng + zoneSize },
+            { lat: coords.lat + offsetLat + zoneSize, lng: coords.lng + offsetLng + zoneSize },
+            { lat: coords.lat + offsetLat + zoneSize, lng: coords.lng + offsetLng - zoneSize },
+          ];
+
+          new google.maps.Polygon({
+            paths: zoneBounds,
+            strokeColor: color,
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: color,
+            fillOpacity: 0.3,
+            map: map.current!,
+          });
         });
 
-        map.current?.addLayer({
-          id: `garden-zone-border-${index}`,
-          type: 'line',
-          source: `garden-zone-${index}`,
-          paint: {
-            'line-color': color,
-            'line-width': 2
+        // Add location boundary if we have shape data
+        if (locationData.shape === 'oval') {
+          const points = [];
+          const numPoints = 50;
+          for (let i = 0; i < numPoints; i++) {
+            const angle = (i / numPoints) * 2 * Math.PI;
+            const x = coords.lng + Math.cos(angle) * lengthInDegrees * 0.5;
+            const y = coords.lat + Math.sin(angle) * widthInDegrees * 0.5;
+            points.push({ lat: y, lng: x });
           }
-        });
-      });
 
-      // Add location boundary if we have shape data
-      if (locationData.shape === 'oval') {
-        // Create points for oval boundary
-        const points = [];
-        const numPoints = 50;
-        for (let i = 0; i < numPoints; i++) {
-          const angle = (i / numPoints) * 2 * Math.PI;
-          const x = centerLng + Math.cos(angle) * lengthInDegrees * 0.5;
-          const y = centerLat + Math.sin(angle) * widthInDegrees * 0.5;
-          points.push([x, y]);
+          new google.maps.Polygon({
+            paths: points,
+            strokeColor: '#059669',
+            strokeOpacity: 1,
+            strokeWeight: 3,
+            fillOpacity: 0,
+            map: map.current!,
+          });
         }
-        points.push(points[0]); // Close the polygon
 
-        map.current?.addSource('location-boundary', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'Polygon',
-              coordinates: [points]
-            }
-          }
-        });
+        setMapInitialized(true);
+      };
+      
+      document.head.appendChild(script);
+    };
 
-        map.current?.addLayer({
-          id: 'location-boundary-line',
-          type: 'line',
-          source: 'location-boundary',
-          paint: {
-            'line-color': '#059669',
-            'line-width': 3,
-            'line-dasharray': [2, 2]
-          }
-        });
-      }
-
-      setMapInitialized(true);
-    });
-
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-  };
-
-  const handleTokenSubmit = () => {
-    if (mapboxToken.trim()) {
-      initializeMap(mapboxToken);
-      setShowTokenInput(false);
-    }
-  };
+    loadGoogleMapsScript();
+  }, [locationData, gardenLayout]);
 
   if (loading) {
     return (
@@ -240,46 +193,6 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
               </Badge>
             </div>
           )}
-
-          {!mapInitialized && !showTokenInput && (
-            <div className="bg-sbtp-yellow/10 border border-sbtp-yellow/30 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Settings className="h-4 w-4 text-sbtp-brown-700" />
-                <span className="text-sm font-medium text-sbtp-brown-700">Map Configuration Required</span>
-              </div>
-              <p className="text-sm text-sbtp-brown-600 mb-3">
-                To show the satellite view of your garden location, please provide your Mapbox access token.
-                You can get one free at <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-sbtp-green-600 underline">mapbox.com</a>
-              </p>
-              <Button 
-                onClick={() => setShowTokenInput(true)}
-                className="bg-sbtp-green-500 hover:bg-sbtp-green-600"
-                size="sm"
-              >
-                Configure Map
-              </Button>
-            </div>
-          )}
-
-          {showTokenInput && (
-            <div className="bg-white border border-sbtp-green-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Settings className="h-4 w-4 text-sbtp-green-700" />
-                <span className="text-sm font-medium text-sbtp-green-700">Enter Mapbox Token</span>
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJ..."
-                  value={mapboxToken}
-                  onChange={(e) => setMapboxToken(e.target.value)}
-                  className="flex-1"
-                />
-                <Button onClick={handleTokenSubmit} className="bg-sbtp-green-500 hover:bg-sbtp-green-600">
-                  Load Map
-                </Button>
-              </div>
-            </div>
-          )}
           
           <div className="border border-sbtp-green-200 rounded-lg overflow-hidden" style={{ height: '500px' }}>
             {mapInitialized ? (
@@ -288,8 +201,7 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
               <div className="w-full h-full bg-sbtp-green-50 flex items-center justify-center">
                 <div className="text-center">
                   <MapPin className="h-12 w-12 text-sbtp-green-400 mx-auto mb-2" />
-                  <p className="text-sbtp-green-600">Satellite map will appear here</p>
-                  <p className="text-sm text-sbtp-green-500">Configure Mapbox token above to view</p>
+                  <p className="text-sbtp-green-600">Loading satellite map...</p>
                 </div>
               </div>
             )}

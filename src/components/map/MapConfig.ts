@@ -10,12 +10,12 @@ export const locationColors = {
   csa: '#FF8C00', // dark orange for CSAs
 };
 
-// Set your Mapbox token
-export const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2hheXRoZWdheTEzIiwiYSI6ImNtYW15YTR2ODBxOTEycm9qeGhsOGxnN2cifQ.F3DKJtEwjSiAKbqp-7mlXg';
+// Google Maps API key
+export const GOOGLE_MAPS_API_KEY = 'AIzaSyCGuiIwh3b2OWtyAvQWqMVgqTpDDY-eBnk';
 
 // Default map configuration
 export const defaultMapConfig = {
-  style: 'mapbox://styles/mapbox/light-v11',
-  center: [-73.98, 40.73] as [number, number], // Manhattan, NYC
-  zoom: 12
+  center: { lat: 40.73, lng: -73.98 }, // Manhattan, NYC
+  zoom: 12,
+  mapId: 'food-access-map' // Required for advanced markers
 };

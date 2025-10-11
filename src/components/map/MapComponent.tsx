@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapLocation } from './types';
-import { locationColors, MAPBOX_TOKEN, defaultMapConfig } from './MapConfig';
+import { locationColors, GOOGLE_MAPS_API_KEY, defaultMapConfig } from './MapConfig';
 import { fetchEnhancedMapData } from '../../services/enhancedMapDataService';
-import LocationMarker from './LocationMarker';
 import LocationPopup from './LocationPopup';
-import MapboxTokenMissing from './MapboxTokenMissing';
 
 const MapComponent = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<google.maps.Map | null>(null);
+  const markers = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [locations, setLocations] = useState<MapLocation[]>([]);
@@ -44,67 +41,81 @@ const MapComponent = () => {
     loadData();
   }, []);
 
+  // Initialize Google Maps
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    if (!MAPBOX_TOKEN) {
-      console.error('Please set your Mapbox token before using the map');
-      return;
-    }
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker&v=weekly&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      
+      (window as any).initMap = async () => {
+        const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
+        
+        map.current = new Map(mapContainer.current!, {
+          ...defaultMapConfig,
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT,
+          },
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          streetViewControl: true,
+          fullscreenControl: true,
+        });
 
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: defaultMapConfig.style,
-      center: defaultMapConfig.center,
-      zoom: defaultMapConfig.zoom
-    });
-
-    // Add controls to the map - positioned bottom-right to avoid overlap
-    map.current.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-    map.current.addControl(new mapboxgl.GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true
-      },
-      trackUserLocation: true
-    }), 'bottom-right');
-
-    map.current.on('load', () => {
-      setMapLoaded(true);
-    });
-
-    // Add CSS for marker pulse animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes pulse-animation {
-        0% {
-          box-shadow: 0 0 0 0 rgba(255,255,255, 0.7);
-        }
-        70% {
-          box-shadow: 0 0 0 10px rgba(255,255,255, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(255,255,255, 0);
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Clean up on unmount
-    return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-      document.head.removeChild(style);
+        setMapLoaded(true);
+      };
+      
+      document.head.appendChild(script);
     };
+
+    loadGoogleMapsScript();
   }, []);
 
-  // Handle marker click
-  const handleMarkerClick = (locationId: string) => {
-    setActivePopup(activePopup === locationId ? null : locationId);
-  };
+  // Add markers when map and locations are ready
+  useEffect(() => {
+    if (!mapLoaded || !map.current || locations.length === 0) return;
+
+    const addMarkers = async () => {
+      const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+
+      // Clear existing markers
+      markers.current.forEach(marker => marker.map = null);
+      markers.current = [];
+
+      locations.forEach(location => {
+        const color = locationColors[location.type] || '#4CAF50';
+        
+        // Create custom pin
+        const pin = new PinElement({
+          background: color,
+          borderColor: '#ffffff',
+          glyphColor: '#ffffff',
+          scale: 1.2,
+        });
+
+        const marker = new AdvancedMarkerElement({
+          map: map.current!,
+          position: { lat: location.lngLat[1], lng: location.lngLat[0] },
+          content: pin.element,
+          title: location.name,
+        });
+
+        marker.addListener('click', () => {
+          setActivePopup(activePopup === location.id ? null : location.id);
+        });
+
+        markers.current.push(marker);
+      });
+    };
+
+    addMarkers();
+  }, [mapLoaded, locations]);
 
   // Handle popup close
   const handlePopupClose = () => {
@@ -116,42 +127,24 @@ const MapComponent = () => {
 
   return (
     <div className="relative w-full h-[70vh] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
-      {!MAPBOX_TOKEN ? (
-        <MapboxTokenMissing />
-      ) : (
-        <>
-          <div ref={mapContainer} className="absolute inset-0" />
-          
-          {loading && (
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md">
-              <div className="flex items-center gap-2">
-                <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full"></div>
-                <span className="text-sm text-sbtp-brown-700">Loading food access locations...</span>
-              </div>
-            </div>
-          )}
-          
-          
-          {/* Render markers once map is loaded */}
-          {mapLoaded && map.current && locations.map(location => (
-            <LocationMarker 
-              key={location.id}
-              location={location}
-              map={map.current!}
-              onMarkerClick={handleMarkerClick}
-              locationColors={locationColors}
-            />
-          ))}
-          
-          {/* Popup for active location */}
-          {activeLocation && (
-            <LocationPopup 
-              location={activeLocation} 
-              locationColors={locationColors}
-              onClose={handlePopupClose}
-            />
-          )}
-        </>
+      <div ref={mapContainer} className="absolute inset-0" />
+      
+      {loading && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md z-10">
+          <div className="flex items-center gap-2">
+            <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full"></div>
+            <span className="text-sm text-sbtp-brown-700">Loading food access locations...</span>
+          </div>
+        </div>
+      )}
+      
+      {/* Popup for active location */}
+      {activeLocation && (
+        <LocationPopup 
+          location={activeLocation} 
+          locationColors={locationColors}
+          onClose={handlePopupClose}
+        />
       )}
     </div>
   );
