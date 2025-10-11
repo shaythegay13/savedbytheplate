@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapLocation } from './types';
-import { locationColors, GOOGLE_MAPS_API_KEY, defaultMapConfig } from './MapConfig';
+import { locationColors, defaultMapConfig } from './MapConfig';
 import { fetchEnhancedMapData } from '../../services/enhancedMapDataService';
 import LocationPopup from './LocationPopup';
+import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 
 const MapComponent = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -45,13 +46,9 @@ const MapComponent = () => {
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    const loadGoogleMapsScript = () => {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker&v=weekly&callback=initMap`;
-      script.async = true;
-      script.defer = true;
-      
-      (window as any).initMap = async () => {
+    const initMap = async () => {
+      try {
+        await loadGoogleMaps();
         const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
         
         map.current = new Map(mapContainer.current!, {
@@ -69,12 +66,12 @@ const MapComponent = () => {
         });
 
         setMapLoaded(true);
-      };
-      
-      document.head.appendChild(script);
+      } catch (error) {
+        console.error('Error loading Google Maps:', error);
+      }
     };
 
-    loadGoogleMapsScript();
+    initMap();
   }, []);
 
   // Add markers when map and locations are ready

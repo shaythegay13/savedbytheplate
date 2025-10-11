@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Ruler, MapPin } from "lucide-react";
 import { researchLocationDimensions } from '@/services/locationResearchService';
-import { GOOGLE_MAPS_API_KEY } from '@/components/map/MapConfig';
+import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 
 interface GardenLayout {
   section: string;
@@ -60,13 +60,9 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
     const coords = locationCoordinates["sheep's meadow"] || locationCoordinates["central park"] || 
                   { lat: 40.7829, lng: -73.9654, zoom: 15 };
 
-    const loadGoogleMapsScript = () => {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&v=weekly&callback=initPlotMap`;
-      script.async = true;
-      script.defer = true;
-      
-      (window as any).initPlotMap = async () => {
+    const initMap = async () => {
+      try {
+        await loadGoogleMaps();
         const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
         
         map.current = new Map(mapContainer.current!, {
@@ -138,12 +134,12 @@ const IntelligentGardenPlotVisualizer: React.FC<IntelligentGardenPlotVisualizerP
         }
 
         setMapInitialized(true);
-      };
-      
-      document.head.appendChild(script);
+      } catch (error) {
+        console.error('Error loading Google Maps:', error);
+      }
     };
 
-    loadGoogleMapsScript();
+    initMap();
   }, [locationData, gardenLayout]);
 
   if (loading) {

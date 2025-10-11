@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
-import { GOOGLE_MAPS_API_KEY } from "@/components/map/MapConfig";
+import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 
 interface SatelliteGardenPlannerProps {
   plantRecommendations: any[];
@@ -22,7 +22,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || !GOOGLE_MAPS_API_KEY) return;
+    if (!mapContainer.current) return;
 
     console.log('Initializing Google Maps');
     
@@ -32,13 +32,9 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
       initialCenter = { lat: initialLocation.lat, lng: initialLocation.lng };
     }
 
-    const loadGoogleMapsScript = () => {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=marker&v=weekly&callback=initGardenMap`;
-      script.async = true;
-      script.defer = true;
-      
-      (window as any).initGardenMap = async () => {
+    const initMap = async () => {
+      try {
+        await loadGoogleMaps();
         const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
         const { AdvancedMarkerElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
         
@@ -67,12 +63,12 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
             title: 'Your Garden Location',
           });
         }
-      };
-      
-      document.head.appendChild(script);
+      } catch (error) {
+        console.error('Error loading Google Maps:', error);
+      }
     };
 
-    loadGoogleMapsScript();
+    initMap();
 
     return () => {
       if (marker.current) {
