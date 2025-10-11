@@ -197,9 +197,21 @@ serve(async (req) => {
       throw new Error(`Python API failed: ${pythonResponse.status} - ${errorText}`);
     }
 
+
     const gardenPlan = await pythonResponse.json();
     console.log('Garden plan generated successfully from Python API');
     console.log('Response data:', JSON.stringify(gardenPlan, null, 2));
+
+    // Transform the text-based plan into structured JSON for the frontend
+    const structuredPlan = {
+      success: gardenPlan.success || true,
+      plantRecommendations: extractPlantRecommendations(gardenPlan.plan || ''),
+      gardenLayout: extractGardenLayout(gardenPlan.plan || ''),
+      careInstructions: extractCareInstructions(gardenPlan.plan || ''),
+      expertTips: extractExpertTips(gardenPlan.plan || ''),
+      timeline: extractTimeline(gardenPlan.plan || ''),
+      rawPlan: gardenPlan.plan || '', // Keep the original text plan
+    };
 
     // Save the plan to database if user is authenticated
     if (formData.user_id) {
@@ -212,7 +224,6 @@ serve(async (req) => {
           sunlight: formData.sunlight,
           soil_contaminated: formData.soil_contaminated,
           soil_type: formData.soil_type,
-          growing_options: formData.growing_options,
           rainfall: formData.rainfall,
           season: formData.season,
           experience_level: formData.experience_level,
@@ -220,7 +231,7 @@ serve(async (req) => {
           space_description: formData.space_description,
           preferred_plants: formData.preferred_plants,
           time_commitment: formData.time_commitment,
-          plan_data: gardenPlan
+          plan_data: structuredPlan
         })
         .select()
         .single();
@@ -229,14 +240,15 @@ serve(async (req) => {
         console.error('Error saving plan to database:', saveError);
       }
 
-      return new Response(JSON.stringify({ ...gardenPlan, planId: savedPlan?.id }), {
+      return new Response(JSON.stringify({ ...structuredPlan, planId: savedPlan?.id }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(gardenPlan), {
+    return new Response(JSON.stringify(structuredPlan), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
 
   } catch (error) {
     console.error('=== ERROR in generate-smart-garden-plan ===');
@@ -264,6 +276,114 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper functions to parse the text-based plan into structured data
+function extractPlantRecommendations(plan: string): any[] {
+  const recommendations: any[] = [];
+  const varietySections = plan.match(/VARIETY RECOMMENDATIONS: [A-Z]+[\s\S]*?(?=VARIETY RECOMMENDATIONS:|Planting Calendar|$)/g);
+  
+  if (!varietySections || varietySections.length === 0) return recommendations;
+
+  varietySections.forEach(section => {
+    const plantMatches = section.matchAll(/📦 (.*?)\n\s+(.*?)\n\s+Difficulty: (.*?)\n\s+Days to Maturity: (\d+) days/g);
+    
+    for (const match of plantMatches) {
+      const [, variety, description, difficulty, days] = match;
+      const plantName = variety.split('\n')[0].trim();
+      
+      recommendations.push({
+        name: plantName,
+        variety: variety,
+        description: description.trim(),
+        difficulty: difficulty.trim(),
+        daysToHarvest: parseInt(days),
+        spacing: extractField(section, 'Space Needed') || '12 inches',
+        yield: extractField(section, 'Expected Yield') || 'Varies',
+        careInstructions: extractField(section, 'Care Tips') || '',
+      });
+    }
+  });
+
+  return recommendations;
+}
+
+function extractGardenLayout(plan: string): any[] {
+  const layoutSection = plan.match(/GARDEN LAYOUT VISUALIZATION[\s\S]*?(?=VARIETY RECOMMENDATIONS:|$)/);
+  if (!layoutSection) return [];
+
+  const layout: any[] = [];
+  const plantingNotes = plan.match(/Planting Notes:([\s\S]*?)(?=Layout Notes:|$)/);
+  
+  if (plantingNotes) {
+    const noteMatches = plantingNotes[1].matchAll(/\d+\.\s+(.*?):\s+(\d+)\s+plants\s+\((.*?)\s+spacing\)/g);
+    for (const match of noteMatches) {
+      const [, plant, quantity, spacing] = match;
+      layout.push({
+        plant: plant.trim(),
+        quantity: parseInt(quantity),
+        spacing: spacing.trim(),
+      });
+    }
+  }
+
+  return layout;
+}
+
+function extractCareInstructions(plan: string): string {
+  const careSection = plan.match(/Care Schedule:([\s\S]*?)(?=Succession Planting|Cover Crop|$)/);
+  return careSection ? careSection[1].trim() : '';
+}
+
+function extractExpertTips(plan: string): string[] {
+  const tips: string[] = [];
+  
+  // Extract layout and setup tips
+  const layoutTips = plan.match(/Layout & Setup Tips:([\s\S]*?)(?=Recommended Crops|$)/);
+  if (layoutTips) {
+    const tipLines = layoutTips[1]
+      .split(/\n-\s+/)
+      .filter(tip => tip.trim().length > 10)
+      .map(tip => tip.trim().replace(/^-\s*/, ''));
+    tips.push(...tipLines);
+  }
+
+  // Extract pro tips
+  const proTips = plan.match(/\*\*Pro Tips:\*\*([\s\S]*?)(?=\n\n|$)/);
+  if (proTips) {
+    const tipLines = proTips[1]
+      .split(/\n-\s+/)
+      .filter(tip => tip.trim().length > 10)
+      .map(tip => tip.trim().replace(/^-\s*/, ''));
+    tips.push(...tipLines);
+  }
+
+  return tips;
+}
+
+function extractTimeline(plan: string): any[] {
+  const timeline: any[] = [];
+  const calendarSection = plan.match(/Planting Calendar[\s\S]*?(?=Care Schedule:|$)/);
+  
+  if (calendarSection) {
+    const lines = calendarSection[0].split('\n').filter(line => line.trim().startsWith('-'));
+    
+    lines.forEach(line => {
+      timeline.push({
+        period: 'Growing Season',
+        task: line.trim().replace(/^-\s*/, ''),
+      });
+    });
+  }
+
+  return timeline;
+}
+
+function extractField(text: string, fieldName: string): string {
+  const regex = new RegExp(`${fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:\\s*([^\\n]+)`, 'i');
+  const match = text.match(regex);
+  return match ? match[1].trim() : '';
+}
+
 
 // Helper function to determine sunlight based on location, climate, and solar data
 function determineSunlightEnhanced(latitude: number, climateData: any, solarData: any): string {
