@@ -149,10 +149,22 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
 
   const canvasWidth = 600;
   const canvasHeight = 400;
+  const [plotShape, setPlotShape] = useState<'rectangle' | 'circle' | 'custom'>('rectangle');
+  const [plotBounds, setPlotBounds] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    if (uploadedImage) {
+      detectPlotShape();
+    } else {
+      setPlotShape('rectangle');
+      setPlotBounds(null);
+      generatePlantPositions();
+    }
+  }, [uploadedImage]);
 
   useEffect(() => {
     generatePlantPositions();
-  }, [plantRecommendations, formData, companionPlantingData]);
+  }, [plantRecommendations, formData, companionPlantingData, plotShape, plotBounds]);
 
   useEffect(() => {
     drawGardenPlan();
@@ -160,24 +172,63 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
 
   const getPlantIcon = (plantName: string): string => {
     const lowerName = plantName.toLowerCase();
+    // Vegetables
     if (lowerName.includes('tomato')) return '🍅';
     if (lowerName.includes('carrot')) return '🥕';
     if (lowerName.includes('lettuce') || lowerName.includes('salad')) return '🥬';
-    if (lowerName.includes('herb') || lowerName.includes('basil') || lowerName.includes('parsley') || lowerName.includes('oregano') || lowerName.includes('thyme')) return '🌿';
-    if (lowerName.includes('pepper')) return '🌶️';
+    if (lowerName.includes('pepper') || lowerName.includes('bell')) return '🫑';
+    if (lowerName.includes('chili') || lowerName.includes('jalapeño') || lowerName.includes('cayenne')) return '🌶️';
     if (lowerName.includes('cucumber')) return '🥒';
     if (lowerName.includes('bean')) return '🫘';
-    if (lowerName.includes('corn')) return '🌽';
+    if (lowerName.includes('pea')) return '🫛';
+    if (lowerName.includes('corn') || lowerName.includes('maize')) return '🌽';
     if (lowerName.includes('potato')) return '🥔';
     if (lowerName.includes('onion')) return '🧅';
-    if (lowerName.includes('flower') || lowerName.includes('marigold') || lowerName.includes('zinnia') || lowerName.includes('cosmos')) return '🌸';
-    if (lowerName.includes('squash') || lowerName.includes('zucchini')) return '🎃';
-    if (lowerName.includes('beet')) return '🍠';
+    if (lowerName.includes('garlic')) return '🧄';
+    if (lowerName.includes('eggplant') || lowerName.includes('aubergine')) return '🍆';
+    if (lowerName.includes('zucchini') || lowerName.includes('courgette')) return '🥒';
+    if (lowerName.includes('squash') || lowerName.includes('pumpkin')) return '🎃';
+    if (lowerName.includes('beet') || lowerName.includes('beetroot')) return '🫐';
     if (lowerName.includes('radish')) return '🔴';
-    if (lowerName.includes('spinach') || lowerName.includes('kale')) return '🥬';
-    if (lowerName.includes('strawberry') || lowerName.includes('blueberry')) return '🍓';
+    if (lowerName.includes('spinach')) return '🥬';
+    if (lowerName.includes('kale') || lowerName.includes('collard')) return '🥬';
+    if (lowerName.includes('broccoli')) return '🥦';
+    if (lowerName.includes('cauliflower')) return '🥦';
+    if (lowerName.includes('cabbage')) return '🥬';
+    if (lowerName.includes('celery')) return '🌿';
+    if (lowerName.includes('leek')) return '🧅';
+    if (lowerName.includes('turnip') || lowerName.includes('rutabaga')) return '🫐';
+    if (lowerName.includes('parsnip')) return '🥕';
+    if (lowerName.includes('asparagus')) return '🌿';
+    if (lowerName.includes('artichoke')) return '🌿';
+    // Fruits
+    if (lowerName.includes('strawberry')) return '🍓';
+    if (lowerName.includes('blueberry')) return '🫐';
+    if (lowerName.includes('raspberry')) return '🍓';
+    if (lowerName.includes('blackberry')) return '🫐';
+    if (lowerName.includes('watermelon')) return '🍉';
+    if (lowerName.includes('melon') || lowerName.includes('cantaloupe')) return '🍈';
+    // Herbs
+    if (lowerName.includes('basil')) return '🌿';
+    if (lowerName.includes('parsley')) return '🌿';
+    if (lowerName.includes('cilantro') || lowerName.includes('coriander')) return '🌿';
+    if (lowerName.includes('oregano')) return '🌿';
+    if (lowerName.includes('thyme')) return '🌿';
+    if (lowerName.includes('rosemary')) return '🌿';
+    if (lowerName.includes('mint')) return '🌿';
+    if (lowerName.includes('dill')) return '🌿';
+    if (lowerName.includes('sage')) return '🌿';
+    if (lowerName.includes('chive')) return '🌿';
+    if (lowerName.includes('herb')) return '🌿';
+    // Flowers
+    if (lowerName.includes('marigold')) return '🌼';
     if (lowerName.includes('sunflower')) return '🌻';
+    if (lowerName.includes('zinnia')) return '🌸';
+    if (lowerName.includes('cosmos')) return '🌸';
     if (lowerName.includes('nasturtium')) return '🌺';
+    if (lowerName.includes('petunia')) return '🌺';
+    if (lowerName.includes('flower')) return '🌸';
+    // Default
     return '🌱';
   };
 
@@ -220,6 +271,58 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
     return { good: [], bad: [] };
   };
 
+  const detectPlotShape = () => {
+    if (!uploadedImage) return;
+
+    const img = new Image();
+    img.onload = () => {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvasWidth;
+      tempCanvas.height = canvasHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+      if (!tempCtx) return;
+
+      tempCtx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+      const imageData = tempCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+      
+      // Simple shape detection: check if corners are darker (indicating circular plot)
+      const corners = [
+        imageData.data[0], // top-left
+        imageData.data[(canvasWidth - 1) * 4], // top-right
+        imageData.data[(canvasHeight - 1) * canvasWidth * 4], // bottom-left
+        imageData.data[((canvasHeight - 1) * canvasWidth + canvasWidth - 1) * 4] // bottom-right
+      ];
+      
+      const centerX = Math.floor(canvasWidth / 2);
+      const centerY = Math.floor(canvasHeight / 2);
+      const centerBrightness = imageData.data[(centerY * canvasWidth + centerX) * 4];
+      
+      const avgCornerBrightness = corners.reduce((a, b) => a + b, 0) / 4;
+      
+      // If corners are significantly darker than center, likely circular
+      if (centerBrightness > avgCornerBrightness + 30) {
+        setPlotShape('circle');
+      } else {
+        setPlotShape('rectangle');
+      }
+      
+      generatePlantPositions();
+    };
+    img.src = uploadedImage.previewUrl;
+  };
+
+  const isPositionInBounds = (x: number, y: number): boolean => {
+    if (plotShape === 'circle') {
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
+      const radius = Math.min(canvasWidth, canvasHeight) / 2 - 30;
+      const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+      return distance <= radius;
+    }
+    // Rectangle or custom shape
+    return x >= 20 && x <= canvasWidth - 20 && y >= 20 && y <= canvasHeight - 20;
+  };
+
   const generatePlantPositions = () => {
     const positions: PlantPosition[] = [];
     
@@ -231,54 +334,93 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
           pos.plant_name.toLowerCase().includes(p.name.toLowerCase())
         );
 
-        positions.push({
-          id: `ai-${index}`,
-          name: pos.plant_name,
-          x: pos.x * canvasWidth,
-          y: pos.y * canvasHeight,
-          size: plant?.difficulty === 'Easy' ? 8 : plant?.difficulty === 'Medium' ? 10 : 12,
-          color: getPlantColor(pos.plant_name),
-          icon: getPlantIcon(pos.plant_name),
-          sunlightNeeds: getSunlightNeeds(pos.plant_name),
-          waterNeeds: getWaterNeeds(pos.plant_name),
-          companions: pos.companions || [],
-          incompatible: pos.incompatible || []
-        });
+        const x = pos.x * canvasWidth;
+        const y = pos.y * canvasHeight;
+
+        // Only add if within plot bounds
+        if (isPositionInBounds(x, y)) {
+          positions.push({
+            id: `ai-${index}`,
+            name: pos.plant_name,
+            x,
+            y,
+            size: plant?.difficulty === 'Easy' ? 8 : plant?.difficulty === 'Medium' ? 10 : 12,
+            color: getPlantColor(pos.plant_name),
+            icon: getPlantIcon(pos.plant_name),
+            sunlightNeeds: getSunlightNeeds(pos.plant_name),
+            waterNeeds: getWaterNeeds(pos.plant_name),
+            companions: pos.companions || [],
+            incompatible: pos.incompatible || []
+          });
+        }
       });
     } else {
-      // Fallback: generate positions using companion planting logic
+      // Fallback: generate positions using companion planting logic adapted to plot shape
       const usedPositions: Set<string> = new Set();
-      const gridSize = Math.ceil(Math.sqrt(plantRecommendations.length));
-      const cellWidth = canvasWidth / gridSize;
-      const cellHeight = canvasHeight / gridSize;
-
-      plantRecommendations.forEach((plant, index) => {
-        const companionInfo = getCompanionInfo(plant.name);
-        const gridX = index % gridSize;
-        const gridY = Math.floor(index / gridSize);
+      
+      if (plotShape === 'circle') {
+        // Circular layout
+        const centerX = canvasWidth / 2;
+        const centerY = canvasHeight / 2;
+        const maxRadius = Math.min(canvasWidth, canvasHeight) / 2 - 30;
+        const rings = Math.ceil(Math.sqrt(plantRecommendations.length));
         
-        // Calculate position with spacing based on companion planting
-        const baseX = gridX * cellWidth + cellWidth / 2;
-        const baseY = gridY * cellHeight + cellHeight / 2;
-        
-        // Add some variation for natural look
-        const x = Math.max(20, Math.min(canvasWidth - 20, baseX + (Math.random() - 0.5) * 30));
-        const y = Math.max(20, Math.min(canvasHeight - 20, baseY + (Math.random() - 0.5) * 30));
-        
-        positions.push({
-          id: `plant-${index}`,
-          name: plant.name,
-          x,
-          y,
-          size: plant.difficulty === 'Easy' ? 8 : plant.difficulty === 'Medium' ? 10 : 12,
-          color: getPlantColor(plant.name),
-          icon: getPlantIcon(plant.name),
-          sunlightNeeds: getSunlightNeeds(plant.name),
-          waterNeeds: getWaterNeeds(plant.name),
-          companions: companionInfo.good,
-          incompatible: companionInfo.bad
+        plantRecommendations.forEach((plant, index) => {
+          const companionInfo = getCompanionInfo(plant.name);
+          const ring = Math.floor(index / (2 * Math.PI * rings));
+          const angleStep = (2 * Math.PI) / Math.max(1, Math.floor(plantRecommendations.length / rings));
+          const angle = (index % Math.floor(plantRecommendations.length / rings)) * angleStep;
+          const radius = (ring + 1) * (maxRadius / (rings + 1));
+          
+          const x = centerX + Math.cos(angle) * radius;
+          const y = centerY + Math.sin(angle) * radius;
+          
+          positions.push({
+            id: `plant-${index}`,
+            name: plant.name,
+            x,
+            y,
+            size: plant.difficulty === 'Easy' ? 8 : plant.difficulty === 'Medium' ? 10 : 12,
+            color: getPlantColor(plant.name),
+            icon: getPlantIcon(plant.name),
+            sunlightNeeds: getSunlightNeeds(plant.name),
+            waterNeeds: getWaterNeeds(plant.name),
+            companions: companionInfo.good,
+            incompatible: companionInfo.bad
+          });
         });
-      });
+      } else {
+        // Rectangular layout
+        const gridSize = Math.ceil(Math.sqrt(plantRecommendations.length));
+        const cellWidth = canvasWidth / gridSize;
+        const cellHeight = canvasHeight / gridSize;
+
+        plantRecommendations.forEach((plant, index) => {
+          const companionInfo = getCompanionInfo(plant.name);
+          const gridX = index % gridSize;
+          const gridY = Math.floor(index / gridSize);
+          
+          const baseX = gridX * cellWidth + cellWidth / 2;
+          const baseY = gridY * cellHeight + cellHeight / 2;
+          
+          const x = Math.max(20, Math.min(canvasWidth - 20, baseX + (Math.random() - 0.5) * 30));
+          const y = Math.max(20, Math.min(canvasHeight - 20, baseY + (Math.random() - 0.5) * 30));
+          
+          positions.push({
+            id: `plant-${index}`,
+            name: plant.name,
+            x,
+            y,
+            size: plant.difficulty === 'Easy' ? 8 : plant.difficulty === 'Medium' ? 10 : 12,
+            color: getPlantColor(plant.name),
+            icon: getPlantIcon(plant.name),
+            sunlightNeeds: getSunlightNeeds(plant.name),
+            waterNeeds: getWaterNeeds(plant.name),
+            companions: companionInfo.good,
+            incompatible: companionInfo.bad
+          });
+        });
+      }
     }
 
     setPlantPositions(positions);
@@ -312,17 +454,47 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
     gradient.addColorStop(0.5, '#3A5F23');
     gradient.addColorStop(1, '#2D5016');
     
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    
-    // Grass texture
-    ctx.fillStyle = '#4A7C3A';
-    for (let i = 0; i < canvasWidth; i += 30) {
-      for (let j = 0; j < canvasHeight; j += 30) {
-        if (Math.random() > 0.7) {
-          ctx.beginPath();
-          ctx.arc(i + Math.random() * 30, j + Math.random() * 30, 2, 0, 2 * Math.PI);
-          ctx.fill();
+    if (plotShape === 'circle') {
+      // Draw circular plot
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
+      const radius = Math.min(canvasWidth, canvasHeight) / 2 - 10;
+      
+      ctx.fillStyle = '#1A2810';
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Add grass texture within circle
+      ctx.fillStyle = '#4A7C3A';
+      for (let i = 0; i < canvasWidth; i += 30) {
+        for (let j = 0; j < canvasHeight; j += 30) {
+          const dx = i - centerX;
+          const dy = j - centerY;
+          if (Math.sqrt(dx * dx + dy * dy) < radius && Math.random() > 0.7) {
+            ctx.beginPath();
+            ctx.arc(i + Math.random() * 30, j + Math.random() * 30, 2, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+        }
+      }
+    } else {
+      // Draw rectangular plot
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      
+      // Grass texture
+      ctx.fillStyle = '#4A7C3A';
+      for (let i = 0; i < canvasWidth; i += 30) {
+        for (let j = 0; j < canvasHeight; j += 30) {
+          if (Math.random() > 0.7) {
+            ctx.beginPath();
+            ctx.arc(i + Math.random() * 30, j + Math.random() * 30, 2, 0, 2 * Math.PI);
+            ctx.fill();
+          }
         }
       }
     }
