@@ -1,7 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { X, ExternalLink, Facebook } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { X, ExternalLink, Facebook, MapPin, Clock, Info } from 'lucide-react';
 import { MapLocation } from './types';
+import { useState } from 'react';
 
 interface LocationPopupProps {
   location: MapLocation;
@@ -10,6 +12,8 @@ interface LocationPopupProps {
 }
 
 const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps) => {
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  
   if (!location) return null;
   
   const dayNames = {
@@ -148,9 +152,149 @@ const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps
         size="sm" 
         className="w-full mt-3 text-xs text-white"
         style={{ backgroundColor: locationColors[location.type] }}
+        onClick={() => setDetailsOpen(true)}
       >
         View Details
       </Button>
+      
+      {/* Detailed Dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-sbtp-green-700 flex items-center gap-2">
+              <MapPin className="h-6 w-6" style={{ color: locationColors[location.type] }} />
+              {location.name}
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              {location.description}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            {/* Location Type Badge */}
+            <div className="flex gap-2 flex-wrap">
+              <Badge 
+                variant="outline" 
+                style={{
+                  backgroundColor: `${locationColors[location.type]}20`,
+                  color: locationColors[location.type]
+                }}
+              >
+                {location.type.toUpperCase()}
+              </Badge>
+              {location.tags.map((tag, i) => (
+                <Badge 
+                  key={i} 
+                  variant="outline" 
+                  className="text-xs"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            
+            {/* Address Section */}
+            {location.address && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Location Information
+                </h4>
+                <div className="space-y-1 text-sm">
+                  <p><span className="font-medium">Address:</span> {location.address}</p>
+                  {location.crossstreets && (
+                    <p><span className="font-medium">Cross Streets:</span> {location.crossstreets}</p>
+                  )}
+                  {location.zipcode && (
+                    <p><span className="font-medium">Zipcode:</span> {location.zipcode}</p>
+                  )}
+                  {location.borough && (
+                    <p><span className="font-medium">Borough:</span> {location.borough}</p>
+                  )}
+                  {location.communityboard && (
+                    <p><span className="font-medium">Community Board:</span> {location.communityboard}</p>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Operating Hours */}
+            {location.operatingHours && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Operating Hours
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  {Object.entries(location.operatingHours).map(([day, hours]) => (
+                    <div key={day} className="flex justify-between">
+                      <span className="font-medium">{dayNames[day as keyof typeof dayNames]}:</span>
+                      <span className="text-right">{hours}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Additional Details */}
+            {location.details && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <Info className="h-4 w-4" />
+                  Additional Information
+                </h4>
+                <p className="text-sm text-sbtp-brown-600 whitespace-pre-line">{location.details}</p>
+              </div>
+            )}
+            
+            {/* Links Section */}
+            {(location.website || location.facebook) && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2">Links</h4>
+                <div className="space-y-2">
+                  {location.website && (
+                    <a 
+                      href={location.website.startsWith('http') ? location.website : `https://${location.website}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Visit Website
+                    </a>
+                  )}
+                  {location.facebook && (
+                    <a 
+                      href={location.facebook.startsWith('http') ? location.facebook : `https://facebook.com/${location.facebook}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <Facebook className="h-4 w-4" />
+                      Visit Facebook Page
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Status and Jurisdiction */}
+            {(location.status || location.juris) && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2">Administrative Info</h4>
+                <div className="space-y-1 text-sm">
+                  {location.status && (
+                    <p><span className="font-medium">Status:</span> {location.status}</p>
+                  )}
+                  {location.juris && (
+                    <p><span className="font-medium">Jurisdiction:</span> {location.juris}</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
