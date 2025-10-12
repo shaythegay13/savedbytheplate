@@ -287,14 +287,18 @@ serve(async (req) => {
     console.log('Garden plan generated successfully from Python API');
     console.log('Response data:', JSON.stringify(gardenPlan, null, 2));
 
-    // Transform the text-based plan into structured JSON for the frontend
+    // Transform the Python response into structured JSON for the frontend
     const structuredPlan = {
-      success: gardenPlan.success || true,
-      plantRecommendations: extractPlantRecommendations(gardenPlan.plan || ''),
-      gardenLayout: extractGardenLayout(gardenPlan.plan || ''),
-      careInstructions: extractCareInstructions(gardenPlan.plan || ''),
-      expertTips: extractExpertTips(gardenPlan.plan || ''),
-      timeline: extractTimeline(gardenPlan.plan || ''),
+      success: gardenPlan.success ?? true,
+      plantRecommendations: Array.isArray(gardenPlan.plantRecommendations)
+        ? gardenPlan.plantRecommendations
+        : extractPlantRecommendations(gardenPlan.plan || ''),
+      gardenLayout: Array.isArray(gardenPlan.gardenLayout)
+        ? gardenPlan.gardenLayout
+        : extractGardenLayout(gardenPlan.plan || ''),
+      careInstructions: gardenPlan.careInstructions || extractCareInstructions(gardenPlan.plan || ''),
+      expertTips: Array.isArray(gardenPlan.expertTips) ? gardenPlan.expertTips : extractExpertTips(gardenPlan.plan || ''),
+      timeline: Array.isArray(gardenPlan.timeline) ? gardenPlan.timeline : extractTimeline(gardenPlan.plan || ''),
       rawPlan: gardenPlan.plan || '', // Keep the original text plan
     };
 
@@ -431,6 +435,12 @@ function extractPlantRecommendations(plan: string): any[] {
     // If we have varieties, use the first variety's details as defaults
     const firstVariety = varieties[0];
     
+    // Parse planting and harvest times from description if present
+    const plantMatch = crop.description.match(/Plant:\s*([^|]+)\|?/i);
+    const harvestMatch = crop.description.match(/Harvest:\s*([^|]+)\|?/i);
+    const plantingTime = plantMatch ? plantMatch[1].trim() : '';
+    const harvestTime = harvestMatch ? harvestMatch[1].trim() : (firstVariety?.daysToHarvest ? `${firstVariety.daysToHarvest} days` : '');
+
     recommendations.push({
       name: crop.name,
       variety: varieties.length > 0 ? varieties.map(v => v.varietyName).join(', ') : crop.name,
@@ -438,6 +448,8 @@ function extractPlantRecommendations(plan: string): any[] {
       description: crop.description,
       difficulty: firstVariety?.difficulty || 'Easy',
       daysToHarvest: firstVariety?.daysToHarvest || 60,
+      plantingTime,
+      harvestTime,
       spacing: firstVariety?.spacing || '12 inches',
       yield: firstVariety?.yield || 'Varies',
       careInstructions: firstVariety?.careInstructions || '',

@@ -33,7 +33,7 @@ const GardenPlanGenerator: React.FC = () => {
         spaceType: formData.spaceType,
         spaceSize: formData.spaceSize,
         sunlight: formData.sunlight,
-        growing_location: formData.growing_options || 'outdoors',
+        growing_location: ['indoor','greenhouse','cold_frame','high_tunnel'].includes((formData.spaceType || '').toLowerCase()) ? 'indoors' : 'outdoors',
         soil_contaminated: formData.soil_contaminated,
         soil_type: formData.soil_type,
         growing_options: formData.growing_options,
