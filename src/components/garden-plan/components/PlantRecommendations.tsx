@@ -171,7 +171,7 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
         onClick={() => setSelectedPlant(plant)}
         className="w-full justify-start text-left h-auto py-3 px-4 hover:bg-sbtp-green-50 hover:border-sbtp-green-400 transition-colors"
       >
-        <span className="font-medium text-sbtp-green-700 truncate">
+        <span className="font-medium text-sbtp-green-700 break-words">
           {plant.name}
           {plant.variety && <span className="text-xs text-sbtp-brown-500 ml-1">({plant.variety})</span>}
         </span>
