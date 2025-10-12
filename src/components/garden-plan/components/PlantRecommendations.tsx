@@ -227,14 +227,14 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {categories.map((category) => (
-            <div key={category.title} className={`bg-gradient-to-br ${category.color} rounded-lg p-4 border-2 flex flex-col`}>
-              <h3 className="text-lg font-bold text-sbtp-green-700 flex items-center gap-2 mb-3">
+            <div key={category.title} className={`bg-gradient-to-br ${category.color} rounded-lg p-4 border-2`}>
+              <h3 className="text-lg font-bold text-sbtp-green-700 flex items-center gap-2 mb-4">
                 <span className="text-2xl">{category.emoji}</span>
-                <span className="truncate">{category.title}</span>
+                <span>{category.title}</span>
               </h3>
-              <div className="space-y-2 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {category.plants.map((plant) => {
                   const globalIndex = displayPlants.indexOf(plant);
                   return renderPlantCard(plant, globalIndex);
