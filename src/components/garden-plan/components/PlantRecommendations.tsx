@@ -89,6 +89,13 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
   const grains = displayPlants.filter(p => categorizePlant(p) === 'grains');
   const nuts = displayPlants.filter(p => categorizePlant(p) === 'nuts');
 
+  // Helpers to format plant names
+  const getCommonName = (name: string) => name.replace(/\s*\([^)]*\)\s*$/, "");
+  const getScientificFromName = (name: string) => {
+    const match = name.match(/\(([^)]+)\)/);
+    return match ? match[1] : undefined;
+  };
+
   const categories = [
     { title: 'Multiple Herbs', plants: herbs, emoji: '🌿', color: 'from-green-50 to-emerald-50 border-green-200' },
     { title: 'Leafy Greens', plants: leafyGreens, emoji: '🥬', color: 'from-lime-50 to-green-50 border-lime-200' },
@@ -171,8 +178,8 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
         onClick={() => setSelectedPlant(plant)}
         className="w-full justify-center text-center h-auto py-3 px-4 hover:bg-sbtp-green-50 hover:border-sbtp-green-400 transition-colors"
       >
-        <span className="font-medium text-sbtp-green-700 whitespace-normal">
-          {plant.name}
+        <span className="font-medium text-sbtp-green-700 whitespace-normal break-words text-center">
+          {getCommonName(plant.name)}
         </span>
       </Button>
     );
@@ -235,7 +242,7 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold text-sbtp-green-800 flex items-center justify-between">
                     <span>
-                      {selectedPlant.name}
+                      {getCommonName(selectedPlant.name)}
                     </span>
                     <Badge 
                       variant={selectedPlant.difficulty === 'Easy' ? 'default' : selectedPlant.difficulty === 'Medium' ? 'secondary' : 'destructive'}
@@ -246,10 +253,10 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
                 </DialogHeader>
 
                 <div className="space-y-4 mt-4">
-                  {selectedPlant.variety && (
+                  {(selectedPlant.variety || getScientificFromName(selectedPlant.name)) && (
                     <div className="space-y-1">
                       <h4 className="font-semibold text-sbtp-green-700">Scientific Name</h4>
-                      <p className="text-sm text-gray-700 italic">{selectedPlant.variety}</p>
+                      <p className="text-sm text-gray-700 italic">{selectedPlant.variety ?? getScientificFromName(selectedPlant.name)}</p>
                     </div>
                   )}
                   
