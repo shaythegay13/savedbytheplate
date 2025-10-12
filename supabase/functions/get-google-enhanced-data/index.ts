@@ -174,7 +174,7 @@ serve(async (req) => {
 
     console.log("Fetching enhanced Google data for:", { latitude, longitude, address });
 
-    const googleApiKey = Deno.env.get("GOOGLE_MAPS_API_KEY") || Deno.env.get("Google_Maps");
+    const googleApiKey = Deno.env.get("GOOGLE_MAPS_API_KEY");
 
     if (!googleApiKey) {
       throw new Error("Google Maps API key not configured");

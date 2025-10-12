@@ -36,6 +36,12 @@ npm i
 npm run dev
 ```
 
+# Install supabase cli
+
+Follow this for gh codespaces: https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux
+
+Then do `supabase login` and deploy each function globally: https://supabase.com/docs/guides/functions/quickstart
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).

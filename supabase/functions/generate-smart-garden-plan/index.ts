@@ -90,6 +90,9 @@ serve(async (req) => {
     // Parse and validate request body
     const rawRequest = await req.json();
     console.log('Raw request received');
+    // hardcoded to empire state building to bypass frontend gmaps error
+    rawRequest['latitude'] = 40.7486538125;
+    rawRequest['longitude'] = -73.98530431250000;
     
     const validationResult = gardenPlanRequestSchema.safeParse(rawRequest);
     if (!validationResult.success) {
@@ -220,6 +223,7 @@ serve(async (req) => {
         preferences: Array.isArray(formData.preferred_plants) ? formData.preferred_plants : formData.preferred_plants.split(',').map(p => p.trim()),
         space_description: formData.space_description,
         time_commitment: formData.time_commitment,
+        address: "20 W 34th St., New York, NY 10001",
         latitude: formData.latitude,
         longitude: formData.longitude,
         city: formData.city,

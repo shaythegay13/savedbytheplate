@@ -22,7 +22,7 @@ serve(async (req) => {
       );
     }
 
-    const PYTHON_API_URL = Deno.env.get('PYTHON_API_URL') || 'https://farm-garden-4.onrender.com';
+    const PYTHON_API_URL = 'https://agenticaigardenplanner.onrender.com';
     
     console.log('Calling Python backend disease identifier at:', `${PYTHON_API_URL}/api/v1/disease/identify`);
 
