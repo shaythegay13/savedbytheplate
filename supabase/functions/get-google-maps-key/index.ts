@@ -13,9 +13,9 @@ serve(async (req) => {
   try {
     // Support multiple possible secret names just in case
     const possibleKeys = [
+      "GOOGLE_MAPS_API_KEY",
       "Google_Maps",
       "GOOGLE_MAPS",
-      "GOOGLE_MAPS_API_KEY",
       "GOOGLE_MAPS_KEY",
     ];
 
