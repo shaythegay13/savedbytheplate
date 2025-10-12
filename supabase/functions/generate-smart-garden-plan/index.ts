@@ -288,17 +288,70 @@ serve(async (req) => {
     console.log('Response data:', JSON.stringify(gardenPlan, null, 2));
 
     // Transform the Python response into structured JSON for the frontend
+    const getFirstArray = (...cands: any[]) => cands.find((x: any) => Array.isArray(x) && x.length > 0) || null;
+
+    const generalCare = gardenPlan.careInstructions || gardenPlan.care_instructions || extractCareInstructions(gardenPlan.plan || '');
+
+    const rawRecs = getFirstArray(
+      gardenPlan.plantRecommendations,
+      gardenPlan.recommendations,
+      gardenPlan.recommendedCrops,
+      gardenPlan.recommended_crops,
+      gardenPlan.plants,
+      gardenPlan.crops
+    ) || extractPlantRecommendations(gardenPlan.plan || '');
+
+    const normalizePlant = (r: any) => {
+      const name = r?.name || r?.crop || r?.cropType || r?.common_name || r?.title || '';
+      const variety = r?.variety || r?.varieties?.[0]?.varietyName || r?.scientific_name || r?.scientificName || '';
+      const plantingTime = r?.plantingTime || r?.planting_time || r?.plantingMonths || r?.planting_months || '';
+      const harvestTime = r?.harvestTime || r?.harvest_time || (r?.harvestMonths ? String(r.harvestMonths) : '') || (r?.daysToHarvest ? `${r.daysToHarvest} days` : '');
+      const spacing = r?.spacing || r?.spacing_inches || r?.varieties?.[0]?.spacing || '';
+      const care = r?.careInstructions || r?.care_instructions || r?.care || r?.varieties?.[0]?.careInstructions || generalCare || '';
+      const difficulty = (r?.difficulty && ['Easy','Medium','Hard'].includes(r.difficulty)) ? r.difficulty : (r?.difficulty_level || 'Easy');
+      const yld = r?.yield || r?.expected_yield || r?.varieties?.[0]?.yield || 'Varies';
+      const daysToHarvest = r?.daysToHarvest || r?.days_to_harvest;
+      return { name, variety, plantingTime, harvestTime, spacing, careInstructions: care, difficulty, yield: yld, daysToHarvest };
+    };
+
+    let normalizedRecs = (rawRecs as any[]).map(normalizePlant);
+
+    // Deduplicate by name+variety
+    const seen = new Set<string>();
+    normalizedRecs = normalizedRecs.filter((p) => {
+      const key = `${p.name}|${p.variety}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return !!p.name;
+    });
+
+    // Light shuffle for variety
+    normalizedRecs = [...normalizedRecs].sort(() => Math.random() - 0.5);
+
+    const rawLayout = getFirstArray(
+      gardenPlan.gardenLayout,
+      gardenPlan.layout,
+      gardenPlan.garden_layout
+    ) || extractGardenLayout(gardenPlan.plan || '');
+
+    const rawTimeline = getFirstArray(
+      gardenPlan.timeline,
+      gardenPlan.plantingCalendar,
+      gardenPlan.calendar
+    ) || extractTimeline(gardenPlan.plan || '');
+
+    const tips = getFirstArray(
+      gardenPlan.expertTips,
+      gardenPlan.tips
+    ) || extractExpertTips(gardenPlan.plan || '');
+
     const structuredPlan = {
       success: gardenPlan.success ?? true,
-      plantRecommendations: Array.isArray(gardenPlan.plantRecommendations)
-        ? gardenPlan.plantRecommendations
-        : extractPlantRecommendations(gardenPlan.plan || ''),
-      gardenLayout: Array.isArray(gardenPlan.gardenLayout)
-        ? gardenPlan.gardenLayout
-        : extractGardenLayout(gardenPlan.plan || ''),
-      careInstructions: gardenPlan.careInstructions || extractCareInstructions(gardenPlan.plan || ''),
-      expertTips: Array.isArray(gardenPlan.expertTips) ? gardenPlan.expertTips : extractExpertTips(gardenPlan.plan || ''),
-      timeline: Array.isArray(gardenPlan.timeline) ? gardenPlan.timeline : extractTimeline(gardenPlan.plan || ''),
+      plantRecommendations: normalizedRecs,
+      gardenLayout: rawLayout,
+      careInstructions: generalCare,
+      expertTips: tips,
+      timeline: rawTimeline,
       rawPlan: gardenPlan.plan || '', // Keep the original text plan
     };
 
@@ -494,8 +547,23 @@ function extractGardenLayout(plan: string): any[] {
 }
 
 function extractCareInstructions(plan: string): string {
-  const careSection = plan.match(/Care Schedule:([\s\S]*?)(?=Succession Planting|Cover Crop|$)/);
-  return careSection ? careSection[1].trim() : '';
+  const candidates = [
+    /Care Schedule:([\s\S]*?)(?=\n\n|={3,}|$)/,
+    /Tips to Maximize Yields:([\s\S]*?)(?=\n\n|={3,}|$)/,
+    /\*\*Tips to Maximize Yields\*\*:([\s\S]*?)(?=\n\n|={3,}|$)/,
+    /Care Tips:([\s\S]*?)(?=\n\n|={3,}|$)/,
+  ];
+  for (const rx of candidates) {
+    const m = plan.match(rx);
+    if (m) {
+      return m[1]
+        .split(/\n-\s+|\n•\s+|\n/)
+        .map(s => s.trim().replace(/^[\-•]\s*/, ''))
+        .filter(Boolean)
+        .join('. ');
+    }
+  }
+  return '';
 }
 
 function extractExpertTips(plan: string): string[] {
