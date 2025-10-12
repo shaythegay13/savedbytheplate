@@ -20,6 +20,7 @@ const Map = () => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [improvementFormOpen, setImprovementFormOpen] = useState(false);
   const [addLocationFormOpen, setAddLocationFormOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(['garden', 'market', 'fridge', 'foodbank', 'farm', 'urbanfarm', 'business', 'csa']));
   const isMobile = useIsMobile();
 
   // Fetch data to get location counts for the legend
@@ -131,38 +132,17 @@ const Map = () => {
                               </div>
                               <div className="text-xs text-sbtp-brown-500">Food Banks</div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Map Controls */}
-                      <Card>
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg text-sbtp-green-800 flex items-center gap-2">
-                            <Layers className="h-5 w-5" />
-                            Map Layers
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-sbtp-brown-700">Show all locations</span>
-                              <input type="checkbox" defaultChecked className="rounded" />
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-sbtp-brown-700">Transit accessibility</span>
-                              <input type="checkbox" className="rounded" />
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-sbtp-brown-700">Walking distance</span>
-                              <input type="checkbox" className="rounded" />
-                            </div>
-                          </div>
+                      </div>
                         </CardContent>
                       </Card>
 
                       {/* Legend */}
-                      <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
+                      <UnifiedMapLegend 
+                        locationCounts={locationCounts} 
+                        isLoading={loading}
+                        activeFilters={activeFilters}
+                        onFilterChange={setActiveFilters}
+                      />
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -251,41 +231,20 @@ const Map = () => {
                 </CardContent>
               </Card>
 
-              {/* Map Controls */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg text-sbtp-green-800 flex items-center gap-2">
-                    <Layers className="h-5 w-5" />
-                    Map Layers
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-sbtp-brown-700">Show all locations</span>
-                      <input type="checkbox" defaultChecked className="rounded" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-sbtp-brown-700">Transit accessibility</span>
-                      <input type="checkbox" className="rounded" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-sbtp-brown-700">Walking distance</span>
-                      <input type="checkbox" className="rounded" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* Legend */}
-              <UnifiedMapLegend locationCounts={locationCounts} isLoading={loading} />
+              <UnifiedMapLegend 
+                locationCounts={locationCounts} 
+                isLoading={loading}
+                activeFilters={activeFilters}
+                onFilterChange={setActiveFilters}
+              />
             </div>
           </div>
         )}
 
         {/* Map Container */}
         <div className="flex-1 relative">
-          <MapComponent />
+          <MapComponent activeFilters={activeFilters} />
 
           {/* Action Buttons - Top Left */}
           <div className="absolute top-4 left-4 flex gap-3">

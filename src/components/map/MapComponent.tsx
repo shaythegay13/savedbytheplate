@@ -46,7 +46,11 @@ const createIconSvg = (type: string, color: string, zoom: number = 12) => {
   `.trim();
 };
 
-const MapComponent = () => {
+interface MapComponentProps {
+  activeFilters?: Set<string>;
+}
+
+const MapComponent = ({ activeFilters }: MapComponentProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const markers = useRef<any[]>([]);
@@ -163,6 +167,16 @@ const MapComponent = () => {
 
     addMarkers();
   }, [mapLoaded, locations]);
+
+  // Update marker visibility based on active filters
+  useEffect(() => {
+    if (!activeFilters) return;
+    
+    markersData.current.forEach(({ marker, location }) => {
+      const isVisible = activeFilters.has(location.type);
+      marker.map = isVisible ? map.current : null;
+    });
+  }, [activeFilters]);
 
   // Update marker sizes when zoom changes
   useEffect(() => {

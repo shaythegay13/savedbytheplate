@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { locationColors } from './MapConfig';
 
 // Icon path definitions matching LocationMarker
@@ -30,9 +31,21 @@ interface UnifiedMapLegendProps {
     csas: number;
   };
   isLoading?: boolean;
+  activeFilters: Set<string>;
+  onFilterChange: (filters: Set<string>) => void;
 }
 
-const UnifiedMapLegend = ({ locationCounts, isLoading }: UnifiedMapLegendProps) => {
+const UnifiedMapLegend = ({ locationCounts, isLoading, activeFilters, onFilterChange }: UnifiedMapLegendProps) => {
+  const handleToggleFilter = (type: string) => {
+    const newFilters = new Set(activeFilters);
+    if (newFilters.has(type)) {
+      newFilters.delete(type);
+    } else {
+      newFilters.add(type);
+    }
+    onFilterChange(newFilters);
+  };
+  
   const legendItems = [
     {
       type: 'garden',
@@ -115,8 +128,8 @@ const UnifiedMapLegend = ({ locationCounts, isLoading }: UnifiedMapLegendProps) 
         ) : (
           <>
             {legendItems.map((item) => (
-              <div key={item.type} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div key={item.type} className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1">
                   <div className="flex items-center justify-center w-5 h-5">
                     <svg 
                       width="20" 
@@ -132,7 +145,7 @@ const UnifiedMapLegend = ({ locationCounts, isLoading }: UnifiedMapLegendProps) 
                       <g dangerouslySetInnerHTML={{ __html: getIconPath(item.type) }} />
                     </svg>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <div className="font-medium text-sm text-sbtp-brown-700">
                       {item.label}
                     </div>
@@ -141,12 +154,20 @@ const UnifiedMapLegend = ({ locationCounts, isLoading }: UnifiedMapLegendProps) 
                     </div>
                   </div>
                 </div>
-                <Badge 
-                  variant="secondary" 
-                  className={`${item.count > 0 ? 'bg-sbtp-green-100 text-sbtp-green-700' : 'bg-gray-100 text-gray-500'}`}
-                >
-                  {item.count}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge 
+                    variant="secondary" 
+                    className={`${item.count > 0 ? 'bg-sbtp-green-100 text-sbtp-green-700' : 'bg-gray-100 text-gray-500'}`}
+                  >
+                    {item.count}
+                  </Badge>
+                  <Checkbox 
+                    checked={activeFilters.has(item.type)}
+                    onCheckedChange={() => handleToggleFilter(item.type)}
+                    disabled={item.count === 0}
+                    aria-label={`Toggle ${item.label}`}
+                  />
+                </div>
               </div>
             ))}
             
