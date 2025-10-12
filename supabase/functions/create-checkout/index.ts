@@ -1,11 +1,23 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Validation schemas
+const checkoutRequestSchema = z.object({
+  price_id: z.string()
+    .regex(/^price_[a-zA-Z0-9]{24,}$/, "Invalid Stripe price ID format")
+    .max(100, "Price ID too long")
+});
+
+const authHeaderSchema = z.string()
+  .min(1, "Authorization header is required")
+  .regex(/^Bearer\s+[\w-]+\.[\w-]+\.[\w-]+$/, "Invalid JWT format in Authorization header");
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -25,16 +37,49 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authorization header is required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate Authorization header format
+    const authValidation = authHeaderSchema.safeParse(authHeader);
+    if (!authValidation.success) {
+      logStep("Authorization validation failed", authValidation.error.format());
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid authorization format", 
+          details: authValidation.error.format() 
+        }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { price_id } = await req.json();
-    if (!price_id) throw new Error("price_id is required");
-    logStep("Price ID received", { price_id });
+    // Parse and validate request body
+    const requestBody = await req.json();
+    const bodyValidation = checkoutRequestSchema.safeParse(requestBody);
+    if (!bodyValidation.success) {
+      logStep("Request body validation failed", bodyValidation.error.format());
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid request body", 
+          details: bodyValidation.error.format() 
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { price_id } = bodyValidation.data;
+    logStep("Price ID validated", { price_id });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });

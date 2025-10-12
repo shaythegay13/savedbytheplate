@@ -1,11 +1,17 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Validation schema for Authorization header
+const authHeaderSchema = z.string()
+  .min(1, "Authorization header is required")
+  .regex(/^Bearer\s+[\w-]+\.[\w-]+\.[\w-]+$/, "Invalid JWT format in Authorization header");
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -32,7 +38,20 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
-    logStep("Authorization header found");
+    
+    // Validate Authorization header format
+    const validationResult = authHeaderSchema.safeParse(authHeader);
+    if (!validationResult.success) {
+      logStep("Authorization validation failed", validationResult.error.format());
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid authorization format", 
+          details: validationResult.error.format() 
+        }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    logStep("Authorization header validated");
 
     const token = authHeader.replace("Bearer ", "");
     logStep("Authenticating user with token");

@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,25 +10,69 @@ const corsHeaders = {
 
 const PYTHON_API_URL = "https://agenticaigardenplanner.onrender.com";
 
-interface GardenPlanRequest {
-  spaceType: string;
-  spaceSize: string;
-  growing_location: string;
-  soil_contaminated: string;
-  soil_type: string;
-  growing_options: string;
-  rainfall: string;
-  season: string;
-  experience_level: string;
-  goals: string;
-  space_description: string;
-  preferred_plants: string;
-  time_commitment: string;
-  user_id?: string;
-  latitude?: number;
-  longitude?: number;
-  city?: string;
-}
+// Comprehensive validation schema for garden plan requests
+const gardenPlanRequestSchema = z.object({
+  // Required fields
+  spaceType: z.string()
+    .min(1, "Space type is required")
+    .max(50, "Space type too long"),
+  spaceSize: z.string()
+    .min(1, "Space size is required")
+    .max(50, "Space size too long"),
+  growing_location: z.enum(['indoors', 'outdoors', 'both'], {
+    errorMap: () => ({ message: "Growing location must be 'indoors', 'outdoors', or 'both'" })
+  }),
+  soil_contaminated: z.string()
+    .max(50, "Soil contaminated field too long"),
+  soil_type: z.string()
+    .max(50, "Soil type too long"),
+  growing_options: z.string()
+    .max(200, "Growing options too long"),
+  rainfall: z.string()
+    .max(50, "Rainfall too long"),
+  season: z.string()
+    .max(50, "Season too long"),
+  experience_level: z.string()
+    .max(50, "Experience level too long"),
+  goals: z.string()
+    .max(500, "Goals too long"),
+  space_description: z.string()
+    .max(1000, "Space description too long"),
+  preferred_plants: z.string()
+    .max(500, "Preferred plants too long"),
+  time_commitment: z.string()
+    .max(100, "Time commitment too long"),
+  
+  // Optional fields with validation
+  user_id: z.string()
+    .uuid("Invalid user ID format")
+    .optional(),
+  latitude: z.number()
+    .min(-90, "Invalid latitude")
+    .max(90, "Invalid latitude")
+    .optional(),
+  longitude: z.number()
+    .min(-180, "Invalid longitude")
+    .max(180, "Invalid longitude")
+    .optional(),
+  city: z.string()
+    .max(100, "City name too long")
+    .optional(),
+}).refine(
+  (data) => {
+    // If latitude is provided, longitude must also be provided
+    if (data.latitude !== undefined || data.longitude !== undefined) {
+      return data.latitude !== undefined && data.longitude !== undefined;
+    }
+    return true;
+  },
+  {
+    message: "Both latitude and longitude must be provided together",
+    path: ["latitude", "longitude"]
+  }
+);
+
+type GardenPlanRequest = z.infer<typeof gardenPlanRequestSchema>;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -40,10 +85,29 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
     );
 
-    const formData: GardenPlanRequest = await req.json();
-    
     console.log('=== GARDEN PLAN REQUEST START ===');
-    console.log('Request received:', JSON.stringify(formData, null, 2));
+    
+    // Parse and validate request body
+    const rawRequest = await req.json();
+    console.log('Raw request received');
+    
+    const validationResult = gardenPlanRequestSchema.safeParse(rawRequest);
+    if (!validationResult.success) {
+      console.error('Validation failed:', JSON.stringify(validationResult.error.format(), null, 2));
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid request data', 
+          details: validationResult.error.format() 
+        }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    const formData = validationResult.data;
+    console.log('Request validated successfully:', JSON.stringify(formData, null, 2));
 
     // Determine if we need climate data based on growing location
     const needsClimateData = formData.growing_location === 'outdoors' || formData.growing_location === 'both';
