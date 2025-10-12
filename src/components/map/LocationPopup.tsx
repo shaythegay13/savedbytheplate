@@ -1,18 +1,50 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { X, ExternalLink, Facebook, MapPin, Clock, Info } from 'lucide-react';
+import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock } from 'lucide-react';
 import { MapLocation } from './types';
 import { useState } from 'react';
+import { useSubscription } from '@/hooks/useSubscription';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 interface LocationPopupProps {
   location: MapLocation;
   locationColors: Record<string, string>;
   onClose: () => void;
+  fullLocationData?: any; // Full location data with contact info
 }
 
-const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps) => {
+const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: LocationPopupProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  
+  // Get current user and subscription status
+  const { data: userData } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => await supabase.auth.getUser(),
+  });
+  
+  const user = userData?.data?.user || null;
+  const { subscribed, loading: subLoading } = useSubscription(user);
+  
+  // Check if user is admin
+  const { data: isAdmin } = useQuery({
+    queryKey: ['isAdmin', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      return !!data && !error;
+    },
+    enabled: !!user?.id,
+  });
+  
+  // Determine if user can see contact info (admin or subscriber)
+  const canSeeContactInfo = isAdmin || subscribed;
   
   if (!location) return null;
   
@@ -110,6 +142,47 @@ const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps
               <Facebook className="h-3 w-3" />
               Visit
             </a>
+          </div>
+        )}
+        
+        {/* Contact Information - Premium Feature */}
+        {fullLocationData?.email && (
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Email:</span>
+            {canSeeContactInfo ? (
+              <a 
+                href={`mailto:${fullLocationData.email}`}
+                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              >
+                <Mail className="h-3 w-3" />
+                {fullLocationData.email}
+              </a>
+            ) : (
+              <span className="text-gray-400 flex items-center gap-1">
+                <Lock className="h-3 w-3" />
+                Premium Only
+              </span>
+            )}
+          </div>
+        )}
+        
+        {fullLocationData?.phone && (
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Phone:</span>
+            {canSeeContactInfo ? (
+              <a 
+                href={`tel:${fullLocationData.phone}`}
+                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              >
+                <Phone className="h-3 w-3" />
+                {fullLocationData.phone}
+              </a>
+            ) : (
+              <span className="text-gray-400 flex items-center gap-1">
+                <Lock className="h-3 w-3" />
+                Premium Only
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -244,6 +317,56 @@ const LocationPopup = ({ location, locationColors, onClose }: LocationPopupProps
                   Additional Information
                 </h4>
                 <p className="text-sm text-sbtp-brown-600 whitespace-pre-line">{location.details}</p>
+              </div>
+            )}
+            
+            {/* Contact Information - Premium Feature */}
+            {(fullLocationData?.email || fullLocationData?.phone) && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2">Contact Information</h4>
+                <div className="space-y-2">
+                  {fullLocationData.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-gray-500" />
+                      {canSeeContactInfo ? (
+                        <a 
+                          href={`mailto:${fullLocationData.email}`}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          {fullLocationData.email}
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 flex items-center gap-1">
+                          <Lock className="h-3 w-3" />
+                          Premium subscribers only
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {fullLocationData.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-gray-500" />
+                      {canSeeContactInfo ? (
+                        <a 
+                          href={`tel:${fullLocationData.phone}`}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          {fullLocationData.phone}
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 flex items-center gap-1">
+                          <Lock className="h-3 w-3" />
+                          Premium subscribers only
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {!canSeeContactInfo && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      <a href="/premium" className="text-blue-600 hover:underline">Upgrade to Premium</a> to access volunteer contact information
+                    </p>
+                  )}
+                </div>
               </div>
             )}
             
