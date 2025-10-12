@@ -19,6 +19,7 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
   const map = useRef<any>(null);
   const marker = useRef<any>(null);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState(initialLocation);
 
   // Initialize map
   useEffect(() => {
@@ -56,12 +57,24 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
         console.log('Map loaded successfully');
         setIsMapReady(true);
         
-        // Add a marker for the location
+        // Add a draggable marker for the location
         if (initialLocation?.lat && initialLocation?.lng) {
           marker.current = new AdvancedMarkerElement({
             map: map.current,
             position: initialCenter,
-            title: 'Your Garden Location',
+            title: 'Your Garden Location (Drag to adjust)',
+            gmpDraggable: true,
+          });
+
+          // Listen for drag end to update location
+          marker.current.addListener('dragend', (event: any) => {
+            const newPosition = {
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng(),
+              address: currentLocation?.address
+            };
+            setCurrentLocation(newPosition);
+            console.log('Location updated:', newPosition);
           });
         }
       } catch (error) {
@@ -79,7 +92,8 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
   }, [initialLocation]);
 
   const handleComplete = () => {
-    onLayoutComplete([]);
+    // Pass the current location (which may have been adjusted by dragging)
+    onLayoutComplete([currentLocation || initialLocation]);
   };
 
   return (
@@ -87,10 +101,10 @@ const SatelliteGardenPlanner: React.FC<SatelliteGardenPlannerProps> = ({
       <CardHeader className="text-center">
         <CardTitle className="text-2xl text-sbtp-green-800 flex items-center justify-center gap-2">
           <MapPin className="h-6 w-6" />
-          Confirm Geolocation
+          Confirm & Adjust Garden Location
         </CardTitle>
         <p className="text-sbtp-brown-600">
-          Verify that this is the location you want to place your garden.
+          Drag the marker to adjust your garden's exact location, then confirm.
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
