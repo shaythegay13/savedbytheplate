@@ -48,6 +48,21 @@ serve(async (req) => {
     
     if (customers.data.length === 0) {
       logStep("No customer found, updating unsubscribed state");
+      
+      // Update or insert subscription status
+      await supabaseClient
+        .from('user_subscriptions')
+        .upsert({
+          user_id: user.id,
+          subscribed: false,
+          product_id: null,
+          subscription_end: null,
+          last_checked: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'user_id'
+        });
+
       return new Response(JSON.stringify({ subscribed: false }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -70,11 +85,27 @@ serve(async (req) => {
       const subscription = subscriptions.data[0];
       subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
       logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
-      productId = subscription.items.data[0].price.product;
+      productId = subscription.items.data[0].price.product as string;
       logStep("Determined subscription tier", { productId });
     } else {
       logStep("No active subscription found");
     }
+
+    // Update subscription status in database
+    await supabaseClient
+      .from('user_subscriptions')
+      .upsert({
+        user_id: user.id,
+        subscribed: hasActiveSub,
+        product_id: productId,
+        subscription_end: subscriptionEnd,
+        last_checked: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }, {
+        onConflict: 'user_id'
+      });
+    
+    logStep("Updated subscription status in database");
 
     return new Response(JSON.stringify({
       subscribed: hasActiveSub,

@@ -647,6 +647,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscriptions: {
+        Row: {
+          created_at: string
+          id: string
+          last_checked: string
+          product_id: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_checked?: string
+          product_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_checked?: string
+          product_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       weather_alerts: {
         Row: {
           alert_id: string
@@ -794,6 +827,10 @@ export type Database = {
         Returns: undefined
       }
       is_user_banned: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
+      user_has_active_subscription: {
         Args: { _user_id: string }
         Returns: boolean
       }
