@@ -95,8 +95,50 @@ const GardenPlanGenerator: React.FC = () => {
         title: "Garden Plan Generated!",
         description: "Your AI-powered garden plan is ready.",
       });
+
+      // Normalize backend response to match our GardenPlan shape
+      const parseTimes = (desc?: string) => {
+        let plantingTime = '';
+        let harvestTime = '';
+        if (desc) {
+          const plantMatch = desc.match(/Plant:\s*([^|]+)\|?/i);
+          const harvestMatch = desc.match(/Harvest:\s*([^|]+)\|?/i);
+          plantingTime = plantMatch ? plantMatch[1].trim() : '';
+          harvestTime = harvestMatch ? harvestMatch[1].trim() : '';
+        }
+        return { plantingTime, harvestTime };
+      };
+
+      const normalizedPlants = (aiPlan.plantRecommendations || []).map((p: any) => {
+        const { plantingTime, harvestTime } = parseTimes(p.description);
+        const variety = p.variety || p.varieties?.[0]?.varietyName;
+        const care = p.careInstructions || p.varieties?.[0]?.careInstructions || '';
+        const difficulty = (p.difficulty === 'Easy' || p.difficulty === 'Medium' || p.difficulty === 'Hard') ? p.difficulty : 'Easy';
+        return {
+          name: p.name || p.cropType || '',
+          variety,
+          plantingTime: plantingTime || (Array.isArray(formData.season) ? formData.season.join(', ') : formData.season || ''),
+          harvestTime: harvestTime || (p.daysToHarvest ? `${p.daysToHarvest} days` : ''),
+          spacing: p.spacing || '',
+          careInstructions: care || 'Care varies by variety. Follow general plan care plus weekly inspection, deep watering, and mulching.',
+          difficulty,
+          yield: p.yield || 'Varies',
+        };
+      }) as any[];
+
+      // Light shuffle to avoid identical ordering between runs
+      const shuffled = [...normalizedPlants].sort(() => 0.5 - Math.random());
+
+      const normalizedPlan: GardenPlan = {
+        plantRecommendations: shuffled,
+        gardenLayout: Array.isArray(aiPlan.gardenLayout) ? [] : [],
+        plantingCalendar: [],
+        careInstructions: aiPlan.careInstructions || '',
+        expertTips: aiPlan.expertTips || [],
+        planId: aiPlan.planId,
+      };
       
-      setGardenPlan(aiPlan);
+      setGardenPlan(normalizedPlan);
     } catch (error) {
       console.error('=== FRONTEND: Error Generating Garden Plan ===');
       console.error('Error:', error);
