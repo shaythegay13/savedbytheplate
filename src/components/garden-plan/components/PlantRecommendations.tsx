@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Leaf, Edit2, Save, X } from "lucide-react";
+import GardenFeedback from '../GardenFeedback';
 
 interface PlantRecommendation {
   name: string;
@@ -31,6 +33,8 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
   const basePlants = Array.isArray(plantRecommendations) ? plantRecommendations : [];
   const [isEditing, setIsEditing] = useState(false);
   const [editedPlants, setEditedPlants] = useState<PlantRecommendation[]>(basePlants);
+  const [selectedPlant, setSelectedPlant] = useState<PlantRecommendation | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
   const handleSaveChanges = () => {
     if (onPlanUpdate) {
       onPlanUpdate(editedPlants);
@@ -95,103 +99,83 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
     { title: 'Nuts', plants: nuts, emoji: '🥜', color: 'from-brown-50 to-amber-50 border-brown-200' }
   ].filter(cat => cat.plants.length > 0);
 
-  const renderPlantCard = (plant: PlantRecommendation, globalIndex: number) => {
-    return (
-      <div key={globalIndex} className="border border-sbtp-green-200 rounded-lg p-3 bg-white shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
-        {isEditing ? (
-          <div className="space-y-2">
-            <div className="flex justify-between items-start gap-2">
-              <div className="flex-1 space-y-2 min-w-0">
-                <Input
-                  value={plant.name}
-                  onChange={(e) => updatePlant(globalIndex, 'name', e.target.value)}
-                  placeholder="Plant name"
-                  className="font-semibold text-sm"
-                />
-                <Input
-                  value={plant.variety || ''}
-                  onChange={(e) => updatePlant(globalIndex, 'variety', e.target.value)}
-                  placeholder="Variety (optional)"
-                  className="text-xs"
-                />
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => removePlant(globalIndex)}
-                className="text-destructive hover:text-destructive shrink-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
+  const renderPlantButton = (plant: PlantRecommendation, globalIndex: number) => {
+    if (isEditing) {
+      return (
+        <div key={globalIndex} className="border border-sbtp-green-200 rounded-lg p-3 bg-white space-y-2">
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex-1 space-y-2 min-w-0">
               <Input
-                value={plant.plantingTime}
-                onChange={(e) => updatePlant(globalIndex, 'plantingTime', e.target.value)}
-                placeholder="Planting time"
-                className="text-xs"
+                value={plant.name}
+                onChange={(e) => updatePlant(globalIndex, 'name', e.target.value)}
+                placeholder="Plant name"
+                className="font-semibold text-sm"
               />
               <Input
-                value={plant.harvestTime}
-                onChange={(e) => updatePlant(globalIndex, 'harvestTime', e.target.value)}
-                placeholder="Harvest time"
-                className="text-xs"
-              />
-              <Input
-                value={plant.spacing}
-                onChange={(e) => updatePlant(globalIndex, 'spacing', e.target.value)}
-                placeholder="Spacing"
-                className="text-xs"
-              />
-              <Input
-                value={plant.yield}
-                onChange={(e) => updatePlant(globalIndex, 'yield', e.target.value)}
-                placeholder="Expected yield"
+                value={plant.variety || ''}
+                onChange={(e) => updatePlant(globalIndex, 'variety', e.target.value)}
+                placeholder="Variety (optional)"
                 className="text-xs"
               />
             </div>
-            <Textarea
-              value={plant.careInstructions}
-              onChange={(e) => updatePlant(globalIndex, 'careInstructions', e.target.value)}
-              placeholder="Care instructions"
-              rows={2}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => removePlant(globalIndex)}
+              className="text-destructive hover:text-destructive shrink-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Input
+              value={plant.plantingTime}
+              onChange={(e) => updatePlant(globalIndex, 'plantingTime', e.target.value)}
+              placeholder="Planting time"
+              className="text-xs"
+            />
+            <Input
+              value={plant.harvestTime}
+              onChange={(e) => updatePlant(globalIndex, 'harvestTime', e.target.value)}
+              placeholder="Harvest time"
+              className="text-xs"
+            />
+            <Input
+              value={plant.spacing}
+              onChange={(e) => updatePlant(globalIndex, 'spacing', e.target.value)}
+              placeholder="Spacing"
+              className="text-xs"
+            />
+            <Input
+              value={plant.yield}
+              onChange={(e) => updatePlant(globalIndex, 'yield', e.target.value)}
+              placeholder="Expected yield"
               className="text-xs"
             />
           </div>
-        ) : (
-          <>
-            <div className="flex justify-between items-start mb-2 gap-2">
-              <h3 className="font-semibold text-sbtp-green-700 text-sm line-clamp-2 flex-1 min-w-0">
-                {plant.name}
-                {plant.variety && <span className="text-xs text-sbtp-brown-500 block"> ({plant.variety})</span>}
-              </h3>
-              <Badge 
-                variant={plant.difficulty === 'Easy' ? 'default' : plant.difficulty === 'Medium' ? 'secondary' : 'destructive'}
-                className="text-xs shrink-0"
-              >
-                {plant.difficulty}
-              </Badge>
-            </div>
-            <div className="space-y-1 text-xs flex-1">
-              <p className="truncate"><strong>Plant:</strong> {plant.plantingTime}</p>
-              <p className="truncate"><strong>Harvest:</strong> {plant.harvestTime}</p>
-              <p className="truncate"><strong>Spacing:</strong> {plant.spacing}</p>
-              <p className="truncate"><strong>Yield:</strong> {plant.yield}</p>
-              <p className="line-clamp-2"><strong>Care:</strong> {plant.careInstructions}</p>
-            </div>
-            <div className="mt-2 pt-2 border-t border-sbtp-green-100">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onShareExperience(plant.name)}
-                className="text-sbtp-green-700 border-sbtp-green-300 hover:bg-sbtp-green-50 w-full text-xs h-8"
-              >
-                Share Experience
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
+          <Textarea
+            value={plant.careInstructions}
+            onChange={(e) => updatePlant(globalIndex, 'careInstructions', e.target.value)}
+            placeholder="Care instructions"
+            rows={2}
+            className="text-xs"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <Button
+        key={globalIndex}
+        variant="outline"
+        onClick={() => setSelectedPlant(plant)}
+        className="w-full justify-start text-left h-auto py-3 px-4 hover:bg-sbtp-green-50 hover:border-sbtp-green-400 transition-colors"
+      >
+        <span className="font-medium text-sbtp-green-700 truncate">
+          {plant.name}
+          {plant.variety && <span className="text-xs text-sbtp-brown-500 ml-1">({plant.variety})</span>}
+        </span>
+      </Button>
     );
   };
 
@@ -234,15 +218,101 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
                 <span className="text-2xl">{category.emoji}</span>
                 <span>{category.title}</span>
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {category.plants.map((plant) => {
                   const globalIndex = displayPlants.indexOf(plant);
-                  return renderPlantCard(plant, globalIndex);
+                  return renderPlantButton(plant, globalIndex);
                 })}
               </div>
             </div>
           ))}
         </div>
+
+        {/* Plant Details Dialog */}
+        <Dialog open={!!selectedPlant && !showFeedback} onOpenChange={(open) => !open && setSelectedPlant(null)}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            {selectedPlant && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold text-sbtp-green-800 flex items-center justify-between">
+                    <span>
+                      {selectedPlant.name}
+                      {selectedPlant.variety && (
+                        <span className="text-lg text-sbtp-brown-500 ml-2">({selectedPlant.variety})</span>
+                      )}
+                    </span>
+                    <Badge 
+                      variant={selectedPlant.difficulty === 'Easy' ? 'default' : selectedPlant.difficulty === 'Medium' ? 'secondary' : 'destructive'}
+                    >
+                      {selectedPlant.difficulty}
+                    </Badge>
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className="space-y-4 mt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-sbtp-green-700">Planting Time</h4>
+                      <p className="text-sm text-gray-700">{selectedPlant.plantingTime}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-sbtp-green-700">Harvest Time</h4>
+                      <p className="text-sm text-gray-700">{selectedPlant.harvestTime}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-sbtp-green-700">Spacing</h4>
+                      <p className="text-sm text-gray-700">{selectedPlant.spacing}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-sbtp-green-700">Expected Yield</h4>
+                      <p className="text-sm text-gray-700">{selectedPlant.yield}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-sbtp-green-700">Care Instructions</h4>
+                    <p className="text-sm text-gray-700 leading-relaxed">{selectedPlant.careInstructions}</p>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <Button
+                      onClick={() => setShowFeedback(true)}
+                      className="w-full bg-sbtp-green-600 hover:bg-sbtp-green-700"
+                    >
+                      Share Your Experience
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Feedback Dialog */}
+        <Dialog open={showFeedback} onOpenChange={(open) => !open && setShowFeedback(false)}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            {selectedPlant && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold text-sbtp-green-800">
+                    Share Your Experience - {selectedPlant.name}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="mt-4">
+                  <GardenFeedback
+                    plantName={selectedPlant.name}
+                    onFeedbackSubmit={(feedback) => {
+                      console.log('Feedback submitted:', feedback);
+                      onShareExperience(selectedPlant.name);
+                      setShowFeedback(false);
+                      setSelectedPlant(null);
+                    }}
+                  />
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
