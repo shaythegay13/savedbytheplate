@@ -169,7 +169,7 @@ serve(async (req) => {
     
     // Test Python backend health first
     console.log('Testing Python backend health...');
-    const healthCheckTimeout = 10000; // 10 seconds
+    const healthCheckTimeout = 60000; // 60 seconds (Render free tier cold start)
     const healthController = new AbortController();
     const healthTimeoutId = setTimeout(() => healthController.abort(), healthCheckTimeout);
     
@@ -191,7 +191,7 @@ serve(async (req) => {
     }
     
     // Increase timeout for main request (Render free tier cold starts can take 30-50 seconds)
-    const requestTimeout = 60000; // 60 seconds
+    const requestTimeout = 90000; // 90 seconds
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
     
