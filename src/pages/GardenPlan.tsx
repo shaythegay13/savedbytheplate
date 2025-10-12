@@ -85,15 +85,20 @@ const GardenPlan = () => {
     try {
       console.log('Calling AI garden plan generation with:', finalFormData);
       
-      // Data is now flat, no nesting needed
+      // Transform arrays to comma-separated strings and handle user_id
       const planRequest = {
-        spaceType: finalFormData.spaceType || 'garden',
+        spaceType: Array.isArray(finalFormData.spaceType) 
+          ? finalFormData.spaceType.join(',') 
+          : (finalFormData.spaceType || 'garden'),
         spaceSize: finalFormData.spaceSize || 'medium',
         sunlight: finalFormData.sunlight || 'full-sun',
         soil_contaminated: finalFormData.soil_contaminated || 'no',
         soil_type: finalFormData.soil_type || 'loamy',
         growing_options: finalFormData.growing_options || 'traditional',
-        season: finalFormData.season || 'spring',
+        growing_location: finalFormData.growing_location || 'outdoors',
+        season: Array.isArray(finalFormData.season)
+          ? finalFormData.season.join(',')
+          : (finalFormData.season || 'spring'),
         rainfall: finalFormData.rainfall || 'moderate',
         experience_level: finalFormData.experience_level || 'beginner',
         preferred_plants: finalFormData.preferred_plants || 'vegetables',
@@ -103,8 +108,7 @@ const GardenPlan = () => {
         address: finalFormData.location?.address || '',
         latitude: finalFormData.location?.lat,
         longitude: finalFormData.location?.lng,
-        city: finalFormData.location?.address || '',
-        user_id: 'demo-user'
+        city: finalFormData.location?.address || ''
       };
       
       console.log('Sending to backend:', planRequest);
