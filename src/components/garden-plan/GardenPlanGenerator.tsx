@@ -32,6 +32,7 @@ const GardenPlanGenerator: React.FC = () => {
       const requestPayload = {
         spaceType: formData.spaceType,
         spaceSize: formData.spaceSize,
+        sunlight: formData.sunlight,
         growing_location: formData.growing_options || 'outdoors',
         soil_contaminated: formData.soil_contaminated,
         soil_type: formData.soil_type,
@@ -110,29 +111,52 @@ const GardenPlanGenerator: React.FC = () => {
       };
 
       const normalizedPlants = (aiPlan.plantRecommendations || []).map((p: any) => {
-        const { plantingTime, harvestTime } = parseTimes(p.description);
-        const variety = p.variety || p.varieties?.[0]?.varietyName;
+        const { plantingTime: parsedPlant, harvestTime: parsedHarvest } = parseTimes(p.description);
+        const plantingTime = p.plantingTime || parsedPlant || (Array.isArray(formData.season) ? formData.season.join(', ') : formData.season || '');
+        const harvestTime = p.harvestTime || parsedHarvest || (p.harvestMonths ? String(p.harvestMonths) : '') || (p.daysToHarvest ? `${p.daysToHarvest} days` : '');
+        const variety = p.variety || p.varieties?.[0]?.varietyName || '';
         const care = p.careInstructions || p.varieties?.[0]?.careInstructions || '';
         const difficulty = (p.difficulty === 'Easy' || p.difficulty === 'Medium' || p.difficulty === 'Hard') ? p.difficulty : 'Easy';
         return {
           name: p.name || p.cropType || '',
           variety,
-          plantingTime: plantingTime || (Array.isArray(formData.season) ? formData.season.join(', ') : formData.season || ''),
-          harvestTime: harvestTime || (p.daysToHarvest ? `${p.daysToHarvest} days` : ''),
-          spacing: p.spacing || '',
-          careInstructions: care || 'Care varies by variety. Follow general plan care plus weekly inspection, deep watering, and mulching.',
+          plantingTime,
+          harvestTime,
+          spacing: p.spacing || p.varieties?.[0]?.spacing || '',
+          careInstructions: care || (aiPlan.careInstructions ? `General care: ${aiPlan.careInstructions}` : 'Care varies by variety. Follow general plan care plus weekly inspection, deep watering, and mulching.'),
           difficulty,
-          yield: p.yield || 'Varies',
+          yield: p.yield || p.varieties?.[0]?.yield || 'Varies',
         };
       }) as any[];
 
       // Light shuffle to avoid identical ordering between runs
       const shuffled = [...normalizedPlants].sort(() => 0.5 - Math.random());
 
+      // Map backend layout and timeline to our types
+      const mappedLayout = Array.isArray(aiPlan.gardenLayout)
+        ? [{
+            section: 'Main Bed',
+            plants: aiPlan.gardenLayout.map((g: any) => `${g.plant} x${g.quantity} (${g.spacing})`),
+            size: 'Auto',
+            notes: 'Auto-generated from backend layout'
+          }]
+        : [];
+
+      const mappedCalendar = Array.isArray(aiPlan.timeline)
+        ? Object.entries(
+            (aiPlan.timeline as any[]).reduce((acc: Record<string, string[]>, item: any) => {
+              const key = String(item.period || 'General');
+              if (!acc[key]) acc[key] = [];
+              if (item.task) acc[key].push(String(item.task));
+              return acc;
+            }, {})
+          ).map(([month, activities]) => ({ month, activities: activities as string[] }))
+        : [];
+
       const normalizedPlan: GardenPlan = {
         plantRecommendations: shuffled,
-        gardenLayout: Array.isArray(aiPlan.gardenLayout) ? [] : [],
-        plantingCalendar: [],
+        gardenLayout: mappedLayout,
+        plantingCalendar: mappedCalendar,
         careInstructions: aiPlan.careInstructions || '',
         expertTips: aiPlan.expertTips || [],
         planId: aiPlan.planId,
