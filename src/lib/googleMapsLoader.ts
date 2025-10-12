@@ -43,13 +43,10 @@ export const loadGoogleMaps = (): Promise<void> => {
         // ignore and fallback below
       }
 
-      // Fallback to static key in MapConfig if Supabase secret isn't usable
+      // Require API key from Supabase secret - do not use hardcoded fallback
       if (!value || !String(value).startsWith('AIza')) {
-        value = GOOGLE_MAPS_API_KEY;
-        type = 'apiKey';
+        throw new Error('Google Maps API key not configured. Please set the Google_Maps secret in Supabase.');
       }
-
-      if (!value) throw new Error('Missing Google Maps credential');
 
       const script = document.createElement('script');
 

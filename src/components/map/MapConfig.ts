@@ -10,8 +10,8 @@ export const locationColors = {
   csa: '#FF8C00', // dark orange for CSAs
 };
 
-// Google Maps API key
-export const GOOGLE_MAPS_API_KEY = 'AIzaSyCGuiIwh3b2OWtyAvQWqMVgqTpDDY-eBnk';
+// Google Maps API key - DO NOT hardcode, use Supabase secret
+export const GOOGLE_MAPS_API_KEY = '';
 
 // Default map configuration
 export const defaultMapConfig = {
