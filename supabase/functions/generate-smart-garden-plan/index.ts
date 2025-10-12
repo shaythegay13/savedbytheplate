@@ -227,9 +227,25 @@ serve(async (req) => {
       }
     };
 
+    // Query plant database for available plants matching user preferences
+    console.log('Querying plant database...');
+    const { data: plantData, error: plantError } = await supabase
+      .from('garden_insights')
+      .select('*')
+      .limit(300);
+    
+    if (plantError) {
+      console.error('Error querying plant database:', plantError);
+    }
+    
+    console.log(`Found ${plantData?.length || 0} plants in database`);
+    
+    // Add plant database to request payload
+    requestPayload.available_plants = plantData || [];
+    
     console.log('Calling Python API for garden plan generation...');
     console.log('API URL:', `${PYTHON_API_URL}/api/v1/garden-plan/generate`);
-    console.log('Request payload:', JSON.stringify(requestPayload, null, 2));
+    console.log('Request payload size:', JSON.stringify(requestPayload).length, 'characters');
     
     // Test Python backend health first
     console.log('Testing Python backend health...');
