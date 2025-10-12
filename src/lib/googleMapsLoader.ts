@@ -28,24 +28,20 @@ export const loadGoogleMaps = (): Promise<void> => {
       const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
       if (existingScript) existingScript.remove();
 
-      // Get key/client from Supabase Edge Function (requires authentication)
+      // Get key/client from Supabase Edge Function (public access, API key is safe to expose client-side)
       let value: string | undefined;
       let type: 'apiKey' | 'clientId' = 'apiKey';
       try {
         const { data, error } = await supabase.functions.invoke('get-google-maps-key', {
           method: 'GET',
         });
-        if (error) {
-          console.error('Failed to fetch Google Maps key:', error);
-          throw new Error('Unable to load Google Maps API key. Please ensure you are logged in.');
-        }
-        if (data?.value) {
+        if (!error && data?.value) {
           value = String(data.value);
           type = (data.type === 'clientId' ? 'clientId' : 'apiKey');
         }
       } catch (e) {
-        console.error('Error invoking get-google-maps-key:', e);
-        throw new Error('Failed to retrieve Google Maps API key. Please try again or contact support.');
+        // Silently fail and continue to fallback
+        console.warn('Could not fetch Google Maps key from Supabase:', e);
       }
 
       // Require API key from Supabase secret - do not use hardcoded fallback
