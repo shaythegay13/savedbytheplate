@@ -169,11 +169,10 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
         key={globalIndex}
         variant="outline"
         onClick={() => setSelectedPlant(plant)}
-        className="w-full justify-start text-left h-auto py-3 px-4 hover:bg-sbtp-green-50 hover:border-sbtp-green-400 transition-colors"
+        className="w-full justify-center text-center h-auto py-3 px-4 hover:bg-sbtp-green-50 hover:border-sbtp-green-400 transition-colors"
       >
-        <span className="font-medium text-sbtp-green-700 break-words">
+        <span className="font-medium text-sbtp-green-700 whitespace-normal">
           {plant.name}
-          {plant.variety && <span className="text-xs text-sbtp-brown-500 ml-1">({plant.variety})</span>}
         </span>
       </Button>
     );
@@ -237,9 +236,6 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
                   <DialogTitle className="text-2xl font-bold text-sbtp-green-800 flex items-center justify-between">
                     <span>
                       {selectedPlant.name}
-                      {selectedPlant.variety && (
-                        <span className="text-lg text-sbtp-brown-500 ml-2">({selectedPlant.variety})</span>
-                      )}
                     </span>
                     <Badge 
                       variant={selectedPlant.difficulty === 'Easy' ? 'default' : selectedPlant.difficulty === 'Medium' ? 'secondary' : 'destructive'}
@@ -250,6 +246,13 @@ const PlantRecommendations: React.FC<PlantRecommendationsProps> = ({
                 </DialogHeader>
 
                 <div className="space-y-4 mt-4">
+                  {selectedPlant.variety && (
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-sbtp-green-700">Scientific Name</h4>
+                      <p className="text-sm text-gray-700 italic">{selectedPlant.variety}</p>
+                    </div>
+                  )}
+                  
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <h4 className="font-semibold text-sbtp-green-700">Planting Time</h4>
