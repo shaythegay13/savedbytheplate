@@ -270,18 +270,18 @@ const fetchFoodBanks = async (): Promise<MapLocation[]> => {
   }
 };
 
-// Fetch comprehensive NYC food access data
+// Fetch comprehensive NYC food access data (CLEANED version)
 const fetchComprehensiveData = async (): Promise<MapLocation[]> => {
   try {
-    console.log('🔄 Fetching comprehensive NYC food access data...');
-    const response = await fetch('/processed/nyc_food_access_data_COMPLETE.csv');
-    if (!response.ok) throw new Error('Failed to fetch comprehensive data');
+    console.log('🔄 Fetching cleaned comprehensive NYC food access data...');
+    const response = await fetch('/processed/nyc_food_access_data_CLEANED.csv');
+    if (!response.ok) throw new Error('Failed to fetch cleaned comprehensive data');
     const csvText = await response.text();
     const result = parseComprehensiveCSV(csvText);
-    console.log('✅ Comprehensive data loaded:', result.length);
+    console.log('✅ Cleaned comprehensive data loaded:', result.length);
     return result;
   } catch (error) {
-    console.error('Error fetching comprehensive data:', error);
+    console.error('Error fetching cleaned comprehensive data:', error);
     return [];
   }
 };
