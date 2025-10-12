@@ -214,6 +214,13 @@ export type Database = {
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "events_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "public_locations"
+            referencedColumns: ["id"]
+          },
         ]
       }
       garden_feedback: {
@@ -693,7 +700,66 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_locations: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          description: string | null
+          details: string | null
+          hours: Json | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          name: string | null
+          organization: string | null
+          source: string | null
+          status: string | null
+          tags: string[] | null
+          type: string | null
+          updated_at: string | null
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          hours?: Json | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          organization?: string | null
+          source?: string | null
+          status?: string | null
+          tags?: string[] | null
+          type?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          hours?: Json | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          organization?: string | null
+          source?: string | null
+          status?: string | null
+          tags?: string[] | null
+          type?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       find_nearby_locations: {
