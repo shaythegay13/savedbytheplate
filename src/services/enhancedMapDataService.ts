@@ -578,7 +578,8 @@ export const categorizeLocations = (locations: MapLocation[]) => {
     urbanfarms: locations.filter(l => l.type === 'urbanfarm'),
     businesses: locations.filter(l => l.type === 'business'),
     fridges: locations.filter(l => l.type === 'fridge'),
-    foodbanks: locations.filter(l => l.type === 'foodbank')
+    foodbanks: locations.filter(l => l.type === 'foodbank'),
+    csas: locations.filter(l => l.type === 'csa')
   };
   
   return categories;

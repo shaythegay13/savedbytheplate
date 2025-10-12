@@ -26,8 +26,20 @@ const Map = () => {
   useEffect(() => {
     const loadCounts = async () => {
       try {
+        setLoading(true);
         const locations = await fetchEnhancedMapData();
         const categorized = categorizeLocations(locations);
+        
+        console.log('📊 Location counts calculated:', {
+          gardens: categorized.gardens.length,
+          markets: categorized.markets.length,
+          fridges: categorized.fridges.length,
+          foodbanks: categorized.foodbanks.length,
+          farms: categorized.farms.length,
+          urbanfarms: categorized.urbanfarms.length,
+          businesses: categorized.businesses.length
+        });
+        
         setLocationCounts({
           gardens: categorized.gardens.length,
           markets: categorized.markets.length,
@@ -36,7 +48,7 @@ const Map = () => {
           farms: categorized.farms.length,
           urbanfarms: categorized.urbanfarms.length,
           businesses: categorized.businesses.length,
-          csas: 0 // Will be populated when you add the data
+          csas: categorized.csas?.length || 0
         });
         setLastUpdated(new Date());
       } catch (error) {
@@ -47,6 +59,11 @@ const Map = () => {
     };
 
     loadCounts();
+    
+    // Reload counts every 30 seconds to catch any new data
+    const interval = setInterval(loadCounts, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
   return (
     <div className="min-h-screen bg-background">
