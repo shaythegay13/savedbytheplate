@@ -9,12 +9,13 @@ const Privacy = () => {
             <path d="m12 19-7-7 7-7"/>
             <path d="M19 12H5"/>
           </svg>
-          Back to Saved by the Plate
+          Back to Waiting List
         </Link>
       </div>
       
       <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 className="text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
+        <h1 className="sr-only">Privacy Policy</h1>
+        
         
         <div className="prose prose-lg max-w-none space-y-6 text-foreground">
           <p>

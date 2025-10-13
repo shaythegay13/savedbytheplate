@@ -84,15 +84,12 @@ const Terms: React.FC = () => {
             <path d="m12 19-7-7 7-7"/>
             <path d="M19 12H5"/>
           </svg>
-          Back to Saved by the Plate
+          Back to Waiting List
         </Link>
       </div>
       
       <div className="max-w-5xl mx-auto px-4 py-6">
-        <header className="mb-8">
-        <h1 className="text-3xl font-bold text-sbtp-green-800">Terms of Service</h1>
-        <p className="text-sm text-sbtp-brown-600 mt-2">Last updated: October 09, 2025</p>
-      </header>
+        <h1 className="sr-only">Terms of Service</h1>
 
       <nav aria-label="Table of contents" className="mb-10">
         <h2 className="sr-only">Table of Contents</h2>

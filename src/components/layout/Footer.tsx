@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
   const isWaitingList = location.pathname === "/waiting-list";
-  const isLegalPage = location.pathname === "/terms" || location.pathname === "/privacy";
+  const isLegalPage = location.pathname === "/terms" || location.pathname === "/privacy" || location.pathname.startsWith("/legal");
   const currentYear = new Date().getFullYear();
 
   // Choose layout class dynamically
