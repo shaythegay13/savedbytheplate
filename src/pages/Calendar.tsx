@@ -43,8 +43,8 @@ const Calendar = () => {
   const [checkingSubscription, setCheckingSubscription] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
   
-  // TEMPORARY: Development bypass - set to false when ready to enforce premium
-  const DEV_BYPASS_SUBSCRIPTION = true;
+  // Premium subscription is now enforced
+  const DEV_BYPASS_SUBSCRIPTION = false;
 
   // Form state
   const [title, setTitle] = useState('');
