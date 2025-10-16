@@ -5,7 +5,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import WaitingList from "./pages/WaitingList";
 import Index from "./pages/Index";
 import LocalFood from "./pages/LocalFood";
 import Map from "./pages/Map";
@@ -18,8 +17,6 @@ import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import LegalPrivacy from "./pages/LegalPrivacy";
-import LegalTerms from "./pages/LegalTerms";
 import ForumCategory from "./pages/ForumCategory";
 import ForumDiscussion from "./pages/ForumDiscussion";
 import NewDiscussion from "./pages/NewDiscussion";
@@ -38,8 +35,8 @@ const App = () => (
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">
             <Routes>
-              {/* Main landing page redirects to waiting list */}
-              <Route path="/" element={<Navigate to="/waiting-list" replace />} />
+              {/* Main landing page */}
+              <Route path="/" element={<Index />} />
               
               {/* Authentication page */}
               <Route path="/auth" element={<Auth />} />
@@ -47,10 +44,7 @@ const App = () => (
               {/* Calendar page */}
               <Route path="/calendar" element={<Calendar />} />
               
-              {/* Waiting list page */}
-              <Route path="/waiting-list" element={<WaitingList />} />
-              
-              {/* All other pages remain accessible for development */}
+              {/* All other pages */}
               <Route path="/index" element={<Index />} />
               <Route path="/local-food" element={<LocalFood />} />
               <Route path="/local-food/map" element={<Map />} />
@@ -60,8 +54,6 @@ const App = () => (
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
-              <Route path="/legal/privacy" element={<LegalPrivacy />} />
-              <Route path="/legal/terms" element={<LegalTerms />} />
               
               <Route path="/forum" element={<Navigate to="/community" replace />} />
               <Route path="/forum/category/:slug" element={<ForumCategory />} />
