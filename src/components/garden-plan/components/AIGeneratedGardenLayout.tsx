@@ -163,6 +163,43 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
   const [plotShape, setPlotShape] = useState<'rectangle' | 'circle' | 'custom'>('rectangle');
   const [plotBounds, setPlotBounds] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
 
+  // Calculate plot dimensions based on custom input
+  const getPlotDimensions = () => {
+    if (!useCustomDimensions || !customDimensions.dimension1) {
+      return { width: canvasWidth - 30, height: canvasHeight - 30 };
+    }
+
+    const dim1 = parseFloat(customDimensions.dimension1);
+    const dim2 = customDimensions.dimension2 ? parseFloat(customDimensions.dimension2) : dim1;
+    
+    // Calculate aspect ratio and scale to fit canvas
+    const aspectRatio = dim1 / dim2;
+    let plotWidth, plotHeight;
+    
+    if (customDimensions.shape === 'circle') {
+      const diameter = Math.min(canvasWidth, canvasHeight) - 30;
+      return { width: diameter, height: diameter, isCircle: true };
+    }
+    
+    if (aspectRatio > 1) {
+      plotWidth = canvasWidth - 30;
+      plotHeight = plotWidth / aspectRatio;
+      if (plotHeight > canvasHeight - 30) {
+        plotHeight = canvasHeight - 30;
+        plotWidth = plotHeight * aspectRatio;
+      }
+    } else {
+      plotHeight = canvasHeight - 30;
+      plotWidth = plotHeight * aspectRatio;
+      if (plotWidth > canvasWidth - 30) {
+        plotWidth = canvasWidth - 30;
+        plotHeight = plotWidth / aspectRatio;
+      }
+    }
+    
+    return { width: plotWidth, height: plotHeight };
+  };
+
   // Get dimension labels based on shape
   const getDimensionLabels = () => {
     switch (customDimensions.shape) {
@@ -187,11 +224,11 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
 
   useEffect(() => {
     generatePlantPositions();
-  }, [plantRecommendations, formData, companionPlantingData, plotShape, plotBounds]);
+  }, [plantRecommendations, formData, companionPlantingData, plotShape, plotBounds, customDimensions, useCustomDimensions]);
 
   useEffect(() => {
     drawGardenPlan();
-  }, [plantPositions, showCompanions, uploadedImage]);
+  }, [plantPositions, showCompanions, uploadedImage, customDimensions, useCustomDimensions]);
 
   const getPlantIcon = (plantName: string): string => {
     const lowerName = plantName.toLowerCase();
@@ -335,15 +372,21 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
   };
 
   const isPositionInBounds = (x: number, y: number): boolean => {
-    if (plotShape === 'circle') {
-      const centerX = canvasWidth / 2;
-      const centerY = canvasHeight / 2;
-      const radius = Math.min(canvasWidth, canvasHeight) / 2 - 30;
+    const plotDims = getPlotDimensions();
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    
+    if (customDimensions.shape === 'circle' || plotDims.isCircle) {
+      const radius = plotDims.width / 2 - 20;
       const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
       return distance <= radius;
     }
-    // Rectangle or custom shape
-    return x >= 20 && x <= canvasWidth - 20 && y >= 20 && y <= canvasHeight - 20;
+    
+    // Rectangle or irregular shape
+    const plotX = centerX - plotDims.width / 2;
+    const plotY = centerY - plotDims.height / 2;
+    return x >= plotX + 20 && x <= plotX + plotDims.width - 20 && 
+           y >= plotY + 20 && y <= plotY + plotDims.height - 20;
   };
 
   const generatePlantPositions = () => {
@@ -380,12 +423,13 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
     } else {
       // Fallback: generate positions using companion planting logic adapted to plot shape
       const usedPositions: Set<string> = new Set();
+      const plotDims = getPlotDimensions();
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
       
-      if (plotShape === 'circle') {
+      if (customDimensions.shape === 'circle' || plotDims.isCircle) {
         // Circular layout
-        const centerX = canvasWidth / 2;
-        const centerY = canvasHeight / 2;
-        const maxRadius = Math.min(canvasWidth, canvasHeight) / 2 - 30;
+        const maxRadius = plotDims.width / 2 - 30;
         const rings = Math.ceil(Math.sqrt(plantRecommendations.length));
         
         plantRecommendations.forEach((plant, index) => {
@@ -414,20 +458,22 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
         });
       } else {
         // Rectangular layout
+        const plotX = centerX - plotDims.width / 2;
+        const plotY = centerY - plotDims.height / 2;
         const gridSize = Math.ceil(Math.sqrt(plantRecommendations.length));
-        const cellWidth = canvasWidth / gridSize;
-        const cellHeight = canvasHeight / gridSize;
+        const cellWidth = plotDims.width / gridSize;
+        const cellHeight = plotDims.height / gridSize;
 
         plantRecommendations.forEach((plant, index) => {
           const companionInfo = getCompanionInfo(plant.name);
           const gridX = index % gridSize;
           const gridY = Math.floor(index / gridSize);
           
-          const baseX = gridX * cellWidth + cellWidth / 2;
-          const baseY = gridY * cellHeight + cellHeight / 2;
+          const baseX = plotX + gridX * cellWidth + cellWidth / 2;
+          const baseY = plotY + gridY * cellHeight + cellHeight / 2;
           
-          const x = Math.max(20, Math.min(canvasWidth - 20, baseX + (Math.random() - 0.5) * 30));
-          const y = Math.max(20, Math.min(canvasHeight - 20, baseY + (Math.random() - 0.5) * 30));
+          const x = Math.max(plotX + 20, Math.min(plotX + plotDims.width - 20, baseX + (Math.random() - 0.5) * 30));
+          const y = Math.max(plotY + 20, Math.min(plotY + plotDims.height - 20, baseY + (Math.random() - 0.5) * 30));
           
           positions.push({
             id: `plant-${index}`,
@@ -472,42 +518,44 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
   };
 
   const drawDefaultBackground = (ctx: CanvasRenderingContext2D) => {
-    // Beautiful gradient background
+    // Sky/background gradient - light blue to represent open space
     const bgGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-    bgGradient.addColorStop(0, '#F0F9FF');
-    bgGradient.addColorStop(0.5, '#E0F2FE');
-    bgGradient.addColorStop(1, '#BAE6FD');
+    bgGradient.addColorStop(0, '#E8F5E9');
+    bgGradient.addColorStop(1, '#C8E6C9');
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     
-    // Garden plot background
-    const plotGradient = ctx.createRadialGradient(
-      canvasWidth / 2, canvasHeight / 2, 0,
-      canvasWidth / 2, canvasHeight / 2, Math.max(canvasWidth, canvasHeight) / 2
-    );
-    plotGradient.addColorStop(0, '#FEF3C7');
-    plotGradient.addColorStop(0.6, '#FDE68A');
-    plotGradient.addColorStop(1, '#FCD34D');
+    const plotDims = getPlotDimensions();
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
     
-    if (plotShape === 'circle') {
+    // Rich soil gradient - various brown tones
+    const soilGradient = ctx.createRadialGradient(
+      centerX, centerY, 0,
+      centerX, centerY, Math.max(plotDims.width, plotDims.height) / 2
+    );
+    soilGradient.addColorStop(0, '#6B4423');  // Rich brown
+    soilGradient.addColorStop(0.4, '#8B5A3C'); // Medium brown
+    soilGradient.addColorStop(0.7, '#A0522D'); // Sienna
+    soilGradient.addColorStop(1, '#654321');   // Dark brown
+    
+    if (customDimensions.shape === 'circle' || plotDims.isCircle) {
       // Draw circular plot
-      const centerX = canvasWidth / 2;
-      const centerY = canvasHeight / 2;
-      const radius = Math.min(canvasWidth, canvasHeight) / 2 - 10;
+      const radius = plotDims.width / 2;
       
-      ctx.fillStyle = plotGradient;
+      ctx.fillStyle = soilGradient;
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Add subtle border
-      ctx.strokeStyle = '#D97706';
+      // Subtle border
+      ctx.strokeStyle = '#3E2723';
       ctx.lineWidth = 3;
       ctx.stroke();
       
-      // Add soil texture
-      ctx.fillStyle = 'rgba(120, 53, 15, 0.1)';
-      for (let i = 0; i < 150; i++) {
+      // Soil texture/particles
+      ctx.fillStyle = 'rgba(139, 90, 60, 0.3)';
+      for (let i = 0; i < 200; i++) {
         const angle = Math.random() * 2 * Math.PI;
         const r = Math.random() * radius;
         const x = centerX + Math.cos(angle) * r;
@@ -518,33 +566,34 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
       }
     } else {
       // Draw rectangular plot with rounded corners
-      const padding = 15;
+      const plotX = centerX - plotDims.width / 2;
+      const plotY = centerY - plotDims.height / 2;
       const cornerRadius = 12;
       
-      ctx.fillStyle = plotGradient;
+      ctx.fillStyle = soilGradient;
       ctx.beginPath();
-      ctx.moveTo(padding + cornerRadius, padding);
-      ctx.lineTo(canvasWidth - padding - cornerRadius, padding);
-      ctx.arcTo(canvasWidth - padding, padding, canvasWidth - padding, padding + cornerRadius, cornerRadius);
-      ctx.lineTo(canvasWidth - padding, canvasHeight - padding - cornerRadius);
-      ctx.arcTo(canvasWidth - padding, canvasHeight - padding, canvasWidth - padding - cornerRadius, canvasHeight - padding, cornerRadius);
-      ctx.lineTo(padding + cornerRadius, canvasHeight - padding);
-      ctx.arcTo(padding, canvasHeight - padding, padding, canvasHeight - padding - cornerRadius, cornerRadius);
-      ctx.lineTo(padding, padding + cornerRadius);
-      ctx.arcTo(padding, padding, padding + cornerRadius, padding, cornerRadius);
+      ctx.moveTo(plotX + cornerRadius, plotY);
+      ctx.lineTo(plotX + plotDims.width - cornerRadius, plotY);
+      ctx.arcTo(plotX + plotDims.width, plotY, plotX + plotDims.width, plotY + cornerRadius, cornerRadius);
+      ctx.lineTo(plotX + plotDims.width, plotY + plotDims.height - cornerRadius);
+      ctx.arcTo(plotX + plotDims.width, plotY + plotDims.height, plotX + plotDims.width - cornerRadius, plotY + plotDims.height, cornerRadius);
+      ctx.lineTo(plotX + cornerRadius, plotY + plotDims.height);
+      ctx.arcTo(plotX, plotY + plotDims.height, plotX, plotY + plotDims.height - cornerRadius, cornerRadius);
+      ctx.lineTo(plotX, plotY + cornerRadius);
+      ctx.arcTo(plotX, plotY, plotX + cornerRadius, plotY, cornerRadius);
       ctx.closePath();
       ctx.fill();
       
-      // Add border
-      ctx.strokeStyle = '#D97706';
+      // Border
+      ctx.strokeStyle = '#3E2723';
       ctx.lineWidth = 3;
       ctx.stroke();
       
-      // Add soil texture
-      ctx.fillStyle = 'rgba(120, 53, 15, 0.1)';
-      for (let i = 0; i < 200; i++) {
-        const x = padding + Math.random() * (canvasWidth - 2 * padding);
-        const y = padding + Math.random() * (canvasHeight - 2 * padding);
+      // Soil texture/particles
+      ctx.fillStyle = 'rgba(139, 90, 60, 0.3)';
+      for (let i = 0; i < 250; i++) {
+        const x = plotX + Math.random() * plotDims.width;
+        const y = plotY + Math.random() * plotDims.height;
         ctx.beginPath();
         ctx.arc(x, y, Math.random() * 2 + 0.5, 0, 2 * Math.PI);
         ctx.fill();
@@ -838,8 +887,8 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
             width={canvasWidth}
             height={canvasHeight}
             onClick={handleCanvasClick}
-            className="border-2 border-amber-300 rounded-lg cursor-pointer max-w-full h-auto shadow-md"
-            style={{ backgroundColor: '#FFFBEB' }}
+            className="border-2 border-brown-400 rounded-lg cursor-pointer max-w-full h-auto shadow-md"
+            style={{ backgroundColor: '#D7CCC8' }}
           />
         </div>
 
