@@ -96,15 +96,15 @@ const AboutUs = () => {
                     
                     <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
                       <p>
-                        Hebatallah Tharhan is the talented Full Stack Developer at Saved by the Plate Inc., where she drives the development of accessible, user-focused technology that powers the organization's educational mission. With a broad background across startups, edtech, and analytics, Hebatallah leads the design, implementation, and optimization of the digital tools that make food justice education engaging and effective.
+                        Starting as a Web Development Intern and growing into her role as Full Stack Developer at Saved by the Plate Inc., Hebatallah drives the creation of accessible, user-focused technology that powers the organization's educational and community impact.
                       </p>
                       
                       <p>
-                        Her extensive experience includes shaping innovative platforms, enhancing analytics dashboards, and streamlining product workflows—all with a focus on creating meaningful impact through technology. Beyond her technical expertise, Hebatallah contributes as a leader in the social impact and education space, serving as Vice CTO at the Youth Psychology Society and curriculum designer at BrightSparks Academy.
+                        With a strong foundation in full stack development, automated regression testing, quality assurance, and educational technology systems, she ensures that every platform is built for reliability, scalability, and ease of use. Her work spans the full development cycle—from designing interactive learning tools and optimizing performance to integrating analytics that inform data-driven decisions in education technology.
                       </p>
                       
                       <p>
-                        Known for her initiative, creativity, and collaborative approach, Hebatallah is central to advancing Saved by the Plate's vision of empowering communities through technology-driven learning.
+                        Known for her creativity, initiative, and collaborative mindset, Hebatallah blends technical excellence with a deep commitment to equity and accessibility. Passionate about leveraging technology to advance education and social good, she continues to expand the reach of Saved by the Plate's mission through innovation, thoughtful engineering, and community-driven design.
                       </p>
                     </div>
                   </div>
