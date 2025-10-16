@@ -151,9 +151,10 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
 
   // Custom dimensions state
   const [customDimensions, setCustomDimensions] = useState({
-    width: '',
-    height: '',
-    unit: 'feet' as 'feet' | 'meters'
+    dimension1: '',
+    dimension2: '',
+    unit: 'feet' as 'feet' | 'meters',
+    shape: 'rectangle' as 'rectangle' | 'circle' | 'irregular'
   });
   const [useCustomDimensions, setUseCustomDimensions] = useState(false);
 
@@ -161,6 +162,18 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
   const canvasHeight = 400;
   const [plotShape, setPlotShape] = useState<'rectangle' | 'circle' | 'custom'>('rectangle');
   const [plotBounds, setPlotBounds] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+
+  // Get dimension labels based on shape
+  const getDimensionLabels = () => {
+    switch (customDimensions.shape) {
+      case 'circle':
+        return { dim1: 'Diameter', dim2: null };
+      case 'irregular':
+        return { dim1: 'Longest Side', dim2: 'Widest Side' };
+      default:
+        return { dim1: 'Length', dim2: 'Width' };
+    }
+  };
 
   useEffect(() => {
     if (uploadedImage) {
@@ -459,10 +472,22 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
   };
 
   const drawDefaultBackground = (ctx: CanvasRenderingContext2D) => {
-    const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-    gradient.addColorStop(0, '#2D5016');
-    gradient.addColorStop(0.5, '#3A5F23');
-    gradient.addColorStop(1, '#2D5016');
+    // Beautiful gradient background
+    const bgGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+    bgGradient.addColorStop(0, '#F0F9FF');
+    bgGradient.addColorStop(0.5, '#E0F2FE');
+    bgGradient.addColorStop(1, '#BAE6FD');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    // Garden plot background
+    const plotGradient = ctx.createRadialGradient(
+      canvasWidth / 2, canvasHeight / 2, 0,
+      canvasWidth / 2, canvasHeight / 2, Math.max(canvasWidth, canvasHeight) / 2
+    );
+    plotGradient.addColorStop(0, '#FEF3C7');
+    plotGradient.addColorStop(0.6, '#FDE68A');
+    plotGradient.addColorStop(1, '#FCD34D');
     
     if (plotShape === 'circle') {
       // Draw circular plot
@@ -470,42 +495,59 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
       const centerY = canvasHeight / 2;
       const radius = Math.min(canvasWidth, canvasHeight) / 2 - 10;
       
-      ctx.fillStyle = '#1A2810';
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-      
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = plotGradient;
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Add grass texture within circle
-      ctx.fillStyle = '#4A7C3A';
-      for (let i = 0; i < canvasWidth; i += 30) {
-        for (let j = 0; j < canvasHeight; j += 30) {
-          const dx = i - centerX;
-          const dy = j - centerY;
-          if (Math.sqrt(dx * dx + dy * dy) < radius && Math.random() > 0.7) {
-            ctx.beginPath();
-            ctx.arc(i + Math.random() * 30, j + Math.random() * 30, 2, 0, 2 * Math.PI);
-            ctx.fill();
-          }
-        }
+      // Add subtle border
+      ctx.strokeStyle = '#D97706';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      // Add soil texture
+      ctx.fillStyle = 'rgba(120, 53, 15, 0.1)';
+      for (let i = 0; i < 150; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const r = Math.random() * radius;
+        const x = centerX + Math.cos(angle) * r;
+        const y = centerY + Math.sin(angle) * r;
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 2 + 0.5, 0, 2 * Math.PI);
+        ctx.fill();
       }
     } else {
-      // Draw rectangular plot
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      // Draw rectangular plot with rounded corners
+      const padding = 15;
+      const cornerRadius = 12;
       
-      // Grass texture
-      ctx.fillStyle = '#4A7C3A';
-      for (let i = 0; i < canvasWidth; i += 30) {
-        for (let j = 0; j < canvasHeight; j += 30) {
-          if (Math.random() > 0.7) {
-            ctx.beginPath();
-            ctx.arc(i + Math.random() * 30, j + Math.random() * 30, 2, 0, 2 * Math.PI);
-            ctx.fill();
-          }
-        }
+      ctx.fillStyle = plotGradient;
+      ctx.beginPath();
+      ctx.moveTo(padding + cornerRadius, padding);
+      ctx.lineTo(canvasWidth - padding - cornerRadius, padding);
+      ctx.arcTo(canvasWidth - padding, padding, canvasWidth - padding, padding + cornerRadius, cornerRadius);
+      ctx.lineTo(canvasWidth - padding, canvasHeight - padding - cornerRadius);
+      ctx.arcTo(canvasWidth - padding, canvasHeight - padding, canvasWidth - padding - cornerRadius, canvasHeight - padding, cornerRadius);
+      ctx.lineTo(padding + cornerRadius, canvasHeight - padding);
+      ctx.arcTo(padding, canvasHeight - padding, padding, canvasHeight - padding - cornerRadius, cornerRadius);
+      ctx.lineTo(padding, padding + cornerRadius);
+      ctx.arcTo(padding, padding, padding + cornerRadius, padding, cornerRadius);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Add border
+      ctx.strokeStyle = '#D97706';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      // Add soil texture
+      ctx.fillStyle = 'rgba(120, 53, 15, 0.1)';
+      for (let i = 0; i < 200; i++) {
+        const x = padding + Math.random() * (canvasWidth - 2 * padding);
+        const y = padding + Math.random() * (canvasHeight - 2 * padding);
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 2 + 0.5, 0, 2 * Math.PI);
+        ctx.fill();
       }
     }
   };
@@ -654,76 +696,135 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
       
       <CardContent className="space-y-4">
         {/* Dimension Input Section */}
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+        <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Ruler className="h-5 w-5 text-blue-600" />
-                <h4 className="font-semibold text-blue-800">Custom Garden Dimensions</h4>
+                <Ruler className="h-5 w-5 text-amber-700" />
+                <h4 className="font-semibold text-amber-900">Precise Garden Measurements</h4>
               </div>
               <Button
                 variant={useCustomDimensions ? "default" : "outline"}
                 size="sm"
                 onClick={() => setUseCustomDimensions(!useCustomDimensions)}
               >
-                {useCustomDimensions ? "Using Custom" : "Use Custom"}
+                {useCustomDimensions ? "✓ Custom Size" : "Set Size"}
               </Button>
             </div>
             
             {useCustomDimensions && (
               <div className="space-y-4">
+                {/* Shape Selector */}
+                <div>
+                  <Label className="text-sm font-medium text-amber-900 mb-2 block">
+                    Garden Shape
+                  </Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      variant={customDimensions.shape === 'rectangle' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCustomDimensions(prev => ({ ...prev, shape: 'rectangle' }))}
+                      className="flex flex-col h-auto py-2"
+                    >
+                      <span className="text-lg mb-1">▭</span>
+                      <span className="text-xs">Rectangle</span>
+                    </Button>
+                    <Button
+                      variant={customDimensions.shape === 'circle' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCustomDimensions(prev => ({ ...prev, shape: 'circle' }))}
+                      className="flex flex-col h-auto py-2"
+                    >
+                      <span className="text-lg mb-1">○</span>
+                      <span className="text-xs">Circle</span>
+                    </Button>
+                    <Button
+                      variant={customDimensions.shape === 'irregular' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCustomDimensions(prev => ({ ...prev, shape: 'irregular' }))}
+                      className="flex flex-col h-auto py-2"
+                    >
+                      <span className="text-lg mb-1">⬡</span>
+                      <span className="text-xs">Irregular</span>
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Dimension Inputs */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="garden-width" className="text-sm font-medium">
-                      Width
+                    <Label htmlFor="dimension1" className="text-sm font-medium text-amber-900">
+                      {getDimensionLabels().dim1}
                     </Label>
                     <Input
-                      id="garden-width"
+                      id="dimension1"
                       type="number"
                       placeholder="e.g., 10"
-                      value={customDimensions.width}
-                      onChange={(e) => setCustomDimensions(prev => ({ ...prev, width: e.target.value }))}
+                      value={customDimensions.dimension1}
+                      onChange={(e) => setCustomDimensions(prev => ({ ...prev, dimension1: e.target.value }))}
                       className="mt-1"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="garden-height" className="text-sm font-medium">
-                      Length
-                    </Label>
-                    <Input
-                      id="garden-height"
-                      type="number"
-                      placeholder="e.g., 15"
-                      value={customDimensions.height}
-                      onChange={(e) => setCustomDimensions(prev => ({ ...prev, height: e.target.value }))}
-                      className="mt-1"
-                    />
+                  {getDimensionLabels().dim2 && (
+                    <div>
+                      <Label htmlFor="dimension2" className="text-sm font-medium text-amber-900">
+                        {getDimensionLabels().dim2}
+                      </Label>
+                      <Input
+                        id="dimension2"
+                        type="number"
+                        placeholder="e.g., 15"
+                        value={customDimensions.dimension2}
+                        onChange={(e) => setCustomDimensions(prev => ({ ...prev, dimension2: e.target.value }))}
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Unit Selector */}
+                <div>
+                  <Label className="text-sm font-medium text-amber-900 mb-2 block">
+                    Measurement Unit
+                  </Label>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={customDimensions.unit === 'feet' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCustomDimensions(prev => ({ ...prev, unit: 'feet' }))}
+                      className="flex-1"
+                    >
+                      Feet (ft)
+                    </Button>
+                    <Button
+                      variant={customDimensions.unit === 'meters' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCustomDimensions(prev => ({ ...prev, unit: 'meters' }))}
+                      className="flex-1"
+                    >
+                      Meters (m)
+                    </Button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={customDimensions.unit === 'feet' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCustomDimensions(prev => ({ ...prev, unit: 'feet' }))}
-                    className="flex-1"
-                  >
-                    Feet
-                  </Button>
-                  <Button
-                    variant={customDimensions.unit === 'meters' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCustomDimensions(prev => ({ ...prev, unit: 'meters' }))}
-                    className="flex-1"
-                  >
-                    Meters
-                  </Button>
-                </div>
-                {customDimensions.width && customDimensions.height && (
-                  <div className="text-sm text-blue-700 bg-blue-100 rounded-lg p-3">
-                    <p className="font-medium">Garden Size: {customDimensions.width} × {customDimensions.height} {customDimensions.unit}</p>
-                    <p className="text-xs mt-1">
-                      Total Area: {(parseFloat(customDimensions.width) * parseFloat(customDimensions.height)).toFixed(1)} sq {customDimensions.unit}
+
+                {/* Display Summary */}
+                {customDimensions.dimension1 && (
+                  <div className="text-sm text-amber-900 bg-amber-100 rounded-lg p-3 border border-amber-300">
+                    <p className="font-semibold mb-1">📐 Your Garden:</p>
+                    <p className="text-amber-800">
+                      {customDimensions.shape === 'circle' ? (
+                        <>Diameter: {customDimensions.dimension1} {customDimensions.unit}</>
+                      ) : customDimensions.dimension2 ? (
+                        <>{customDimensions.dimension1} × {customDimensions.dimension2} {customDimensions.unit}</>
+                      ) : (
+                        <>{customDimensions.dimension1} {customDimensions.unit}</>
+                      )}
                     </p>
+                    {customDimensions.dimension2 && customDimensions.shape !== 'circle' && (
+                      <p className="text-xs mt-1 text-amber-700">
+                        Area: ~{(parseFloat(customDimensions.dimension1) * parseFloat(customDimensions.dimension2)).toFixed(1)} sq {customDimensions.unit}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -731,14 +832,14 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
           </CardContent>
         </Card>
 
-        <div className="border border-sbtp-green-200 rounded-lg p-4 bg-sbtp-green-25">
+        <div className="border-2 border-amber-200 rounded-lg p-4 bg-gradient-to-br from-sky-50 to-blue-50 shadow-lg">
           <canvas
             ref={canvasRef}
             width={canvasWidth}
             height={canvasHeight}
             onClick={handleCanvasClick}
-            className="border border-sbtp-green-300 rounded cursor-pointer max-w-full h-auto"
-            style={{ backgroundColor: '#F0FDF4' }}
+            className="border-2 border-amber-300 rounded-lg cursor-pointer max-w-full h-auto shadow-md"
+            style={{ backgroundColor: '#FFFBEB' }}
           />
         </div>
 
