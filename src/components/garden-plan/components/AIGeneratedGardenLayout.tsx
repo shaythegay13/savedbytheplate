@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Download, RefreshCw, Sun, Droplets, Info } from "lucide-react";
+import { Sparkles, Download, RefreshCw, Sun, Droplets, Info, Ruler } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { GardenPlanFormData } from '../types';
 
@@ -146,6 +148,14 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
   const [showCompanions, setShowCompanions] = useState(true);
   const [draggedPlant, setDraggedPlant] = useState<PlantPosition | null>(null);
   const { toast } = useToast();
+
+  // Custom dimensions state
+  const [customDimensions, setCustomDimensions] = useState({
+    width: '',
+    height: '',
+    unit: 'feet' as 'feet' | 'meters'
+  });
+  const [useCustomDimensions, setUseCustomDimensions] = useState(false);
 
   const canvasWidth = 600;
   const canvasHeight = 400;
@@ -643,6 +653,84 @@ const AIGeneratedGardenLayout: React.FC<AIGeneratedGardenLayoutProps> = ({
       </CardHeader>
       
       <CardContent className="space-y-4">
+        {/* Dimension Input Section */}
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+          <CardContent className="pt-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Ruler className="h-5 w-5 text-blue-600" />
+                <h4 className="font-semibold text-blue-800">Custom Garden Dimensions</h4>
+              </div>
+              <Button
+                variant={useCustomDimensions ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseCustomDimensions(!useCustomDimensions)}
+              >
+                {useCustomDimensions ? "Using Custom" : "Use Custom"}
+              </Button>
+            </div>
+            
+            {useCustomDimensions && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="garden-width" className="text-sm font-medium">
+                      Width
+                    </Label>
+                    <Input
+                      id="garden-width"
+                      type="number"
+                      placeholder="e.g., 10"
+                      value={customDimensions.width}
+                      onChange={(e) => setCustomDimensions(prev => ({ ...prev, width: e.target.value }))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="garden-height" className="text-sm font-medium">
+                      Length
+                    </Label>
+                    <Input
+                      id="garden-height"
+                      type="number"
+                      placeholder="e.g., 15"
+                      value={customDimensions.height}
+                      onChange={(e) => setCustomDimensions(prev => ({ ...prev, height: e.target.value }))}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant={customDimensions.unit === 'feet' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCustomDimensions(prev => ({ ...prev, unit: 'feet' }))}
+                    className="flex-1"
+                  >
+                    Feet
+                  </Button>
+                  <Button
+                    variant={customDimensions.unit === 'meters' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCustomDimensions(prev => ({ ...prev, unit: 'meters' }))}
+                    className="flex-1"
+                  >
+                    Meters
+                  </Button>
+                </div>
+                {customDimensions.width && customDimensions.height && (
+                  <div className="text-sm text-blue-700 bg-blue-100 rounded-lg p-3">
+                    <p className="font-medium">Garden Size: {customDimensions.width} × {customDimensions.height} {customDimensions.unit}</p>
+                    <p className="text-xs mt-1">
+                      Total Area: {(parseFloat(customDimensions.width) * parseFloat(customDimensions.height)).toFixed(1)} sq {customDimensions.unit}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <div className="border border-sbtp-green-200 rounded-lg p-4 bg-sbtp-green-25">
           <canvas
             ref={canvasRef}
