@@ -169,8 +169,11 @@ serve(async (req) => {
 
     const { access_token } = await tokenResponse.json();
 
-    // Spreadsheet ID extracted from the URL
-    const spreadsheetId = '1IHwLQRW7kD3IGsO1k1vN0XmdpZ8K9Ji7i87adBs6Qu4';
+    // Get spreadsheet ID from environment variable for security
+    const spreadsheetId = Deno.env.get('GOOGLE_SHEETS_SPREADSHEET_ID');
+    if (!spreadsheetId) {
+      throw new Error('Google Sheets spreadsheet ID not configured');
+    }
     const range = 'Total List!A:N';
 
     // Get current data to determine next ID

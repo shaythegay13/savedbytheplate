@@ -42,9 +42,6 @@ const Calendar = () => {
   const [user, setUser] = useState<any>(null);
   const [checkingSubscription, setCheckingSubscription] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
-  
-  // Premium subscription is now enforced
-  const DEV_BYPASS_SUBSCRIPTION = false;
 
   // Form state
   const [title, setTitle] = useState('');
@@ -64,7 +61,7 @@ const Calendar = () => {
   }, []);
 
   useEffect(() => {
-    if (hasSubscription || DEV_BYPASS_SUBSCRIPTION) {
+    if (hasSubscription) {
       fetchEvents();
     }
   }, [hasSubscription]);
@@ -227,7 +224,7 @@ const Calendar = () => {
     return [...emptyDays, ...days];
   };
 
-  if (checkingSubscription && !DEV_BYPASS_SUBSCRIPTION) {
+  if (checkingSubscription) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">
         <Navbar />
@@ -240,7 +237,7 @@ const Calendar = () => {
     );
   }
 
-  if (!hasSubscription && !DEV_BYPASS_SUBSCRIPTION) {
+  if (!hasSubscription) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">
         <Navbar />
