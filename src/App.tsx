@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import LocalFood from "./pages/LocalFood";
 import Map from "./pages/Map";
 import GardenPlan from "./pages/GardenPlan";
+import ComingSoon from "./pages/ComingSoon";
 import Community from "./pages/Community";
 import Education from "./pages/Education";
 import Premium from "./pages/Premium";
@@ -53,7 +54,7 @@ const App = () => (
               <Route path="/index" element={<Index />} />
               <Route path="/local-food" element={<LocalFood />} />
               <Route path="/local-food/map" element={<Map />} />
-              <Route path="/local-food/garden-planner" element={<GardenPlan />} />
+              <Route path="/local-food/garden-planner" element={<ComingSoon />} />
               <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
               <Route path="/about" element={<AboutUs />} />
