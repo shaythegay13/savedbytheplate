@@ -34,9 +34,37 @@ const GardenPlan = () => {
   }, []);
 
   const checkSubscription = async () => {
-    // TEMPORARY: Bypass subscription check
-    setIsSubscribed(true);
-    setCheckingSubscription(false);
+    // Check for dev mode via URL parameter (?dev=true)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDevMode = urlParams.get('dev') === 'true';
+    
+    if (isDevMode) {
+      setIsSubscribed(true);
+      setCheckingSubscription(false);
+      return;
+    }
+
+    // Check actual subscription status
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setIsSubscribed(false);
+        setCheckingSubscription(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-subscription');
+      
+      if (error) throw error;
+      
+      setIsSubscribed(data?.isSubscribed || false);
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      setIsSubscribed(false);
+    } finally {
+      setCheckingSubscription(false);
+    }
   };
 
   const handleLocationSubmit = (location: any) => {
