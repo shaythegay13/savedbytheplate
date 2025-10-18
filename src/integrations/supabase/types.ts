@@ -431,6 +431,30 @@ export type Database = {
         }
         Relationships: []
       }
+      google_maps_rate_limits: {
+        Row: {
+          created_at: string
+          id: string
+          last_request_at: string
+          request_count: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_request_at?: string
+          request_count?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_request_at?: string
+          request_count?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           address: string | null
@@ -822,6 +846,10 @@ export type Database = {
       }
     }
     Functions: {
+      cleanup_google_maps_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_newsletter_rate_limits: {
         Args: Record<PropertyKey, never>
         Returns: undefined
