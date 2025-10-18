@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
@@ -566,6 +566,33 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_rate_limits: {
+        Row: {
+          attempt_count: number
+          created_at: string
+          first_attempt_at: string
+          id: string
+          identifier: string
+          last_attempt_at: string
+        }
+        Insert: {
+          attempt_count?: number
+          created_at?: string
+          first_attempt_at?: string
+          id?: string
+          identifier: string
+          last_attempt_at?: string
+        }
+        Update: {
+          attempt_count?: number
+          created_at?: string
+          first_attempt_at?: string
+          id?: string
+          identifier?: string
+          last_attempt_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -795,6 +822,10 @@ export type Database = {
       }
     }
     Functions: {
+      cleanup_newsletter_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       find_nearby_locations: {
         Args: {
           location_type?: string
