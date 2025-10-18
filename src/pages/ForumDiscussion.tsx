@@ -173,12 +173,15 @@ export default function ForumDiscussion() {
 
     setIsSubmitting(true);
 
+    // Sanitize content - strip all HTML tags for security
+    const sanitizedReply = newReply.trim().replace(/<[^>]*>/g, '');
+
     const { error } = await supabase
       .from("discussion_replies")
       .insert({
         discussion_id: id,
         user_id: user.id,
-        content: newReply,
+        content: sanitizedReply,
       });
 
     if (error) {

@@ -103,13 +103,17 @@ export default function NewDiscussion() {
       .map(tag => tag.trim())
       .filter(tag => tag.length > 0);
 
+    // Sanitize content - strip all HTML tags for security
+    const sanitizedContent = content.trim().replace(/<[^>]*>/g, '');
+    const sanitizedTitle = title.trim().replace(/<[^>]*>/g, '');
+
     const { data, error } = await supabase
       .from("discussions")
       .insert({
         user_id: user.id,
         category_id: categoryId,
-        title: title.trim(),
-        content: content.trim(),
+        title: sanitizedTitle,
+        content: sanitizedContent,
         tags: tagArray,
       })
       .select()
