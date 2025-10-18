@@ -64,7 +64,7 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Stay Connected</h4>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="mailto:info@savedbytheplate.com" className="hover:text-white transition-colors">info@savedbytheplate.com</a></li>
+              <li><a href="mailto:info@savedbytheplate.org" className="hover:text-white transition-colors">info@savedbytheplate.org</a></li>
               <li>
                 <div className="flex space-x-4 mt-4">
                   {/* TikTok */}
