@@ -41,7 +41,7 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.submit-location]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-garden-notifications]
 verify_jwt = true
