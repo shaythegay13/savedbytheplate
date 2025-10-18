@@ -15,44 +15,32 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client for rate limiting
+    // Initialize Supabase client for rate limiting (no auth required)
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get authenticated user
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Authentication required" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // Derive a best-effort identifier using Origin + IP for public requests
+    const origin = req.headers.get("origin") ?? "unknown";
+    const xff = req.headers.get("x-forwarded-for") ?? "";
+    const ip = xff.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+    const identifier = `${origin}|${ip}`;
 
-    // Extract user ID from JWT
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: "Invalid authentication" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // Check rate limit in a rolling window using newsletter_rate_limits
+    const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
 
-    // Check rate limit
-    const identifier = user.id;
-    const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000);
+    const { data: rows } = await supabase
+      .from("newsletter_rate_limits")
+      .select("id, attempt_count, first_attempt_at")
+      .eq("identifier", identifier)
+      .gte("first_attempt_at", windowStartIso)
+      .order("first_attempt_at", { ascending: false })
+      .limit(1);
 
-    const { data: rateLimitData } = await supabase
-      .from("google_maps_rate_limits")
-      .select("*")
-      .eq("user_id", identifier)
-      .gte("last_request_at", windowStart.toISOString())
-      .single();
+    const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
 
-    if (rateLimitData && rateLimitData.request_count >= MAX_REQUESTS_PER_WINDOW) {
+    if (rateLimitData && rateLimitData.attempt_count >= MAX_REQUESTS_PER_WINDOW) {
       return new Response(
         JSON.stringify({ 
           error: "Rate limit exceeded. Please try again later.",
@@ -62,22 +50,24 @@ serve(async (req) => {
       );
     }
 
-    // Update rate limit
+    // Update or insert rate limit record
+    const nowIso = new Date().toISOString();
     if (rateLimitData) {
       await supabase
-        .from("google_maps_rate_limits")
+        .from("newsletter_rate_limits")
         .update({
-          request_count: rateLimitData.request_count + 1,
-          last_request_at: new Date().toISOString()
+          attempt_count: rateLimitData.attempt_count + 1,
+          last_attempt_at: nowIso
         })
-        .eq("user_id", identifier);
+        .eq("id", rateLimitData.id);
     } else {
       await supabase
-        .from("google_maps_rate_limits")
+        .from("newsletter_rate_limits")
         .insert({
-          user_id: identifier,
-          request_count: 1,
-          last_request_at: new Date().toISOString()
+          identifier,
+          attempt_count: 1,
+          first_attempt_at: nowIso,
+          last_attempt_at: nowIso
         });
     }
 
