@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Check, Star, Zap, Mail } from "lucide-react";
+import { Check, Star, Zap, Mail, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -7,6 +7,159 @@ import Navbar from "@/components/layout/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Stripe Price IDs
+const PRICE_IDS = {
+  monthly: "price_1SG1U8ChJRCHBzGFN7GB3S3g",
+  annual: "price_1SK2zwChJRCHBzGFiO0cJuYQ",
+  educatorMonthly: "price_1SK315ChJRCHBzGFmwp0Fnuj",
+  educatorAnnual: "price_1SK31JChJRCHBzGFbWYNijcV",
+};
+
+
+interface PlanModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  planType: 'monthly' | 'annual' | 'educator';
+  onSubscribe: (priceId: string) => void;
+  loading: boolean;
+}
+
+const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanModalProps) => {
+  const [educatorBilling, setEducatorBilling] = useState<'monthly' | 'annual'>('monthly');
+
+  const planDetails = {
+    monthly: {
+      title: "Monthly Plan",
+      price: "$10/month",
+      priceId: PRICE_IDS.monthly,
+      savings: undefined,
+      features: [
+        "AI-powered custom garden designs",
+        "Access curated educational content",
+        "Discord community access",
+        "City-wide event calendar",
+        "Personalized garden planning tools",
+        "Priority support",
+        "Cancel anytime"
+      ]
+    },
+    annual: {
+      title: "Annual Plan",
+      price: "$100/year",
+      priceId: PRICE_IDS.annual,
+      savings: "Save $20 vs monthly billing",
+      features: [
+        "AI-powered custom garden designs",
+        "Access curated educational content",
+        "Discord community access",
+        "City-wide event calendar",
+        "Personalized garden planning tools",
+        "Priority support",
+        "2 months free compared to monthly",
+        "Cancel anytime"
+      ]
+    },
+    educator: {
+      title: "Educator Plan",
+      price: educatorBilling === 'monthly' ? "$8/month" : "$85/year",
+      priceId: educatorBilling === 'monthly' ? PRICE_IDS.educatorMonthly : PRICE_IDS.educatorAnnual,
+      savings: "Special pricing for educators",
+      features: [
+        "All premium features included",
+        "AI-powered custom garden designs",
+        "Access curated educational content",
+        "Discord community access",
+        "City-wide event calendar",
+        "Personalized garden planning tools",
+        "Priority support",
+        "Perfect for classroom use"
+      ]
+    }
+  };
+
+  const currentPlan = planDetails[planType];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg bg-white">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-sbtp-green-800">
+            {currentPlan.title}
+          </DialogTitle>
+          <DialogDescription className="text-sbtp-brown-500">
+            {currentPlan.savings && (
+              <span className="inline-block bg-sbtp-yellow text-sbtp-brown-700 px-3 py-1 rounded-full text-sm font-semibold mb-2">
+                {currentPlan.savings}
+              </span>
+            )}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          {/* Price Section */}
+          <div className="text-center py-4 bg-sbtp-green-50 rounded-lg">
+            <div className="text-4xl font-bold text-sbtp-green-800 mb-2">
+              {currentPlan.price}
+            </div>
+            {planType === 'educator' && (
+              <div className="flex gap-2 justify-center mt-3">
+                <Button
+                  variant={educatorBilling === 'monthly' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setEducatorBilling('monthly')}
+                  className={educatorBilling === 'monthly' ? 'bg-sbtp-green-600' : ''}
+                >
+                  Monthly
+                </Button>
+                <Button
+                  variant={educatorBilling === 'annual' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setEducatorBilling('annual')}
+                  className={educatorBilling === 'annual' ? 'bg-sbtp-green-600' : ''}
+                >
+                  Annual
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Features List */}
+          <div>
+            <h3 className="font-semibold text-sbtp-green-800 mb-3">What's included:</h3>
+            <ul className="space-y-2">
+              {currentPlan.features.map((feature, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-sbtp-green-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-sbtp-brown-500">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Subscribe Button */}
+          <Button
+            className="w-full bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white py-6 text-lg"
+            onClick={() => onSubscribe(currentPlan.priceId)}
+            disabled={loading}
+          >
+            {loading ? (
+              "Processing..."
+            ) : (
+              <>
+                <CreditCard className="mr-2 h-5 w-5" />
+                Subscribe Now
+              </>
+            )}
+          </Button>
+
+          <p className="text-xs text-center text-sbtp-brown-400">
+            Secure payment powered by Stripe. Cancel anytime.
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 const EmailServiceDialog = () => {
   const [open, setOpen] = useState(false);
@@ -127,12 +280,11 @@ const PremiumFeatures = () => (
   </div>
 );
 
-const PREMIUM_PRICE_ID = "price_1SG1U8ChJRCHBzGFN7GB3S3g";
-
 const Premium = () => {
   const [loading, setLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [checkingSubscription, setCheckingSubscription] = useState(true);
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual' | 'educator' | null>(null);
 
   useEffect(() => {
     checkSubscription();
@@ -165,18 +317,19 @@ const Premium = () => {
     }
   };
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (priceId: string) => {
     try {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
         toast.error("Please log in to subscribe");
+        setSelectedPlan(null);
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { price_id: PREMIUM_PRICE_ID },
+        body: { price_id: priceId },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
@@ -186,6 +339,8 @@ const Premium = () => {
 
       if (data?.url) {
         window.open(data.url, '_blank');
+        toast.success("Redirecting to checkout...");
+        setSelectedPlan(null);
       }
     } catch (error: any) {
       console.error('Error creating checkout:', error);
@@ -372,13 +527,22 @@ const Premium = () => {
                         Manage Subscription
                       </Button>
                     ) : (
-                      <Button 
-                        className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600"
-                        onClick={handleSubscribe}
-                        disabled={loading}
-                      >
-                        {loading ? "Processing..." : "Get Premium"}
-                      </Button>
+                      <div className="space-y-2">
+                        <Button 
+                          className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600"
+                          onClick={() => setSelectedPlan('monthly')}
+                          disabled={loading}
+                        >
+                          Monthly Plan
+                        </Button>
+                        <Button 
+                          className="w-full bg-sbtp-green-600 hover:bg-sbtp-green-700"
+                          onClick={() => setSelectedPlan('annual')}
+                          disabled={loading}
+                        >
+                          Annual Plan (Best Value)
+                        </Button>
+                      </div>
                     )
                   )}
                 </div>
@@ -411,7 +575,11 @@ const Premium = () => {
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
                   </ul>
-                  <Button className="w-full mt-8 bg-sbtp-blue hover:bg-sbtp-blue/80 text-white">
+                  <Button 
+                    className="w-full mt-8 bg-sbtp-blue hover:bg-sbtp-blue/80 text-white"
+                    onClick={() => setSelectedPlan('educator')}
+                    disabled={loading}
+                  >
                     Educator Plan
                   </Button>
                 </div>
@@ -502,6 +670,17 @@ const Premium = () => {
           </div>
         </div>
       </section>
+
+      {/* Plan Modal */}
+      {selectedPlan && (
+        <PlanModal
+          open={selectedPlan !== null}
+          onOpenChange={(open) => !open && setSelectedPlan(null)}
+          planType={selectedPlan}
+          onSubscribe={handleSubscribe}
+          loading={loading}
+        />
+      )}
         
     </div>
   );
