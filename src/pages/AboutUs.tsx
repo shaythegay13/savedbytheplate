@@ -71,11 +71,11 @@ const AboutUs = () => {
                       </p>
                       
                       <p>
-                        Shay specializes in launching transformative educational programs, building powerful cross-sector partnerships, and guiding multidisciplinary teams toward impactful, systemic change. From developing youth-focused online courses and producing community storytelling series, to organizing food policy forums and garden tours, Shay brings a creative and collaborative approach to every project—always centering equity, inclusion, and local empowerment.
+                        Shay specializes in launching transformative educational programs, building powerful cross-sector partnerships, and guiding multidisciplinary teams toward impactful, systemic change. From developing youth-focused food justice after school courses and producing community storytelling series, to organizing food policy forums and garden tours, Shay brings a creative and collaborative approach to every project—always centering equity, inclusion, and local empowerment.
                       </p>
                       
                       <p>
-                        Recognized for expertise in project management, grant writing, and digital strategy, Shay is dedicated to advancing equitable food systems and nurturing the next generation of changemakers. Enthusiastic about collaboration, she welcomes new connections with educators, advocates, and founders working to elevate social good at the intersection of technology and community.
+                        Recognized for expertise in project management and digital strategy, Shay is dedicated to advancing equitable food systems and nurturing the next generation of changemakers. Enthusiastic about collaboration, she welcomes new connections with educators, advocates, and founders working to elevate social good at the intersection of technology and community.
                       </p>
                     </div>
                   </div>
