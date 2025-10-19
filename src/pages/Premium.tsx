@@ -527,22 +527,12 @@ const Premium = () => {
                         Manage Subscription
                       </Button>
                     ) : (
-                      <div className="space-y-2">
-                        <Button 
-                          className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600"
-                          onClick={() => setSelectedPlan('monthly')}
-                          disabled={loading}
-                        >
-                          Monthly Plan
-                        </Button>
-                        <Button 
-                          className="w-full bg-sbtp-green-600 hover:bg-sbtp-green-700"
-                          onClick={() => setSelectedPlan('annual')}
-                          disabled={loading}
-                        >
-                          Annual Plan (Best Value)
-                        </Button>
-                      </div>
+                      <Button 
+                        className="w-full mt-8 bg-sbtp-green-500 hover:bg-sbtp-green-600"
+                        disabled={loading}
+                      >
+                        {loading ? "Processing..." : "Get Premium"}
+                      </Button>
                     )
                   )}
                 </div>
@@ -577,7 +567,6 @@ const Premium = () => {
                   </ul>
                   <Button 
                     className="w-full mt-8 bg-sbtp-blue hover:bg-sbtp-blue/80 text-white"
-                    onClick={() => setSelectedPlan('educator')}
                     disabled={loading}
                   >
                     Educator Plan
@@ -642,24 +631,46 @@ const Premium = () => {
               Join our growing community of sustainable living enthusiasts and get access to all our premium features.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-6">
-              <Button className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white py-6">
+              <Button 
+                className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white py-6"
+                onClick={() => setSelectedPlan('monthly')}
+                disabled={loading}
+              >
                 Monthly - $10
               </Button>
-              <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 py-6 relative">
+              <Button 
+                className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 py-6 relative"
+                onClick={() => setSelectedPlan('annual')}
+                disabled={loading}
+              >
                 Annual - $100
                 <span className="absolute -top-3 right-0 left-0 mx-auto w-max bg-sbtp-green-500 text-white text-xs px-3 py-0.5 rounded-full">
                   BEST VALUE
                 </span>
               </Button>
-              <Button className="bg-sbtp-blue hover:bg-sbtp-blue/80 text-white py-6">
+              <Button 
+                className="bg-sbtp-blue hover:bg-sbtp-blue/80 text-white py-6"
+                onClick={() => setSelectedPlan('educator')}
+                disabled={loading}
+              >
                 Educator - $8/$85
               </Button>
             </div>
             
-            <div className="bg-sbtp-green-50 border border-sbtp-green-200 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Institutions</h3>
-              <p className="text-sbtp-brown-500 mb-4">
-                Interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses.
+            <div className="bg-gradient-to-br from-sbtp-green-600 to-sbtp-green-700 text-white rounded-xl p-8 mb-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold">Institutional Pricing</h3>
+              </div>
+              <p className="text-sbtp-beige mb-6 text-lg leading-relaxed">
+                Interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses with volume pricing and dedicated support.
               </p>
               <EmailServiceDialog />
             </div>
