@@ -425,8 +425,14 @@ const Premium = () => {
               <p className="text-sbtp-brown-500 mb-4">
                 Interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses.
               </p>
-              <Button variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white">
-                Contact Us for Institution Pricing
+              <Button 
+                variant="outline" 
+                className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white"
+                asChild
+              >
+                <a href="mailto:info@savedbytheplate.org?subject=Institutional Pricing Inquiry">
+                  Contact Us for Institution Pricing
+                </a>
               </Button>
             </div>
             
