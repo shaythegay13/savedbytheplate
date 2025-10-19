@@ -12,12 +12,17 @@ import { z } from 'zod';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address').max(255, 'Email must be less than 255 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 const signupSchema = z.object({
   email: z.string().email('Invalid email address').max(255, 'Email must be less than 255 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[@#$%&_+=\-:"<>?,./\s~]/, 'Password must contain at least one special character'),
   username: z.string().min(3, 'Username must be at least 3 characters').max(50, 'Username must be less than 50 characters'),
   displayName: z.string().min(2, 'Display name must be at least 2 characters').max(100, 'Display name must be less than 100 characters'),
 });
