@@ -1,11 +1,79 @@
 import { useState, useEffect } from "react";
-import { Check, Star, Zap } from "lucide-react";
+import { Check, Star, Zap, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Navbar from "@/components/layout/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+
+const EmailServiceDialog = () => {
+  const [open, setOpen] = useState(false);
+  const email = 'info@savedbytheplate.org';
+  const subject = 'Institutional Pricing Inquiry';
+  
+  const emailServices = [
+    {
+      name: 'Gmail',
+      url: `https://mail.google.com/mail/?view=cm&to=${email}&su=${encodeURIComponent(subject)}`,
+      icon: Mail
+    },
+    {
+      name: 'Outlook',
+      url: `https://outlook.live.com/mail/0/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}`,
+      icon: Mail
+    },
+    {
+      name: 'Yahoo',
+      url: `https://compose.mail.yahoo.com/?to=${email}&subject=${encodeURIComponent(subject)}`,
+      icon: Mail
+    },
+    {
+      name: 'Default Mail App',
+      url: `mailto:${email}?subject=${encodeURIComponent(subject)}`,
+      icon: Mail
+    }
+  ];
+
+  return (
+    <>
+      <Button 
+        variant="outline"
+        className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white"
+        onClick={() => setOpen(true)}
+      >
+        Contact Us for Institutional Pricing
+      </Button>
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-sbtp-green-800">Choose Your Email Service</DialogTitle>
+            <DialogDescription className="text-sbtp-brown-500">
+              Please select your preferred email service to contact us
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3 py-4">
+            {emailServices.map((service) => (
+              <a
+                key={service.name}
+                href={service.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 rounded-lg border border-sbtp-green-200 hover:bg-sbtp-green-50 hover:border-sbtp-green-500 transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                <service.icon className="h-5 w-5 text-sbtp-green-600" />
+                <span className="font-medium text-sbtp-green-800">{service.name}</span>
+              </a>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 
 const PremiumFeatures = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -425,18 +493,7 @@ const Premium = () => {
               <p className="text-sbtp-brown-500 mb-4">
                 Interested in setting up a contract for your institution? We offer custom solutions for schools, organizations, and businesses.
               </p>
-              <Button 
-                variant="outline"
-                className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white"
-                aria-label="Contact us for institutional pricing"
-                onClick={() => {
-                  const email = 'info@savedbytheplate.org';
-                  const subject = encodeURIComponent('Institutional Pricing Inquiry');
-                  window.location.href = `mailto:${email}?subject=${subject}`;
-                }}
-              >
-                Contact Us for Institutional Pricing
-              </Button>
+              <EmailServiceDialog />
             </div>
             
             <p className="text-sm text-sbtp-brown-500">
