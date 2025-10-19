@@ -169,11 +169,6 @@ const ShayEmailDialog = () => {
       name: 'Yahoo',
       url: `https://compose.mail.yahoo.com/?to=${email}&subject=${encodeURIComponent(subject)}`,
       icon: Mail
-    },
-    {
-      name: 'Default Email',
-      url: `mailto:${email}?subject=${encodeURIComponent(subject)}`,
-      icon: Mail
     }
   ];
 
