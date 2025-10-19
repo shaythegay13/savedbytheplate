@@ -175,7 +175,12 @@ const Premium = () => {
             <div className="bg-white/10 rounded-lg p-4 sm:p-6 inline-block mx-4">
               <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
               <p className="text-sbtp-beige mb-4">Standard, Educator, and Institution options</p>
-              <Button className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 font-semibold py-6 px-10 text-lg">
+              <Button 
+                className="bg-sbtp-yellow hover:bg-sbtp-yellow/80 text-sbtp-brown-700 font-semibold py-6 px-10 text-lg"
+                onClick={() => {
+                  document.getElementById('comparison-table')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 View Plans
               </Button>
             </div>
@@ -196,7 +201,7 @@ const Premium = () => {
             
             <PremiumFeatures />
 
-            <div className="mt-12 bg-white rounded-lg border border-sbtp-green-200 overflow-hidden">
+            <div id="comparison-table" className="mt-12 bg-white rounded-lg border border-sbtp-green-200 overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-4">
                 <div className="p-8 bg-sbtp-green-600 text-white">
                   <div className="h-[88px] flex items-end mb-6">
