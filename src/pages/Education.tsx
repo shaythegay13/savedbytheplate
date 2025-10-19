@@ -1,9 +1,11 @@
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
@@ -153,6 +155,7 @@ const premiumCourses = [
 ];
 
 const Education = () => {
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -191,12 +194,37 @@ const Education = () => {
                     Schedule a consultation to discuss bringing our afterschool program to your school
                   </p>
                   <div className="flex justify-center">
-                    <Button size="lg" asChild>
-                      <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
-                        <Mail className="mr-2 h-5 w-5" />
-                        Email Shay Directly
-                      </a>
-                    </Button>
+                    <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button size="lg" className="inline-flex items-center">
+                          <Mail className="mr-2 h-5 w-5" />
+                          Email Shay Directly
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Contact Shay Bouchles</DialogTitle>
+                          <DialogDescription>
+                            Executive Director - Afterschool Program Coordinator
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <p className="text-muted-foreground">
+                            Click the button below to open your email client and send a message to Shay directly.
+                          </p>
+                          <Button 
+                            size="lg" 
+                            className="w-full" 
+                            asChild
+                          >
+                            <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer">
+                              <Mail className="mr-2 h-5 w-5" />
+                              Open Email Client
+                            </a>
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </CardContent>
               </Card>
@@ -343,12 +371,37 @@ const Education = () => {
                     <p className="text-muted-foreground mb-4">
                       Contact Shay to discuss bringing this program to your school
                     </p>
-                    <Button asChild>
-                      <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer">
-                        <Mail className="mr-2 h-4 w-4" />
-                        Schedule a Consultation
-                      </a>
-                    </Button>
+                    <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button>
+                          <Mail className="mr-2 h-4 w-4" />
+                          Schedule a Consultation
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Contact Shay Bouchles</DialogTitle>
+                          <DialogDescription>
+                            Executive Director - Afterschool Program Coordinator
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <p className="text-muted-foreground">
+                            Click the button below to open your email client and send a message to Shay directly.
+                          </p>
+                          <Button 
+                            size="lg" 
+                            className="w-full" 
+                            asChild
+                          >
+                            <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer">
+                              <Mail className="mr-2 h-5 w-5" />
+                              Open Email Client
+                            </a>
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </CardContent>
                 </Card>
               </div>
