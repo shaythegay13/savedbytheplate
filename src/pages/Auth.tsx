@@ -4,8 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -240,24 +238,6 @@ const Auth = () => {
                 </CardHeader>
                 <form onSubmit={handleSignup}>
                   <CardContent className="space-y-4">
-                    <Alert className="border-primary/20 bg-primary/5">
-                      <Info className="h-4 w-4 text-primary" />
-                      <AlertDescription className="text-sm">
-                        <strong>Requirements:</strong>
-                        <ul className="list-disc list-inside mt-2 space-y-1">
-                          <li>Display name must be at least 2 characters</li>
-                          <li>Password must be at least 8 characters</li>
-                          <li>Password must contain at least one of each:
-                            <ul className="list-none ml-4 mt-1">
-                              <li>• Lowercase letter (a-z)</li>
-                              <li>• Uppercase letter (A-Z)</li>
-                              <li>• Number (0-9)</li>
-                              <li>• Special character (@#$%&_+=-:"{`<>?,./ ~`}")</li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </AlertDescription>
-                    </Alert>
                     <div className="space-y-2">
                       <Label htmlFor="signup-email">Email</Label>
                       <Input
@@ -293,6 +273,9 @@ const Auth = () => {
                         required
                         disabled={isLoading}
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Must be at least 2 characters
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Password</Label>
@@ -306,7 +289,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                       <p className="text-xs text-muted-foreground">
-                        Must be at least 6 characters
+                        Must be at least 8 characters and contain at least one lowercase letter (a-z), uppercase letter (A-Z), number (0-9), and special character (@#$%&_+=-:&quot;&lt;&gt;?,./ ~)
                       </p>
                     </div>
                   </CardContent>
