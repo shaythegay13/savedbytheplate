@@ -65,7 +65,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.get-google-maps-key]
-verify_jwt = true
+verify_jwt = false  # Public access with rate limiting - restrict in Google Cloud Console instead
 
 [functions.get-google-enhanced-data]
 verify_jwt = true
