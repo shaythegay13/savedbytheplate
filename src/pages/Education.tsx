@@ -192,7 +192,7 @@ const Education = () => {
                   </p>
                   <div className="flex justify-center">
                     <Button size="lg" asChild>
-                      <a href="mailto:shay@savedbytheplate.com" className="inline-flex items-center">
+                      <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
                         <Mail className="mr-2 h-5 w-5" />
                         Email Shay Directly
                       </a>
@@ -344,7 +344,7 @@ const Education = () => {
                       Contact Shay to discuss bringing this program to your school
                     </p>
                     <Button asChild>
-                      <a href="mailto:shay@savedbytheplate.com">
+                      <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer">
                         <Mail className="mr-2 h-4 w-4" />
                         Schedule a Consultation
                       </a>
