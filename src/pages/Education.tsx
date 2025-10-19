@@ -156,7 +156,7 @@ const premiumCourses = [
 
 const ShayEmailDialog = () => {
   const [open, setOpen] = useState(false);
-  const email = 'shay@savedbytheplate.com';
+  const email = 'info@savedbytheplate.org';
   const subject = 'Afterschool Program Inquiry';
   
   const emailServices = [
@@ -166,17 +166,12 @@ const ShayEmailDialog = () => {
       icon: Mail
     },
     {
-      name: 'Outlook',
-      url: `https://outlook.live.com/mail/0/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}`,
-      icon: Mail
-    },
-    {
       name: 'Yahoo',
       url: `https://compose.mail.yahoo.com/?to=${email}&subject=${encodeURIComponent(subject)}`,
       icon: Mail
     },
     {
-      name: 'Default Mail App',
+      name: 'Default Email',
       url: `mailto:${email}?subject=${encodeURIComponent(subject)}`,
       icon: Mail
     }
