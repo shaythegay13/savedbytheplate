@@ -217,7 +217,7 @@ const Education = () => {
                             className="w-full" 
                             asChild
                           >
-                            <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer">
+                            <a href="mailto:shay@savedbytheplate.com">
                               <Mail className="mr-2 h-5 w-5" />
                               Open Email Client
                             </a>
@@ -394,7 +394,7 @@ const Education = () => {
                             className="w-full" 
                             asChild
                           >
-                            <a href="mailto:shay@savedbytheplate.com" target="_blank" rel="noopener noreferrer">
+                            <a href="mailto:shay@savedbytheplate.com">
                               <Mail className="mr-2 h-5 w-5" />
                               Open Email Client
                             </a>
