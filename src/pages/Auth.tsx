@@ -38,6 +38,8 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
   
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -49,16 +51,25 @@ const Auth = () => {
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
 
-  // Check if user is already logged in
+  // Check if user is already logged in or if this is a password reset
   useEffect(() => {
     const checkSession = async () => {
+      // Check for password reset token in URL
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const type = hashParams.get('type');
+      
+      if (type === 'recovery') {
+        setIsResettingPassword(true);
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+      if (session && !isResettingPassword) {
         navigate('/');
       }
     };
     checkSession();
-  }, [navigate]);
+  }, [navigate, isResettingPassword]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,13 +230,94 @@ const Auth = () => {
     }
   };
 
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const validatedData = signupSchema.shape.password.parse(newPassword);
+
+      const { error } = await supabase.auth.updateUser({
+        password: validatedData,
+      });
+
+      if (error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      toast({
+        title: 'Password updated',
+        description: 'Your password has been successfully updated. You can now log in with your new password.',
+      });
+      
+      setIsResettingPassword(false);
+      setNewPassword('');
+      navigate('/');
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: 'Validation error',
+          description: error.errors[0].message,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'An unexpected error occurred',
+          variant: 'destructive',
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">
       <Navbar />
       
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto">
-          <Tabs defaultValue="login" className="w-full">
+          {isResettingPassword ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Set New Password</CardTitle>
+                <CardDescription>
+                  Enter your new password below
+                </CardDescription>
+              </CardHeader>
+              <form onSubmit={handleUpdatePassword}>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Must be at least 8 characters and contain at least one lowercase letter (a-z), uppercase letter (A-Z), number (0-9), and special character (@#$%&_+=-:"&lt;&gt;?,./ ~)
+                    </p>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Updating...' : 'Update Password'}
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          ) : (
+            <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8 bg-primary/10 p-1">
               <TabsTrigger 
                 value="login"
@@ -391,6 +483,7 @@ const Auth = () => {
               </Card>
             </TabsContent>
           </Tabs>
+          )}
         </div>
       </div>
     </div>
