@@ -154,8 +154,71 @@ const premiumCourses = [
   }
 ];
 
+const ShayEmailDialog = () => {
+  const [open, setOpen] = useState(false);
+  const email = 'shay@savedbytheplate.com';
+  const subject = 'Afterschool Program Inquiry';
+  
+  const emailServices = [
+    {
+      name: 'Gmail',
+      url: `https://mail.google.com/mail/?view=cm&to=${email}&su=${encodeURIComponent(subject)}`,
+      icon: Mail
+    },
+    {
+      name: 'Outlook',
+      url: `https://outlook.live.com/mail/0/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}`,
+      icon: Mail
+    },
+    {
+      name: 'Yahoo',
+      url: `https://compose.mail.yahoo.com/?to=${email}&subject=${encodeURIComponent(subject)}`,
+      icon: Mail
+    },
+    {
+      name: 'Default Mail App',
+      url: `mailto:${email}?subject=${encodeURIComponent(subject)}`,
+      icon: Mail
+    }
+  ];
+
+  return (
+    <>
+      <Button size="lg" onClick={() => setOpen(true)}>
+        <Mail className="mr-2 h-5 w-5" />
+        Email Shay Directly
+      </Button>
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-primary">Choose Your Email Service</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Please select your preferred email service to contact Shay
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3 py-4">
+            {emailServices.map((service) => (
+              <a
+                key={service.name}
+                href={service.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 rounded-lg border border-primary/20 hover:bg-primary/5 hover:border-primary transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                <service.icon className="h-5 w-5 text-primary" />
+                <span className="font-medium text-foreground">{service.name}</span>
+              </a>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
 const Education = () => {
-  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -194,37 +257,7 @@ const Education = () => {
                     Schedule a consultation to discuss bringing our afterschool program to your school
                   </p>
                   <div className="flex justify-center">
-                    <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button size="lg" className="inline-flex items-center">
-                          <Mail className="mr-2 h-5 w-5" />
-                          Email Shay Directly
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>Contact Shay Bouchles</DialogTitle>
-                          <DialogDescription>
-                            Executive Director - Afterschool Program Coordinator
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <p className="text-muted-foreground">
-                            Click the button below to open your email client and send a message to Shay directly.
-                          </p>
-                          <Button 
-                            size="lg" 
-                            className="w-full" 
-                            asChild
-                          >
-                            <a href="mailto:shay@savedbytheplate.com">
-                              <Mail className="mr-2 h-5 w-5" />
-                              Open Email Client
-                            </a>
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <ShayEmailDialog />
                   </div>
                 </CardContent>
               </Card>
@@ -371,37 +404,7 @@ const Education = () => {
                     <p className="text-muted-foreground mb-4">
                       Contact Shay to discuss bringing this program to your school
                     </p>
-                    <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button>
-                          <Mail className="mr-2 h-4 w-4" />
-                          Schedule a Consultation
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>Contact Shay Bouchles</DialogTitle>
-                          <DialogDescription>
-                            Executive Director - Afterschool Program Coordinator
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <p className="text-muted-foreground">
-                            Click the button below to open your email client and send a message to Shay directly.
-                          </p>
-                          <Button 
-                            size="lg" 
-                            className="w-full" 
-                            asChild
-                          >
-                            <a href="mailto:shay@savedbytheplate.com">
-                              <Mail className="mr-2 h-5 w-5" />
-                              Open Email Client
-                            </a>
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <ShayEmailDialog />
                   </CardContent>
                 </Card>
               </div>
