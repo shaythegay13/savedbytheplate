@@ -10,6 +10,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [username, setUsername] = useState<string>("");
   const location = useLocation();
 
   useEffect(() => {
@@ -17,16 +18,36 @@ const Navbar = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchUsername(session.user.id);
+        } else {
+          setUsername("");
+        }
       }
     );
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUsername(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchUsername = async (userId: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', userId)
+      .single();
+    
+    if (data) {
+      setUsername(data.username);
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -81,7 +102,7 @@ const Navbar = () => {
               <div className="flex items-center gap-2">
                 <span className="text-sm flex items-center gap-1">
                   <User className="h-4 w-4" />
-                  {user.email?.split('@')[0]}
+                  {username || user.email?.split('@')[0]}
                 </span>
                 <Link to="/profile">
                   <Button
@@ -156,7 +177,7 @@ const Navbar = () => {
               <div className="px-3 py-2 space-y-2">
                 <div className="text-sm flex items-center gap-1 text-white">
                   <User className="h-4 w-4" />
-                  {user.email?.split('@')[0]}
+                  {username || user.email?.split('@')[0]}
                 </div>
                 <Link to="/profile" onClick={toggleMenu}>
                   <Button
