@@ -11,6 +11,8 @@ import Navbar from '@/components/layout/Navbar';
 import { Separator } from '@/components/ui/separator';
 import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import { useSubscription } from '@/hooks/useSubscription';
+import { Badge } from '@/components/ui/badge';
 
 const passwordSchema = z.string()
   .min(8, "Password must be at least 8 characters")
@@ -37,6 +39,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [passwordUpdating, setPasswordUpdating] = useState(false);
+  const [user, setUser] = useState<any>(null);
   
   const [email, setEmail] = useState('');
   const [profile, setProfile] = useState<Profile>({
@@ -48,6 +51,8 @@ const Profile = () => {
   
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const subscription = useSubscription(user);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -58,6 +63,7 @@ const Profile = () => {
         return;
       }
       
+      setUser(session.user);
       setEmail(session.user.email || '');
       await loadProfile(session.user.id);
     };
@@ -208,6 +214,53 @@ const Profile = () => {
             <h1 className="text-3xl font-bold text-sbtp-green-800">Profile Settings</h1>
             <p className="text-muted-foreground mt-2">Manage your account settings and preferences</p>
           </div>
+
+          {/* Subscription Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Subscription Status</CardTitle>
+              <CardDescription>
+                Your current subscription plan
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div>
+                    <p className="font-medium">Plan Status</p>
+                    <p className="text-sm text-muted-foreground">
+                      {subscription.loading ? "Checking..." : subscription.subscribed ? "Active Subscription" : "Free Plan"}
+                    </p>
+                  </div>
+                  <Badge variant={subscription.subscribed ? "default" : "secondary"}>
+                    {subscription.subscribed ? "Subscribed" : "Free"}
+                  </Badge>
+                </div>
+                
+                {subscription.subscribed && subscription.product_id && (
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="font-medium mb-2">Product ID</p>
+                    <p className="text-sm text-muted-foreground">{subscription.product_id}</p>
+                  </div>
+                )}
+                
+                {subscription.subscribed && subscription.subscription_end && (
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="font-medium mb-2">Subscription Renewal</p>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(subscription.subscription_end).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+
+                {!subscription.subscribed && (
+                  <Button asChild className="w-full">
+                    <a href="/premium">Upgrade to Premium</a>
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Profile Information */}
           <Card>

@@ -37,7 +37,6 @@ interface Discussion {
   user_id: string;
   profiles: {
     username: string;
-    points: number;
     bio: string;
   };
 }
@@ -51,7 +50,6 @@ interface Reply {
   parent_reply_id: string | null;
   profiles: {
     username: string;
-    points: number;
   };
 }
 
@@ -108,11 +106,11 @@ export default function ForumDiscussion() {
     // Try to fetch profile separately; don't fail the page if relation is missing
     const { data: profile } = await supabase
       .from("profiles")
-      .select("username, points, bio")
+      .select("username, bio")
       .eq("id", base.user_id)
       .single();
 
-    setDiscussion({ ...(base as any), profiles: profile || { username: "User", points: 0, bio: "" } } as any);
+    setDiscussion({ ...(base as any), profiles: profile || { username: "User", bio: "" } } as any);
     setIsLoading(false);
   };
 
@@ -133,13 +131,13 @@ export default function ForumDiscussion() {
       repliesData.map(async (reply) => {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("username, points")
+          .select("username")
           .eq("id", reply.user_id)
           .single();
 
         return {
           ...reply,
-          profiles: profile || { username: "User", points: 0 }
+          profiles: profile || { username: "User" }
         };
       })
     );
@@ -300,10 +298,6 @@ export default function ForumDiscussion() {
                 <span className="font-semibold">
                   {discussion.profiles?.username}
                 </span>
-                <Badge variant="outline" className="flex items-center gap-1">
-                  <Award className="h-3 w-3" />
-                  {discussion.profiles?.points} points
-                </Badge>
                 <span className="text-sm text-muted-foreground">
                   <Clock className="inline h-3 w-3 mr-1" />
                   {new Date(discussion.created_at).toLocaleDateString()}
@@ -342,10 +336,6 @@ export default function ForumDiscussion() {
                       <span className="font-semibold">
                         {reply.profiles?.username}
                       </span>
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <Award className="h-3 w-3" />
-                        {reply.profiles?.points} points
-                      </Badge>
                       <span className="text-sm text-muted-foreground">
                         {new Date(reply.created_at).toLocaleDateString()}
                       </span>

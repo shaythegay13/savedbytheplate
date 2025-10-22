@@ -29,7 +29,6 @@ interface Discussion {
   category_id: string;
   profiles: {
     username: string;
-    points: number;
   };
 }
 
