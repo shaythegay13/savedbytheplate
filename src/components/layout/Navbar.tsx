@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sprout, LogOut, User } from "lucide-react";
+import { Menu, X, Sprout, LogOut, User, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import DonationButton from "@/components/DonationButton";
@@ -83,6 +83,16 @@ const Navbar = () => {
                   <User className="h-4 w-4" />
                   {user.email?.split('@')[0]}
                 </span>
+                <Link to="/profile">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                  >
+                    <Settings className="h-4 w-4 mr-1" />
+                    Profile
+                  </Button>
+                </Link>
                 <Button
                   onClick={handleLogout}
                   variant="outline"
@@ -148,6 +158,16 @@ const Navbar = () => {
                   <User className="h-4 w-4" />
                   {user.email?.split('@')[0]}
                 </div>
+                <Link to="/profile" onClick={toggleMenu}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                  >
+                    <Settings className="h-4 w-4 mr-1" />
+                    Profile
+                  </Button>
+                </Link>
                 <Button
                   onClick={() => {
                     handleLogout();
