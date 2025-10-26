@@ -109,32 +109,30 @@ serve(async (req) => {
       }
       logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
       productId = subscription.items.data[0].price.product as string;
-      logStep("Determined subscription tier", { productId });
+      
+      // Get price information
+      const priceId = subscription.items.data[0].price.id;
+      const price = await stripe.prices.retrieve(priceId);
+      const priceAmount = price.unit_amount ? (price.unit_amount / 100).toFixed(2) : null;
+      const currency = price.currency?.toUpperCase() || 'USD';
+      
+      logStep("Determined subscription tier", { productId, price: priceAmount, currency });
+      
+      return new Response(JSON.stringify({
+        subscribed: hasActiveSub,
+        product_id: productId,
+        subscription_end: subscriptionEnd,
+        price: priceAmount,
+        currency: currency
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     } else {
       logStep("No active subscription found");
     }
 
-    // Update subscription status in database
-    await supabaseClient
-      .from('user_subscriptions')
-      .upsert({
-        user_id: user.id,
-        subscribed: hasActiveSub,
-        product_id: productId,
-        subscription_end: subscriptionEnd,
-        last_checked: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }, {
-        onConflict: 'user_id'
-      });
-    
-    logStep("Updated subscription status in database");
-
-    return new Response(JSON.stringify({
-      subscribed: hasActiveSub,
-      product_id: productId,
-      subscription_end: subscriptionEnd
-    }), {
+    return new Response(JSON.stringify({ subscribed: false }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

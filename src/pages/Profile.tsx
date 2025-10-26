@@ -244,6 +244,15 @@ const Profile = () => {
                   </div>
                 )}
                 
+                {subscription.subscribed && subscription.price && (
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="font-medium mb-2">Subscription Price</p>
+                    <p className="text-sm text-muted-foreground">
+                      {subscription.currency || 'USD'} ${subscription.price} / month
+                    </p>
+                  </div>
+                )}
+                
                 {subscription.subscribed && subscription.subscription_end && (
                   <div className="p-4 bg-muted rounded-lg">
                     <p className="font-medium mb-2">Subscription Renewal</p>

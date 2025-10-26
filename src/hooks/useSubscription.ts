@@ -6,6 +6,8 @@ export interface SubscriptionStatus {
   subscribed: boolean;
   product_id: string | null;
   subscription_end: string | null;
+  price: string | null;
+  currency: string | null;
   loading: boolean;
   error: string | null;
 }
@@ -15,6 +17,8 @@ export const useSubscription = (user: User | null) => {
     subscribed: false,
     product_id: null,
     subscription_end: null,
+    price: null,
+    currency: null,
     loading: true,
     error: null,
   });
@@ -25,6 +29,8 @@ export const useSubscription = (user: User | null) => {
         subscribed: false,
         product_id: null,
         subscription_end: null,
+        price: null,
+        currency: null,
         loading: false,
         error: null,
       });
@@ -46,6 +52,8 @@ export const useSubscription = (user: User | null) => {
         subscribed: data.subscribed || false,
         product_id: data.product_id || null,
         subscription_end: data.subscription_end || null,
+        price: data.price || null,
+        currency: data.currency || null,
         loading: false,
         error: null,
       });
