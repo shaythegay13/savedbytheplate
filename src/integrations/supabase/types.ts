@@ -846,14 +846,8 @@ export type Database = {
       }
     }
     Functions: {
-      cleanup_google_maps_rate_limits: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_newsletter_rate_limits: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_google_maps_rate_limits: { Args: never; Returns: undefined }
+      cleanup_newsletter_rate_limits: { Args: never; Returns: undefined }
       find_nearby_locations: {
         Args: {
           location_type?: string
@@ -885,10 +879,7 @@ export type Database = {
         Args: { discussion_id: string }
         Returns: undefined
       }
-      is_user_banned: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      is_user_banned: { Args: { _user_id: string }; Returns: boolean }
       user_has_active_subscription: {
         Args: { _user_id: string }
         Returns: boolean
