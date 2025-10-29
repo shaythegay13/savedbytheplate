@@ -397,7 +397,9 @@ serve(async (req) => {
 
 
   } catch (error) {
+    const requestId = crypto.randomUUID();
     console.error('=== ERROR in generate-smart-garden-plan ===');
+    console.error('Request ID:', requestId);
     console.error('Error type:', error.name);
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
@@ -408,13 +410,11 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({ 
       error: isTimeout 
-        ? 'Python backend timeout - The service may be cold starting (Render free tier takes 30-50 seconds). Please try again.'
-        : error.message || 'Failed to generate garden plan',
-      details: error.toString(),
-      errorType: error.name,
-      pythonBackendUrl: PYTHON_API_URL,
+        ? 'The garden plan service is starting up. Please try again in 30 seconds.'
+        : 'Failed to generate garden plan. Please try again.',
+      requestId,
       suggestion: isTimeout 
-        ? 'Wait 30 seconds and try again. The backend service is waking up.'
+        ? 'Wait 30 seconds and try again.'
         : 'Please check your connection and try again.'
     }), {
       status: isTimeout ? 504 : 500,

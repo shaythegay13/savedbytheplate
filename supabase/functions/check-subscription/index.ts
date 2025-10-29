@@ -138,8 +138,12 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in check-subscription", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    const requestId = crypto.randomUUID();
+    logStep("ERROR in check-subscription", { requestId, message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
+    return new Response(JSON.stringify({ 
+      error: "Unable to check subscription status. Please try again.",
+      requestId 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

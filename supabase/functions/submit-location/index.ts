@@ -272,9 +272,13 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error in submit-location function:', error);
+    const requestId = crypto.randomUUID();
+    console.error('Error in submit-location function:', requestId, error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: 'Failed to submit location. Please try again.',
+        requestId 
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
