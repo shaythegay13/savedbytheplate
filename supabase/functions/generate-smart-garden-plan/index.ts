@@ -10,6 +10,9 @@ const corsHeaders = {
 
 const PYTHON_API_URL = "https://agenticaigardenplanner.onrender.com";
 
+const RATE_LIMIT_WINDOW_MINUTES = 60;
+const MAX_REQUESTS_PER_WINDOW = 10;
+
 // Comprehensive validation schema for garden plan requests
 const gardenPlanRequestSchema = z.object({
   // Required fields
@@ -80,19 +83,59 @@ serve(async (req) => {
   }
 
   try {
+    // Get JWT from Authorization header for authentication
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
+
+    // Verify user authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    if (authError || !user) {
+      console.error("Authentication failed:", authError);
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Rate limiting check
+    const identifier = user.id;
+    const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
+
+    const { data: rows } = await supabase
+      .from("newsletter_rate_limits")
+      .select("id, attempt_count, first_attempt_at")
+      .eq("identifier", identifier)
+      .gte("first_attempt_at", windowStartIso)
+      .order("first_attempt_at", { ascending: false })
+      .limit(1);
+
+    const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
+
+    if (rateLimitData && rateLimitData.attempt_count >= MAX_REQUESTS_PER_WINDOW) {
+      return new Response(
+        JSON.stringify({ 
+          error: "Rate limit exceeded. You can generate 10 garden plans per hour. Please try again later.",
+          retryAfter: RATE_LIMIT_WINDOW_MINUTES * 60
+        }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     console.log('=== GARDEN PLAN REQUEST START ===');
     
     // Parse and validate request body
     const rawRequest = await req.json();
     console.log('Raw request received');
-    // hardcoded to empire state building to bypass frontend gmaps error
-    rawRequest['latitude'] = 40.7486538125;
-    rawRequest['longitude'] = -73.98530431250000;
     
     const validationResult = gardenPlanRequestSchema.safeParse(rawRequest);
     if (!validationResult.success) {
@@ -111,6 +154,27 @@ serve(async (req) => {
 
     const formData = validationResult.data;
     console.log('Request validated successfully:', JSON.stringify(formData, null, 2));
+
+    // Update rate limit counter after validation
+    const nowIso = new Date().toISOString();
+    if (rateLimitData) {
+      await supabase
+        .from("newsletter_rate_limits")
+        .update({
+          attempt_count: rateLimitData.attempt_count + 1,
+          last_attempt_at: nowIso
+        })
+        .eq("id", rateLimitData.id);
+    } else {
+      await supabase
+        .from("newsletter_rate_limits")
+        .insert({
+          identifier,
+          attempt_count: 1,
+          first_attempt_at: nowIso,
+          last_attempt_at: nowIso
+        });
+    }
 
     // Determine if we need climate data based on growing location
     const needsClimateData = formData.growing_location === 'outdoors' || formData.growing_location === 'both';
