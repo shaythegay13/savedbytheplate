@@ -32,7 +32,7 @@ jwt_expiry = 3600
 enable_signup = true
 
 [functions.generate-smart-garden-plan]
-verify_jwt = true
+verify_jwt = false  # Disabled for development testing
 
 [functions.get-climate-data]
 verify_jwt = true
