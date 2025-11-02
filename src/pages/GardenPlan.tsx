@@ -34,7 +34,13 @@ const GardenPlan = () => {
   }, []);
 
   const checkSubscription = async () => {
-    // Check for dev mode via URL parameter (?dev=true)
+    // DEVELOPMENT MODE: Always allow access for development
+    // TODO: Re-enable subscription check when ready for production
+    setIsSubscribed(true);
+    setCheckingSubscription(false);
+    return;
+    
+    /* Production subscription check - currently disabled
     const urlParams = new URLSearchParams(window.location.search);
     const isDevMode = urlParams.get('dev') === 'true';
     
@@ -44,7 +50,6 @@ const GardenPlan = () => {
       return;
     }
 
-    // Check actual subscription status
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -65,6 +70,7 @@ const GardenPlan = () => {
     } finally {
       setCheckingSubscription(false);
     }
+    */
   };
 
   const handleLocationSubmit = (location: any) => {
