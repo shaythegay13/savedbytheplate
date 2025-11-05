@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus } from 'lucide-react';
 import MapComponent from "@/components/map/MapComponent";
 import MapImprovementForm from "@/components/map/MapImprovementForm";
@@ -21,6 +23,7 @@ const Map = () => {
   const [improvementFormOpen, setImprovementFormOpen] = useState(false);
   const [addLocationFormOpen, setAddLocationFormOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(['garden', 'market', 'fridge', 'foodbank', 'farm', 'urbanfarm', 'business', 'csa']));
+  const [showOpenNow, setShowOpenNow] = useState(false);
   const isMobile = useIsMobile();
 
   // Fetch data to get location counts for the legend
@@ -136,13 +139,27 @@ const Map = () => {
                         </CardContent>
                       </Card>
 
-                      {/* Legend */}
-                      <UnifiedMapLegend 
-                        locationCounts={locationCounts} 
-                        isLoading={loading}
-                        activeFilters={activeFilters}
-                        onFilterChange={setActiveFilters}
-                      />
+              {/* Legend */}
+              <UnifiedMapLegend 
+                locationCounts={locationCounts} 
+                isLoading={loading}
+                activeFilters={activeFilters}
+                onFilterChange={setActiveFilters}
+              />
+
+              {/* Open Now Filter */}
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="open-now-mobile" className="text-sbtp-brown-700">Only Show Open Now</Label>
+                    <Switch 
+                      id="open-now-mobile" 
+                      checked={showOpenNow} 
+                      onCheckedChange={setShowOpenNow}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -238,13 +255,27 @@ const Map = () => {
                 activeFilters={activeFilters}
                 onFilterChange={setActiveFilters}
               />
+
+              {/* Open Now Filter */}
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="open-now-desktop" className="text-sbtp-brown-700">Only Show Open Now</Label>
+                    <Switch 
+                      id="open-now-desktop" 
+                      checked={showOpenNow} 
+                      onCheckedChange={setShowOpenNow}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )}
 
         {/* Map Container */}
         <div className="flex-1 relative">
-          <MapComponent activeFilters={activeFilters} />
+          <MapComponent activeFilters={activeFilters} showOpenNow={showOpenNow} />
 
           {/* Action Buttons - Top Left */}
           <div className="absolute top-4 left-4 flex gap-3">

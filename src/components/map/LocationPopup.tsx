@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+import { isLocationOpen } from '@/lib/hoursParser';
 
 interface LocationPopupProps {
   location: MapLocation;
@@ -17,6 +18,9 @@ interface LocationPopupProps {
 
 const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: LocationPopupProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  
+  // Check if location is currently open
+  const openStatus = isLocationOpen(location.hoursText);
   
   // Get current user and subscription status
   const { data: userData } = useQuery({
@@ -203,9 +207,17 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
 
       {!location.operatingHours && location.hoursText && (
         <div className="mt-3">
-          <h5 className="font-medium text-sbtp-green-700 mb-2">Hours</h5>
+          <div className="flex items-center justify-between mb-2">
+            <h5 className="font-medium text-sbtp-green-700">Hours</h5>
+            {openStatus.isOpen && (
+              <Badge className="bg-green-500 text-white text-xs">Open Now</Badge>
+            )}
+          </div>
           <div className="text-xs">
             {location.hoursText}
+            {openStatus.closesAt && openStatus.isOpen && (
+              <span className="text-sbtp-brown-500 ml-2">• Closes at {openStatus.closesAt}</span>
+            )}
           </div>
         </div>
       )}
@@ -320,11 +332,21 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
 
             {!location.operatingHours && location.hoursText && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Hours
-                </h4>
-                <div className="text-sm">{location.hoursText}</div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-sbtp-green-700 flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Hours
+                  </h4>
+                  {openStatus.isOpen && (
+                    <Badge className="bg-green-500 text-white">Open Now</Badge>
+                  )}
+                </div>
+                <div className="text-sm">
+                  {location.hoursText}
+                  {openStatus.closesAt && openStatus.isOpen && (
+                    <div className="text-sbtp-brown-500 mt-1">Closes at {openStatus.closesAt}</div>
+                  )}
+                </div>
               </div>
             )}
             

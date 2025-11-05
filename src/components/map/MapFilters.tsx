@@ -13,12 +13,17 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { MapPin, Filter, Leaf, Calendar, Store, Search, TreeDeciduous, Building2, ShoppingBasket, Map as MapIcon, Refrigerator, Building } from 'lucide-react';
 import { useForm } from "react-hook-form";
 
+interface MapFiltersProps {
+  onOpenNowChange?: (showOpenOnly: boolean) => void;
+}
+
 // Enhanced Filter component for the map
-const MapFilters = () => {
+const MapFilters = ({ onOpenNowChange }: MapFiltersProps) => {
   const [currentTab, setCurrentTab] = useState('current');
   const [showRadius, setShowRadius] = useState(false);
   const [searchRadius, setSearchRadius] = useState([5]);
   const [viewType, setViewType] = useState("map");
+  const [showOpenNow, setShowOpenNow] = useState(false);
   
   // Add form context using react-hook-form
   const form = useForm({
@@ -96,6 +101,18 @@ const MapFilters = () => {
         <div className="flex items-center justify-between mb-2">
           <Label htmlFor="show-radius" className="text-sbtp-brown-700">Show Radius on Map</Label>
           <Switch id="show-radius" checked={showRadius} onCheckedChange={setShowRadius} />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <Label htmlFor="show-open-now" className="text-sbtp-brown-700">Only Show Open Now</Label>
+          <Switch 
+            id="show-open-now" 
+            checked={showOpenNow} 
+            onCheckedChange={(checked) => {
+              setShowOpenNow(checked);
+              onOpenNowChange?.(checked);
+            }}
+          />
         </div>
         
         <Tabs defaultValue="current" onValueChange={setCurrentTab} className="mt-6">

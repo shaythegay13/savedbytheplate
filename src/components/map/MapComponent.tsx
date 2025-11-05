@@ -4,6 +4,7 @@ import { locationColors, defaultMapConfig } from './MapConfig';
 import { fetchEnhancedMapData } from '../../services/enhancedMapDataService';
 import LocationPopup from './LocationPopup';
 import { loadGoogleMaps } from '@/lib/googleMapsLoader';
+import { isLocationOpen } from '@/lib/hoursParser';
 
 // Icon path definitions matching the legend
 const getIconPath = (type: string) => {
@@ -48,9 +49,10 @@ const createIconSvg = (type: string, color: string, zoom: number = 12) => {
 
 interface MapComponentProps {
   activeFilters?: Set<string>;
+  showOpenNow?: boolean;
 }
 
-const MapComponent = ({ activeFilters }: MapComponentProps) => {
+const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const markers = useRef<any[]>([]);
@@ -168,15 +170,17 @@ const MapComponent = ({ activeFilters }: MapComponentProps) => {
     addMarkers();
   }, [mapLoaded, locations]);
 
-  // Update marker visibility based on active filters
+  // Update marker visibility based on active filters and open now status
   useEffect(() => {
     if (!activeFilters) return;
     
     markersData.current.forEach(({ marker, location }) => {
-      const isVisible = activeFilters.has(location.type);
+      const matchesTypeFilter = activeFilters.has(location.type);
+      const matchesOpenFilter = !showOpenNow || isLocationOpen(location.hoursText).isOpen;
+      const isVisible = matchesTypeFilter && matchesOpenFilter;
       marker.map = isVisible ? map.current : null;
     });
-  }, [activeFilters]);
+  }, [activeFilters, showOpenNow]);
 
   // Update marker sizes when zoom changes
   useEffect(() => {
