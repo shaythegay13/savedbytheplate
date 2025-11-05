@@ -23,7 +23,7 @@ interface Photo {
   profiles: {
     username: string;
     display_name: string | null;
-  };
+  } | null;
 }
 
 export default function LocationPhotos({ locationId, locationName }: LocationPhotosProps) {
@@ -52,13 +52,13 @@ export default function LocationPhotos({ locationId, locationName }: LocationPho
         .from('location_photos')
         .select(`
           *,
-          profiles (username, display_name)
+          profiles!location_photos_user_id_fkey (username, display_name)
         `)
         .eq('location_id', locationId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Photo[];
+      return data as any as Photo[];
     },
   });
 

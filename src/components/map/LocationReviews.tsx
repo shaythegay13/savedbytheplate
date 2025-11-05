@@ -28,7 +28,7 @@ interface Review {
   profiles: {
     username: string;
     display_name: string | null;
-  };
+  } | null;
 }
 
 export default function LocationReviews({ locationId, locationName }: LocationReviewsProps) {
@@ -57,13 +57,13 @@ export default function LocationReviews({ locationId, locationName }: LocationRe
         .from('location_reviews')
         .select(`
           *,
-          profiles (username, display_name)
+          profiles!location_reviews_user_id_fkey (username, display_name)
         `)
         .eq('location_id', locationId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Review[];
+      return data as any as Review[];
     },
   });
 
