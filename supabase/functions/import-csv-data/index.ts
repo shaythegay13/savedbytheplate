@@ -81,12 +81,35 @@ Deno.serve(async (req) => {
           const rows = rawRows as CSVRow[];
           const locations = rows
             .map((row) => {
-              const lat = parseFloat(row.latitude || (row as any).lat || (row as any).Latitude || '0');
-              const lng = parseFloat(row.longitude || (row as any).lng || (row as any).lon || (row as any).Longitude || '0');
+              // Handle lungs_data source with special column names
+              const lat = parseFloat(
+                row.latitude || 
+                (row as any).lat || 
+                (row as any).Latitude || 
+                '0'
+              );
+              const lng = parseFloat(
+                row.longitude || 
+                (row as any).lng || 
+                (row as any).lon || 
+                (row as any).Longitude || 
+                '0'
+              );
               if (!lat || !lng || lat === 0 || lng === 0 || Number.isNaN(lat) || Number.isNaN(lng)) return null;
 
-              const name = (row.name || (row as any)['Name of Garden'] || (row as any)['Name'] || 'Unnamed Location').toString();
-              const type = normalizeType((row.type || (row as any).category || (row as any).facility_type || 'garden').toString());
+              const name = (
+                row.name || 
+                (row as any)['Name of Garden'] || 
+                (row as any)['Name'] || 
+                'Unnamed Location'
+              ).toString();
+              const type = normalizeType(
+                (row.type || 
+                 (row as any).category || 
+                 (row as any).facility_type || 
+                 (source === 'lungs_data' ? 'garden' : 'garden')
+                ).toString()
+              );
 
               const loc: CSVLocation = {
                 name,

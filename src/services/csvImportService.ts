@@ -15,6 +15,23 @@ export async function importCSVToLocations() {
   const rowsBySource: Record<string, any[]> = {};
   let fetchErrors = 0;
 
+  // Also fetch lungs_data1 from Supabase
+  try {
+    const { data: lungsData, error } = await supabase
+      .from('lungs_data1')
+      .select('*');
+    
+    if (error) {
+      console.error('Failed to fetch lungs_data1:', error);
+      fetchErrors++;
+    } else if (lungsData) {
+      rowsBySource['lungs_data'] = lungsData;
+    }
+  } catch (e) {
+    console.error('Failed to fetch lungs_data1:', e);
+    fetchErrors++;
+  }
+
   await Promise.all(
     sources.map(async ({ path, source }) => {
       try {
