@@ -324,6 +324,7 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<Ma
       query = query.eq('zip_code', filters.zipCode);
     }
     
+    query = query.limit(5000);
     const { data, error } = await query;
     
     if (error) {

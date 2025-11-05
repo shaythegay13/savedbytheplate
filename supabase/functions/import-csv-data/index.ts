@@ -137,8 +137,18 @@ Deno.serve(async (req) => {
             })
             .filter((x: any) => x !== null);
 
-          for (let i = 0; i < nycLocations.length; i += 100) {
-            const batch = nycLocations.slice(i, i + 100);
+          // Deduplicate within this dataset to avoid ON CONFLICT affecting same row twice
+          const nycDeduped = Array.from(
+            new Map(
+              nycLocations.map((loc: CSVLocation) => [
+                `${loc.name}|${loc.latitude}|${loc.longitude}`,
+                loc
+              ])
+            ).values()
+          );
+
+          for (let i = 0; i < nycDeduped.length; i += 100) {
+            const batch = nycDeduped.slice(i, i + 100);
             const { error } = await supabaseClient
               .from('locations')
               .upsert(batch, { onConflict: 'name,latitude,longitude' });
@@ -149,7 +159,7 @@ Deno.serve(async (req) => {
               allLocations.push(...batch);
             }
           }
-          console.log(`Imported ${nycLocations.length} NYC Open Data locations`);
+          console.log(`Imported ${nycDeduped.length} NYC Open Data locations`);
         }
       } catch (e) {
         console.error('Failed to fetch NYC Open Data:', e);
@@ -221,8 +231,18 @@ Deno.serve(async (req) => {
             })
             .filter((x): x is CSVLocation => x !== null);
 
-          for (let i = 0; i < locations.length; i += 100) {
-            const batch = locations.slice(i, i + 100);
+          // Deduplicate within this dataset to avoid ON CONFLICT affecting same row twice
+          const deduped = Array.from(
+            new Map(
+              locations.map((loc: CSVLocation) => [
+                `${loc.name}|${loc.latitude}|${loc.longitude}`,
+                loc
+              ])
+            ).values()
+          );
+
+          for (let i = 0; i < deduped.length; i += 100) {
+            const batch = deduped.slice(i, i + 100);
             const { error } = await supabaseClient
               .from('locations')
               .upsert(batch, { onConflict: 'name,latitude,longitude' });
@@ -233,7 +253,7 @@ Deno.serve(async (req) => {
               allLocations.push(...batch);
             }
           }
-          console.log(`Processed ${locations.length} locations from ${source}`);
+          console.log(`Processed ${deduped.length} locations from ${source}`);
         } catch (e) {
           console.error(`Failed processing rows for ${source}:`, e);
           totalErrors++;
@@ -304,11 +324,21 @@ Deno.serve(async (req) => {
             .filter((x): x is CSVLocation => x !== null);
 
           // Insert in batches using service role (bypasses RLS)
-          for (let i = 0; i < locations.length; i += 100) {
-            const batch = locations.slice(i, i + 100);
+          // Deduplicate within this dataset first to avoid ON CONFLICT affecting same row twice
+          const deduped = Array.from(
+            new Map(
+              locations.map((loc: CSVLocation) => [
+                `${loc.name}|${loc.latitude}|${loc.longitude}`,
+                loc
+              ])
+            ).values()
+          );
+
+          for (let i = 0; i < deduped.length; i += 100) {
+            const batch = deduped.slice(i, i + 100);
             const { error } = await supabaseClient
               .from('locations')
-              .upsert(batch, { onConflict: 'name,latitude,longitude', ignoreDuplicates: true });
+              .upsert(batch, { onConflict: 'name,latitude,longitude' });
             if (error) {
               console.error(`Error importing batch from ${file.source}:`, error);
               totalErrors += batch.length;
