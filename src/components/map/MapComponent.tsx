@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapLocation } from './types';
 import { locationColors, defaultMapConfig } from './MapConfig';
-import { fetchEnhancedMapData } from '../../services/enhancedMapDataService';
+import { fetchEnhancedMapData, MapDataFilters } from '../../services/enhancedMapDataService';
 import LocationPopup from './LocationPopup';
 import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 import { isLocationOpen } from '@/lib/hoursParser';
@@ -68,8 +68,14 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
     const loadData = async () => {
       try {
         setLoading(true);
-        console.log('🌱 Starting to load enhanced map data...');
-        const allLocations = await fetchEnhancedMapData();
+        console.log('🌱 Starting to load enhanced map data with filters...');
+        
+        // Build filters object
+        const filters: MapDataFilters = {
+          types: activeFilters.size > 0 ? Array.from(activeFilters) : undefined,
+        };
+        
+        const allLocations = await fetchEnhancedMapData(filters);
         console.log('📍 Total locations loaded for map:', allLocations.length);
         console.log('📊 Location types breakdown:', {
           gardens: allLocations.filter(l => l.type === 'garden').length,
@@ -89,7 +95,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
     };
     
     loadData();
-  }, []);
+  }, [activeFilters]);
 
   // Initialize Google Maps
   useEffect(() => {

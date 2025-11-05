@@ -25,6 +25,7 @@ const Map = () => {
   const [addLocationFormOpen, setAddLocationFormOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(['garden', 'market', 'fridge', 'foodbank', 'farm', 'urbanfarm', 'business', 'csa']));
   const [showOpenNow, setShowOpenNow] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const isMobile = useIsMobile();
 
   // Fetch data to get location counts for the legend
@@ -32,7 +33,14 @@ const Map = () => {
     const loadCounts = async () => {
       try {
         setLoading(true);
-        const locations = await fetchEnhancedMapData();
+        
+        // Build filters object
+        const filters = {
+          search: searchQuery || undefined,
+          types: activeFilters.size > 0 ? Array.from(activeFilters) : undefined,
+        };
+        
+        const locations = await fetchEnhancedMapData(filters);
         const categorized = categorizeLocations(locations);
         
         console.log('📊 Location counts calculated:', {
@@ -69,7 +77,7 @@ const Map = () => {
     const interval = setInterval(loadCounts, 30000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [searchQuery, activeFilters]);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -96,6 +104,8 @@ const Map = () => {
                             <input
                               type="text"
                               placeholder="Search locations, neighborhoods..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
                               className="w-full pl-10 pr-4 py-3 border border-sbtp-green-200 rounded-lg focus:ring-2 focus:ring-sbtp-green-300 focus:border-sbtp-green-300 text-sm"
                             />
                           </div>
@@ -205,6 +215,8 @@ const Map = () => {
                     <input
                       type="text"
                       placeholder="Search locations, neighborhoods..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 border border-sbtp-green-200 rounded-lg focus:ring-2 focus:ring-sbtp-green-300 focus:border-sbtp-green-300 text-sm"
                     />
                   </div>

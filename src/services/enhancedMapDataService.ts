@@ -285,16 +285,45 @@ const fetchComprehensiveData = async (): Promise<MapLocation[]> => {
   }
 };
 
-// Enhanced data fetcher - now fetches from unified Supabase locations table
-export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
+// Enhanced data fetcher - now fetches from unified Supabase locations table with filters
+export interface MapDataFilters {
+  search?: string;
+  types?: string[];
+  borough?: string;
+  zipCode?: string;
+}
+
+export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<MapLocation[]> => {
   try {
-    console.log('🌱 Fetching all location data from Supabase locations table...');
+    console.log('🌱 Fetching location data from Supabase with filters:', filters);
     
-    const { data, error } = await supabase
+    let query = supabase
       .from('locations')
       .select('*')
       .eq('status', 'active')
       .eq('verified', true);
+    
+    // Apply search filter (searches name, description, address, organization)
+    if (filters?.search) {
+      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,address.ilike.%${filters.search}%,organization.ilike.%${filters.search}%,neighborhood.ilike.%${filters.search}%`);
+    }
+    
+    // Apply type filter
+    if (filters?.types && filters.types.length > 0) {
+      query = query.in('type', filters.types);
+    }
+    
+    // Apply borough filter
+    if (filters?.borough) {
+      query = query.eq('borough', filters.borough);
+    }
+    
+    // Apply zip code filter
+    if (filters?.zipCode) {
+      query = query.eq('zip_code', filters.zipCode);
+    }
+    
+    const { data, error } = await query;
     
     if (error) {
       console.error('Error fetching locations from Supabase:', error);
