@@ -455,6 +455,75 @@ export type Database = {
         }
         Relationships: []
       }
+      location_photos: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          id: string
+          is_approved: boolean | null
+          location_id: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          location_id: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          location_id?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      location_reviews: {
+        Row: {
+          created_at: string | null
+          helpful_count: number | null
+          id: string
+          is_verified_visit: boolean | null
+          location_id: string
+          rating: number
+          review_text: string
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_verified_visit?: boolean | null
+          location_id: string
+          rating: number
+          review_text: string
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_verified_visit?: boolean | null
+          location_id?: string
+          rating?: number
+          review_text?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           address: string | null
@@ -649,6 +718,35 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      review_helpful_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          review_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          review_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          review_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_helpful_votes_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "location_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_badges: {
         Row: {

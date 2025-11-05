@@ -1,13 +1,16 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock, Star, Camera } from 'lucide-react';
 import { MapLocation } from './types';
 import { useState } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { isLocationOpen } from '@/lib/hoursParser';
+import LocationReviews from './LocationReviews';
+import LocationPhotos from './LocationPhotos';
 
 interface LocationPopupProps {
   location: MapLocation;
@@ -253,7 +256,7 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
       
       {/* Detailed Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl text-sbtp-green-700 flex items-center gap-2">
               <MapPin className="h-6 w-6" style={{ color: locationColors[location.type] }} />
@@ -264,9 +267,22 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 mt-4">
-            {/* Location Type Badge */}
-            <div className="flex gap-2 flex-wrap">
+          <Tabs defaultValue="details" className="mt-4">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="reviews">
+                <Star className="h-4 w-4 mr-1" />
+                Reviews
+              </TabsTrigger>
+              <TabsTrigger value="photos">
+                <Camera className="h-4 w-4 mr-1" />
+                Photos
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="details" className="space-y-4 mt-4">
+              {/* Location Type Badge */}
+              <div className="flex gap-2 flex-wrap">
               <Badge 
                 variant="outline" 
                 style={{
@@ -456,7 +472,22 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
                 </div>
               </div>
             )}
-          </div>
+          </TabsContent>
+
+          <TabsContent value="reviews">
+            <LocationReviews 
+              locationId={location.id} 
+              locationName={location.name}
+            />
+          </TabsContent>
+
+          <TabsContent value="photos">
+            <LocationPhotos 
+              locationId={location.id} 
+              locationName={location.name}
+            />
+          </TabsContent>
+        </Tabs>
         </DialogContent>
       </Dialog>
     </div>
