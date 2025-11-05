@@ -54,7 +54,7 @@ export async function importCSVToLocations() {
 
   try {
     const { data, error } = await supabase.functions.invoke('import-csv-data', {
-      body: { baseUrl, rowsBySource },
+      body: { baseUrl, rowsBySource, includeNYCOpenData: true },
     });
 
     if (error) {

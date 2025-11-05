@@ -69,10 +69,69 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { baseUrl, rowsBySource } = await req.json().catch(() => ({ baseUrl: '', rowsBySource: null }));
+    const { baseUrl, rowsBySource, includeNYCOpenData } = await req.json().catch(() => ({ 
+      baseUrl: '', 
+      rowsBySource: null,
+      includeNYCOpenData: false 
+    }));
 
     const allLocations: CSVLocation[] = [];
     let totalErrors = 0;
+
+    // Fetch NYC Open Data if requested
+    if (includeNYCOpenData) {
+      try {
+        console.log('Fetching NYC Open Data...');
+        const nycResponse = await fetch('https://data.cityofnewyork.us/resource/p78i-pat6.json?$limit=5000');
+        if (nycResponse.ok) {
+          const nycData = await nycResponse.json();
+          const nycLocations = nycData
+            .map((item: any) => {
+              const lat = parseFloat(item.lat || '0');
+              const lng = parseFloat(item.lon || '0');
+              if (!lat || !lng || lat === 0 || lng === 0 || Number.isNaN(lat) || Number.isNaN(lng)) return null;
+
+              return {
+                name: item.gardenname || 'Unnamed Garden',
+                type: 'garden',
+                description: item.address || null,
+                address: item.address || null,
+                latitude: lat,
+                longitude: lng,
+                organization: item.juris || null,
+                website: null,
+                neighborhood: item.borough || null,
+                open_hours: null,
+                contact_information: item.phone || null,
+                cross_streets: item.crossstreets || null,
+                zip_code: item.zipcode || null,
+                borough: item.borough || null,
+                status: 'active',
+                verified: true,
+                source: 'nyc_open_data',
+              } as CSVLocation;
+            })
+            .filter((x: any) => x !== null);
+
+          for (let i = 0; i < nycLocations.length; i += 100) {
+            const batch = nycLocations.slice(i, i + 100);
+            const { error } = await supabaseClient
+              .from('locations')
+              .upsert(batch, { onConflict: 'name,latitude,longitude', ignoreDuplicates: true });
+            if (error) {
+              console.error('Error importing NYC Open Data batch:', error);
+              totalErrors += batch.length;
+            } else {
+              allLocations.push(...batch);
+            }
+          }
+          console.log(`Imported ${nycLocations.length} NYC Open Data locations`);
+        }
+      } catch (e) {
+        console.error('Failed to fetch NYC Open Data:', e);
+        totalErrors++;
+      }
+    }
 
     // If rows are provided directly from the client, import them without fetching
     if (rowsBySource && typeof rowsBySource === 'object') {
