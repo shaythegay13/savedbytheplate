@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
             const batch = nycLocations.slice(i, i + 100);
             const { error } = await supabaseClient
               .from('locations')
-              .upsert(batch, { onConflict: 'name,latitude,longitude', ignoreDuplicates: true });
+              .upsert(batch, { onConflict: 'name,latitude,longitude' });
             if (error) {
               console.error('Error importing NYC Open Data batch:', error);
               totalErrors += batch.length;
@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
             const batch = locations.slice(i, i + 100);
             const { error } = await supabaseClient
               .from('locations')
-              .upsert(batch, { onConflict: 'name,latitude,longitude', ignoreDuplicates: true });
+              .upsert(batch, { onConflict: 'name,latitude,longitude' });
             if (error) {
               console.error(`Error importing batch from ${source}:`, error);
               totalErrors += batch.length;
@@ -209,6 +209,7 @@ Deno.serve(async (req) => {
               allLocations.push(...batch);
             }
           }
+          console.log(`Processed ${locations.length} locations from ${source}`);
         } catch (e) {
           console.error(`Failed processing rows for ${source}:`, e);
           totalErrors++;
