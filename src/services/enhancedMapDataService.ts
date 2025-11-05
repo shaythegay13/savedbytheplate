@@ -113,6 +113,11 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
     if (row.local_items_selling) detailsParts.push(`Selling: ${row.local_items_selling}`);
     if (row.contact_information) detailsParts.push(`Contact: ${row.contact_information}`);
     
+    // Add operating hours to details (not day-specific from CSV)
+    if (row.open_hours && row.open_hours !== '24/7') {
+      detailsParts.push(`Hours: ${row.open_hours}`);
+    }
+    
     const location: MapLocation = {
       id: `comprehensive-${i}`,
       name: row.name || 'Unnamed Location',
@@ -125,15 +130,6 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
       details: detailsParts.join('\n') || undefined,
       borough: row.neighborhood
     };
-    
-    // Parse operating hours - don't assign to operatingHours if it's a general hours string
-    // Only assign to operatingHours if we have day-specific data
-    if (row.open_hours && row.open_hours !== '24/7') {
-      // Add to details instead of operatingHours since it's not day-specific
-      if (!detailsParts.includes(`Hours: ${row.open_hours}`)) {
-        detailsParts.push(`Hours: ${row.open_hours}`);
-      }
-    }
     
     locations.push(location);
   }
