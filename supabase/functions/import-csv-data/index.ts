@@ -1,30 +1,61 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.9';
+import { parse as parseCsv } from 'https://deno.land/std@0.224.0/csv/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+interface CSVRow {
+  [key: string]: string;
+}
+
 interface CSVLocation {
   name: string;
   type: string;
-  description?: string;
-  address?: string;
+  description?: string | null;
+  address?: string | null;
   latitude: number;
   longitude: number;
-  organization?: string;
-  website?: string;
-  neighborhood?: string;
-  open_hours?: string;
-  contact_information?: string;
-  local_items_selling?: string;
-  social_media_website1?: string;
-  social_media_website2?: string;
-  cross_streets?: string;
-  zip_code?: string;
-  borough?: string;
-  owner?: string;
+  organization?: string | null;
+  website?: string | null;
+  neighborhood?: string | null;
+  open_hours?: string | null;
+  contact_information?: string | null;
+  local_items_selling?: string | null;
+  social_media_website1?: string | null;
+  social_media_website2?: string | null;
+  cross_streets?: string | null;
+  zip_code?: string | null;
+  borough?: string | null;
+  owner?: string | null;
+  status: string;
+  verified: boolean;
   source: string;
+}
+
+function normalizeType(type: string): string {
+  const normalized = (type || '').toLowerCase().trim();
+  const typeMap: Record<string, string> = {
+    'community garden': 'garden',
+    'garden': 'garden',
+    'greenthumb': 'garden',
+    'farmers market': 'market',
+    'market': 'market',
+    'greenmarket': 'market',
+    'community fridge': 'fridge',
+    'fridge': 'fridge',
+    'free fridge': 'fridge',
+    'food bank': 'foodbank',
+    'foodbank': 'foodbank',
+    'food pantry': 'foodbank',
+    'farm': 'farm',
+    'urban farm': 'urbanfarm',
+    'csa': 'csa',
+    'business': 'business',
+    'store': 'business',
+  };
+  return typeMap[normalized] || 'garden';
 }
 
 Deno.serve(async (req) => {
@@ -38,134 +69,105 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    console.log('Starting CSV import process...');
+    const { baseUrl } = await req.json().catch(() => ({ baseUrl: '' }));
+    if (!baseUrl) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Missing baseUrl in request body',
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
 
-    // CSV file URLs (from public folder)
     const csvFiles = [
-      {
-        url: `${Deno.env.get('SUPABASE_URL')?.replace('https://', 'https://rxwynfplditdwqtjhkpw.')}/storage/v1/object/public/location-photos/complete_comprehensive_food_access.csv`,
-        source: 'comprehensive_food_access'
-      },
-      {
-        url: '/processed/food_banks.csv',
-        source: 'food_banks'
-      },
-      {
-        url: '/processed/farmers_markets.csv',
-        source: 'farmers_markets'
-      },
-      {
-        url: '/processed/comprehensive_community_fridges.csv',
-        source: 'community_fridges'
-      }
+      { path: '/processed/complete_comprehensive_food_access.csv', source: 'comprehensive_food_access' },
+      { path: '/processed/food_banks.csv', source: 'food_banks' },
+      { path: '/processed/farmers_markets.csv', source: 'farmers_markets' },
+      { path: '/processed/comprehensive_community_fridges.csv', source: 'community_fridges' },
     ];
 
-    const locations: CSVLocation[] = [];
-    let successCount = 0;
-    let errorCount = 0;
+    const allLocations: CSVLocation[] = [];
+    let totalErrors = 0;
 
-    // Parse comprehensive food access CSV
-    try {
-      const response = await fetch('https://raw.githubusercontent.com/yourusername/yourrepo/main/public/processed/complete_comprehensive_food_access.csv');
-      
-      if (!response.ok) {
-        console.log('Could not fetch CSV from URL, will use inline data insertion instead');
-        
-        // Since we can't directly access the CSV files from the edge function,
-        // we'll provide instructions for manual import or create a different approach
-        return new Response(
-          JSON.stringify({
-            message: 'CSV import requires manual data upload',
-            instructions: 'Please use the Supabase dashboard to import CSV files into the locations table',
-            schema: {
-              required_columns: [
-                'name',
-                'type',
-                'latitude',
-                'longitude'
-              ],
-              optional_columns: [
-                'description',
-                'address',
-                'organization',
-                'website',
-                'neighborhood',
-                'open_hours',
-                'contact_information',
-                'local_items_selling',
-                'social_media_website1',
-                'social_media_website2',
-                'cross_streets',
-                'zip_code',
-                'borough',
-                'owner'
-              ]
-            },
-            status: 'pending_manual_import'
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 200
+    for (const file of csvFiles) {
+      const url = `${baseUrl}${file.path}`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+        const csvText = await res.text();
+
+        const rows = (await parseCsv(csvText, { columns: true })) as CSVRow[];
+        const locations = rows
+          .map((row) => {
+            const lat = parseFloat(row.latitude || row.lat || row.Latitude || '0');
+            const lng = parseFloat(row.longitude || row.lng || row.lon || row.Longitude || '0');
+            if (!lat || !lng || lat === 0 || lng === 0 || Number.isNaN(lat) || Number.isNaN(lng)) return null;
+
+            const name = (row.name || row['Name of Garden'] || row['Name'] || 'Unnamed Location').toString();
+            const type = normalizeType((row.type || row.category || row.facility_type || 'garden').toString());
+
+            const loc: CSVLocation = {
+              name,
+              type,
+              description: (row.description || row.Description || null) as string | null,
+              address: (row.address || row.Address || null) as string | null,
+              latitude: lat,
+              longitude: lng,
+              organization: (row.organization || row.owner || row.Owner || null) as string | null,
+              website: (row.website || row.social_media_website1 || row.Website || null) as string | null,
+              neighborhood: (row.neighborhood || row.Neighborhood || null) as string | null,
+              open_hours: (row.open_hours || row.hours || row.Hours || null) as string | null,
+              contact_information: (row.contact_information || row['Contact Information'] || null) as string | null,
+              local_items_selling: (row.local_items_selling || row.loca_items_selling || null) as string | null,
+              social_media_website1: (row.social_media_website1 || null) as string | null,
+              social_media_website2: (row.social_media_website2 || null) as string | null,
+              cross_streets: (row.crossstreets || null) as string | null,
+              zip_code: (row.zipcode || null) as string | null,
+              borough: (row.borough || null) as string | null,
+              owner: (row.owner || row.Owner || null) as string | null,
+              status: 'active',
+              verified: true,
+              source: file.source,
+            };
+            return loc;
+          })
+          .filter((x): x is CSVLocation => x !== null);
+
+        // Insert in batches using service role (bypasses RLS)
+        for (let i = 0; i < locations.length; i += 100) {
+          const batch = locations.slice(i, i + 100);
+          const { error } = await supabaseClient
+            .from('locations')
+            .upsert(batch, { onConflict: 'name,latitude,longitude', ignoreDuplicates: true });
+          if (error) {
+            console.error(`Error importing batch from ${file.source}:`, error);
+            totalErrors += batch.length;
+          } else {
+            allLocations.push(...batch);
           }
-        );
-      }
-    } catch (error) {
-      console.error('Error fetching CSV:', error);
-    }
-
-    // Insert locations into database
-    if (locations.length > 0) {
-      console.log(`Inserting ${locations.length} locations...`);
-      
-      // Insert in batches of 100
-      for (let i = 0; i < locations.length; i += 100) {
-        const batch = locations.slice(i, i + 100);
-        
-        const { data, error } = await supabaseClient
-          .from('locations')
-          .upsert(batch, {
-            onConflict: 'name,latitude,longitude',
-            ignoreDuplicates: true
-          });
-
-        if (error) {
-          console.error('Error inserting batch:', error);
-          errorCount += batch.length;
-        } else {
-          successCount += batch.length;
-          console.log(`Inserted batch ${i / 100 + 1}`);
         }
+      } catch (e) {
+        console.error(`Failed processing ${url}:`, e);
+        totalErrors++;
       }
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Import process completed',
-        stats: {
-          totalProcessed: locations.length,
-          successCount,
-          errorCount
-        },
-        note: 'For complete CSV import, please use the alternative import method described in the response'
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      }
-    );
+    const result = {
+      success: totalErrors === 0,
+      totalImported: allLocations.length,
+      totalErrors,
+    };
 
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
   } catch (error) {
     console.error('Import error:', error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        details: 'Check function logs for more information'
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
+      JSON.stringify({ success: false, totalImported: 0, totalErrors: 1, error: String(error) }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }
 });
