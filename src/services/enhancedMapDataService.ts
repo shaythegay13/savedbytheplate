@@ -1,5 +1,4 @@
 import { MapLocation } from '../components/map/types';
-import { fetchNYCMapData } from './mapDataService';
 import { supabase } from '@/integrations/supabase/client';
 
 // CSV data parsers for different food access types
@@ -286,47 +285,58 @@ const fetchComprehensiveData = async (): Promise<MapLocation[]> => {
   }
 };
 
-// Enhanced data fetcher that combines all data sources
+// Enhanced data fetcher - now fetches from unified Supabase locations table
 export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
   try {
-    console.log('🌱 Fetching enhanced map data from all sources...');
+    console.log('🌱 Fetching all location data from Supabase locations table...');
     
-    const allLocations: MapLocation[] = [];
+    const { data, error } = await supabase
+      .from('locations')
+      .select('*')
+      .eq('status', 'active')
+      .eq('verified', true);
     
-    // Primary source: comprehensive CSV with all data
-    const comprehensiveData = await fetchComprehensiveData();
-    allLocations.push(...comprehensiveData);
+    if (error) {
+      console.error('Error fetching locations from Supabase:', error);
+      return [];
+    }
     
-    // Legacy data sources (will be deduplicated)
-    const [fridges, markets, foodBanks, nycData] = await Promise.all([
-      fetchCommunityFridges(),
-      fetchFarmersMarkets(),
-      fetchFoodBanks(),
-      fetchNYCMapData()
-    ]);
+    if (!data || data.length === 0) {
+      console.warn('No locations found in Supabase table');
+      return [];
+    }
     
-    allLocations.push(...fridges);
-    allLocations.push(...markets);
-    allLocations.push(...foodBanks);
-    allLocations.push(...nycData);
-    
-    console.log(`📊 Total locations loaded before deduplication: ${allLocations.length}`);
-    
-    // Remove duplicates based on proximity and name similarity
-    const uniqueLocations = removeDuplicates(allLocations);
+    // Transform Supabase data to MapLocation format
+    const locations: MapLocation[] = data.map((loc, index) => ({
+      id: loc.id || `loc-${index}`,
+      name: loc.name,
+      type: loc.type as MapLocation['type'],
+      description: loc.description || '',
+      tags: loc.tags || [],
+      lngLat: [loc.longitude, loc.latitude] as [number, number],
+      address: loc.address || undefined,
+      website: loc.website || undefined,
+      details: loc.details || undefined,
+      hoursText: loc.open_hours || undefined,
+      borough: loc.borough || undefined,
+      zipcode: loc.zip_code || undefined,
+      crossstreets: loc.cross_streets || undefined,
+      status: loc.status || undefined,
+    }));
     
     // Final summary with proper counts
     const summary = {
-      gardens: uniqueLocations.filter(l => l.type === 'garden').length,
-      fridges: uniqueLocations.filter(l => l.type === 'fridge').length,
-      markets: uniqueLocations.filter(l => l.type === 'market').length,
-      foodbanks: uniqueLocations.filter(l => l.type === 'foodbank').length,
-      farms: uniqueLocations.filter(l => l.type === 'farm').length,
-      urbanfarms: uniqueLocations.filter(l => l.type === 'urbanfarm').length,
-      businesses: uniqueLocations.filter(l => l.type === 'business').length
+      gardens: locations.filter(l => l.type === 'garden').length,
+      fridges: locations.filter(l => l.type === 'fridge').length,
+      markets: locations.filter(l => l.type === 'market').length,
+      foodbanks: locations.filter(l => l.type === 'foodbank').length,
+      farms: locations.filter(l => l.type === 'farm').length,
+      urbanfarms: locations.filter(l => l.type === 'urbanfarm').length,
+      businesses: locations.filter(l => l.type === 'business').length,
+      csa: locations.filter(l => l.type === 'csa').length,
     };
     
-    console.log('📊 Enhanced map data final summary:');
+    console.log('📊 Map data loaded from Supabase:');
     console.log(`  • Community Gardens: ${summary.gardens}`);
     console.log(`  • Community Fridges: ${summary.fridges}`);
     console.log(`  • Farmers Markets: ${summary.markets}`);
@@ -334,9 +344,10 @@ export const fetchEnhancedMapData = async (): Promise<MapLocation[]> => {
     console.log(`  • Farms: ${summary.farms}`);
     console.log(`  • Urban Farms: ${summary.urbanfarms}`);
     console.log(`  • Businesses: ${summary.businesses}`);
-    console.log(`  • Total Unique Locations: ${uniqueLocations.length}`);
+    console.log(`  • CSAs: ${summary.csa}`);
+    console.log(`  • Total Locations: ${locations.length}`);
     
-    return uniqueLocations;
+    return locations;
   } catch (error) {
     console.error('Error fetching enhanced map data:', error);
     return [];
