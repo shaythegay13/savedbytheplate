@@ -308,10 +308,11 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<Ma
       query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,address.ilike.%${filters.search}%,organization.ilike.%${filters.search}%,neighborhood.ilike.%${filters.search}%`);
     }
     
-    // Apply type filter
-    if (filters?.types && filters.types.length > 0) {
-      query = query.in('type', filters.types);
-    }
+      // Only apply type filter if not all types are selected
+      const allTypes: string[] = ['garden','market','fridge','foodbank','farm','urbanfarm','business','csa'];
+      if (filters?.types && filters.types.length > 0 && filters.types.length < allTypes.length) {
+        query = query.in('type', filters.types);
+      }
     
     // Apply borough filter
     if (filters?.borough) {

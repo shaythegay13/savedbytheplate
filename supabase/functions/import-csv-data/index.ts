@@ -40,26 +40,44 @@ function normalizeType(type: string): string {
     'community garden': 'garden',
     'garden': 'garden',
     'greenthumb': 'garden',
+
     'farmers market': 'market',
     'farmers_market': 'market',
-    'market': 'market',
     'greenmarket': 'market',
+    'market': 'market',
+
     'community fridge': 'fridge',
     'community_fridge': 'fridge',
     'fridge': 'fridge',
     'free fridge': 'fridge',
+
     'food bank': 'foodbank',
     'food_bank': 'foodbank',
     'foodbank': 'foodbank',
     'food pantry': 'foodbank',
     'food_pantry': 'foodbank',
+    'pantry': 'foodbank',
+    'mobile pantry': 'foodbank',
+    'soup kitchen': 'foodbank',
+
     'farm': 'farm',
+
     'urban farm': 'urbanfarm',
     'urban_farm': 'urbanfarm',
     'urbanfarm': 'urbanfarm',
+    'urban agriculture': 'urbanfarm',
+    'rooftop farm': 'urbanfarm',
+    'hydroponic farm': 'urbanfarm',
+
     'csa': 'csa',
+    'csa program': 'csa',
+    'csa pickup': 'csa',
+    'csa site': 'csa',
+    'community supported agriculture': 'csa',
+
     'business': 'business',
     'store': 'business',
+    'local food business': 'business',
   };
   return typeMap[normalized] || 'garden';
 }
