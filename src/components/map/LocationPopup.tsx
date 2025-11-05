@@ -200,6 +200,15 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
           </div>
         </div>
       )}
+
+      {!location.operatingHours && location.hoursText && (
+        <div className="mt-3">
+          <h5 className="font-medium text-sbtp-green-700 mb-2">Hours</h5>
+          <div className="text-xs">
+            {location.hoursText}
+          </div>
+        </div>
+      )}
       
       <div className="mt-3 flex flex-wrap gap-1">
         {location.tags.map((tag, i) => (
@@ -306,6 +315,16 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {!location.operatingHours && location.hoursText && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Hours
+                </h4>
+                <div className="text-sm">{location.hoursText}</div>
               </div>
             )}
             

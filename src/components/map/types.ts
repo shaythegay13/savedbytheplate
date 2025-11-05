@@ -14,6 +14,8 @@ export interface MapLocation {
   communityboard?: string;
   juris?: string;
   status?: string;
+  // Free-form hours text (e.g., "Mon-Fri 9-5") when structured hours aren't available
+  hoursText?: string;
   operatingHours?: {
     monday?: string;
     tuesday?: string;

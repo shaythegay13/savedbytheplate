@@ -110,13 +110,12 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
     const detailsParts = [];
     if (row.description) detailsParts.push(row.description);
     if (row.owner) detailsParts.push(`Owner: ${row.owner}`);
-    if (row.local_items_selling) detailsParts.push(`Selling: ${row.local_items_selling}`);
+    // Support both possible header spellings
+    if (row.local_items_selling || row.loca_items_selling) detailsParts.push(`Selling: ${row.local_items_selling || row.loca_items_selling}`);
     if (row.contact_information) detailsParts.push(`Contact: ${row.contact_information}`);
     
-    // Add operating hours to details (not day-specific from CSV)
-    if (row.open_hours && row.open_hours !== '24/7') {
-      detailsParts.push(`Hours: ${row.open_hours}`);
-    }
+    // Capture open hours as free-form text
+    const hoursText = row.open_hours ? String(row.open_hours).trim() : undefined;
     
     const location: MapLocation = {
       id: `comprehensive-${i}`,
@@ -128,6 +127,7 @@ const parseComprehensiveCSV = (csvText: string): MapLocation[] => {
       address: row.address,
       website: row.social_media_website1 || row.social_media_website2,
       details: detailsParts.join('\n') || undefined,
+      hoursText,
       borough: row.neighborhood
     };
     
@@ -206,9 +206,9 @@ const parseCSVToLocations = (csvText: string, locationType: MapLocation['type'])
         (row.contact ? `Contact: ${row.contact}` : undefined)
     };
     
-    // Parse operating hours
+    // Parse hours as free-form text (not day-specific)
     if (row.hours) {
-      location.operatingHours = { monday: row.hours };
+      location.hoursText = String(row.hours).trim();
     }
     
     locations.push(location);
