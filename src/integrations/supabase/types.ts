@@ -543,17 +543,26 @@ export type Database = {
       locations: {
         Row: {
           address: string | null
+          borough: string | null
+          contact_information: string | null
           created_at: string | null
+          cross_streets: string | null
           description: string | null
           details: string | null
           email: string | null
           hours: Json | null
           id: string
           latitude: number
+          local_items_selling: string | null
           longitude: number
           name: string
+          neighborhood: string | null
+          open_hours: string | null
           organization: string | null
+          owner: string | null
           phone: string | null
+          social_media_website1: string | null
+          social_media_website2: string | null
           source: string | null
           status: string | null
           submitted_by: string | null
@@ -562,20 +571,30 @@ export type Database = {
           updated_at: string | null
           verified: boolean | null
           website: string | null
+          zip_code: string | null
         }
         Insert: {
           address?: string | null
+          borough?: string | null
+          contact_information?: string | null
           created_at?: string | null
+          cross_streets?: string | null
           description?: string | null
           details?: string | null
           email?: string | null
           hours?: Json | null
           id?: string
           latitude: number
+          local_items_selling?: string | null
           longitude: number
           name: string
+          neighborhood?: string | null
+          open_hours?: string | null
           organization?: string | null
+          owner?: string | null
           phone?: string | null
+          social_media_website1?: string | null
+          social_media_website2?: string | null
           source?: string | null
           status?: string | null
           submitted_by?: string | null
@@ -584,20 +603,30 @@ export type Database = {
           updated_at?: string | null
           verified?: boolean | null
           website?: string | null
+          zip_code?: string | null
         }
         Update: {
           address?: string | null
+          borough?: string | null
+          contact_information?: string | null
           created_at?: string | null
+          cross_streets?: string | null
           description?: string | null
           details?: string | null
           email?: string | null
           hours?: Json | null
           id?: string
           latitude?: number
+          local_items_selling?: string | null
           longitude?: number
           name?: string
+          neighborhood?: string | null
+          open_hours?: string | null
           organization?: string | null
+          owner?: string | null
           phone?: string | null
+          social_media_website1?: string | null
+          social_media_website2?: string | null
           source?: string | null
           status?: string | null
           submitted_by?: string | null
@@ -606,6 +635,7 @@ export type Database = {
           updated_at?: string | null
           verified?: boolean | null
           website?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }

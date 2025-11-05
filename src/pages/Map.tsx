@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus } from 'lucide-react';
+import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus, Database } from 'lucide-react';
+import CSVImportButton from "@/components/admin/CSVImportButton";
 import MapComponent from "@/components/map/MapComponent";
 import MapImprovementForm from "@/components/map/MapImprovementForm";
 import AddLocationForm from "@/components/map/AddLocationForm";
@@ -267,6 +268,19 @@ const Map = () => {
                       onCheckedChange={setShowOpenNow}
                     />
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* CSV Import (Admin Feature) */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Database className="h-4 w-4" />
+                    Data Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CSVImportButton />
                 </CardContent>
               </Card>
             </div>
