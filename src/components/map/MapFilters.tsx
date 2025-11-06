@@ -51,6 +51,18 @@ const MapFilters = ({ onOpenNowChange }: MapFiltersProps) => {
           />
         </div>
 
+        <div className="flex items-center justify-between mb-6">
+          <Label htmlFor="show-open-now" className="text-sbtp-brown-700">Only Show Open Now</Label>
+          <Switch 
+            id="show-open-now" 
+            checked={showOpenNow} 
+            onCheckedChange={(checked) => {
+              setShowOpenNow(checked);
+              onOpenNowChange?.(checked);
+            }}
+          />
+        </div>
+
         <div className="mb-4">
           <Label className="text-sbtp-brown-700 mb-2 block">View</Label>
           <ToggleGroup type="single" value={viewType} onValueChange={(value) => value && setViewType(value)} className="justify-stretch border rounded-md bg-white p-1">
@@ -98,21 +110,9 @@ const MapFilters = ({ onOpenNowChange }: MapFiltersProps) => {
           </div>
         </div>
         
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-4">
           <Label htmlFor="show-radius" className="text-sbtp-brown-700">Show Radius on Map</Label>
           <Switch id="show-radius" checked={showRadius} onCheckedChange={setShowRadius} />
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <Label htmlFor="show-open-now" className="text-sbtp-brown-700">Only Show Open Now</Label>
-          <Switch 
-            id="show-open-now" 
-            checked={showOpenNow} 
-            onCheckedChange={(checked) => {
-              setShowOpenNow(checked);
-              onOpenNowChange?.(checked);
-            }}
-          />
         </div>
         
         <Tabs defaultValue="current" onValueChange={setCurrentTab} className="mt-6">
