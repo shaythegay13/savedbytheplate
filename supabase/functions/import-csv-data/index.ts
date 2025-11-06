@@ -21,6 +21,7 @@ interface CSVLocation {
   website?: string | null;
   neighborhood?: string | null;
   open_hours?: string | null;
+  phone?: string | null;
   contact_information?: string | null;
   local_items_selling?: string | null;
   social_media_website1?: string | null;
@@ -127,7 +128,8 @@ Deno.serve(async (req) => {
                 website: null,
                 neighborhood: item.borough || null,
                 open_hours: null,
-                contact_information: item.phone || null,
+                phone: item.phone || null,
+                contact_information: null,
                 cross_streets: item.crossstreets || null,
                 zip_code: item.zipcode || null,
                 borough: item.borough || null,
@@ -212,14 +214,15 @@ Deno.serve(async (req) => {
               const loc: CSVLocation = {
                 name,
                 type,
-                description: (row.description || (row as any).Description || null) as string | null,
+                description: (row.description || (row as any).additional_info || (row as any).Description || null) as string | null,
                 address: (row.address || (row as any).Address || null) as string | null,
                 latitude: lat,
                 longitude: lng,
                 organization: (row.organization || (row as any).owner || (row as any).Owner || null) as string | null,
                 website: (row.website || (row as any).social_media_website1 || (row as any).Website || null) as string | null,
                 neighborhood: (row as any).neighborhood || (row as any).Neighborhood || null,
-                open_hours: (row as any).open_hours || (row as any).hours || (row as any).Hours || null,
+                open_hours: (row as any).hours || (row as any).open_hours || (row as any).Hours || null,
+                phone: (row as any).contact || (row as any).phone || null,
                 contact_information: (row as any).contact_information || (row as any)['Contact Information'] || null,
                 local_items_selling: (row as any).local_items_selling || (row as any).loca_items_selling || null,
                 social_media_website1: (row as any).social_media_website1 || null,
@@ -279,9 +282,9 @@ Deno.serve(async (req) => {
 
       const csvFiles = [
         { path: '/processed/complete_comprehensive_food_access.csv', source: 'comprehensive_food_access' },
-        { path: '/processed/food_banks.csv', source: 'food_banks' },
+        { path: '/processed/comprehensive_community_fridges.csv', source: 'comprehensive_community_fridges' },
         { path: '/processed/farmers_markets.csv', source: 'farmers_markets' },
-        { path: '/processed/community_fridges.csv', source: 'community_fridges' },
+        { path: '/processed/food_banks.csv', source: 'food_banks' },
       ];
 
       for (const file of csvFiles) {
@@ -306,14 +309,15 @@ Deno.serve(async (req) => {
               const loc: CSVLocation = {
                 name,
                 type,
-                description: (row.description || row.Description || null) as string | null,
+                description: (row.description || row.additional_info || row.Description || null) as string | null,
                 address: (row.address || row.Address || null) as string | null,
                 latitude: lat,
                 longitude: lng,
                 organization: (row.organization || row.owner || row.Owner || null) as string | null,
                 website: (row.website || row.social_media_website1 || row.Website || null) as string | null,
                 neighborhood: (row.neighborhood || row.Neighborhood || null) as string | null,
-                open_hours: (row.open_hours || row.hours || row.Hours || null) as string | null,
+                open_hours: (row.hours || row.open_hours || row.Hours || null) as string | null,
+                phone: (row.contact || row.phone || null) as string | null,
                 contact_information: (row.contact_information || row['Contact Information'] || null) as string | null,
                 local_items_selling: (row.local_items_selling || row.loca_items_selling || null) as string | null,
                 social_media_website1: (row.social_media_website1 || null) as string | null,

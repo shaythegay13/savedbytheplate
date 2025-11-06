@@ -7,10 +7,9 @@ export async function importCSVToLocations() {
 
   const sources = [
     { path: '/processed/complete_comprehensive_food_access.csv', source: 'comprehensive_food_access' },
-    { path: '/processed/food_banks.csv', source: 'food_banks' },
+    { path: '/processed/comprehensive_community_fridges.csv', source: 'comprehensive_community_fridges' },
     { path: '/processed/farmers_markets.csv', source: 'farmers_markets' },
-    { path: '/processed/community_fridges.csv', source: 'community_fridges' },
-    { path: '/processed/nyc_food_access_data_CLEANED.csv', source: 'nyc_food_access_cleaned' },
+    { path: '/processed/food_banks.csv', source: 'food_banks' },
   ] as const;
 
   const rowsBySource: Record<string, any[]> = {};
@@ -55,7 +54,7 @@ export async function importCSVToLocations() {
 
   try {
     const { data, error } = await supabase.functions.invoke('import-csv-data', {
-      body: { baseUrl, rowsBySource, includeNYCOpenData: true },
+      body: { baseUrl, rowsBySource, includeNYCOpenData: false },
     });
 
     if (error) {
