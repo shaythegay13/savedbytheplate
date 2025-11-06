@@ -63,7 +63,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const [loading, setLoading] = useState(true);
   const [currentZoom, setCurrentZoom] = useState(defaultMapConfig.zoom);
 
-  // Fetch enhanced data from all sources
+  // Fetch enhanced data from all sources - memoized to prevent unnecessary refetches
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -72,20 +72,11 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
         
         // Build filters object
         const filters: MapDataFilters = {
-          types: activeFilters.size > 0 ? Array.from(activeFilters) : undefined,
+          types: activeFilters && activeFilters.size > 0 ? Array.from(activeFilters) : undefined,
         };
         
         const allLocations = await fetchEnhancedMapData(filters);
         console.log('📍 Total locations loaded for map:', allLocations.length);
-        console.log('📊 Location types breakdown:', {
-          gardens: allLocations.filter(l => l.type === 'garden').length,
-          markets: allLocations.filter(l => l.type === 'market').length,
-          fridges: allLocations.filter(l => l.type === 'fridge').length,
-          foodbanks: allLocations.filter(l => l.type === 'foodbank').length,
-          farms: allLocations.filter(l => l.type === 'farm').length,
-          urbanfarms: allLocations.filter(l => l.type === 'urbanfarm').length,
-          businesses: allLocations.filter(l => l.type === 'business').length
-        });
         setLocations(allLocations);
       } catch (error) {
         console.error('Failed to load enhanced map data:', error);
@@ -95,7 +86,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
     };
     
     loadData();
-  }, [activeFilters]);
+  }, [activeFilters]); // Only reload when filters actually change
 
   // Initialize Google Maps
   useEffect(() => {

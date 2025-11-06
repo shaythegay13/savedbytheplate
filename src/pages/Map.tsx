@@ -73,10 +73,8 @@ const Map = () => {
 
     loadCounts();
     
-    // Reload counts every 30 seconds to catch any new data
-    const interval = setInterval(loadCounts, 30000);
-    
-    return () => clearInterval(interval);
+    // Removed automatic refresh interval to prevent constant reloads
+    // Data will refresh when filters change or user manually refreshes
   }, [searchQuery, activeFilters]);
   return (
     <div className="min-h-screen bg-background">
