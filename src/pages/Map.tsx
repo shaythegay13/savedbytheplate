@@ -112,6 +112,20 @@ const Map = () => {
                         </CardContent>
                       </Card>
 
+                      {/* Open Now Filter */}
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="open-now-mobile" className="text-sbtp-brown-700">Only Show Open Now</Label>
+                            <Switch 
+                              id="open-now-mobile" 
+                              checked={showOpenNow} 
+                              onCheckedChange={setShowOpenNow}
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+
                       {/* Quick Stats */}
                       <Card>
                         <CardHeader className="pb-3">
@@ -149,20 +163,6 @@ const Map = () => {
                       </div>
                         </CardContent>
                       </Card>
-
-              {/* Open Now Filter */}
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="open-now-mobile" className="text-sbtp-brown-700">Only Show Open Now</Label>
-                    <Switch 
-                      id="open-now-mobile" 
-                      checked={showOpenNow} 
-                      onCheckedChange={setShowOpenNow}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* Legend */}
               <UnifiedMapLegend 
@@ -223,6 +223,20 @@ const Map = () => {
                 </CardContent>
               </Card>
 
+              {/* Open Now Filter */}
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="open-now-desktop" className="text-sbtp-brown-700">Only Show Open Now</Label>
+                    <Switch 
+                      id="open-now-desktop" 
+                      checked={showOpenNow} 
+                      onCheckedChange={setShowOpenNow}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Quick Stats */}
               <Card>
                 <CardHeader className="pb-3">
@@ -257,20 +271,6 @@ const Map = () => {
                       </div>
                       <div className="text-xs text-sbtp-brown-500">Food Banks</div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Open Now Filter */}
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="open-now-desktop" className="text-sbtp-brown-700">Only Show Open Now</Label>
-                    <Switch 
-                      id="open-now-desktop" 
-                      checked={showOpenNow} 
-                      onCheckedChange={setShowOpenNow}
-                    />
                   </div>
                 </CardContent>
               </Card>
