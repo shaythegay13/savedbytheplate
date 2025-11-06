@@ -100,6 +100,7 @@ Deno.serve(async (req) => {
     }));
 
     const allLocations: CSVLocation[] = [];
+    const uniqueKeys = new Set<string>();
     let totalErrors = 0;
 
     // Fetch NYC Open Data if requested
@@ -156,7 +157,10 @@ Deno.serve(async (req) => {
               console.error('Error importing NYC Open Data batch:', error);
               totalErrors += batch.length;
             } else {
-              allLocations.push(...batch);
+              // Track unique keys across all sources
+              for (const loc of batch) {
+                uniqueKeys.add(`${loc.name}|${loc.latitude}|${loc.longitude}`);
+              }
             }
           }
           console.log(`Imported ${nycDeduped.length} NYC Open Data locations`);
@@ -251,7 +255,9 @@ Deno.serve(async (req) => {
               console.error(`Error importing batch from ${source}:`, error);
               totalErrors += batch.length;
             } else {
-              allLocations.push(...batch);
+              for (const loc of batch) {
+                uniqueKeys.add(`${loc.name}|${loc.latitude}|${loc.longitude}`);
+              }
             }
           }
           console.log(`Processed ${deduped.length} locations from ${source}`);
@@ -344,7 +350,9 @@ Deno.serve(async (req) => {
               console.error(`Error importing batch from ${file.source}:`, error);
               totalErrors += batch.length;
             } else {
-              allLocations.push(...batch);
+              for (const loc of batch) {
+                uniqueKeys.add(`${loc.name}|${loc.latitude}|${loc.longitude}`);
+              }
             }
           }
         } catch (e) {
@@ -356,7 +364,7 @@ Deno.serve(async (req) => {
 
     const result = {
       success: totalErrors === 0,
-      totalImported: allLocations.length,
+      totalImported: uniqueKeys.size,
       totalErrors,
     };
 
