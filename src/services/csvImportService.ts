@@ -10,6 +10,7 @@ export async function importCSVToLocations() {
     { path: '/processed/food_banks.csv', source: 'food_banks' },
     { path: '/processed/farmers_markets.csv', source: 'farmers_markets' },
     { path: '/processed/community_fridges.csv', source: 'community_fridges' },
+    { path: '/processed/nyc_food_access_data_CLEANED.csv', source: 'nyc_food_access_cleaned' },
   ] as const;
 
   const rowsBySource: Record<string, any[]> = {};

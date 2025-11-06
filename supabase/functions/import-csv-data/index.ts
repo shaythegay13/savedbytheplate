@@ -185,6 +185,7 @@ Deno.serve(async (req) => {
                 row.longitude || 
                 (row as any).lng || 
                 (row as any).lon || 
+                (row as any).long || 
                 (row as any).Longitude || 
                 '0'
               );
@@ -290,7 +291,7 @@ Deno.serve(async (req) => {
           const locations = rows
             .map((row) => {
               const lat = parseFloat(row.latitude || row.lat || row.Latitude || '0');
-              const lng = parseFloat(row.longitude || row.lng || row.lon || row.Longitude || '0');
+              const lng = parseFloat(row.longitude || row.lng || row.lon || row.long || row.Longitude || '0');
               if (!lat || !lng || lat === 0 || lng === 0 || Number.isNaN(lat) || Number.isNaN(lng)) return null;
 
               const name = (row.name || row['Name of Garden'] || row['Name'] || 'Unnamed Location').toString();

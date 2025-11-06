@@ -296,49 +296,62 @@ export interface MapDataFilters {
 export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<MapLocation[]> => {
   try {
     console.log('🌱 Fetching location data from Supabase with filters:', filters);
-    
-    let query = supabase
-      .from('locations')
-      .select('*')
-      .eq('status', 'active')
-      .eq('verified', true);
-    
-    // Apply search filter (searches name, description, address, organization)
-    if (filters?.search) {
-      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,address.ilike.%${filters.search}%,organization.ilike.%${filters.search}%,neighborhood.ilike.%${filters.search}%`);
-    }
-    
-      // Only apply type filter if not all types are selected
+
+    // Helper to build a fresh query with the same filters (for pagination)
+    const buildQuery = () => {
+      let q = supabase
+        .from('locations')
+        .select('*')
+        .eq('status', 'active')
+        .eq('verified', true);
+
+      if (filters?.search) {
+        q = q.or(
+          `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,address.ilike.%${filters.search}%,organization.ilike.%${filters.search}%,neighborhood.ilike.%${filters.search}%`
+        );
+      }
+
       const allTypes: string[] = ['garden','market','fridge','foodbank','farm','urbanfarm','business','csa'];
       if (filters?.types && filters.types.length > 0 && filters.types.length < allTypes.length) {
-        query = query.in('type', filters.types);
+        q = q.in('type', filters.types);
       }
-    
-    // Apply borough filter
-    if (filters?.borough) {
-      query = query.eq('borough', filters.borough);
+
+      if (filters?.borough) {
+        q = q.eq('borough', filters.borough);
+      }
+      if (filters?.zipCode) {
+        q = q.eq('zip_code', filters.zipCode);
+      }
+      return q;
+    };
+
+    // Page through results to bypass the 1000 row cap
+    const pageSize = 1000;
+    const maxPages = 10; // safety cap (10k rows)
+    let page = 0;
+    let allRows: any[] = [];
+
+    while (page < maxPages) {
+      const from = page * pageSize;
+      const to = from + pageSize - 1;
+      const { data, error } = await buildQuery().range(from, to);
+      if (error) {
+        console.error('Error fetching locations from Supabase:', error);
+        break;
+      }
+      const batch = data ?? [];
+      allRows = allRows.concat(batch);
+      if (batch.length < pageSize) break; // last page
+      page++;
     }
-    
-    // Apply zip code filter
-    if (filters?.zipCode) {
-      query = query.eq('zip_code', filters.zipCode);
-    }
-    
-    query = query.limit(5000);
-    const { data, error } = await query;
-    
-    if (error) {
-      console.error('Error fetching locations from Supabase:', error);
-      return [];
-    }
-    
-    if (!data || data.length === 0) {
+
+    if (allRows.length === 0) {
       console.warn('No locations found in Supabase table');
       return [];
     }
-    
+
     // Transform Supabase data to MapLocation format
-    const locations: MapLocation[] = data.map((loc, index) => ({
+    const locations: MapLocation[] = allRows.map((loc, index) => ({
       id: loc.id || `loc-${index}`,
       name: loc.name,
       type: loc.type as MapLocation['type'],
