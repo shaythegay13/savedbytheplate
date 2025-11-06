@@ -150,14 +150,6 @@ const Map = () => {
                         </CardContent>
                       </Card>
 
-              {/* Legend */}
-              <UnifiedMapLegend 
-                locationCounts={locationCounts} 
-                isLoading={loading}
-                activeFilters={activeFilters}
-                onFilterChange={setActiveFilters}
-              />
-
               {/* Open Now Filter */}
               <Card>
                 <CardContent className="p-4">
@@ -171,6 +163,14 @@ const Map = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Legend */}
+              <UnifiedMapLegend 
+                locationCounts={locationCounts} 
+                isLoading={loading}
+                activeFilters={activeFilters}
+                onFilterChange={setActiveFilters}
+              />
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -261,14 +261,6 @@ const Map = () => {
                 </CardContent>
               </Card>
 
-              {/* Legend */}
-              <UnifiedMapLegend 
-                locationCounts={locationCounts} 
-                isLoading={loading}
-                activeFilters={activeFilters}
-                onFilterChange={setActiveFilters}
-              />
-
               {/* Open Now Filter */}
               <Card>
                 <CardContent className="p-4">
@@ -282,6 +274,14 @@ const Map = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Legend */}
+              <UnifiedMapLegend 
+                locationCounts={locationCounts} 
+                isLoading={loading}
+                activeFilters={activeFilters}
+                onFilterChange={setActiveFilters}
+              />
 
               {/* CSV Import (Admin Feature) */}
               <Card>
