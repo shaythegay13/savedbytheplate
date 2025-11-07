@@ -6,31 +6,11 @@ export async function importCSVToLocations() {
   const baseUrl = window.location.origin;
 
   const sources = [
-    { path: '/processed/complete_comprehensive_food_access.csv', source: 'comprehensive_food_access' },
-    { path: '/processed/comprehensive_community_fridges.csv', source: 'comprehensive_community_fridges' },
-    { path: '/processed/farmers_markets.csv', source: 'farmers_markets' },
-    { path: '/processed/food_banks.csv', source: 'food_banks' },
+    { path: '/processed/final_locations.csv', source: 'final_locations' },
   ] as const;
 
   const rowsBySource: Record<string, any[]> = {};
   let fetchErrors = 0;
-
-  // Also fetch lungs_data1 from Supabase
-  try {
-    const { data: lungsData, error } = await supabase
-      .from('lungs_data1')
-      .select('*');
-    
-    if (error) {
-      console.error('Failed to fetch lungs_data1:', error);
-      fetchErrors++;
-    } else if (lungsData) {
-      rowsBySource['lungs_data'] = lungsData;
-    }
-  } catch (e) {
-    console.error('Failed to fetch lungs_data1:', e);
-    fetchErrors++;
-  }
 
   await Promise.all(
     sources.map(async ({ path, source }) => {
