@@ -6,6 +6,8 @@ Combines data from duplicate entries and ensures all locations have coordinates.
 
 import csv
 import sys
+import json
+import urllib.request
 from typing import Dict, List, Optional
 from collections import defaultdict
 import math
@@ -114,6 +116,51 @@ def read_nyc_complete_csv(filepath: str) -> List[Dict]:
             })
     return locations
 
+def fetch_nyc_open_data_gardens() -> List[Dict]:
+    """Fetch GreenThumb garden data from NYC Open Data API"""
+    locations = []
+    try:
+        print("  Fetching from NYC Open Data API...")
+        # Fetch up to 5000 gardens (should cover all ~1778)
+        url = 'https://data.cityofnewyork.us/resource/p78i-pat6.json?$limit=5000'
+
+        req = urllib.request.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0')
+
+        with urllib.request.urlopen(req, timeout=30) as response:
+            data = json.loads(response.read().decode('utf-8'))
+
+            for item in data:
+                lat = safe_float(item.get('lat', ''))
+                lng = safe_float(item.get('lon', ''))
+
+                if lat == 0 or lng == 0:
+                    continue
+
+                locations.append({
+                    'name': item.get('gardenname', '').strip() or 'Unnamed Garden',
+                    'type': 'community_garden',
+                    'address': item.get('address', '').strip(),
+                    'latitude': lat,
+                    'longitude': lng,
+                    'organization': item.get('juris', '').strip(),
+                    'hours': '',
+                    'contact': item.get('phone', '').strip(),
+                    'additional_info': item.get('address', '').strip(),
+                    'neighborhood': item.get('borough', '').strip(),
+                    'owner': '',
+                    'local_items_selling': '',
+                    'social_media_website1': '',
+                    'social_media_website2': '',
+                    'website': '',
+                })
+
+        print(f"  Fetched {len(locations)} gardens from NYC Open Data")
+    except Exception as e:
+        print(f"  Warning: Failed to fetch NYC Open Data: {e}")
+
+    return locations
+
 def merge_locations(locations: List[Dict]) -> List[Dict]:
     """Deduplicate and merge location data."""
     merged = []
@@ -186,16 +233,29 @@ def main():
     nyc_locs = read_nyc_complete_csv('/home/user/savedbytheplate/public/processed/nyc_food_access_data_COMPLETE.csv')
     print(f"  Found {len(nyc_locs)} locations with coordinates")
 
+    print("Fetching NYC Open Data gardens...")
+    nyc_open_data_locs = fetch_nyc_open_data_gardens()
+
     print("Merging and deduplicating locations...")
-    all_locations = comprehensive_locs + nyc_locs
+    all_locations = comprehensive_locs + nyc_locs + nyc_open_data_locs
     print(f"  Total before deduplication: {len(all_locations)}")
 
     merged_locations = merge_locations(all_locations)
     print(f"  Total after deduplication: {len(merged_locations)}")
     print(f"  Removed {len(all_locations) - len(merged_locations)} duplicates")
 
+    # Count by type
+    type_counts = {}
+    for loc in merged_locations:
+        loc_type = loc.get('type', 'unknown')
+        type_counts[loc_type] = type_counts.get(loc_type, 0) + 1
+
+    print("\nBreakdown by type:")
+    for loc_type, count in sorted(type_counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"  {loc_type}: {count}")
+
     output_path = '/home/user/savedbytheplate/public/processed/final_locations.csv'
-    print(f"Writing to {output_path}...")
+    print(f"\nWriting to {output_path}...")
     write_final_csv(merged_locations, output_path)
 
     print("✅ Done! Created final_locations.csv")
