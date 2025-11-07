@@ -169,19 +169,6 @@ const Map = () => {
                 activeFilters={activeFilters}
                 onFilterChange={setActiveFilters}
               />
-
-              {/* CSV Import (Admin Feature) - Mobile */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Database className="h-4 w-4" />
-                    Data Management
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CSVImportButton />
-                </CardContent>
-              </Card>
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -293,19 +280,6 @@ const Map = () => {
                 activeFilters={activeFilters}
                 onFilterChange={setActiveFilters}
               />
-
-              {/* CSV Import (Admin Feature) */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Database className="h-4 w-4" />
-                    Data Management
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CSVImportButton />
-                </CardContent>
-              </Card>
             </div>
           </div>
         )}
