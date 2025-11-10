@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Leaf, Search, Menu, Info, AlertTriangle } from 'lucide-react';
 import ForagingMapComponent from "@/components/map/ForagingMapComponent";
 import { mockForagingLocations, foragingColors } from "@/data/mockForagingData";
@@ -99,31 +101,77 @@ const ForagingTest = () => {
       {/* Filter Legend */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg text-foreground">Filter by Type</CardTitle>
+          <CardTitle className="text-lg text-foreground">Forageable Items</CardTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            Filter by plant type to customize your map
+          </p>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-3">
           {Object.entries(foragingColors).map(([type, color]) => (
-            <button
+            <div
               key={type}
-              onClick={() => toggleFilter(type)}
-              className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${
-                activeFilters.has(type) 
-                  ? 'bg-accent' 
-                  : 'bg-muted/50 opacity-50'
-              } hover:bg-accent/80`}
+              className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-accent/50 transition-colors border border-border"
             >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-4 h-4 rounded-full border-2 border-white shadow-md"
-                  style={{ backgroundColor: color }}
+              <div className="flex items-center gap-3 flex-1">
+                <Checkbox
+                  id={`filter-${type}`}
+                  checked={activeFilters.has(type)}
+                  onCheckedChange={() => toggleFilter(type)}
+                  className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
                 />
-                <span className="font-medium text-sm capitalize text-foreground">{type}s</span>
+                <Label
+                  htmlFor={`filter-${type}`}
+                  className="flex items-center gap-3 cursor-pointer flex-1"
+                >
+                  <div
+                    className="w-5 h-5 rounded-full border-2 border-white shadow-md flex-shrink-0"
+                    style={{ backgroundColor: color }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium text-sm capitalize text-foreground block">
+                      {type}s
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {type === 'herb' && 'Wild herbs & edible flowers'}
+                      {type === 'berry' && 'Wild berries & fruits'}
+                      {type === 'fruit' && 'Fruit trees & vines'}
+                      {type === 'green' && 'Edible wild greens'}
+                      {type === 'nut' && 'Nut trees'}
+                    </span>
+                  </div>
+                </Label>
               </div>
-              <Badge variant="secondary" className="text-xs">
+              <Badge 
+                variant="secondary" 
+                className="ml-2 flex-shrink-0"
+                style={{
+                  backgroundColor: activeFilters.has(type) ? `${color}20` : undefined,
+                  color: activeFilters.has(type) ? color : undefined,
+                }}
+              >
                 {filterCounts[type as keyof typeof filterCounts]}
               </Badge>
-            </button>
+            </div>
           ))}
+          
+          <div className="pt-3 border-t flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveFilters(new Set(['herb', 'berry', 'fruit', 'green', 'nut']))}
+              className="flex-1 text-xs"
+            >
+              Select All
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveFilters(new Set())}
+              className="flex-1 text-xs"
+            >
+              Clear All
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
