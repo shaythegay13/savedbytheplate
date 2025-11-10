@@ -13,6 +13,7 @@ import ComingSoon from "./pages/ComingSoon";
 import Community from "./pages/Community";
 import Education from "./pages/Education";
 import Premium from "./pages/Premium";
+import ForagingTest from "./pages/ForagingTest";
 import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
 import Privacy from "./pages/Privacy";
@@ -65,6 +66,7 @@ const App = () => (
               <Route path="/forum/new" element={<NewDiscussion />} />
               
               <Route path="/premium" element={<Premium />} />
+              <Route path="/foraging-test" element={<ForagingTest />} />
               
               {/* 404 page for truly unknown routes */}
               <Route path="*" element={<NotFound />} />
