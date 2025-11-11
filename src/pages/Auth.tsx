@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/Navbar';
 import { z } from 'zod';
+import { Check, X } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address').max(255, 'Email must be less than 255 characters'),
@@ -48,8 +50,66 @@ const Auth = () => {
   // Signup form state
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [showValidationDialog, setShowValidationDialog] = useState(false);
+  
+  // Password strength state
+  const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: '', color: '' });
+  
+  // Calculate password strength
+  const calculatePasswordStrength = (password: string) => {
+    let score = 0;
+    const checks = {
+      length: password.length >= 8,
+      number: /[0-9]/.test(password),
+      special: /[@#$%&_+=\-:"<>?,./\s~]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      uppercase: /[A-Z]/.test(password),
+    };
+    
+    Object.values(checks).forEach(check => check && score++);
+    
+    let label = '';
+    let color = '';
+    
+    if (score <= 2) {
+      label = 'Weak';
+      color = 'hsl(var(--destructive))';
+    } else if (score === 3 || score === 4) {
+      label = 'Medium';
+      color = 'hsl(45 93% 47%)'; // yellow/orange
+    } else {
+      label = 'Strong';
+      color = 'hsl(142 76% 36%)'; // green
+    }
+    
+    return { score: (score / 5) * 100, label, color, checks };
+  };
+  
+  // Update password strength on password change
+  useEffect(() => {
+    if (signupPassword) {
+      const strength = calculatePasswordStrength(signupPassword);
+      setPasswordStrength({ score: strength.score, label: strength.label, color: strength.color });
+    } else {
+      setPasswordStrength({ score: 0, label: '', color: '' });
+    }
+  }, [signupPassword]);
+  
+  // Check if passwords match
+  const passwordsMatch = signupPassword === confirmPassword && confirmPassword !== '';
+  
+  // Check if password meets all requirements
+  const getPasswordValidation = () => {
+    return calculatePasswordStrength(signupPassword).checks;
+  };
+  
+  const isPasswordValid = () => {
+    const checks = getPasswordValidation();
+    return Object.values(checks).every(check => check) && passwordsMatch;
+  };
 
   // Check if user is already logged in or if this is a password reset
   useEffect(() => {
@@ -119,8 +179,13 @@ const Auth = () => {
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignupClick = (e: React.FormEvent) => {
     e.preventDefault();
+    // Show validation dialog
+    setShowValidationDialog(true);
+  };
+
+  const handleSignup = async () => {
     setIsLoading(true);
 
     try {
@@ -152,6 +217,7 @@ const Auth = () => {
           description: error.message,
           variant: 'destructive',
         });
+        setShowValidationDialog(false);
         return;
       }
 
@@ -163,8 +229,10 @@ const Auth = () => {
         // Clear form
         setSignupEmail('');
         setSignupPassword('');
+        setConfirmPassword('');
         setUsername('');
         setDisplayName('');
+        setShowValidationDialog(false);
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -180,6 +248,7 @@ const Auth = () => {
           variant: 'destructive',
         });
       }
+      setShowValidationDialog(false);
     } finally {
       setIsLoading(false);
     }
@@ -281,8 +350,8 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-b from-sbtp-cream to-white">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto">
+      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)]">
+        <div className="w-full max-w-md">
           {isResettingPassword ? (
             <Card>
               <CardHeader>
@@ -417,7 +486,7 @@ const Auth = () => {
                     Join our community and start your food access journey
                   </CardDescription>
                 </CardHeader>
-                <form onSubmit={handleSignup}>
+                <form onSubmit={handleSignupClick}>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="signup-email">Email</Label>
@@ -469,13 +538,68 @@ const Auth = () => {
                         required
                         disabled={isLoading}
                       />
+                      
+                      {/* Password Strength Indicator */}
+                      {signupPassword && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium">Password Strength:</span>
+                            <span 
+                              className="text-xs font-semibold"
+                              style={{ color: passwordStrength.color }}
+                            >
+                              {passwordStrength.label}
+                            </span>
+                          </div>
+                          <Progress 
+                            value={passwordStrength.score} 
+                            className="h-2"
+                            style={{
+                              ['--progress-background' as any]: passwordStrength.color,
+                            }}
+                          />
+                        </div>
+                      )}
+                      
                       <p className="text-xs text-muted-foreground">
-                        Must be at least 8 characters and contain at least one lowercase letter (a-z), uppercase letter (A-Z), number (0-9), and special character (@#$%&_+=-:&quot;&lt;&gt;?,./ ~)
+                        Must contain uppercase, lowercase, number, and special character
                       </p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password">Confirm Password</Label>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        disabled={isLoading}
+                      />
+                      {confirmPassword && (
+                        <div className="flex items-center gap-2">
+                          {passwordsMatch ? (
+                            <>
+                              <Check className="h-4 w-4 text-green-600" />
+                              <span className="text-xs text-green-600">Passwords match</span>
+                            </>
+                          ) : (
+                            <>
+                              <X className="h-4 w-4 text-destructive" />
+                              <span className="text-xs text-destructive">Passwords do not match</span>
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={isLoading || !isPasswordValid()}
+                    >
                       {isLoading ? 'Creating account...' : 'Sign Up'}
                     </Button>
                   </CardFooter>
@@ -484,6 +608,67 @@ const Auth = () => {
             </TabsContent>
           </Tabs>
           )}
+          
+          {/* Password Validation Dialog */}
+          <Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+            <DialogContent className="sm:max-w-md bg-card">
+              <DialogHeader>
+                <DialogTitle className="text-foreground">Password Requirements</DialogTitle>
+                <DialogDescription className="text-muted-foreground">
+                  Please ensure your password meets all requirements below
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-3 py-4">
+                {(() => {
+                  const validation = getPasswordValidation();
+                  const requirements = [
+                    { label: 'At least 8 characters', met: validation.length },
+                    { label: 'Contains a number (0-9)', met: validation.number },
+                    { label: 'Contains a special character', met: validation.special },
+                    { label: 'Contains uppercase letter (A-Z)', met: validation.uppercase },
+                    { label: 'Contains lowercase letter (a-z)', met: validation.lowercase },
+                    { label: 'Passwords match', met: passwordsMatch },
+                  ];
+                  
+                  return requirements.map((req, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      {req.met ? (
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                          <Check className="h-3 w-3 text-green-600" />
+                        </div>
+                      ) : (
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center">
+                          <X className="h-3 w-3 text-destructive" />
+                        </div>
+                      )}
+                      <span className={`text-sm ${req.met ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {req.label}
+                      </span>
+                    </div>
+                  ));
+                })()}
+              </div>
+              
+              <DialogFooter className="flex gap-2 sm:gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowValidationDialog(false)}
+                  disabled={isLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleSignup}
+                  disabled={!isPasswordValid() || isLoading}
+                >
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>
