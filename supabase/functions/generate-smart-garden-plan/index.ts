@@ -83,52 +83,51 @@ serve(async (req) => {
   }
 
   try {
-    // Get JWT from Authorization header for authentication
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Missing authorization header" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    // Verify user authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (authError || !user) {
-      console.error("Authentication failed:", authError);
-      return new Response(
-        JSON.stringify({ error: "Invalid authentication" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    // Optional authentication - allows both authenticated and anonymous users
+    let user: any = null;
+    const authHeader = req.headers.get('Authorization');
+    
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+      
+      if (!authError && authUser) {
+        user = authUser;
+        console.log('Authenticated user:', user.id);
+      }
     }
+    
+    console.log('Processing request for user:', user?.id || 'anonymous');
 
-    // Rate limiting check
-    const identifier = user.id;
-    const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
+    // Rate limiting check (only for authenticated users)
+    if (user) {
+      const identifier = user.id;
+      const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
 
-    const { data: rows } = await supabase
-      .from("newsletter_rate_limits")
-      .select("id, attempt_count, first_attempt_at")
-      .eq("identifier", identifier)
-      .gte("first_attempt_at", windowStartIso)
-      .order("first_attempt_at", { ascending: false })
-      .limit(1);
+      const { data: rows } = await supabase
+        .from("newsletter_rate_limits")
+        .select("id, attempt_count, first_attempt_at")
+        .eq("identifier", identifier)
+        .gte("first_attempt_at", windowStartIso)
+        .order("first_attempt_at", { ascending: false })
+        .limit(1);
 
-    const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
+      const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
 
-    if (rateLimitData && rateLimitData.attempt_count >= MAX_REQUESTS_PER_WINDOW) {
-      return new Response(
-        JSON.stringify({ 
-          error: "Rate limit exceeded. You can generate 10 garden plans per hour. Please try again later.",
-          retryAfter: RATE_LIMIT_WINDOW_MINUTES * 60
-        }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (rateLimitData && rateLimitData.attempt_count >= MAX_REQUESTS_PER_WINDOW) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Rate limit exceeded. You can generate 10 garden plans per hour. Please try again later.",
+            retryAfter: RATE_LIMIT_WINDOW_MINUTES * 60
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     console.log('=== GARDEN PLAN REQUEST START ===');
@@ -155,25 +154,40 @@ serve(async (req) => {
     const formData = validationResult.data;
     console.log('Request validated successfully:', JSON.stringify(formData, null, 2));
 
-    // Update rate limit counter after validation
-    const nowIso = new Date().toISOString();
-    if (rateLimitData) {
-      await supabase
+    // Update rate limit counter after validation (only for authenticated users)
+    if (user) {
+      const nowIso = new Date().toISOString();
+      const identifier = user.id;
+      const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
+      
+      const { data: rows } = await supabase
         .from("newsletter_rate_limits")
-        .update({
-          attempt_count: rateLimitData.attempt_count + 1,
-          last_attempt_at: nowIso
-        })
-        .eq("id", rateLimitData.id);
-    } else {
-      await supabase
-        .from("newsletter_rate_limits")
-        .insert({
-          identifier,
-          attempt_count: 1,
-          first_attempt_at: nowIso,
-          last_attempt_at: nowIso
-        });
+        .select("id, attempt_count, first_attempt_at")
+        .eq("identifier", identifier)
+        .gte("first_attempt_at", windowStartIso)
+        .order("first_attempt_at", { ascending: false })
+        .limit(1);
+
+      const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
+      
+      if (rateLimitData) {
+        await supabase
+          .from("newsletter_rate_limits")
+          .update({
+            attempt_count: rateLimitData.attempt_count + 1,
+            last_attempt_at: nowIso
+          })
+          .eq("id", rateLimitData.id);
+      } else {
+        await supabase
+          .from("newsletter_rate_limits")
+          .insert({
+            identifier,
+            attempt_count: 1,
+            first_attempt_at: nowIso,
+            last_attempt_at: nowIso
+          });
+      }
     }
 
     // Determine if we need climate data based on growing location
@@ -424,7 +438,7 @@ serve(async (req) => {
     };
 
     // Save the plan to database if user is authenticated
-    if (formData.user_id) {
+    if (user && formData.user_id) {
       const { data: savedPlan, error: saveError } = await supabase
         .from('garden_plans')
         .insert({
@@ -448,6 +462,8 @@ serve(async (req) => {
 
       if (saveError) {
         console.error('Error saving plan to database:', saveError);
+      } else {
+        console.log('Garden plan saved successfully for user:', user.id);
       }
 
       return new Response(JSON.stringify({ ...structuredPlan, planId: savedPlan?.id }), {
@@ -455,6 +471,7 @@ serve(async (req) => {
       });
     }
 
+    console.log('Returning garden plan (not saved - anonymous user)');
     return new Response(JSON.stringify(structuredPlan), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
