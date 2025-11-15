@@ -262,52 +262,6 @@ const Education = () => {
         </div>
       </section>
 
-      {/* Course Curriculum Section */}
-      <section className="py-12 sm:py-16 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                <GraduationCap className="h-8 w-8 text-primary" />
-              </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Course Curriculum</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Our structured 6-week program takes students on a journey through food justice, 
-                from historical context to hands-on sustainable practices
-              </p>
-            </div>
-
-            <Card className="overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-20">Week</TableHead>
-                    <TableHead className="w-64">Session Focus</TableHead>
-                    <TableHead>Description</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {courseCurriculum.map((session) => (
-                    <TableRow key={session.week}>
-                      <TableCell className="font-bold text-primary text-lg">
-                        {session.week}
-                      </TableCell>
-                      <TableCell className="font-semibold">
-                        {session.focus}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {session.description}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
@@ -338,10 +292,10 @@ const Education = () => {
             {/* Program Information */}
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-primary mb-4">6-Week Afterschool Program</h2>
+                <h2 className="text-3xl font-bold text-primary mb-4">6-Week Youth Education Course</h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  Our comprehensive afterschool program teaches students about community gardens, urban agriculture, 
-                  environmental justice, and sustainable growing practices through hands-on learning experiences.
+                  A comprehensive program for middle and high school students exploring food justice, food sovereignty, 
+                  community gardens, urban agriculture, and hands-on learning about growing their own food.
                 </p>
               </div>
 
@@ -358,7 +312,7 @@ const Education = () => {
                       <div>
                         <h4 className="font-semibold mb-1">History of Community Gardens</h4>
                         <p className="text-sm text-muted-foreground">
-                          Explore the rich history of community gardens and their role in food justice movements
+                          Uncover the rich legacies of urban gardens and their pivotal role in NYC's food justice movements
                         </p>
                       </div>
                     </div>
@@ -369,7 +323,7 @@ const Education = () => {
                       <div>
                         <h4 className="font-semibold mb-1">Community Gardens Today</h4>
                         <p className="text-sm text-muted-foreground">
-                          Discover what community gardens are doing in NYC today and their impact on neighborhoods
+                          Investigate the current state of gardens across NYC and their impacts on neighborhoods
                         </p>
                       </div>
                     </div>
@@ -380,7 +334,7 @@ const Education = () => {
                       <div>
                         <h4 className="font-semibold mb-1">Urban Growing Strategies</h4>
                         <p className="text-sm text-muted-foreground">
-                          Learn essential techniques including composting and other sustainable practices for urban settings
+                          Practice composting, urban planting, and other sustainable techniques for city environments
                         </p>
                       </div>
                     </div>
@@ -391,7 +345,7 @@ const Education = () => {
                       <div>
                         <h4 className="font-semibold mb-1">Urban Biodiversity & Environmental Benefits</h4>
                         <p className="text-sm text-muted-foreground">
-                          Understand how urban gardens reduce the heat island effect and naturally filter the air
+                          Explore how gardens support biodiversity, reduce heat island effect, and improve air quality
                         </p>
                       </div>
                     </div>
@@ -400,9 +354,9 @@ const Education = () => {
                         5
                       </div>
                       <div>
-                        <h4 className="font-semibold mb-1">Environmental Justice & Community Gardens</h4>
+                        <h4 className="font-semibold mb-1">Guest Speaker</h4>
                         <p className="text-sm text-muted-foreground">
-                          Explore the intersection of environmental justice, equity, and community gardening
+                          Bring in a guest speaker who works in a community garden to talk about their experience
                         </p>
                       </div>
                     </div>
@@ -411,9 +365,9 @@ const Education = () => {
                         6
                       </div>
                       <div>
-                        <h4 className="font-semibold mb-1">Additional Topics & Wrap-Up</h4>
+                        <h4 className="font-semibold mb-1">Environmental Justice & Community Gardens</h4>
                         <p className="text-sm text-muted-foreground">
-                          Deep dive into additional urban agriculture topics and reflect on what students have learned
+                          Examine the intersection of urban agriculture, equity, and environmental advocacy
                         </p>
                       </div>
                     </div>
