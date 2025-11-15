@@ -23,7 +23,8 @@ const Index = () => {
               Grow Local, Eat Local
             </h1>
             <p className="text-lg sm:text-xl mb-6 sm:mb-8">
-              Connecting communities with sustainable food options and local agriculture, starting with our youth.
+              Connecting communities with sustainable food options<br />
+              and local agriculture, starting with our youth.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
               <Link 
