@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
 import shayPhoto from "@/assets/shay-bouchles.jpeg";
 import hebatallahPhoto from "@/assets/hebatallah-tharhan.jpeg";
+import ccpLogo from "@/assets/ccp-logo.jpg";
+import modularYearLogo from "@/assets/modular-year-logo.svg";
 
 const AboutUs = () => {
   return (
@@ -109,6 +111,26 @@ const AboutUs = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Partners Section */}
+          <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">In Partnership With</h2>
+              
+              <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+                <img 
+                  src={ccpLogo} 
+                  alt="Calm Collected Professionals" 
+                  className="h-24 w-auto object-contain"
+                />
+                <img 
+                  src={modularYearLogo} 
+                  alt="Modular Year 2025" 
+                  className="h-24 w-auto object-contain"
+                />
               </div>
             </CardContent>
           </Card>
