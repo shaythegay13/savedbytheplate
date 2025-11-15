@@ -6,8 +6,44 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin } from "lucide-react";
+import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin, GraduationCap, Sprout } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+// 6-Week Youth Education Course Curriculum
+const courseCurriculum = [
+  {
+    week: 1,
+    focus: "History of Community Gardens",
+    description: "Uncover the rich legacies of urban gardens and their pivotal role in NYC's food justice movements"
+  },
+  {
+    week: 2,
+    focus: "Community Gardens Today",
+    description: "Investigate the current state of gardens across NYC and their impacts on neighborhoods"
+  },
+  {
+    week: 3,
+    focus: "Urban Growing Strategies",
+    description: "Practice composting, urban planting, and other sustainable techniques for city environments"
+  },
+  {
+    week: 4,
+    focus: "Urban Biodiversity & Environmental Benefits",
+    description: "Explore how gardens support biodiversity, reduce heat island effect, and improve air quality"
+  },
+  {
+    week: 5,
+    focus: "Guest Speaker",
+    description: "Bring in a guest speaker who works in a community garden to talk about their experience"
+  },
+  {
+    week: 6,
+    focus: "Environmental Justice & Community Gardens",
+    description: "Examine the intersection of urban agriculture, equity, and environmental advocacy"
+  }
+];
+
 
 // Featured Articles
 const featuredArticles = [
@@ -157,7 +193,7 @@ const premiumCourses = [
 const ShayEmailDialog = () => {
   const [open, setOpen] = useState(false);
   const email = 'info@savedbytheplate.org';
-  const subject = 'Afterschool Program Inquiry';
+  const subject = '6-Week Youth Course Inquiry';
   
   const emailServices = [
     {
@@ -217,15 +253,61 @@ const Education = () => {
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Education</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">6-Week Youth Education Course</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Bring our afterschool program to your school and empower students with hands-on food justice education
+              A comprehensive program for middle and high school students exploring food justice, food sovereignty, 
+              community gardens, urban agriculture, and growing their own food
             </p>
           </div>
         </div>
       </section>
 
-      {/* Afterschool Program Section */}
+      {/* Course Curriculum Section */}
+      <section className="py-12 sm:py-16 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <GraduationCap className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="text-3xl font-bold text-foreground mb-4">Course Curriculum</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Our structured 6-week program takes students on a journey through food justice, 
+                from historical context to hands-on sustainable practices
+              </p>
+            </div>
+
+            <Card className="overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-20">Week</TableHead>
+                    <TableHead className="w-64">Session Focus</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {courseCurriculum.map((session) => (
+                    <TableRow key={session.week}>
+                      <TableCell className="font-bold text-primary text-lg">
+                        {session.week}
+                      </TableCell>
+                      <TableCell className="font-semibold">
+                        {session.focus}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {session.description}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
@@ -239,12 +321,12 @@ const Education = () => {
                   </div>
                   <CardTitle className="text-2xl text-primary">Contact Shay Bouchles</CardTitle>
                   <CardDescription className="text-lg">
-                    Executive Director - Afterschool Program Coordinator
+                    Executive Director - Course Coordinator
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-center text-muted-foreground">
-                    Schedule a consultation to discuss bringing our afterschool program to your school
+                    Interested in bringing this 6-week course to your school? Contact Shay to learn more
                   </p>
                   <div className="flex justify-center">
                     <ShayEmailDialog />
