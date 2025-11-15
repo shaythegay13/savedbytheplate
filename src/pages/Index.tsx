@@ -37,7 +37,7 @@ const Index = () => {
                 to="/education" 
                 className="bg-white hover:bg-green-100 text-green-800 px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
               >
-                Schedule a Tour
+                Learn About Our Course
               </Link>
             </div>
           </div>
@@ -92,17 +92,18 @@ const Index = () => {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Book className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">School Garden Tours</h3>
+                  <h3 className="text-xl font-semibold">6-Week Youth Education Course</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Connect your students with local food justice work through 
-                  educational community garden tours in your neighborhood.
+                  A comprehensive 6-week program for middle and high school students 
+                  exploring food justice, food sovereignty, community gardens, 
+                  urban agriculture, and hands-on learning about growing their own food.
                 </p>
                 <Link 
                   to="/education" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Contact Shay for tours
+                  Contact Shay about the course
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
