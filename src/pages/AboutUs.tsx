@@ -4,6 +4,7 @@ import shayPhoto from "@/assets/shay-bouchles.jpeg";
 import hebatallahPhoto from "@/assets/hebatallah-tharhan.jpeg";
 import ccpLogo from "@/assets/ccp-logo.jpg";
 import modularYearLogo from "@/assets/modular-year-logo.svg";
+import communitasLogo from "@/assets/communitas-ventures.png";
 
 const AboutUs = () => {
   return (
@@ -129,6 +130,21 @@ const AboutUs = () => {
                 <img 
                   src={modularYearLogo} 
                   alt="Modular Year 2025" 
+                  className="h-24 w-auto object-contain"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Support Section */}
+          <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">With Support From</h2>
+              
+              <div className="flex items-center justify-center">
+                <img 
+                  src={communitasLogo} 
+                  alt="Communitas Ventures" 
                   className="h-24 w-auto object-contain"
                 />
               </div>
