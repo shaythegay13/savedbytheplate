@@ -22,7 +22,7 @@ serve(async (req) => {
     console.log('Generating speech via Python backend for:', text);
 
     // Call your Python backend for TTS
-    const backendUrl = 'https://agenticaigardenplanner.onrender.com/voice/speak';
+    const backendUrl = 'https://agenticaigardenplanner.onrender.com/api/voice/speak';
     
     const backendResponse = await fetch(backendUrl, {
       method: 'POST',
