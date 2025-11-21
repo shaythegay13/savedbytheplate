@@ -17,6 +17,7 @@ async function synthesizeSpeech(text: string, voiceId = 'Kendra') {
   }
 
   const endpoint = `https://polly.${AWS_REGION}.amazonaws.com/v1/speech`;
+  const canonicalUri = '/v1/speech';
   
   // Create AWS Signature V4
   const service = 'polly';
@@ -55,7 +56,7 @@ async function synthesizeSpeech(text: string, voiceId = 'Kendra') {
   const payloadHash = await hash(payload);
   const canonicalHeaders = `host:${host}\nx-amz-date:${amzDate}\n`;
   const signedHeaders = 'host;x-amz-date';
-  const canonicalRequest = `POST\n/v1/speech\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
+  const canonicalRequest = `POST\n${canonicalUri}\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
   
   const algorithm = 'AWS4-HMAC-SHA256';
   const credentialScope = `${dateStamp}/${AWS_REGION}/${service}/aws4_request`;
