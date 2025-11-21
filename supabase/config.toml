@@ -72,3 +72,9 @@ verify_jwt = true
 
 [functions.analyze-plant-disease]
 verify_jwt = true
+
+[functions.voice-ask]
+verify_jwt = false  # Public voice interface
+
+[functions.voice-speak]
+verify_jwt = false  # Public text-to-speech
