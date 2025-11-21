@@ -6,6 +6,98 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// AWS Bedrock helper function
+async function invokeClaude(prompt: string, systemPrompt?: string) {
+  const AWS_ACCESS_KEY_ID = Deno.env.get('AWS_ACCESS_KEY_ID');
+  const AWS_SECRET_ACCESS_KEY = Deno.env.get('AWS_SECRET_ACCESS_KEY');
+  const AWS_REGION = Deno.env.get('AWS_REGION') || 'us-east-1';
+
+  if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
+    throw new Error('AWS credentials not configured');
+  }
+
+  const endpoint = `https://bedrock-runtime.${AWS_REGION}.amazonaws.com/model/anthropic.claude-3-haiku-20240307-v1:0/invoke`;
+  
+  // Create AWS Signature V4
+  const service = 'bedrock';
+  const host = `bedrock-runtime.${AWS_REGION}.amazonaws.com`;
+  const amzDate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
+  const dateStamp = amzDate.substring(0, 8);
+  
+  const payload = JSON.stringify({
+    anthropic_version: "bedrock-2023-05-31",
+    max_tokens: 1024,
+    messages: [
+      { role: "user", content: prompt }
+    ],
+    ...(systemPrompt && { system: systemPrompt })
+  });
+
+  // Create canonical request
+  const algorithm = 'AWS4-HMAC-SHA256';
+  const credentialScope = `${dateStamp}/${AWS_REGION}/${service}/aws4_request`;
+  
+  const encoder = new TextEncoder();
+  
+  async function hmac(key: Uint8Array, data: string): Promise<Uint8Array> {
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      key,
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    const signature = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
+    return new Uint8Array(signature);
+  }
+
+  async function hash(data: string): Promise<string> {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
+    return Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+
+  const payloadHash = await hash(payload);
+  const canonicalHeaders = `host:${host}\nx-amz-date:${amzDate}\n`;
+  const signedHeaders = 'host;x-amz-date';
+  const canonicalRequest = `POST\n/model/anthropic.claude-3-haiku-20240307-v1:0/invoke\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
+  
+  const stringToSign = `${algorithm}\n${amzDate}\n${credentialScope}\n${await hash(canonicalRequest)}`;
+  
+  // Calculate signature
+  let kDate = await hmac(encoder.encode(`AWS4${AWS_SECRET_ACCESS_KEY}`), dateStamp);
+  let kRegion = await hmac(kDate, AWS_REGION);
+  let kService = await hmac(kRegion, service);
+  let kSigning = await hmac(kService, 'aws4_request');
+  let signature = await hmac(kSigning, stringToSign);
+  
+  const signatureHex = Array.from(signature)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+  
+  const authorizationHeader = `${algorithm} Credential=${AWS_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signatureHex}`;
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Amz-Date': amzDate,
+      'Authorization': authorizationHeader,
+    },
+    body: payload,
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('AWS Bedrock error:', error);
+    throw new Error(`AWS Bedrock error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.content[0].text;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -13,17 +105,18 @@ serve(async (req) => {
 
   try {
     const { text_question, audio_data, context } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY not configured');
-    }
 
     let questionText = text_question;
 
-    // If audio data is provided, transcribe it first
+    // If audio data is provided, transcribe it first using OpenAI Whisper
     if (audio_data && !text_question) {
       console.log('Transcribing audio...');
+      const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+      
+      if (!OPENAI_API_KEY) {
+        throw new Error('OPENAI_API_KEY not configured for transcription');
+      }
+      
       const audioBuffer = Uint8Array.from(atob(audio_data), c => c.charCodeAt(0));
       const audioBlob = new Blob([audioBuffer], { type: 'audio/webm' });
       
@@ -54,7 +147,7 @@ serve(async (req) => {
       throw new Error('No question text provided');
     }
 
-    // Step 1: Fast intent extraction (using gpt-4o-mini for speed)
+    // Step 1: Fast intent extraction using Claude 3 Haiku
     const intentPrompt = `Extract key information from this garden question. Reply ONLY with JSON.
 Question: "${questionText}"
 
@@ -68,23 +161,9 @@ Return JSON with:
 
 Example: {"crops":["tomato"],"cultural_context":null,"needs_crop_data":true,"needs_companion_data":false,"needs_disease_info":false,"question_type":"crop_info"}`;
 
-    console.log('Extracting intent...');
-    const intentResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: intentPrompt }],
-        temperature: 0.3,
-        max_tokens: 200,
-      }),
-    });
-
-    const intentData = await intentResponse.json();
-    const intent = JSON.parse(intentData.choices[0].message.content);
+    console.log('Extracting intent with Claude...');
+    const intentText = await invokeClaude(intentPrompt);
+    const intent = JSON.parse(intentText);
     console.log('Intent:', intent);
 
     // Step 2: Query backend data in parallel (with timeouts for speed)
@@ -157,7 +236,7 @@ Example: {"crops":["tomato"],"cultural_context":null,"needs_crop_data":true,"nee
       console.log('Retrieved companion planting & environmental data');
     }
 
-    // Step 3: Generate answer with rich context
+    // Step 3: Generate answer with Claude 3 Haiku
     const systemPrompt = `You are a helpful garden planning assistant with access to:
 - 270+ crops with 100+ varieties
 - 300+ plant disease database
@@ -182,35 +261,9 @@ Available data: ${cropData ? 'Crop info' : ''}${enumData ? ', Companion planting
     if (enumData) {
       contextData += `\n\nCompanion planting & environmental data:\n${JSON.stringify(enumData, null, 2)}`;
     }
-    
-    const userPrompt = contextData;
 
-    console.log('Generating answer...');
-    const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini', // Fast answer generation
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 250, // Shorter for speed
-      }),
-    });
-
-    if (!chatResponse.ok) {
-      const error = await chatResponse.text();
-      console.error('Chat completion error:', error);
-      throw new Error('Failed to generate response');
-    }
-
-    const chatData = await chatResponse.json();
-    const answerText = chatData.choices[0].message.content;
+    console.log('Generating answer with Claude...');
+    const answerText = await invokeClaude(contextData, systemPrompt);
 
     console.log('Generated answer:', answerText);
 
