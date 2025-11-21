@@ -1,69 +1,10 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { 
-  PollyClient, 
-  SynthesizeSpeechCommand 
-} from "npm:@aws-sdk/client-polly@3.515.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-
-// AWS Polly helper function using SDK
-async function synthesizeSpeech(text: string, voiceId = 'Kendra') {
-  const AWS_ACCESS_KEY_ID = Deno.env.get('AWS_ACCESS_KEY_ID');
-  const AWS_SECRET_ACCESS_KEY = Deno.env.get('AWS_SECRET_ACCESS_KEY');
-  const AWS_REGION = Deno.env.get('AWS_REGION') || 'us-east-1';
-
-  if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
-    throw new Error('AWS credentials not configured');
-  }
-
-  const client = new PollyClient({
-    region: AWS_REGION,
-    credentials: {
-      accessKeyId: AWS_ACCESS_KEY_ID,
-      secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    },
-  });
-
-  const command = new SynthesizeSpeechCommand({
-    Text: text,
-    OutputFormat: 'mp3',
-    VoiceId: voiceId,
-    Engine: 'neural',
-  });
-
-  const response = await client.send(command);
-  
-  // Convert audio stream to base64
-  const audioStream = response.AudioStream;
-  if (!audioStream) {
-    throw new Error('No audio stream in response');
-  }
-
-  const chunks: Uint8Array[] = [];
-  for await (const chunk of audioStream) {
-    chunks.push(chunk);
-  }
-  
-  const audioBuffer = new Uint8Array(
-    chunks.reduce((acc, chunk) => acc + chunk.length, 0)
-  );
-  
-  let offset = 0;
-  for (const chunk of chunks) {
-    audioBuffer.set(chunk, offset);
-    offset += chunk.length;
-  }
-
-  const base64Audio = btoa(
-    String.fromCharCode(...audioBuffer)
-  );
-  
-  return base64Audio;
-}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -80,13 +21,29 @@ serve(async (req) => {
 
     console.log('Generating speech for text:', text);
 
-    const audioContent = await synthesizeSpeech(text, 'Kendra');
+    // Call your Python backend for TTS
+    const backendUrl = 'https://agenticaigardenplanner.onrender.com/api/voice/speak';
+    
+    const backendResponse = await fetch(backendUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
 
+    if (!backendResponse.ok) {
+      const error = await backendResponse.text();
+      console.error('Backend TTS error:', error);
+      throw new Error(`Backend TTS error: ${backendResponse.status}`);
+    }
+
+    const result = await backendResponse.json();
     console.log('Speech generated successfully');
 
     return new Response(
       JSON.stringify({
-        audio_base64: audioContent,
+        audio_base64: result.audio_base64 || result.audioContent,
         synthesized_text: text,
       }),
       {
