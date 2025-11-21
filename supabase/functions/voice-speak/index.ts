@@ -19,31 +19,45 @@ serve(async (req) => {
       throw new Error('No text provided');
     }
 
-    console.log('Generating speech via Python backend for:', text);
+    console.log('Generating speech using OpenAI TTS');
 
-    // Call your Python backend for TTS
-    const backendUrl = 'https://agenticaigardenplanner.onrender.com/api/voice/speak';
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     
-    const backendResponse = await fetch(backendUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text }),
-    });
-
-    if (!backendResponse.ok) {
-      const error = await backendResponse.text();
-      console.error('Backend TTS error:', error);
-      throw new Error(`Backend TTS error: ${backendResponse.status}`);
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    const result = await backendResponse.json();
+    // Use OpenAI TTS (you have the key configured)
+    const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'tts-1',
+        input: text,
+        voice: 'nova',
+        response_format: 'mp3',
+      }),
+    });
+
+    if (!ttsResponse.ok) {
+      const error = await ttsResponse.text();
+      console.error('TTS error:', error);
+      throw new Error('Failed to generate speech');
+    }
+
+    const audioBuffer = await ttsResponse.arrayBuffer();
+    const base64Audio = btoa(
+      String.fromCharCode(...new Uint8Array(audioBuffer))
+    );
+
     console.log('Speech generated successfully');
 
     return new Response(
       JSON.stringify({
-        audio_base64: result.audio_base64 || result.audioContent,
+        audio_base64: base64Audio,
         synthesized_text: text,
       }),
       {
