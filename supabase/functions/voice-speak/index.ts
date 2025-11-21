@@ -19,7 +19,7 @@ serve(async (req) => {
       throw new Error('No text provided');
     }
 
-    console.log('Generating speech for text:', text);
+    console.log('Generating speech via Python backend for:', text);
 
     // Call your Python backend for TTS
     const backendUrl = 'https://agenticaigardenplanner.onrender.com/api/voice/speak';
