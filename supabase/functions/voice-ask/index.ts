@@ -21,7 +21,7 @@ serve(async (req) => {
     console.log('Forwarding garden question to Python backend...');
 
     // Call your existing Python backend that has Claude + AWS Polly working
-    const backendUrl = 'https://agenticaigardenplanner.onrender.com/api/voice/ask';
+    const backendUrl = 'https://agenticaigardenplanner.onrender.com/voice/ask';
     
     const backendResponse = await fetch(backendUrl, {
       method: 'POST',
