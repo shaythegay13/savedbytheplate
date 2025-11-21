@@ -1,12 +1,16 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { 
+  PollyClient, 
+  SynthesizeSpeechCommand 
+} from "npm:@aws-sdk/client-polly@3.515.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// AWS Polly helper function
+// AWS Polly helper function using SDK
 async function synthesizeSpeech(text: string, voiceId = 'Kendra') {
   const AWS_ACCESS_KEY_ID = Deno.env.get('AWS_ACCESS_KEY_ID');
   const AWS_SECRET_ACCESS_KEY = Deno.env.get('AWS_SECRET_ACCESS_KEY');
@@ -16,85 +20,46 @@ async function synthesizeSpeech(text: string, voiceId = 'Kendra') {
     throw new Error('AWS credentials not configured');
   }
 
-  const endpoint = `https://polly.${AWS_REGION}.amazonaws.com/v1/speech`;
-  const canonicalUri = '/v1/speech';
-  
-  // Create AWS Signature V4
-  const service = 'polly';
-  const host = `polly.${AWS_REGION}.amazonaws.com`;
-  const amzDate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
-  const dateStamp = amzDate.substring(0, 8);
-  
-  const payload = JSON.stringify({
+  const client = new PollyClient({
+    region: AWS_REGION,
+    credentials: {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    },
+  });
+
+  const command = new SynthesizeSpeechCommand({
     Text: text,
     OutputFormat: 'mp3',
     VoiceId: voiceId,
-    Engine: 'neural'
+    Engine: 'neural',
   });
 
-  const encoder = new TextEncoder();
+  const response = await client.send(command);
   
-  async function hmac(key: Uint8Array, data: string): Promise<Uint8Array> {
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw',
-      key,
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['sign']
-    );
-    const signature = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
-    return new Uint8Array(signature);
+  // Convert audio stream to base64
+  const audioStream = response.AudioStream;
+  if (!audioStream) {
+    throw new Error('No audio stream in response');
   }
 
-  async function hash(data: string): Promise<string> {
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
-    return Array.from(new Uint8Array(hashBuffer))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of audioStream) {
+    chunks.push(chunk);
+  }
+  
+  const audioBuffer = new Uint8Array(
+    chunks.reduce((acc, chunk) => acc + chunk.length, 0)
+  );
+  
+  let offset = 0;
+  for (const chunk of chunks) {
+    audioBuffer.set(chunk, offset);
+    offset += chunk.length;
   }
 
-  const payloadHash = await hash(payload);
-  const canonicalHeaders = `host:${host}\nx-amz-date:${amzDate}\n`;
-  const signedHeaders = 'host;x-amz-date';
-  const canonicalRequest = `POST\n${canonicalUri}\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
-  
-  const algorithm = 'AWS4-HMAC-SHA256';
-  const credentialScope = `${dateStamp}/${AWS_REGION}/${service}/aws4_request`;
-  const stringToSign = `${algorithm}\n${amzDate}\n${credentialScope}\n${await hash(canonicalRequest)}`;
-  
-  // Calculate signature
-  let kDate = await hmac(encoder.encode(`AWS4${AWS_SECRET_ACCESS_KEY}`), dateStamp);
-  let kRegion = await hmac(kDate, AWS_REGION);
-  let kService = await hmac(kRegion, service);
-  let kSigning = await hmac(kService, 'aws4_request');
-  let signature = await hmac(kSigning, stringToSign);
-  
-  const signatureHex = Array.from(signature)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-  
-  const authorizationHeader = `${algorithm} Credential=${AWS_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signatureHex}`;
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Amz-Date': amzDate,
-      'Authorization': authorizationHeader,
-    },
-    body: payload,
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    console.error('AWS Polly error:', error);
-    throw new Error(`AWS Polly error: ${response.status}`);
-  }
-
-  // Get audio stream and convert to base64
-  const audioBuffer = await response.arrayBuffer();
   const base64Audio = btoa(
-    String.fromCharCode(...new Uint8Array(audioBuffer))
+    String.fromCharCode(...audioBuffer)
   );
   
   return base64Audio;

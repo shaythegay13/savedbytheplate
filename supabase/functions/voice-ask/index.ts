@@ -1,12 +1,16 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { 
+  BedrockRuntimeClient, 
+  InvokeModelCommand 
+} from "npm:@aws-sdk/client-bedrock-runtime@3.515.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// AWS Bedrock helper function
+// AWS Bedrock helper function using SDK
 async function invokeClaude(prompt: string, systemPrompt?: string) {
   const AWS_ACCESS_KEY_ID = Deno.env.get('AWS_ACCESS_KEY_ID');
   const AWS_SECRET_ACCESS_KEY = Deno.env.get('AWS_SECRET_ACCESS_KEY');
@@ -16,87 +20,33 @@ async function invokeClaude(prompt: string, systemPrompt?: string) {
     throw new Error('AWS credentials not configured');
   }
 
-  const endpoint = `https://bedrock-runtime.${AWS_REGION}.amazonaws.com/model/anthropic.claude-3-haiku-20240307-v1:0/invoke`;
-  const canonicalUri = '/model/anthropic.claude-3-haiku-20240307-v1%3A0/invoke'; // URL-encoded :0
-  
-  // Create AWS Signature V4
-  const service = 'bedrock';
-  const host = `bedrock-runtime.${AWS_REGION}.amazonaws.com`;
-  const amzDate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
-  const dateStamp = amzDate.substring(0, 8);
-  
-  const payload = JSON.stringify({
+  const client = new BedrockRuntimeClient({
+    region: AWS_REGION,
+    credentials: {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    },
+  });
+
+  const payload = {
     anthropic_version: "bedrock-2023-05-31",
     max_tokens: 1024,
     messages: [
       { role: "user", content: prompt }
     ],
     ...(systemPrompt && { system: systemPrompt })
+  };
+
+  const command = new InvokeModelCommand({
+    modelId: "anthropic.claude-3-haiku-20240307-v1:0",
+    contentType: "application/json",
+    accept: "application/json",
+    body: JSON.stringify(payload),
   });
 
-  // Create canonical request
-  const algorithm = 'AWS4-HMAC-SHA256';
-  const credentialScope = `${dateStamp}/${AWS_REGION}/${service}/aws4_request`;
-  
-  const encoder = new TextEncoder();
-  
-  async function hmac(key: Uint8Array, data: string): Promise<Uint8Array> {
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw',
-      key,
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['sign']
-    );
-    const signature = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
-    return new Uint8Array(signature);
-  }
-
-  async function hash(data: string): Promise<string> {
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
-    return Array.from(new Uint8Array(hashBuffer))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
-
-  const payloadHash = await hash(payload);
-  const canonicalHeaders = `host:${host}\nx-amz-date:${amzDate}\n`;
-  const signedHeaders = 'host;x-amz-date';
-  const canonicalRequest = `POST\n${canonicalUri}\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
-  
-  const stringToSign = `${algorithm}\n${amzDate}\n${credentialScope}\n${await hash(canonicalRequest)}`;
-  
-  // Calculate signature
-  let kDate = await hmac(encoder.encode(`AWS4${AWS_SECRET_ACCESS_KEY}`), dateStamp);
-  let kRegion = await hmac(kDate, AWS_REGION);
-  let kService = await hmac(kRegion, service);
-  let kSigning = await hmac(kService, 'aws4_request');
-  let signature = await hmac(kSigning, stringToSign);
-  
-  const signatureHex = Array.from(signature)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-  
-  const authorizationHeader = `${algorithm} Credential=${AWS_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signatureHex}`;
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Amz-Date': amzDate,
-      'Authorization': authorizationHeader,
-    },
-    body: payload,
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    console.error('AWS Bedrock error:', error);
-    throw new Error(`AWS Bedrock error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.content[0].text;
+  const response = await client.send(command);
+  const responseBody = JSON.parse(new TextDecoder().decode(response.body));
+  return responseBody.content[0].text;
 }
 
 serve(async (req) => {
