@@ -110,7 +110,7 @@ const VoiceBox: React.FC = () => {
       const formData = new FormData();
       formData.append('text', text);
       
-      const response = await fetch('https://voiceagentrender.onrender.com/api/voice/speak', {
+      const response = await fetch('https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-speak', {
         method: 'POST',
         body: formData
       });
@@ -167,7 +167,7 @@ const VoiceBox: React.FC = () => {
 
     try {
       // Use conversational API endpoint
-      const apiResponse = await fetch(`https://voiceagentrender.onrender.com/api/voice/ask`, {
+      const apiResponse = await fetch(`https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
