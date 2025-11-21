@@ -54,20 +54,89 @@ serve(async (req) => {
       throw new Error('No question text provided');
     }
 
-    // Generate conversational response using GPT
-    const systemPrompt = `You are a helpful garden planning assistant. You help users plan their gardens by asking questions and providing personalized advice based on their location, space, experience level, and preferences.
+    // Step 1: Fast intent extraction to identify relevant crops (using gpt-4o-mini for speed)
+    const intentPrompt = `Extract key information from this garden question. Reply ONLY with JSON.
+Question: "${questionText}"
 
-When users ask about growing specific plants, provide information about:
-- Growing conditions (sunlight, soil, water needs)
-- Best planting times for their location
-- Companion plants
-- Common pests and diseases
-- Harvesting tips
+Return JSON with:
+- crops: array of crop names mentioned (empty if none)
+- cultural_context: detected cultural context (african/asian/latin/caribbean or null)
+- needs_data: boolean (true if question needs specific crop data)
 
-Keep your responses conversational, friendly, and concise (2-3 sentences). If you need more information to give better advice, ask relevant follow-up questions.`;
+Example: {"crops":["tomato","basil"],"cultural_context":null,"needs_data":true}`;
 
-    console.log('Generating response for:', questionText);
+    console.log('Extracting intent...');
+    const intentResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini', // Fast model for intent extraction
+        messages: [{ role: 'user', content: intentPrompt }],
+        temperature: 0.3,
+        max_tokens: 150,
+      }),
+    });
 
+    const intentData = await intentResponse.json();
+    const intent = JSON.parse(intentData.choices[0].message.content);
+    console.log('Intent:', intent);
+
+    // Step 2: Query crop database if needed (with timeout for speed)
+    let cropData = null;
+    if (intent.needs_data) {
+      console.log('Querying crop database...');
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 1500); // 1.5s timeout
+      
+      try {
+        const cropResponse = await fetch('https://agenticaigardenplanner.onrender.com/api/crops', {
+          method: 'GET',
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        
+        if (cropResponse.ok) {
+          const allCrops = await cropResponse.json();
+          // Filter relevant crops
+          if (intent.crops.length > 0) {
+            cropData = allCrops.filter((crop: any) => 
+              intent.crops.some((searchCrop: string) => 
+                crop.name?.toLowerCase().includes(searchCrop.toLowerCase()) ||
+                crop.varieties?.some((v: any) => v.name?.toLowerCase().includes(searchCrop.toLowerCase()))
+              )
+            ).slice(0, 5); // Limit to 5 most relevant
+          } else if (intent.cultural_context) {
+            cropData = allCrops.filter((crop: any) => 
+              crop.cultural_origin?.toLowerCase().includes(intent.cultural_context)
+            ).slice(0, 5);
+          }
+          console.log(`Found ${cropData?.length || 0} relevant crops`);
+        }
+      } catch (error) {
+        console.warn('Crop database query timeout/error, continuing without data:', error);
+      }
+    }
+
+    // Step 3: Generate answer with crop data context
+    const systemPrompt = `You are a helpful garden planning assistant with access to a database of 270+ crops.
+
+When users ask about growing plants:
+- Provide specific, data-driven advice using the crop database when available
+- Include growing conditions, planting times, companion plants, pests/diseases
+- Mention cultural varieties when relevant
+- Keep responses conversational, friendly, and concise (2-3 sentences max)
+- If you have specific crop data, use it. If not, provide general guidance.
+
+Current crop data available: ${cropData ? 'Yes' : 'No'}`;
+
+    const userPrompt = cropData 
+      ? `Question: ${questionText}\n\nRelevant crop data:\n${JSON.stringify(cropData, null, 2)}`
+      : questionText;
+
+    console.log('Generating answer...');
     const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -75,13 +144,13 @@ Keep your responses conversational, friendly, and concise (2-3 sentences). If yo
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o-mini', // Fast answer generation
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: questionText }
+          { role: 'user', content: userPrompt }
         ],
         temperature: 0.7,
-        max_tokens: 300,
+        max_tokens: 250, // Shorter for speed
       }),
     });
 
