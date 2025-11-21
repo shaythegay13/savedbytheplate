@@ -17,6 +17,7 @@ async function invokeClaude(prompt: string, systemPrompt?: string) {
   }
 
   const endpoint = `https://bedrock-runtime.${AWS_REGION}.amazonaws.com/model/anthropic.claude-3-haiku-20240307-v1:0/invoke`;
+  const canonicalUri = '/model/anthropic.claude-3-haiku-20240307-v1%3A0/invoke'; // URL-encoded :0
   
   // Create AWS Signature V4
   const service = 'bedrock';
@@ -61,7 +62,7 @@ async function invokeClaude(prompt: string, systemPrompt?: string) {
   const payloadHash = await hash(payload);
   const canonicalHeaders = `host:${host}\nx-amz-date:${amzDate}\n`;
   const signedHeaders = 'host;x-amz-date';
-  const canonicalRequest = `POST\n/model/anthropic.claude-3-haiku-20240307-v1:0/invoke\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
+  const canonicalRequest = `POST\n${canonicalUri}\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
   
   const stringToSign = `${algorithm}\n${amzDate}\n${credentialScope}\n${await hash(canonicalRequest)}`;
   
