@@ -18,7 +18,7 @@ serve(async (req) => {
       throw new Error('No question text or audio provided');
     }
 
-    console.log('Forwarding request to Python backend...');
+    console.log('Forwarding garden question to Python backend...');
 
     // Call your existing Python backend that has Claude + AWS Polly working
     const backendUrl = 'https://agenticaigardenplanner.onrender.com/api/voice/ask';
