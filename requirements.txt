@@ -1,0 +1,12 @@
+requests==2.31.0
+beautifulsoup4==4.12.2
+geocoder==1.38.1
+
+# Voice API dependencies
+fastapi>=0.104.0
+uvicorn>=0.24.0
+boto3>=1.29.0
+deepgram-sdk>=3.0.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+python-multipart>=0.0.6
