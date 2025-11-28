@@ -66,193 +66,36 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
   };
   
   return (
-    <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-80 bg-white rounded-md shadow-lg p-4 z-10 max-h-96 overflow-y-auto">
-      <div className="flex justify-between items-start mb-2">
-        <h4 className="font-medium text-sbtp-green-700 flex-1">{location.name}</h4>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onClose}
-          className="h-6 w-6 p-0 hover:bg-gray-100"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-      
-      <div className="space-y-2 text-sm">
-        {location.address && (
-          <div>
-            <span className="font-medium">Address:</span> {location.address}
-          </div>
-        )}
-        
-        {location.crossstreets && (
-          <div>
-            <span className="font-medium">Cross Streets:</span> {location.crossstreets}
-          </div>
-        )}
-        
-        {location.zipcode && (
-          <div>
-            <span className="font-medium">Zipcode:</span> {location.zipcode}
-          </div>
-        )}
-        
-        {location.borough && (
-          <div>
-            <span className="font-medium">Borough:</span> {location.borough}
-          </div>
-        )}
-        
-        {location.communityboard && (
-          <div>
-            <span className="font-medium">Community Board:</span> {location.communityboard}
-          </div>
-        )}
-        
-        {location.juris && (
-          <div>
-            <span className="font-medium">Jurisdiction:</span> {location.juris}
-          </div>
-        )}
-        
-        {location.status && (
-          <div>
-            <span className="font-medium">Status:</span> {location.status}
-          </div>
-        )}
-        
-        {location.website && (
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Website:</span>
-            <a 
-              href={location.website.startsWith('http') ? location.website : `https://${location.website}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+    <>
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-64 bg-white rounded-lg shadow-xl z-10 overflow-hidden border border-gray-200">
+        <div className="p-3">
+          <div className="flex justify-between items-start mb-1">
+            <h4 className="font-medium text-gray-900 text-sm flex-1 pr-2">{location.name}</h4>
+            <button
+              onClick={onClose}
+              className="h-5 w-5 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
             >
-              <ExternalLink className="h-3 w-3" />
-              Visit
-            </a>
+              <X className="h-3.5 w-3.5 text-gray-500" />
+            </button>
           </div>
-        )}
-        
-        {location.facebook && (
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Facebook:</span>
-            <a 
-              href={location.facebook.startsWith('http') ? location.facebook : `https://facebook.com/${location.facebook}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-            >
-              <Facebook className="h-3 w-3" />
-              Visit
-            </a>
-          </div>
-        )}
-        
-        {/* Contact Information - Premium Feature */}
-        {fullLocationData?.email && (
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Email:</span>
-            {canSeeContactInfo ? (
-              <a 
-                href={`mailto:${fullLocationData.email}`}
-                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-              >
-                <Mail className="h-3 w-3" />
-                {fullLocationData.email}
-              </a>
-            ) : (
-              <span className="text-gray-400 flex items-center gap-1">
-                <Lock className="h-3 w-3" />
-                Premium Only
-              </span>
+          
+          <div className="space-y-0.5 text-xs text-gray-600 mb-2">
+            {location.address && (
+              <div>{location.address}</div>
+            )}
+            {location.zipcode && (
+              <div>New York, NY {location.zipcode}</div>
             )}
           </div>
-        )}
-        
-        {fullLocationData?.phone && (
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Phone:</span>
-            {canSeeContactInfo ? (
-              <a 
-                href={`tel:${fullLocationData.phone}`}
-                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-              >
-                <Phone className="h-3 w-3" />
-                {fullLocationData.phone}
-              </a>
-            ) : (
-              <span className="text-gray-400 flex items-center gap-1">
-                <Lock className="h-3 w-3" />
-                Premium Only
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-      
-      {location.operatingHours && (
-        <div className="mt-3">
-          <h5 className="font-medium text-sbtp-green-700 mb-2">Open Hours This Season</h5>
-          <div className="space-y-1 text-xs">
-            {Object.entries(location.operatingHours).map(([day, hours]) => (
-              <div key={day} className="flex justify-between">
-                <span className="font-medium">{dayNames[day as keyof typeof dayNames]}:</span>
-                <span>{hours}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {!location.operatingHours && location.hoursText && (
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-2">
-            <h5 className="font-medium text-sbtp-green-700">Hours</h5>
-            {openStatus.isOpen && (
-              <Badge className="bg-green-500 text-white text-xs">Open Now</Badge>
-            )}
-          </div>
-          <div className="text-xs">
-            {location.hoursText}
-            {openStatus.closesAt && openStatus.isOpen && (
-              <span className="text-sbtp-brown-500 ml-2">• Closes at {openStatus.closesAt}</span>
-            )}
-          </div>
-        </div>
-      )}
-      
-      <div className="mt-3 flex flex-wrap gap-1">
-        {location.tags.map((tag, i) => (
-          <Badge 
-            key={i} 
-            variant="outline" 
-            className="text-xs"
-            style={{
-              backgroundColor: `${locationColors[location.type]}20`,
-              color: locationColors[location.type]
-            }}
+          
+          <button
+            onClick={() => setDetailsOpen(true)}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline"
           >
-            {tag}
-          </Badge>
-        ))}
+            View Details
+          </button>
+        </div>
       </div>
-      
-      {location.details && (
-        <p className="text-xs mt-2 text-sbtp-brown-500">{location.details}</p>
-      )}
-      
-      <Button 
-        size="sm" 
-        className="w-full mt-3 text-xs text-white"
-        style={{ backgroundColor: locationColors[location.type] }}
-        onClick={() => setDetailsOpen(true)}
-      >
-        View Details
-      </Button>
       
       {/* Detailed Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
@@ -490,7 +333,7 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
         </Tabs>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 
