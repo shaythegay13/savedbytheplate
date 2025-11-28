@@ -57,6 +57,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const markerClusterer = useRef<MarkerClusterer | null>(null);
   const markersData = useRef<{ marker: any; location: MapLocation }[]>([]);
   const [activePopup, setActivePopup] = useState<string | null>(null);
+  const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -157,8 +158,37 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
           title: location.name,
         });
 
-        marker.addListener('click', () => {
+        marker.addListener('click', (event: any) => {
           setActivePopup(location.id);
+          
+          // Get the marker's position in screen coordinates
+          const projection = map.current.getProjection();
+          const bounds = map.current.getBounds();
+          if (projection && bounds) {
+            const point = projection.fromLatLngToPoint(marker.position);
+            const scale = Math.pow(2, map.current.getZoom());
+            const worldPoint = new (window as any).google.maps.Point(
+              point.x * scale,
+              point.y * scale
+            );
+            
+            // Get map container position
+            const mapDiv = mapContainer.current;
+            if (mapDiv) {
+              const rect = mapDiv.getBoundingClientRect();
+              const topLeft = projection.fromLatLngToPoint(bounds.getNorthEast());
+              const topLeftWorldPoint = new (window as any).google.maps.Point(
+                topLeft.x * scale,
+                topLeft.y * scale
+              );
+              
+              // Calculate pixel position relative to map container
+              const pixelX = (worldPoint.x - topLeftWorldPoint.x);
+              const pixelY = (worldPoint.y - topLeftWorldPoint.y);
+              
+              setPopupPosition({ x: pixelX, y: pixelY });
+            }
+          }
         });
 
         newMarkers.push(marker);
@@ -263,11 +293,12 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
       )}
       
       {/* Popup for active location */}
-      {activeLocation && (
+      {activeLocation && popupPosition && (
         <LocationPopup 
           location={activeLocation} 
           locationColors={locationColors}
           onClose={handlePopupClose}
+          position={popupPosition}
         />
       )}
     </div>
