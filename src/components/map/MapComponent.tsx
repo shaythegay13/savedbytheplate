@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { MapLocation } from './types';
 import { locationColors, defaultMapConfig } from './MapConfig';
 import { fetchEnhancedMapData, MapDataFilters } from '../../services/enhancedMapDataService';
 import LocationPopup from './LocationPopup';
 import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 import { isLocationOpen } from '@/lib/hoursParser';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 
 // Icon path definitions matching the legend
 const getIconPath = (type: string) => {
@@ -22,13 +23,10 @@ const getIconPath = (type: string) => {
   return iconPaths[type as keyof typeof iconPaths] || iconPaths.farm;
 };
 
-// Create SVG icon for markers matching the legend with dynamic sizing
-const createIconSvg = (type: string, color: string, zoom: number = 12) => {
+// Create SVG icon for markers matching the legend with fixed size for performance
+const createIconSvg = (type: string, color: string) => {
   const iconPath = getIconPath(type);
-  // Scale icon size based on zoom level (smaller when zoomed out, larger when zoomed in)
-  // Zoom levels typically range from 1-20, we'll scale between 16px and 40px
-  const baseSize = Math.max(16, Math.min(40, 12 + (zoom - 10) * 3));
-  const size = Math.round(baseSize);
+  const size = 24; // Fixed size for better performance
   
   return `
     <svg 
@@ -56,12 +54,12 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const markers = useRef<any[]>([]);
+  const markerClusterer = useRef<MarkerClusterer | null>(null);
   const markersData = useRef<{ marker: any; location: MapLocation }[]>([]);
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentZoom, setCurrentZoom] = useState(defaultMapConfig.zoom);
 
   // Fetch enhanced data from all sources - memoized to prevent unnecessary refetches
   useEffect(() => {
@@ -111,12 +109,6 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
           fullscreenControl: true,
         });
 
-        // Listen to zoom changes to update marker sizes
-        map.current.addListener('zoom_changed', () => {
-          const zoom = map.current?.getZoom() || defaultMapConfig.zoom;
-          setCurrentZoom(zoom);
-        });
-
         setMapLoaded(true);
       } catch (error) {
         console.error('Error loading Google Maps:', error);
@@ -126,41 +118,56 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
     initMap();
   }, []);
 
-  // Add markers when map and locations are ready
+  // Add markers when map and locations are ready with clustering
   useEffect(() => {
     if (!mapLoaded || !map.current || locations.length === 0) return;
 
     const addMarkers = async () => {
       const { AdvancedMarkerElement } = await (window as any).google.maps.importLibrary('marker');
 
-      // Clear existing markers
+      // Clear existing clusterer and markers
+      if (markerClusterer.current) {
+        markerClusterer.current.clearMarkers();
+      }
       markers.current.forEach(marker => marker.map = null);
       markers.current = [];
       markersData.current = [];
 
-      const zoom = map.current?.getZoom() || defaultMapConfig.zoom;
+      const newMarkers: any[] = [];
 
       locations.forEach(location => {
         const color = locationColors[location.type] || '#4CAF50';
         
-        // Create custom SVG icon matching the legend with zoom-based size
-        const iconSvg = createIconSvg(location.type, color, zoom);
+        // Create custom SVG icon matching the legend with fixed size
+        const iconSvg = createIconSvg(location.type, color);
         const parser = new DOMParser();
         const iconElement = parser.parseFromString(iconSvg, 'image/svg+xml').documentElement;
 
         const marker = new AdvancedMarkerElement({
-          map: map.current!,
+          map: null, // Don't add to map yet, clusterer will handle this
           position: { lat: location.lngLat[1], lng: location.lngLat[0] },
           content: iconElement,
           title: location.name,
         });
 
         marker.addListener('click', () => {
-          setActivePopup(activePopup === location.id ? null : location.id);
+          setActivePopup(location.id);
         });
 
-        markers.current.push(marker);
+        newMarkers.push(marker);
         markersData.current.push({ marker, location });
+      });
+
+      markers.current = newMarkers;
+
+      // Create marker clusterer for better performance with many markers
+      markerClusterer.current = new MarkerClusterer({
+        map: map.current,
+        markers: newMarkers,
+        algorithm: new (window as any).markerClusterer.SuperClusterAlgorithm({
+          radius: 80,
+          maxZoom: 15,
+        }),
       });
     };
 
@@ -169,28 +176,23 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
 
   // Update marker visibility based on active filters and open now status
   useEffect(() => {
-    if (!activeFilters) return;
+    if (!activeFilters || !markerClusterer.current) return;
+    
+    const visibleMarkers: any[] = [];
     
     markersData.current.forEach(({ marker, location }) => {
       const matchesTypeFilter = activeFilters.has(location.type);
       const matchesOpenFilter = !showOpenNow || isLocationOpen(location.hoursText).isOpen;
-      const isVisible = matchesTypeFilter && matchesOpenFilter;
-      marker.map = isVisible ? map.current : null;
+      
+      if (matchesTypeFilter && matchesOpenFilter) {
+        visibleMarkers.push(marker);
+      }
     });
+    
+    // Update clusterer with only visible markers
+    markerClusterer.current.clearMarkers();
+    markerClusterer.current.addMarkers(visibleMarkers);
   }, [activeFilters, showOpenNow]);
-
-  // Update marker sizes when zoom changes
-  useEffect(() => {
-    if (!mapLoaded || markersData.current.length === 0) return;
-
-    markersData.current.forEach(({ marker, location }) => {
-      const color = locationColors[location.type] || '#4CAF50';
-      const iconSvg = createIconSvg(location.type, color, currentZoom);
-      const parser = new DOMParser();
-      const iconElement = parser.parseFromString(iconSvg, 'image/svg+xml').documentElement;
-      marker.content = iconElement;
-    });
-  }, [currentZoom, mapLoaded]);
 
   // Handle popup close
   const handlePopupClose = () => {
