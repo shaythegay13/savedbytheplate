@@ -28,7 +28,7 @@ const Map = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const isMobile = useIsMobile();
 
-  // Fetch data to get location counts for the legend
+  // Fetch data to get location counts for the legend with debouncing
   useEffect(() => {
     const loadCounts = async () => {
       try {
@@ -42,16 +42,6 @@ const Map = () => {
         
         const locations = await fetchEnhancedMapData(filters);
         const categorized = categorizeLocations(locations);
-        
-        console.log('📊 Location counts calculated:', {
-          gardens: categorized.gardens.length,
-          markets: categorized.markets.length,
-          fridges: categorized.fridges.length,
-          foodbanks: categorized.foodbanks.length,
-          farms: categorized.farms.length,
-          urbanfarms: categorized.urbanfarms.length,
-          businesses: categorized.businesses.length
-        });
         
         setLocationCounts({
           gardens: categorized.gardens.length,
@@ -71,10 +61,12 @@ const Map = () => {
       }
     };
 
-    loadCounts();
+    // Debounce search query changes
+    const timeoutId = setTimeout(() => {
+      loadCounts();
+    }, searchQuery ? 500 : 0);
     
-    // Removed automatic refresh interval to prevent constant reloads
-    // Data will refresh when filters change or user manually refreshes
+    return () => clearTimeout(timeoutId);
   }, [searchQuery, activeFilters]);
   return (
     <div className="min-h-screen bg-background">

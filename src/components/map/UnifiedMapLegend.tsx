@@ -117,12 +117,12 @@ interface UnifiedMapLegendProps {
 }
 
 const UnifiedMapLegend = ({ locationCounts, isLoading, activeFilters, onFilterChange }: UnifiedMapLegendProps) => {
-  const handleToggleFilter = (type: string) => {
+  const handleToggleFilter = (type: string, checked: boolean) => {
     const newFilters = new Set(activeFilters);
-    if (newFilters.has(type)) {
-      newFilters.delete(type);
-    } else {
+    if (checked) {
       newFilters.add(type);
+    } else {
+      newFilters.delete(type);
     }
     onFilterChange(newFilters);
   };
@@ -232,7 +232,7 @@ const UnifiedMapLegend = ({ locationCounts, isLoading, activeFilters, onFilterCh
                   </Badge>
                   <Checkbox 
                     checked={activeFilters.has(item.type)}
-                    onCheckedChange={() => handleToggleFilter(item.type)}
+                    onCheckedChange={(checked) => handleToggleFilter(item.type, checked as boolean)}
                     disabled={item.count === 0}
                     aria-label={`Toggle ${item.label}`}
                   />
