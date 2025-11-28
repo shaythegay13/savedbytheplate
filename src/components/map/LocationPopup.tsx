@@ -17,9 +17,10 @@ interface LocationPopupProps {
   locationColors: Record<string, string>;
   onClose: () => void;
   fullLocationData?: any; // Full location data with contact info
+  position: { x: number; y: number };
 }
 
-const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: LocationPopupProps) => {
+const LocationPopup = ({ location, locationColors, onClose, fullLocationData, position }: LocationPopupProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   
   // Check if location is currently open
@@ -65,9 +66,19 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData }: 
     sunday: 'Sunday'
   };
   
+  // Position popup above and to the right of the marker, with adjustments to keep it on screen
+  const popupStyle = {
+    left: `${position.x + 15}px`,
+    top: `${position.y - 10}px`,
+    transform: 'translateY(-100%)', // Position above the marker
+  };
+
   return (
     <>
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-64 bg-white rounded-lg shadow-xl z-10 overflow-hidden border border-gray-200">
+      <div 
+        className="absolute w-64 bg-white rounded-lg shadow-xl z-10 overflow-hidden border border-gray-200"
+        style={popupStyle}
+      >
         <div className="p-3">
           <div className="flex justify-between items-start mb-1">
             <h4 className="font-medium text-gray-900 text-sm flex-1 pr-2">{location.name}</h4>
