@@ -164,10 +164,6 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
       markerClusterer.current = new MarkerClusterer({
         map: map.current,
         markers: newMarkers,
-        algorithm: new (window as any).markerClusterer.SuperClusterAlgorithm({
-          radius: 80,
-          maxZoom: 15,
-        }),
       });
     };
 
