@@ -160,10 +160,48 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
 
       markers.current = newMarkers;
 
+      // Custom renderer for cluster styling
+      const renderer = {
+        render: ({ count, position }: any, stats: any) => {
+          // Determine cluster size and color
+          let color = '#86efac'; // light green for small (default)
+          let textColor = '#166534'; // dark green text
+          
+          if (count > stats.clusters.markers.mean) {
+            // Large clusters
+            color = '#fbbf24'; // yellow
+            textColor = '#78350f'; // dark yellow/brown text
+          } else if (count > stats.clusters.markers.mean / 2) {
+            // Medium clusters
+            color = '#7dd3fc'; // light blue
+            textColor = '#0c4a6e'; // dark blue text
+          }
+
+          const svg = `
+            <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="25" cy="25" r="22" fill="${color}" stroke="white" stroke-width="3" opacity="0.9"/>
+              <text x="25" y="25" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="${textColor}">
+                ${count}
+              </text>
+            </svg>
+          `;
+
+          const parser = new DOMParser();
+          const svgElement = parser.parseFromString(svg, 'image/svg+xml').documentElement;
+
+          return new (window as any).google.maps.marker.AdvancedMarkerElement({
+            position,
+            content: svgElement,
+            zIndex: Number((window as any).google.maps.Marker.MAX_ZINDEX) + count,
+          });
+        },
+      };
+
       // Create marker clusterer for better performance with many markers
       markerClusterer.current = new MarkerClusterer({
         map: map.current,
         markers: newMarkers,
+        renderer,
       });
     };
 
