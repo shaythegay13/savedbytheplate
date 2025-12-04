@@ -38,10 +38,13 @@ serve(async (req) => {
       clearTimeout(timeout);
       
       if (cropResponse.ok) {
-        cropData = await cropResponse.json();
+        const jsonData = await cropResponse.json();
+        // Ensure cropData is always an array
+        cropData = Array.isArray(jsonData) ? jsonData : [];
       }
     } catch (e) {
       console.warn('Crop fetch timeout, continuing without data');
+      cropData = [];
     }
 
     // Filter relevant crops based on question keywords
