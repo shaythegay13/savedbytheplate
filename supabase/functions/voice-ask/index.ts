@@ -6,141 +6,97 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Helper to call Claude via AWS Bedrock
-async function askClaude(question: string, cropData: any[] = []) {
-  const AWS_ACCESS_KEY_ID = Deno.env.get('AWS_ACCESS_KEY_ID');
-  const AWS_SECRET_ACCESS_KEY = Deno.env.get('AWS_SECRET_ACCESS_KEY');
-  const AWS_REGION = Deno.env.get('AWS_REGION') || 'us-east-1';
-  
-  if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
-    throw new Error('AWS credentials not configured');
-  }
-
-  const systemPrompt = `You are a helpful garden planning assistant with access to:
-- 270+ crops with 100+ varieties
-- 300+ plant disease database
-- Companion planting intelligence
-- Environmental/climate data via Google APIs
-
-When answering:
-- Provide specific, data-driven advice using the available data
-- Include growing conditions, planting times, companion plants, diseases/pests when relevant
-- Mention cultural varieties (African, Asian, Latin, Caribbean) when appropriate
-- Keep responses conversational, friendly, and concise (2-3 sentences max)
-- If you have specific data, use it. If not, provide general guidance.`;
-
-  let userPrompt = question;
-  if (cropData.length > 0) {
-    userPrompt += `\n\nRelevant crops from database:\n${JSON.stringify(cropData.slice(0, 5), null, 2)}`;
-  }
-
-  const payload = {
-    anthropic_version: "bedrock-2023-05-31",
-    max_tokens: 500,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-  };
-
-  // AWS Signature Version 4
-  const service = 'bedrock';
-  const host = `bedrock-runtime.${AWS_REGION}.amazonaws.com`;
-  const endpoint = `https://${host}/model/anthropic.claude-3-haiku-20240307-v1:0/invoke`;
-  
-  const dateNow = new Date();
-  const amzDate = dateNow.toISOString().replace(/[:-]|\.\d{3}/g, '');
-  const dateStamp = amzDate.substring(0, 8);
-
-  const payloadString = JSON.stringify(payload);
-  const payloadHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payloadString))
-    .then(buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''));
-
-  const canonicalHeaders = `host:${host}\nx-amz-date:${amzDate}\n`;
-  const signedHeaders = 'host;x-amz-date';
-  const canonicalRequest = `POST\n/model/anthropic.claude-3-haiku-20240307-v1:0/invoke\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
-
-  const credentialScope = `${dateStamp}/${AWS_REGION}/${service}/aws4_request`;
-  const canonicalRequestHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonicalRequest))
-    .then(buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''));
-  const stringToSign = `AWS4-HMAC-SHA256\n${amzDate}\n${credentialScope}\n${canonicalRequestHash}`;
-
-  const getSignatureKey = async (key: string, dateStamp: string, regionName: string, serviceName: string) => {
-    const kDate = await crypto.subtle.importKey('raw', new TextEncoder().encode('AWS4' + key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-      .then(k => crypto.subtle.sign('HMAC', k, new TextEncoder().encode(dateStamp)));
-    const kRegion = await crypto.subtle.importKey('raw', kDate, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-      .then(k => crypto.subtle.sign('HMAC', k, new TextEncoder().encode(regionName)));
-    const kService = await crypto.subtle.importKey('raw', kRegion, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-      .then(k => crypto.subtle.sign('HMAC', k, new TextEncoder().encode(serviceName)));
-    const kSigning = await crypto.subtle.importKey('raw', kService, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-      .then(k => crypto.subtle.sign('HMAC', k, new TextEncoder().encode('aws4_request')));
-    return kSigning;
-  };
-
-  const signingKey = await getSignatureKey(AWS_SECRET_ACCESS_KEY, dateStamp, AWS_REGION, service);
-  const signature = await crypto.subtle.importKey('raw', signingKey, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-    .then(k => crypto.subtle.sign('HMAC', k, new TextEncoder().encode(stringToSign)))
-    .then(buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''));
-
-  const authorizationHeader = `AWS4-HMAC-SHA256 Credential=${AWS_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Amz-Date': amzDate,
-      'Authorization': authorizationHeader,
-    },
-    body: payloadString,
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`AWS Bedrock error: ${error}`);
-  }
-
-  const data = await response.json();
-  return data.content[0].text;
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { text_question } = await req.json();
-
+    const { text_question, context } = await req.json();
+    
     if (!text_question) {
-      throw new Error('No question text provided');
+      throw new Error('No question provided');
     }
 
     console.log('Question:', text_question);
 
-    // Get crop data from deployed backend
-    let cropData = [];
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
+    }
+
+    // Fetch crop data with timeout
+    let cropData: any[] = [];
     try {
-      const cropsResponse = await fetch('https://agenticaigardenplanner.onrender.com/api/crops', {
-        signal: AbortSignal.timeout(2000),
-      });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2000);
       
-      if (cropsResponse.ok) {
-        const allCrops = await cropsResponse.json();
-        // Simple keyword matching
-        const keywords = text_question.toLowerCase().split(' ');
-        cropData = allCrops.filter((crop: any) => 
-          keywords.some(kw => 
-            crop.name?.toLowerCase().includes(kw) ||
-            crop.description?.toLowerCase().includes(kw)
-          )
-        );
+      const cropResponse = await fetch('https://agenticaigardenplanner.onrender.com/api/crops', {
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+      
+      if (cropResponse.ok) {
+        cropData = await cropResponse.json();
       }
     } catch (e) {
       console.warn('Crop fetch timeout, continuing without data');
     }
 
-    // Generate answer with Claude
-    const answerText = await askClaude(text_question, cropData);
+    // Filter relevant crops based on question keywords
+    const keywords = text_question.toLowerCase().split(' ');
+    const relevantCrops = cropData.filter((crop: any) => 
+      keywords.some((keyword: string) => 
+        crop.name?.toLowerCase().includes(keyword) ||
+        crop.category?.toLowerCase().includes(keyword)
+      )
+    ).slice(0, 5);
 
-    console.log('Generated answer');
+    // Build system prompt
+    const systemPrompt = `You are a friendly, knowledgeable garden planning assistant. 
+You help people plan their gardens with practical advice about:
+- What to plant based on their climate and season
+- Spacing and companion planting
+- Watering and care tips
+- Pest management
+
+Keep responses conversational, helpful, and concise (2-3 paragraphs max).
+${relevantCrops.length > 0 ? `\nRelevant crop data: ${JSON.stringify(relevantCrops)}` : ''}`;
+
+    // Use Lovable AI Gateway
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: text_question }
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Lovable AI error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again in a moment.');
+      }
+      if (response.status === 402) {
+        throw new Error('AI service quota exceeded. Please try again later.');
+      }
+      throw new Error(`AI service error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const answerText = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
+
+    console.log('Answer generated successfully');
 
     return new Response(
       JSON.stringify({
@@ -152,6 +108,7 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
+
   } catch (error) {
     console.error('Error in voice-ask function:', error);
     return new Response(

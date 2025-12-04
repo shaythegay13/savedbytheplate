@@ -19,15 +19,26 @@ serve(async (req) => {
       throw new Error('No text provided');
     }
 
-    console.log('Generating speech using OpenAI TTS');
+    console.log('Text-to-speech request received, text length:', text.length);
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     
     if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY not configured');
+      // Return a flag telling client to use browser TTS
+      console.log('No OpenAI API key, returning browser TTS flag');
+      return new Response(
+        JSON.stringify({
+          use_browser_tts: true,
+          synthesized_text: text,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
-    // Use OpenAI TTS (you have the key configured)
+    console.log('Generating speech using OpenAI TTS');
+
     const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
       headers: {
@@ -43,8 +54,24 @@ serve(async (req) => {
     });
 
     if (!ttsResponse.ok) {
-      const error = await ttsResponse.text();
-      console.error('TTS error:', error);
+      const errorText = await ttsResponse.text();
+      console.error('TTS error:', errorText);
+      
+      // Check for quota exceeded
+      if (errorText.includes('insufficient_quota') || ttsResponse.status === 429) {
+        console.log('OpenAI quota exceeded, returning browser TTS flag');
+        return new Response(
+          JSON.stringify({
+            use_browser_tts: true,
+            synthesized_text: text,
+            error_reason: 'quota_exceeded',
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+      
       throw new Error('Failed to generate speech');
     }
 
@@ -67,10 +94,15 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in voice-speak function:', error);
+    
+    // On any error, suggest browser TTS as fallback
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        use_browser_tts: true,
+        error: error.message 
+      }),
       {
-        status: 500,
+        status: 200, // Return 200 so client can handle fallback
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );

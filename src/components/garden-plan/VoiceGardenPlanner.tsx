@@ -94,7 +94,21 @@ const VoiceBox: React.FC = () => {
     setResponse("");
   };
 
-  // Speak text using Voice API (AWS Polly with Kendra voice)
+  // Use browser's built-in speech synthesis as fallback
+  const useBrowserTTS = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setIsSpeaking(false);
+    }
+  };
+
+  // Speak text using Voice API with browser TTS fallback
   const speakText = async (text: string) => {
     try {
       // Stop any currently playing audio
@@ -103,10 +117,11 @@ const VoiceBox: React.FC = () => {
         currentAudioRef.current.currentTime = 0;
         currentAudioRef.current = null;
       }
+      window.speechSynthesis?.cancel(); // Also cancel any browser TTS
       
       setIsSpeaking(true);
       
-      // Call voice API to generate speech with AWS Polly
+      // Call voice API to generate speech
       const formData = new FormData();
       formData.append('text', text);
       
@@ -117,6 +132,14 @@ const VoiceBox: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
+        
+        // Check if server tells us to use browser TTS
+        if (data.use_browser_tts) {
+          console.log('Using browser TTS fallback');
+          useBrowserTTS(text);
+          return;
+        }
+        
         // Decode base64 audio and play it
         const audioBytes = atob(data.audio_base64);
         const arrayBuffer = new ArrayBuffer(audioBytes.length);
@@ -143,11 +166,14 @@ const VoiceBox: React.FC = () => {
         
         await audio.play();
       } else {
-        setIsSpeaking(false);
+        // Fallback to browser TTS on error
+        console.log('API error, using browser TTS fallback');
+        useBrowserTTS(text);
       }
     } catch (error) {
       console.error('Speech error:', error);
-      setIsSpeaking(false);
+      // Fallback to browser TTS
+      useBrowserTTS(text);
     }
   };
 
