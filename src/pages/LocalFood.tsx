@@ -29,10 +29,10 @@ const LocalFood = () => {
                 <Sprout className="w-12 h-12 text-primary" />
               </div>
               <h2 className="text-2xl font-bold mb-3 text-foreground">
-                Plan Your Garden Space
+                Use our AI Garden Helper
               </h2>
               <p className="text-muted-foreground">
-                Get a personalized garden plan with AI-powered recommendations for your space, climate, and goals.
+                Chat with our AI assistant to get personalized gardening advice, plant recommendations, and tips tailored to your space.
               </p>
             </div>
           </button>
