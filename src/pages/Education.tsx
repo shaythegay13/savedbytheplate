@@ -10,8 +10,8 @@ import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, Ma
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-// 6-Week Youth Education Course Curriculum
-const courseCurriculum = [
+// Course 1: Community Gardens & Food Justice
+const communityGardensCurriculum = [
   {
     week: 1,
     focus: "History of Community Gardens",
@@ -41,6 +41,40 @@ const courseCurriculum = [
     week: 6,
     focus: "Environmental Justice & Community Gardens",
     description: "Examine the intersection of urban agriculture, equity, and environmental advocacy"
+  }
+];
+
+// Course 2: Composting, Soil Science & Sustainability
+const soilScienceCurriculum = [
+  {
+    week: 1,
+    focus: "Understanding Food Waste",
+    description: "Explore the scale of food waste in our communities and its environmental impact"
+  },
+  {
+    week: 2,
+    focus: "Composting Fundamentals",
+    description: "Learn the science behind composting and how to turn food scraps into nutrient-rich soil"
+  },
+  {
+    week: 3,
+    focus: "Soil Nutrients & Health",
+    description: "Discover the essential nutrients plants need and how to build healthy, productive soil"
+  },
+  {
+    week: 4,
+    focus: "Micro & Macro Nutrients",
+    description: "Deep dive into the role of nitrogen, phosphorus, potassium, and micronutrients in plant growth"
+  },
+  {
+    week: 5,
+    focus: "Guest Speaker",
+    description: "Hear from a composting or soil science expert about real-world applications"
+  },
+  {
+    week: 6,
+    focus: "Soil Organisms & Ecosystems",
+    description: "Explore the fascinating world of bacteria, fungi, earthworms, and other organisms that make soil alive"
   }
 ];
 
@@ -253,10 +287,10 @@ const Education = () => {
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">6-Week Youth Education Course</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">6-Week Youth Education Courses</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              A comprehensive program for middle and high school students exploring food justice, food sovereignty, 
-              community gardens, urban agriculture, and growing their own food
+              Two comprehensive programs for middle and high school students exploring food justice, sustainability, 
+              community gardens, composting, and environmental science
             </p>
           </div>
         </div>
@@ -280,7 +314,7 @@ const Education = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-center text-muted-foreground">
-                    Interested in bringing this 6-week course to your school? Contact Shay to learn more
+                    Interested in bringing one of our 6-week courses to your school? Contact Shay to learn more
                   </p>
                   <div className="flex justify-center">
                     <ShayEmailDialog />
@@ -292,88 +326,79 @@ const Education = () => {
             {/* Program Information */}
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-primary mb-4">6-Week Youth Education Course</h2>
+                <h2 className="text-3xl font-bold text-primary mb-4">Choose Your Course</h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  A comprehensive program for middle and high school students exploring food justice, food sovereignty, 
-                  community gardens, urban agriculture, and hands-on learning about growing their own food.
+                  We offer two 6-week programs designed for middle and high school students. Both courses include 
+                  a guest speaker in week 5 and an optional 7th week garden tour.
                 </p>
               </div>
 
-              <Card className="bg-primary/5 border-primary/20">
-                <CardHeader>
-                  <CardTitle className="text-center text-2xl text-primary">Program Curriculum</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                        1
+              <Tabs defaultValue="community-gardens" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="community-gardens" className="flex items-center gap-2">
+                    <Sprout className="h-4 w-4" />
+                    <span className="hidden sm:inline">Community Gardens</span>
+                    <span className="sm:hidden">Gardens</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="soil-science" className="flex items-center gap-2">
+                    <GraduationCap className="h-4 w-4" />
+                    <span className="hidden sm:inline">Soil Science</span>
+                    <span className="sm:hidden">Soil</span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="community-gardens">
+                  <Card className="bg-primary/5 border-primary/20 mb-6">
+                    <CardHeader>
+                      <CardTitle className="text-center text-2xl text-primary">Community Gardens & Food Justice</CardTitle>
+                      <CardDescription className="text-center">
+                        Explore food justice, food sovereignty, community gardens, and urban agriculture
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {communityGardensCurriculum.map((week) => (
+                          <div key={week.week} className="flex items-start gap-4">
+                            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                              {week.week}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold mb-1">{week.focus}</h4>
+                              <p className="text-sm text-muted-foreground">{week.description}</p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">History of Community Gardens</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Uncover the rich legacies of urban gardens and their pivotal role in NYC's food justice movements
-                        </p>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="soil-science">
+                  <Card className="bg-primary/5 border-primary/20 mb-6">
+                    <CardHeader>
+                      <CardTitle className="text-center text-2xl text-primary">Composting, Soil Science & Sustainability</CardTitle>
+                      <CardDescription className="text-center">
+                        Learn about food waste, composting, soil nutrients, and the organisms that make soil alive
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {soilScienceCurriculum.map((week) => (
+                          <div key={week.week} className="flex items-start gap-4">
+                            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                              {week.week}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold mb-1">{week.focus}</h4>
+                              <p className="text-sm text-muted-foreground">{week.description}</p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                        2
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Community Gardens Today</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Investigate the current state of gardens across NYC and their impacts on neighborhoods
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                        3
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Urban Growing Strategies</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Practice composting, urban planting, and other sustainable techniques for city environments
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                        4
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Urban Biodiversity & Environmental Benefits</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Explore how gardens support biodiversity, reduce heat island effect, and improve air quality
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                        5
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Guest Speaker</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Bring in a guest speaker who works in a community garden to talk about their experience
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                        6
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Environmental Justice & Community Gardens</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Examine the intersection of urban agriculture, equity, and environmental advocacy
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
 
               <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
                 <CardHeader>
@@ -384,9 +409,8 @@ const Education = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground text-center">
-                    As we get closer to the opening season of the city's community gardens, there could be an 
-                    optional 7th week where we take a tour of the nearest community garden during the normal 
-                    session time. This hands-on field trip brings everything students have learned to life!
+                    Both courses offer an optional 7th week where students tour the nearest community garden 
+                    during the normal session time. This hands-on field trip brings everything learned to life!
                   </p>
                 </CardContent>
               </Card>
