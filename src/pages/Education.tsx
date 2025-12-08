@@ -371,6 +371,38 @@ const Education = () => {
                       </div>
                     </CardContent>
                   </Card>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    <Card className="border-primary/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-xl">
+                          <BookOpen className="mr-3 h-6 w-6 text-primary" />
+                          Educational Impact
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">
+                          Students gain comprehensive knowledge about urban agriculture, environmental science, 
+                          and social justice while developing practical skills in sustainable living and community engagement.
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-primary/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-xl">
+                          <Users className="mr-3 h-6 w-6 text-primary" />
+                          Community Connection
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">
+                          This program connects students with food justice work happening in their local communities, 
+                          showing them that meaningful change is happening right in their own neighborhoods.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="soil-science">
@@ -397,6 +429,38 @@ const Education = () => {
                       </div>
                     </CardContent>
                   </Card>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    <Card className="border-primary/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-xl">
+                          <BookOpen className="mr-3 h-6 w-6 text-primary" />
+                          Educational Impact
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">
+                          Students develop a deep understanding of waste reduction, soil ecology, and nutrient cycles 
+                          while gaining hands-on skills in composting and sustainable land stewardship.
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-primary/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-xl">
+                          <Users className="mr-3 h-6 w-6 text-primary" />
+                          Environmental Stewardship
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">
+                          Students learn how reducing food waste and building healthy soil directly impacts climate change, 
+                          empowering them to make sustainable choices in their daily lives.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </TabsContent>
               </Tabs>
 
@@ -414,38 +478,6 @@ const Education = () => {
                   </p>
                 </CardContent>
               </Card>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card className="border-primary/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-xl">
-                      <BookOpen className="mr-3 h-6 w-6 text-primary" />
-                      Educational Impact
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      Students gain comprehensive knowledge about urban agriculture, environmental science, 
-                      and social justice while developing practical skills in sustainable living and community engagement.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-primary/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-xl">
-                      <Users className="mr-3 h-6 w-6 text-primary" />
-                      Community Connection
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      This program connects students with food justice work happening in their local communities, 
-                      showing them that meaningful change is happening right in their own neighborhoods.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
 
               <div className="text-center">
                 <Card className="inline-block border-primary/20 bg-primary/5">
