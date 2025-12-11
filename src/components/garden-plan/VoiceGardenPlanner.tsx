@@ -194,7 +194,6 @@ const VoiceBox: React.FC = () => {
     setResponse("");
 
     try {
-      // Use conversational API endpoint
       const apiResponse = await fetch(`https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -204,28 +203,42 @@ const VoiceBox: React.FC = () => {
         })
       });
 
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json();
+        throw new Error(errorData.error || 'Failed to get response');
+      }
+
       const data = await apiResponse.json();
       console.log("API response:", data);
       
-      // Get the conversational response
       const responseText = data.answer_text || "I'm here to help you plan your garden!";
       
-      // If there's a full garden plan, show it too
+      // Build full response with crop info if available
       let fullResponse = responseText;
+      
+      if (data.relevant_crops && data.relevant_crops.length > 0) {
+        fullResponse += "\n\n📋 Related crops from our database:";
+        data.relevant_crops.slice(0, 3).forEach((crop: any) => {
+          fullResponse += `\n• ${crop.name}${crop.category ? ` (${crop.category})` : ''}`;
+        });
+      }
+      
       if (data.garden_plan) {
-        fullResponse += "\n\n--- Full Garden Plan ---\n" + data.garden_plan;
+        fullResponse += "\n\n🌱 Full Garden Plan:\n" + JSON.stringify(data.garden_plan, null, 2);
       }
       
       setResponse(fullResponse);
-      
-      // Speak the conversational response (not the full plan)
       speakText(responseText);
       
     } catch (err) {
       console.error("Error sending request:", err);
-      const errorMsg = "Sorry, I encountered an error. Please try again.";
+      const errorMsg = err instanceof Error ? err.message : "Sorry, I encountered an error. Please try again.";
       setResponse(errorMsg);
-      speakText(errorMsg);
+      toast({
+        title: "Error",
+        description: errorMsg,
+        variant: "destructive"
+      });
     } finally {
       setIsProcessing(false);
     }
