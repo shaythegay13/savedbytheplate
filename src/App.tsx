@@ -24,6 +24,8 @@ import NewDiscussion from "./pages/NewDiscussion";
 import Auth from "./pages/Auth";
 import Calendar from "./pages/Calendar";
 import Profile from "./pages/Profile";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
@@ -57,6 +59,8 @@ const App = () => (
               <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
               <Route path="/about" element={<AboutUs />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               
