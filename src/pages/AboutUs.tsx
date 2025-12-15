@@ -5,6 +5,7 @@ import hebatallahPhoto from "@/assets/hebatallah-tharhan.jpeg";
 import ccpLogo from "@/assets/ccp-logo.jpg";
 import modularYearLogo from "@/assets/modular-year-logo.svg";
 import communitasLogo from "@/assets/communitas-ventures.png";
+import fsLogo from "@/assets/fs-logo.png";
 
 const AboutUs = () => {
   return (
@@ -130,6 +131,11 @@ const AboutUs = () => {
                 <img 
                   src={modularYearLogo} 
                   alt="Modular Year 2025" 
+                  className="h-24 w-auto object-contain"
+                />
+                <img 
+                  src={fsLogo} 
+                  alt="FS" 
                   className="h-24 w-auto object-contain"
                 />
               </div>
