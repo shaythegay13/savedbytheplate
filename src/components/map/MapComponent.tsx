@@ -280,7 +280,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const activeLocation = activePopup ? locations.find(loc => loc.id === activePopup) : null;
 
   return (
-    <div className="relative w-full h-[70vh] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
+    <div className="relative w-full h-full min-h-[300px] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
       <div ref={mapContainer} className="absolute inset-0" />
       
       {loading && (
