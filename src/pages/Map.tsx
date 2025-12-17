@@ -13,9 +13,10 @@ import MapImprovementForm from "@/components/map/MapImprovementForm";
 import AddLocationForm from "@/components/map/AddLocationForm";
 import UnifiedMapLegend from "@/components/map/UnifiedMapLegend";
 import { fetchEnhancedMapData, categorizeLocations } from "@/services/enhancedMapDataService";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navbar from "@/components/layout/Navbar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 
 const Map = () => {
   const [locationCounts, setLocationCounts] = useState<any>(null);
@@ -28,6 +29,14 @@ const Map = () => {
   const [showOpenNow, setShowOpenNow] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const isMobile = useIsMobile();
+
+  // Swipe gesture to close sidebar
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
+  const swipeHandlers = useSwipeGesture({
+    onSwipeLeft: closeSidebar,
+    threshold: 50,
+    velocityThreshold: 0.2,
+  });
 
   // Fetch data to get location counts for the legend with debouncing
   useEffect(() => {
@@ -85,11 +94,24 @@ const Map = () => {
                       <Menu className="h-4 w-4" />
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-[85vw] max-w-sm p-0 overflow-y-auto">
-                    <SheetHeader className="p-4 border-b bg-sbtp-green-50">
-                      <SheetTitle className="text-sbtp-green-800 flex items-center gap-2">
-                        <Filter className="h-5 w-5" />
-                        Map Controls
+                  <SheetContent 
+                    side="left" 
+                    className="w-[85vw] max-w-sm p-0 overflow-y-auto"
+                    onTouchStart={swipeHandlers.onTouchStart}
+                    onTouchEnd={swipeHandlers.onTouchEnd}
+                  >
+                    {/* Swipe indicator */}
+                    <div className="flex justify-center pt-2 pb-1">
+                      <div className="w-10 h-1 bg-muted-foreground/30 rounded-full" />
+                    </div>
+                    
+                    <SheetHeader className="px-4 pb-4 border-b bg-sbtp-green-50">
+                      <SheetTitle className="text-sbtp-green-800 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Filter className="h-5 w-5" />
+                          Map Controls
+                        </div>
+                        <span className="text-xs font-normal text-muted-foreground">Swipe left to close</span>
                       </SheetTitle>
                     </SheetHeader>
                     
