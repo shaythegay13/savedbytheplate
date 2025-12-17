@@ -192,7 +192,7 @@ const Map = () => {
       </div>
 
       {/* Enhanced Map Layout */}
-      <div className="flex h-[calc(100vh-200px)]">
+      <div className={`flex ${isMobile ? 'h-[calc(100vh-140px)]' : 'h-[calc(100vh-180px)]'}`}>
         {/* Desktop Sidebar */}
         {!isMobile && (
           <div className="w-80 bg-white border-r border-sbtp-green-200 overflow-y-auto">
@@ -281,21 +281,23 @@ const Map = () => {
           <MapComponent activeFilters={activeFilters} showOpenNow={showOpenNow} />
 
           {/* Action Buttons - Top Left */}
-          <div className="absolute top-4 left-4 flex gap-3">
+          <div className={`absolute top-3 left-3 flex ${isMobile ? 'flex-col gap-2' : 'gap-3'}`}>
             <Button 
               onClick={() => setAddLocationFormOpen(true)}
+              size={isMobile ? 'sm' : 'default'}
               className="bg-sbtp-green-600 hover:bg-sbtp-green-700 text-white shadow-lg"
             >
-              <MapPin className="h-4 w-4 mr-2" />
-              Add Location
+              <MapPin className="h-4 w-4" />
+              {!isMobile && <span className="ml-2">Add Location</span>}
             </Button>
             <Button 
               variant="outline"
+              size={isMobile ? 'sm' : 'default'}
               onClick={() => setImprovementFormOpen(true)}
               className="bg-white border-sbtp-green-300 text-sbtp-green-700 shadow-lg hover:bg-sbtp-green-50"
             >
-              <MessageSquarePlus className="h-4 w-4 mr-2" />
-              Suggestion Box
+              <MessageSquarePlus className="h-4 w-4" />
+              {!isMobile && <span className="ml-2">Suggestion Box</span>}
             </Button>
           </div>
         </div>

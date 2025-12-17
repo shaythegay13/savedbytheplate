@@ -4,13 +4,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock, Star, Camera } from 'lucide-react';
 import { MapLocation } from './types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { isLocationOpen } from '@/lib/hoursParser';
 import LocationReviews from './LocationReviews';
 import LocationPhotos from './LocationPhotos';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LocationPopupProps {
   location: MapLocation;
@@ -22,7 +23,7 @@ interface LocationPopupProps {
 
 const LocationPopup = ({ location, locationColors, onClose, fullLocationData, position }: LocationPopupProps) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
-  
+  const isMobile = useIsMobile();
   // Check if location is currently open
   const openStatus = isLocationOpen(location.hoursText);
   
@@ -66,18 +67,28 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
     sunday: 'Sunday'
   };
   
-  // Position popup above and to the right of the marker, with adjustments to keep it on screen
-  const popupStyle = {
-    left: `${position.x + 15}px`,
-    top: `${position.y - 10}px`,
-    transform: 'translateY(-100%)', // Position above the marker
+  // On mobile, position popup at bottom of screen; on desktop, near marker
+  const getPopupStyle = () => {
+    if (isMobile) {
+      return {
+        left: '50%',
+        bottom: '16px',
+        top: 'auto',
+        transform: 'translateX(-50%)',
+      };
+    }
+    return {
+      left: `${Math.min(position.x + 15, window.innerWidth - 280)}px`,
+      top: `${Math.max(position.y - 10, 100)}px`,
+      transform: 'translateY(-100%)',
+    };
   };
 
   return (
     <>
       <div 
-        className="absolute w-64 bg-white rounded-lg shadow-xl z-10 overflow-hidden border border-gray-200"
-        style={popupStyle}
+        className={`absolute bg-white rounded-lg shadow-xl z-10 overflow-hidden border border-gray-200 ${isMobile ? 'w-[calc(100%-32px)] max-w-sm' : 'w-64'}`}
+        style={getPopupStyle()}
       >
         <div className="p-3">
           <div className="flex justify-between items-start mb-1">
@@ -110,7 +121,7 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
       
       {/* Detailed Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className={`${isMobile ? 'max-w-[95vw] max-h-[90vh]' : 'max-w-4xl max-h-[85vh]'} overflow-y-auto`}>
           <DialogHeader>
             <DialogTitle className="text-2xl text-sbtp-green-700 flex items-center gap-2">
               <MapPin className="h-6 w-6" style={{ color: locationColors[location.type] }} />
