@@ -2,10 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus, Database } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { MapPin, Search, Filter, MoreVertical, Share, Heart, Eye, Layers, Settings, Menu, MessageSquarePlus, Database, ChevronDown, BarChart3 } from 'lucide-react';
 import CSVImportButton from "@/components/admin/CSVImportButton";
 import MapComponent from "@/components/map/MapComponent";
 import MapImprovementForm from "@/components/map/MapImprovementForm";
@@ -84,83 +85,101 @@ const Map = () => {
                       <Menu className="h-4 w-4" />
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-80 p-0 overflow-y-auto">
-                    <div className="p-4 space-y-6">
-                      {/* Quick Search */}
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sbtp-brown-400 h-4 w-4" />
-                            <input
-                              type="text"
-                              placeholder="Search locations, neighborhoods..."
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              className="w-full pl-10 pr-4 py-3 border border-sbtp-green-200 rounded-lg focus:ring-2 focus:ring-sbtp-green-300 focus:border-sbtp-green-300 text-sm"
-                            />
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Open Now Filter */}
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="open-now-mobile" className="text-sbtp-brown-700">Only Show Open Now</Label>
-                            <Switch 
-                              id="open-now-mobile" 
-                              checked={showOpenNow} 
-                              onCheckedChange={setShowOpenNow}
-                            />
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Quick Stats */}
-                      <Card>
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg text-sbtp-green-800 flex items-center gap-2">
-                            <Eye className="h-5 w-5" />
-                            Quick Overview
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="text-center p-3 bg-sbtp-green-50 rounded-lg">
-                              <div className="text-2xl font-bold text-sbtp-green-700">
-                                {!loading && locationCounts ? locationCounts.gardens + locationCounts.farms + locationCounts.urbanfarms : '...'}
-                              </div>
-                              <div className="text-xs text-sbtp-brown-500">Growing Spaces</div>
-                            </div>
-                            <div className="text-center p-3 bg-sbtp-yellow/20 rounded-lg">
-                              <div className="text-2xl font-bold text-sbtp-brown-700">
-                                {!loading && locationCounts ? locationCounts.markets : '...'}
-                              </div>
-                              <div className="text-xs text-sbtp-brown-500">Markets</div>
-                            </div>
-                            <div className="text-center p-3 bg-blue-50 rounded-lg">
-                              <div className="text-2xl font-bold text-blue-700">
-                                {!loading && locationCounts ? locationCounts.fridges : '...'}
-                              </div>
-                              <div className="text-xs text-sbtp-brown-500">Free Fridges</div>
-                            </div>
-                            <div className="text-center p-3 bg-purple-50 rounded-lg">
-                              <div className="text-2xl font-bold text-purple-700">
-                                {!loading && locationCounts ? locationCounts.foodbanks : '...'}
-                              </div>
-                              <div className="text-xs text-sbtp-brown-500">Food Banks</div>
-                            </div>
+                  <SheetContent side="left" className="w-[85vw] max-w-sm p-0 overflow-y-auto">
+                    <SheetHeader className="p-4 border-b bg-sbtp-green-50">
+                      <SheetTitle className="text-sbtp-green-800 flex items-center gap-2">
+                        <Filter className="h-5 w-5" />
+                        Map Controls
+                      </SheetTitle>
+                    </SheetHeader>
+                    
+                    <div className="p-4 space-y-4">
+                      {/* Search - Always visible */}
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sbtp-brown-400 h-5 w-5" />
+                        <input
+                          type="text"
+                          placeholder="Search locations..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-11 pr-4 py-3 border border-sbtp-green-200 rounded-lg focus:ring-2 focus:ring-sbtp-green-300 focus:border-sbtp-green-300 text-base"
+                        />
                       </div>
-                        </CardContent>
-                      </Card>
 
-              {/* Legend */}
-              <UnifiedMapLegend 
-                locationCounts={locationCounts} 
-                isLoading={loading}
-                activeFilters={activeFilters}
-                onFilterChange={setActiveFilters}
-              />
+                      {/* Open Now Filter - Touch friendly */}
+                      <button
+                        onClick={() => setShowOpenNow(!showOpenNow)}
+                        className={`w-full flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                          showOpenNow 
+                            ? 'bg-sbtp-green-50 border-sbtp-green-300' 
+                            : 'bg-background border-border hover:bg-muted/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Eye className="h-5 w-5 text-sbtp-green-600" />
+                          <span className="font-medium text-sbtp-brown-700">Only Show Open Now</span>
+                        </div>
+                        <Switch 
+                          id="open-now-mobile" 
+                          checked={showOpenNow} 
+                          onCheckedChange={setShowOpenNow}
+                        />
+                      </button>
+
+                      {/* Quick Stats - Collapsible */}
+                      <Collapsible defaultOpen={false}>
+                        <Card>
+                          <CollapsibleTrigger asChild>
+                            <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors py-4">
+                              <CardTitle className="text-base text-sbtp-green-800 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <BarChart3 className="h-5 w-5" />
+                                  Quick Overview
+                                </div>
+                                <ChevronDown className="h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                              </CardTitle>
+                            </CardHeader>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <CardContent className="pt-0 pb-4">
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="text-center p-4 bg-sbtp-green-50 rounded-lg">
+                                  <div className="text-2xl font-bold text-sbtp-green-700">
+                                    {!loading && locationCounts ? locationCounts.gardens + locationCounts.farms + locationCounts.urbanfarms : '...'}
+                                  </div>
+                                  <div className="text-sm text-sbtp-brown-500">Growing Spaces</div>
+                                </div>
+                                <div className="text-center p-4 bg-sbtp-yellow/20 rounded-lg">
+                                  <div className="text-2xl font-bold text-sbtp-brown-700">
+                                    {!loading && locationCounts ? locationCounts.markets : '...'}
+                                  </div>
+                                  <div className="text-sm text-sbtp-brown-500">Markets</div>
+                                </div>
+                                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                  <div className="text-2xl font-bold text-blue-700">
+                                    {!loading && locationCounts ? locationCounts.fridges : '...'}
+                                  </div>
+                                  <div className="text-sm text-sbtp-brown-500">Free Fridges</div>
+                                </div>
+                                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                                  <div className="text-2xl font-bold text-purple-700">
+                                    {!loading && locationCounts ? locationCounts.foodbanks : '...'}
+                                  </div>
+                                  <div className="text-sm text-sbtp-brown-500">Food Banks</div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </CollapsibleContent>
+                        </Card>
+                      </Collapsible>
+
+                      {/* Legend - Already collapsible */}
+                      <UnifiedMapLegend 
+                        locationCounts={locationCounts} 
+                        isLoading={loading}
+                        activeFilters={activeFilters}
+                        onFilterChange={setActiveFilters}
+                      />
                     </div>
                   </SheetContent>
                 </Sheet>

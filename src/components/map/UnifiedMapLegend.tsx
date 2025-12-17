@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, Layers } from "lucide-react";
 import { locationColors } from './MapConfig';
+import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Icon components as React elements for security
 const LocationIcon = ({ type, color }: { type: string; color: string }) => {
@@ -117,6 +122,9 @@ interface UnifiedMapLegendProps {
 }
 
 const UnifiedMapLegend = ({ locationCounts, isLoading, activeFilters, onFilterChange }: UnifiedMapLegendProps) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const isMobile = useIsMobile();
+
   const handleToggleFilter = (type: string, checked: boolean) => {
     const newFilters = new Set(activeFilters);
     if (checked) {
@@ -125,6 +133,15 @@ const UnifiedMapLegend = ({ locationCounts, isLoading, activeFilters, onFilterCh
       newFilters.delete(type);
     }
     onFilterChange(newFilters);
+  };
+
+  const selectAll = () => {
+    const allTypes = legendItems.map(item => item.type);
+    onFilterChange(new Set(allTypes));
+  };
+
+  const clearAll = () => {
+    onFilterChange(new Set());
   };
   
   const legendItems = [
@@ -187,62 +204,124 @@ const UnifiedMapLegend = ({ locationCounts, isLoading, activeFilters, onFilterCh
   ];
 
   const totalCount = legendItems.reduce((sum, item) => sum + item.count, 0);
+  const activeCount = activeFilters.size;
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold text-sbtp-green-800 flex items-center justify-between">
-          Food Access Map Legend
-          {!isLoading && (
-            <Badge variant="secondary" className="bg-sbtp-green-100 text-sbtp-green-700">
-              {totalCount} total locations
-            </Badge>
-          )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-4">
-            <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full mr-2"></div>
-            <span className="text-sm text-sbtp-brown-500">Loading locations...</span>
-          </div>
-        ) : (
-          <>
-            {legendItems.map((item) => (
-              <div key={item.type} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="flex items-center justify-center w-5 h-5">
-                    <LocationIcon type={item.type} color={item.color} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-sm text-sbtp-brown-700">
-                      {item.label}
-                    </div>
-                    <div className="text-xs text-sbtp-brown-500">
-                      {item.description}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge 
-                    variant="secondary" 
-                    className={`${item.count > 0 ? 'bg-sbtp-green-100 text-sbtp-green-700' : 'bg-gray-100 text-gray-500'}`}
-                  >
-                    {item.count}
-                  </Badge>
-                  <Checkbox 
-                    checked={activeFilters.has(item.type)}
-                    onCheckedChange={(checked) => handleToggleFilter(item.type, checked as boolean)}
-                    disabled={item.count === 0}
-                    aria-label={`Toggle ${item.label}`}
-                  />
-                </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger asChild>
+          <CardHeader className={`cursor-pointer hover:bg-muted/50 transition-colors ${isMobile ? 'py-4' : 'pb-3'}`}>
+            <CardTitle className="text-lg font-semibold text-sbtp-green-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Layers className="h-5 w-5" />
+                <span>Location Filters</span>
               </div>
-            ))}
-            
-          </>
-        )}
-      </CardContent>
+              <div className="flex items-center gap-2">
+                {!isLoading && (
+                  <Badge variant="secondary" className="bg-sbtp-green-100 text-sbtp-green-700">
+                    {activeCount}/{legendItems.length}
+                  </Badge>
+                )}
+                <ChevronDown className={`h-5 w-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent>
+          <CardContent className={`space-y-2 ${isMobile ? 'pb-4' : 'space-y-3'}`}>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full mr-2"></div>
+                <span className="text-sm text-sbtp-brown-500">Loading locations...</span>
+              </div>
+            ) : (
+              <>
+                {/* Quick actions */}
+                <div className={`flex gap-2 ${isMobile ? 'pb-3' : 'pb-2'}`}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={selectAll}
+                    className={`flex-1 ${isMobile ? 'h-10 text-sm' : 'h-8 text-xs'}`}
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAll}
+                    className={`flex-1 ${isMobile ? 'h-10 text-sm' : 'h-8 text-xs'}`}
+                  >
+                    Clear All
+                  </Button>
+                </div>
+
+                {legendItems.map((item) => (
+                  <button
+                    key={item.type}
+                    onClick={() => handleToggleFilter(item.type, !activeFilters.has(item.type))}
+                    disabled={item.count === 0}
+                    className={`w-full flex items-center justify-between gap-3 rounded-lg transition-colors ${
+                      isMobile ? 'p-3 min-h-[56px]' : 'p-2'
+                    } ${
+                      activeFilters.has(item.type) 
+                        ? 'bg-sbtp-green-50 border border-sbtp-green-200' 
+                        : 'bg-background hover:bg-muted/50 border border-transparent'
+                    } ${item.count === 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-[0.98]'}`}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className={`flex items-center justify-center flex-shrink-0 ${isMobile ? 'w-8 h-8' : 'w-6 h-6'}`}>
+                        <LocationIcon type={item.type} color={item.color} />
+                      </div>
+                      <div className="flex-1 text-left min-w-0">
+                        <div className={`font-medium text-sbtp-brown-700 truncate ${isMobile ? 'text-base' : 'text-sm'}`}>
+                          {item.label}
+                        </div>
+                        {!isMobile && (
+                          <div className="text-xs text-sbtp-brown-500 truncate">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Badge 
+                        variant="secondary" 
+                        className={`${isMobile ? 'text-sm px-2 py-1' : ''} ${
+                          item.count > 0 ? 'bg-sbtp-green-100 text-sbtp-green-700' : 'bg-gray-100 text-gray-500'
+                        }`}
+                      >
+                        {item.count}
+                      </Badge>
+                      <div className={`rounded-md border-2 flex items-center justify-center ${
+                        isMobile ? 'w-6 h-6' : 'w-5 h-5'
+                      } ${
+                        activeFilters.has(item.type) 
+                          ? 'bg-sbtp-green-600 border-sbtp-green-600' 
+                          : 'bg-background border-muted-foreground/30'
+                      }`}>
+                        {activeFilters.has(item.type) && (
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+
+                {/* Total count footer */}
+                <div className={`text-center pt-2 border-t border-border ${isMobile ? 'pt-3' : ''}`}>
+                  <span className="text-sm text-sbtp-brown-500">
+                    {totalCount} total locations available
+                  </span>
+                </div>
+              </>
+            )}
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
