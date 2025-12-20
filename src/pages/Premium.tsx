@@ -429,7 +429,7 @@ const Premium = () => {
                       <span>Local Food Map</span>
                     </li>
                     <li className="flex items-center min-h-[40px]">
-                      <span>School Garden Tours</span>
+                      <span>After School Programming</span>
                     </li>
                     <li className="flex items-center min-h-[40px]">
                       <span>Gardening Voice Agent</span>
