@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const features = [
   {
-    title: "School Garden Tours",
+    title: "After School Programming",
     description: "Connect your students with local food justice work through educational community garden tours.",
     icon: (
       <div className="bg-sbtp-green-100 p-3 rounded-full mb-4">
