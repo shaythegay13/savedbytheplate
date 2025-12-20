@@ -1,9 +1,20 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+// Input validation configuration
+const MAX_WORDS = 175;
+const COOLDOWN_MINUTES = 10;
+const COOLDOWN_MS = COOLDOWN_MINUTES * 60 * 1000;
+
+// Simple word count function
+const countWords = (text: string): number => {
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
 };
 
 serve(async (req) => {
@@ -12,6 +23,48 @@ serve(async (req) => {
   }
 
   try {
+    // Get client IP for rate limiting (works for unauthenticated users)
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+    const identifier = `voice-speak:${clientIP}`;
+
+    // Create Supabase client for rate limiting
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Check cooldown using newsletter_rate_limits table
+    const { data: rateLimit } = await supabase
+      .from("newsletter_rate_limits")
+      .select("*")
+      .eq("identifier", identifier)
+      .single();
+
+    const now = new Date();
+
+    if (rateLimit) {
+      const lastAttempt = new Date(rateLimit.last_attempt_at);
+      const timeSinceLast = now.getTime() - lastAttempt.getTime();
+      
+      if (timeSinceLast < COOLDOWN_MS) {
+        const remainingSeconds = Math.ceil((COOLDOWN_MS - timeSinceLast) / 1000);
+        const remainingMinutes = Math.ceil(remainingSeconds / 60);
+        
+        console.log(`Cooldown active for ${identifier}, ${remainingMinutes} minutes remaining`);
+        
+        return new Response(
+          JSON.stringify({ 
+            use_browser_tts: true,
+            error: 'cooldown',
+            cooldown_remaining_seconds: remainingSeconds,
+            message: `Cool down Phase: Please wait ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} before using voice again.`
+          }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     const formData = await req.formData();
     const text = formData.get('text') as string;
     
@@ -19,7 +72,41 @@ serve(async (req) => {
       throw new Error('No text provided');
     }
 
-    console.log('Text-to-speech request received, text length:', text.length);
+    // Validate word count
+    const wordCount = countWords(text);
+    if (wordCount > MAX_WORDS) {
+      console.log(`Text too long: ${wordCount} words (max: ${MAX_WORDS})`);
+      return new Response(
+        JSON.stringify({ 
+          use_browser_tts: true,
+          synthesized_text: text.split(/\s+/).slice(0, MAX_WORDS).join(' '),
+          error: `Text exceeds ${MAX_WORDS} word limit (${wordCount} words provided). Please shorten your message to one paragraph.`
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Update rate limit record
+    if (rateLimit) {
+      await supabase
+        .from("newsletter_rate_limits")
+        .update({ 
+          last_attempt_at: now.toISOString(),
+          attempt_count: rateLimit.attempt_count + 1 
+        })
+        .eq("identifier", identifier);
+    } else {
+      await supabase
+        .from("newsletter_rate_limits")
+        .insert({ 
+          identifier, 
+          first_attempt_at: now.toISOString(),
+          last_attempt_at: now.toISOString(),
+          attempt_count: 1 
+        });
+    }
+
+    console.log(`Text-to-speech request from ${identifier}, word count: ${wordCount}`);
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     
