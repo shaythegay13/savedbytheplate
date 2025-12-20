@@ -1120,6 +1120,10 @@ export type Database = {
         Returns: undefined
       }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
+      profile_has_public_activity: {
+        Args: { _profile_id: string }
+        Returns: boolean
+      }
       user_has_active_subscription: {
         Args: { _user_id: string }
         Returns: boolean
