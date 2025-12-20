@@ -63,10 +63,7 @@ const Navbar = () => {
   const navItems = [
     { href: "/index", label: "Home" },
     { href: "/local-food", label: "Local Food" },
-    { href: "/blog", label: "Blog" },
-    { href: "/calendar", label: "Events" },
     { href: "/education", label: "Education" },
-    { href: "/community", label: "Community" },
     { href: "/about", label: "About" },
   ];
 
