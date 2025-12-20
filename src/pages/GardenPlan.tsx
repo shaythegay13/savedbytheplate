@@ -11,13 +11,13 @@ const GardenPlan = () => {
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-5xl font-bold text-green-800 dark:text-green-400 mb-4">
-                🌱 AI Garden Planner
+                🌱 Gardening Voice Agent
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">
-                Your Personal Garden Planning Assistant
+                Your Personal Gardening Assistant
               </p>
               <p className="text-md text-gray-500 dark:text-gray-400">
-                Click the microphone and ask me anything about planning your perfect garden\!
+                Click the microphone and ask me anything about gardening!
               </p>
             </div>
 
@@ -72,7 +72,7 @@ const GardenPlan = () => {
                   Expert Advice
                 </h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Personalized garden planning
+                  Personalized gardening advice
                 </p>
               </div>
               <div>
