@@ -293,15 +293,33 @@ export interface MapDataFilters {
   zipCode?: string;
 }
 
+// Cache for map data to avoid refetching
+let mapDataCache: MapLocation[] | null = null;
+let cacheFiltersKey: string | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
+
+// Only select the columns we need for the map (excludes sensitive contact info)
+const MAP_SELECT_COLUMNS = 'id,name,type,description,address,latitude,longitude,organization,website,hours,tags,details,open_hours,neighborhood,borough,zip_code,cross_streets,status';
+
 export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<MapLocation[]> => {
   try {
+    const filtersKey = JSON.stringify(filters || {});
+    const now = Date.now();
+    
+    // Return cached data if valid
+    if (mapDataCache && cacheFiltersKey === filtersKey && (now - cacheTimestamp) < CACHE_TTL_MS) {
+      console.log('📦 Using cached map data:', mapDataCache.length, 'locations');
+      return mapDataCache;
+    }
+
     console.log('🌱 Fetching location data from Supabase with filters:', filters);
 
     // Helper to build a fresh query with the same filters (for pagination)
     const buildQuery = () => {
       let q = supabase
         .from('locations')
-        .select('*')
+        .select(MAP_SELECT_COLUMNS)
         .eq('status', 'active')
         .eq('verified', true);
 
@@ -368,6 +386,11 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<Ma
       status: loc.status || undefined,
     }));
     
+    // Cache the results
+    mapDataCache = locations;
+    cacheFiltersKey = filtersKey;
+    cacheTimestamp = now;
+    
     // Final summary with proper counts
     const summary = {
       gardens: locations.filter(l => l.type === 'garden').length,
@@ -396,6 +419,13 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<Ma
     console.error('Error fetching enhanced map data:', error);
     return [];
   }
+};
+
+// Clear the map data cache (useful when data changes)
+export const clearMapDataCache = () => {
+  mapDataCache = null;
+  cacheFiltersKey = null;
+  cacheTimestamp = 0;
 };
 
 // Fetch additional community fridges with fallback
