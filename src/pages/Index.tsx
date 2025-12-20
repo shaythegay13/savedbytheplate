@@ -111,29 +111,29 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Community */}
+            {/* About Us */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1556484687-30636164638b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
-                  alt="Community gardening" 
+                  alt="About us" 
                   className="w-full h-full object-cover" 
                 />
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Users className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Community</h3>
+                  <h3 className="text-xl font-semibold">About Us</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Connect with fellow urban gardeners through Discord channels
-                  and local events.
+                  Learn about our mission to inspire the next generation
+                  through sustainable food education.
                 </p>
                 <Link 
-                  to="/community" 
+                  to="/about" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Join the community
+                  Meet our team
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

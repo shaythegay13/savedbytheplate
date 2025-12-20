@@ -4,13 +4,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import LocalFood from "./pages/LocalFood";
 import Map from "./pages/Map";
 import GardenPlan from "./pages/GardenPlan";
 import ComingSoon from "./pages/ComingSoon";
-import Community from "./pages/Community";
 import Education from "./pages/Education";
 import Premium from "./pages/Premium";
 import ForagingTest from "./pages/ForagingTest";
@@ -18,14 +17,8 @@ import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import ForumCategory from "./pages/ForumCategory";
-import ForumDiscussion from "./pages/ForumDiscussion";
-import NewDiscussion from "./pages/NewDiscussion";
 import Auth from "./pages/Auth";
-import Calendar from "./pages/Calendar";
 import Profile from "./pages/Profile";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
 import Footer from "@/components/layout/Footer";
 
 const queryClient = new QueryClient();
@@ -48,26 +41,15 @@ const App = () => (
               {/* Profile page */}
               <Route path="/profile" element={<Profile />} />
               
-              {/* Calendar page */}
-              <Route path="/calendar" element={<Calendar />} />
-              
               {/* All other pages */}
               <Route path="/index" element={<Index />} />
               <Route path="/local-food" element={<LocalFood />} />
               <Route path="/local-food/map" element={<Map />} />
               <Route path="/local-food/garden-planner" element={<GardenPlan />} />
-              <Route path="/community" element={<Community />} />
               <Route path="/education" element={<Education />} />
               <Route path="/about" element={<AboutUs />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
-              
-              <Route path="/forum" element={<Navigate to="/community" replace />} />
-              <Route path="/forum/category/:slug" element={<ForumCategory />} />
-              <Route path="/forum/discussion/:id" element={<ForumDiscussion />} />
-              <Route path="/forum/new" element={<NewDiscussion />} />
               
               <Route path="/premium" element={<Premium />} />
               <Route path="/foraging-test" element={<ForagingTest />} />
