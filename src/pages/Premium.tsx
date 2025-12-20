@@ -37,7 +37,6 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
         "AI-powered custom garden designs",
         "Access curated educational content",
         "Discord community access",
-        "City-wide event calendar",
         "Personalized garden planning tools",
         "Priority support",
         "Cancel anytime"
@@ -52,7 +51,6 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
         "AI-powered custom garden designs",
         "Access curated educational content",
         "Discord community access",
-        "City-wide event calendar",
         "Personalized garden planning tools",
         "Priority support",
         "2 months free compared to monthly",
@@ -69,7 +67,6 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
         "AI-powered custom garden designs",
         "Access curated educational content",
         "Discord community access",
-        "City-wide event calendar",
         "Personalized garden planning tools",
         "Priority support",
         "Perfect for classroom use"
@@ -269,11 +266,11 @@ const PremiumFeatures = () => (
     <div className="bg-white p-6 rounded-lg border border-sbtp-green-200">
       <div className="flex items-start mb-4">
         <div className="bg-sbtp-green-100 p-2 rounded-full mr-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M12 3v12"></path><path d="m8 11 4 4 4-4"></path><path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"></path></svg>
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Centralized Event Calendar</h3>
-          <p className="text-sbtp-brown-500">Never miss a community garden event with our city-wide calendar featuring workshops, tours, and gatherings.</p>
+          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Priority Support</h3>
+          <p className="text-sbtp-brown-500">Get faster responses and dedicated assistance from our team for all your gardening questions.</p>
         </div>
       </div>
     </div>
@@ -393,7 +390,7 @@ const Premium = () => {
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Unlock Premium</h1>
             <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6 px-4">
-              Get personalized garden plans, curated educational content, Discord community access, and city-wide event calendars
+              Get personalized garden plans, curated educational content, and Discord community access
             </p>
             <div className="bg-white/10 rounded-lg p-4 sm:p-6 inline-block mx-4">
               <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
@@ -438,9 +435,6 @@ const Premium = () => {
                       <span>School Garden Tours</span>
                     </li>
                     <li className="flex items-center min-h-[40px]">
-                      <span>Community Forums</span>
-                    </li>
-                    <li className="flex items-center min-h-[40px]">
                       <span>AI Garden Planner</span>
                     </li>
                     <li className="flex items-center min-h-[40px]">
@@ -448,9 +442,6 @@ const Premium = () => {
                     </li>
                     <li className="flex items-center min-h-[40px]">
                       <span>Discord Community</span>
-                    </li>
-                    <li className="flex items-center min-h-[40px]">
-                      <span>Event Calendar</span>
                     </li>
                   </ul>
                 </div>
@@ -466,12 +457,6 @@ const Premium = () => {
                     </li>
                     <li className="flex items-center justify-center min-h-[40px]">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </li>
-                    <li className="flex items-center justify-center min-h-[40px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </li>
-                    <li className="flex items-center justify-center min-h-[40px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </li>
                     <li className="flex items-center justify-center min-h-[40px]">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-brown-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -494,12 +479,6 @@ const Premium = () => {
                     <p className="text-sbtp-brown-500">Full access</p>
                   </div>
                   <ul className="space-y-4">
-                    <li className="flex items-center justify-center min-h-[40px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </li>
-                    <li className="flex items-center justify-center min-h-[40px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </li>
                     <li className="flex items-center justify-center min-h-[40px]">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
@@ -543,12 +522,6 @@ const Premium = () => {
                     <p className="text-sbtp-brown-500">Special pricing</p>
                   </div>
                   <ul className="space-y-4">
-                    <li className="flex items-center justify-center min-h-[40px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </li>
-                    <li className="flex items-center justify-center min-h-[40px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </li>
                     <li className="flex items-center justify-center min-h-[40px]">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </li>
