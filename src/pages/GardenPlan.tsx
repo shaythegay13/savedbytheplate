@@ -248,10 +248,15 @@ const GardenPlan = () => {
                 <div className="flex-shrink-0 text-center">
                   <button
                     onClick={handleJaneClick}
-                    className={`relative group cursor-pointer transition-all duration-300 ${
-                      isListening ? 'scale-105' : 'hover:scale-105'
+                    onTouchEnd={(e) => {
+                      e.preventDefault();
+                      handleJaneClick();
+                    }}
+                    className={`relative group cursor-pointer transition-all duration-300 touch-manipulation ${
+                      isListening ? 'scale-105' : 'hover:scale-105 active:scale-105'
                     }`}
-                    aria-label={isListening ? "Click to send your question" : "Click to start talking to Jane"}
+                    aria-label={isListening ? "Tap to send your question" : "Tap to start talking to Jane"}
+                    style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     {/* Glow effect when speaking */}
                     {isSpeaking && (
@@ -271,7 +276,7 @@ const GardenPlan = () => {
                     <img 
                       src={janeAvatar} 
                       alt="Jane - Your Garden Assistant" 
-                      className={`relative h-48 object-contain drop-shadow-xl transition-all duration-300 ${
+                      className={`relative h-32 sm:h-48 object-contain drop-shadow-xl transition-all duration-300 ${
                         isListening 
                           ? 'scale-105' 
                           : isSpeaking 
@@ -280,22 +285,22 @@ const GardenPlan = () => {
                       }`}
                     />
                     {/* Status indicator */}
-                    <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                    <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                       isListening 
                         ? 'bg-green-500 text-white animate-pulse' 
                         : isProcessing
                         ? 'bg-amber-500 text-white'
                         : isSpeaking
                         ? 'bg-blue-500 text-white'
-                        : 'bg-green-100 text-green-700 group-hover:bg-green-200'
+                        : 'bg-green-100 text-green-700 group-hover:bg-green-200 active:bg-green-200'
                     }`}>
                       {isListening 
-                        ? '🎤 Listening... (click to send)' 
+                        ? '🎤 Listening... (tap to send)' 
                         : isProcessing 
                         ? '⏳ Thinking...' 
                         : isSpeaking 
                         ? '🔊 Speaking...' 
-                        : '👆 Click to ask'}
+                        : '👆 Tap to ask'}
                     </div>
                   </button>
                   <h1 className="text-4xl font-bold text-green-800 dark:text-green-400 mt-4">
