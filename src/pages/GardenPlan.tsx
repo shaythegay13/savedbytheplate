@@ -17,9 +17,18 @@ declare global {
   }
 }
 
+const TRIAL_DURATION_DAYS = 2;
+
 const GardenPlan = () => {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [trialStatus, setTrialStatus] = useState<{
+    isOnTrial: boolean;
+    trialExpired: boolean;
+    trialEndsAt: Date | null;
+    daysRemaining: number;
+  }>({ isOnTrial: false, trialExpired: false, trialEndsAt: null, daysRemaining: 0 });
+  const [trialLoading, setTrialLoading] = useState(true);
   const { subscribed, loading: subscriptionLoading } = useSubscription(user);
   const navigate = useNavigate();
   
@@ -47,6 +56,76 @@ const GardenPlan = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Check and manage trial status
+  useEffect(() => {
+    const checkTrialStatus = async () => {
+      if (!user) {
+        setTrialLoading(false);
+        return;
+      }
+
+      try {
+        // Get user's profile to check trial status
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('jane_trial_started_at')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching profile:', error);
+          setTrialLoading(false);
+          return;
+        }
+
+        if (!profile?.jane_trial_started_at) {
+          // Start trial for new users
+          const now = new Date();
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ jane_trial_started_at: now.toISOString() })
+            .eq('id', user.id);
+
+          if (updateError) {
+            console.error('Error starting trial:', updateError);
+          }
+
+          const trialEndsAt = new Date(now.getTime() + TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000);
+          setTrialStatus({
+            isOnTrial: true,
+            trialExpired: false,
+            trialEndsAt,
+            daysRemaining: TRIAL_DURATION_DAYS
+          });
+        } else {
+          // Check existing trial
+          const trialStarted = new Date(profile.jane_trial_started_at);
+          const trialEndsAt = new Date(trialStarted.getTime() + TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000);
+          const now = new Date();
+          const trialExpired = now > trialEndsAt;
+          const daysRemaining = Math.max(0, Math.ceil((trialEndsAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)));
+
+          setTrialStatus({
+            isOnTrial: !trialExpired,
+            trialExpired,
+            trialEndsAt,
+            daysRemaining
+          });
+        }
+      } catch (err) {
+        console.error('Error checking trial:', err);
+      } finally {
+        setTrialLoading(false);
+      }
+    };
+
+    if (user && !subscribed) {
+      checkTrialStatus();
+    } else {
+      setTrialLoading(false);
+    }
+  }, [user, subscribed]);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -262,8 +341,8 @@ const GardenPlan = () => {
     }
   };
 
-  // Show loading state while checking auth and subscription
-  if (authLoading || subscriptionLoading) {
+  // Show loading state while checking auth, subscription, and trial
+  if (authLoading || subscriptionLoading || trialLoading) {
     return (
       <>
         <Navbar />
@@ -277,8 +356,11 @@ const GardenPlan = () => {
     );
   }
 
-  // Show paywall for non-subscribers
-  if (!user || !subscribed) {
+  // Allow access if subscribed OR on active trial
+  const hasAccess = subscribed || (user && trialStatus.isOnTrial && !trialStatus.trialExpired);
+
+  // Show paywall for non-subscribers with expired/no trial
+  if (!user || !hasAccess) {
     return (
       <>
         <Navbar />
@@ -300,13 +382,28 @@ const GardenPlan = () => {
                     </div>
                   </div>
                   <CardTitle className="text-2xl sm:text-3xl font-bold text-green-800 dark:text-green-400">
-                    Premium Feature
+                    {trialStatus.trialExpired ? 'Trial Ended' : 'Premium Feature'}
                   </CardTitle>
                   <CardDescription className="text-lg text-gray-600 dark:text-gray-400">
-                    Ask Jane is available exclusively for premium subscribers
+                    {trialStatus.trialExpired 
+                      ? 'Your 2-day free trial has ended. Subscribe to continue using Ask Jane!'
+                      : !user 
+                      ? 'Sign in to start your free 2-day trial of Ask Jane!'
+                      : 'Ask Jane is available exclusively for premium subscribers'}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {!user && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200">
+                      <h3 className="font-semibold text-blue-800 dark:text-blue-400 mb-2 flex items-center gap-2">
+                        🎉 Free 2-Day Trial
+                      </h3>
+                      <p className="text-blue-700 dark:text-blue-300 text-sm">
+                        Sign in now to try Ask Jane free for 2 days. No credit card required!
+                      </p>
+                    </div>
+                  )}
+                  
                   <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
                     <h3 className="font-semibold text-green-800 dark:text-green-400 mb-2 flex items-center gap-2">
                       <Star className="h-5 w-5" />
@@ -339,7 +436,7 @@ const GardenPlan = () => {
                           onClick={() => navigate('/auth')}
                           className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg"
                         >
-                          Sign In to Subscribe
+                          Sign In to Start Free Trial
                         </Button>
                         <p className="text-center text-sm text-gray-500">
                           Already have an account?{' '}
@@ -367,9 +464,21 @@ const GardenPlan = () => {
     );
   }
 
+  // Show trial banner if user is on trial
+  const trialBanner = !subscribed && trialStatus.isOnTrial && (
+    <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-4 text-center text-sm">
+      <span className="font-medium">🎉 Free Trial:</span> {trialStatus.daysRemaining} day{trialStatus.daysRemaining !== 1 ? 's' : ''} remaining.{' '}
+      <Link to="/premium" className="underline font-semibold hover:text-blue-100">
+        Subscribe now
+      </Link>{' '}
+      to keep using Ask Jane!
+    </div>
+  );
+
   return (
     <>
       <Navbar />
+      {trialBanner}
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto py-12 px-4">
           <div className="max-w-4xl mx-auto">
