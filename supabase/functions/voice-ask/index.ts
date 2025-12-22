@@ -12,7 +12,8 @@ const RENDER_BACKEND_URL = 'https://agenticaigardenplanner.onrender.com';
 async function fetchCrops(query: string = ""): Promise<any[]> {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    // Increased timeout to 15s to handle Render cold starts
+    const timeout = setTimeout(() => controller.abort(), 15000);
     
     const response = await fetch(`${RENDER_BACKEND_URL}/api/crops`, {
       signal: controller.signal,
@@ -47,7 +48,8 @@ async function fetchCrops(query: string = ""): Promise<any[]> {
 async function fetchEnums(): Promise<any> {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    // Increased timeout to 15s to handle Render cold starts
+    const timeout = setTimeout(() => controller.abort(), 15000);
     
     const response = await fetch(`${RENDER_BACKEND_URL}/api/enums`, {
       signal: controller.signal,
