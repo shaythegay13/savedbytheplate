@@ -230,46 +230,47 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
         body: formData
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Check if server tells us to use browser TTS
-        if (data.use_browser_tts) {
-          console.log('Using browser TTS fallback');
-          useBrowserTTS(text);
-          return;
-        }
-        
-        // Decode base64 audio and play it
-        const audioBytes = atob(data.audio_base64);
-        const arrayBuffer = new ArrayBuffer(audioBytes.length);
-        const view = new Uint8Array(arrayBuffer);
-        for (let i = 0; i < audioBytes.length; i++) {
-          view[i] = audioBytes.charCodeAt(i);
-        }
-        
-        const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(blob);
-        const audio = new Audio(audioUrl);
-        
-        // Store reference to current audio
-        currentAudioRef.current = audio;
-        
-        audio.onended = () => {
-          setIsSpeaking(false);
-          currentAudioRef.current = null;
-        };
-        audio.onerror = () => {
-          setIsSpeaking(false);
-          currentAudioRef.current = null;
-        };
-        
-        await audio.play();
-      } else {
-        // Fallback to browser TTS on error
+      // Always try to parse JSON response (even on 429 for cooldown handling)
+      const data = await response.json();
+      
+      // Check if server tells us to use browser TTS (including cooldown)
+      if (data.use_browser_tts) {
+        console.log('Using browser TTS fallback:', data.error || 'no API key');
+        useBrowserTTS(text);
+        return;
+      }
+      
+      if (!response.ok) {
         console.log('API error, using browser TTS fallback');
         useBrowserTTS(text);
+        return;
       }
+      
+      // Decode base64 audio and play it
+      const audioBytes = atob(data.audio_base64);
+      const arrayBuffer = new ArrayBuffer(audioBytes.length);
+      const view = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < audioBytes.length; i++) {
+        view[i] = audioBytes.charCodeAt(i);
+      }
+      
+      const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      
+      // Store reference to current audio
+      currentAudioRef.current = audio;
+      
+      audio.onended = () => {
+        setIsSpeaking(false);
+        currentAudioRef.current = null;
+      };
+      audio.onerror = () => {
+        setIsSpeaking(false);
+        currentAudioRef.current = null;
+      };
+      
+      await audio.play();
     } catch (error) {
       console.error('Speech error:', error);
       // Fallback to browser TTS
