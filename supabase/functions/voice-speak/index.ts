@@ -17,6 +17,28 @@ const countWords = (text: string): number => {
   return text.trim().split(/\s+/).filter(word => word.length > 0).length;
 };
 
+// Remove special characters that shouldn't be read aloud
+const sanitizeForSpeech = (text: string): string => {
+  return text
+    // Remove markdown-style formatting
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .replace(/_/g, ' ')
+    .replace(/`/g, '')
+    .replace(/#+\s*/g, '')
+    // Remove brackets and parentheses
+    .replace(/\[|\]/g, '')
+    .replace(/\(|\)/g, '')
+    .replace(/\{|\}/g, '')
+    // Remove other special characters
+    .replace(/[~^<>|\\]/g, '')
+    // Replace dashes with spaces for natural speech
+    .replace(/\s*-\s*/g, ' ')
+    // Clean up extra whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -81,6 +103,9 @@ serve(async (req) => {
       // Truncate to MAX_WORDS and add ellipsis
       processedText = text.split(/\s+/).slice(0, MAX_WORDS).join(' ') + '...';
     }
+    
+    // Sanitize text for speech (remove special characters)
+    processedText = sanitizeForSpeech(processedText);
 
     // Update rate limit record
     if (rateLimit) {
