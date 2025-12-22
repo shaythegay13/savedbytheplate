@@ -370,9 +370,9 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters, onProgress?
     };
 
     // Page through results to bypass the 1000 row cap
-    // Use smaller batches for progressive loading
-    const pageSize = onProgress ? 200 : 1000; // Smaller batches when progressive
-    const maxPages = onProgress ? 50 : 10; // More pages with smaller batches
+    // Use larger batches for faster loading while still allowing progress updates
+    const pageSize = 500; // Larger batches for fewer network round-trips
+    const maxPages = 20;
     let page = 0;
     let allLocations: MapLocation[] = [];
     let hasMore = true;
