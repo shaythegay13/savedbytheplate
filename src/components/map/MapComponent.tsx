@@ -57,6 +57,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const markers = useRef<any[]>([]);
   const markerClusterer = useRef<MarkerClusterer | null>(null);
   const markersData = useRef<{ marker: any; location: MapLocation }[]>([]);
+  const processedLocationIds = useRef<Set<string>>(new Set());
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -72,6 +73,17 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
         setLoading(true);
         setLoadProgress(0);
         setLocations([]); // Clear existing locations
+        processedLocationIds.current.clear(); // Clear processed IDs for fresh load
+        
+        // Clear existing markers when filters change
+        if (markerClusterer.current) {
+          markerClusterer.current.clearMarkers();
+          markerClusterer.current = null;
+        }
+        markers.current.forEach(marker => marker.map = null);
+        markers.current = [];
+        markersData.current = [];
+        
         console.log('🌱 Starting progressive map data load...');
         
         const filters: MapDataFilters = {
@@ -137,24 +149,24 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
     initMap();
   }, []);
 
-  // Add markers when map and locations are ready with clustering
+  // Add markers incrementally when new locations arrive
   useEffect(() => {
     if (!mapLoaded || !map.current || locations.length === 0) return;
 
-    const addMarkers = async () => {
+    const addNewMarkers = async () => {
       const { AdvancedMarkerElement } = await (window as any).google.maps.importLibrary('marker');
 
-      // Clear existing clusterer and markers
-      if (markerClusterer.current) {
-        markerClusterer.current.clearMarkers();
-      }
-      markers.current.forEach(marker => marker.map = null);
-      markers.current = [];
-      markersData.current = [];
+      // Find new locations that haven't been processed yet
+      const newLocations = locations.filter(loc => !processedLocationIds.current.has(loc.id));
+      
+      if (newLocations.length === 0) return;
 
       const newMarkers: any[] = [];
 
-      locations.forEach(location => {
+      newLocations.forEach(location => {
+        // Mark as processed
+        processedLocationIds.current.add(location.id);
+        
         const color = locationColors[location.type] || '#4CAF50';
         
         // Create custom SVG icon matching the legend with fixed size
@@ -203,64 +215,62 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
         });
 
         newMarkers.push(marker);
+        markers.current.push(marker);
         markersData.current.push({ marker, location });
       });
 
-      markers.current = newMarkers;
+      // Initialize clusterer on first batch, add markers on subsequent batches
+      if (!markerClusterer.current) {
+        // Custom renderer for cluster styling with zoom-based sizing
+        const renderer = {
+          render: ({ count, position }: any, stats: any, map: any) => {
+            const zoom = map.getZoom() || 12;
+            const baseSize = Math.max(30, Math.min(70, 85 - (zoom * 3)));
+            
+            let color = '#86efac';
+            let textColor = '#166534';
+            
+            if (count > stats.clusters.markers.mean) {
+              color = '#fbbf24';
+              textColor = '#78350f';
+            } else if (count > stats.clusters.markers.mean / 2) {
+              color = '#7dd3fc';
+              textColor = '#0c4a6e';
+            }
 
-      // Custom renderer for cluster styling with zoom-based sizing
-      const renderer = {
-        render: ({ count, position }: any, stats: any, map: any) => {
-          const zoom = map.getZoom() || 12;
-          // Inverse relationship: larger circles when zoomed out, smaller when zoomed in
-          // Zoom typically ranges from 1-20, we want size from 60 (zoom 1) to 30 (zoom 20)
-          const baseSize = Math.max(30, Math.min(70, 85 - (zoom * 3)));
-          
-          // Determine cluster size and color
-          let color = '#86efac'; // light green for small (default)
-          let textColor = '#166534'; // dark green text
-          
-          if (count > stats.clusters.markers.mean) {
-            // Large clusters
-            color = '#fbbf24'; // yellow
-            textColor = '#78350f'; // dark yellow/brown text
-          } else if (count > stats.clusters.markers.mean / 2) {
-            // Medium clusters
-            color = '#7dd3fc'; // light blue
-            textColor = '#0c4a6e'; // dark blue text
-          }
+            const svg = `
+              <svg width="${baseSize}" height="${baseSize}" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="25" cy="25" r="22" fill="${color}" stroke="white" stroke-width="3" opacity="0.9"/>
+                <text x="25" y="25" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="${textColor}">
+                  ${count}
+                </text>
+              </svg>
+            `;
 
-          const svg = `
-            <svg width="${baseSize}" height="${baseSize}" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="25" cy="25" r="22" fill="${color}" stroke="white" stroke-width="3" opacity="0.9"/>
-              <text x="25" y="25" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="${textColor}">
-                ${count}
-              </text>
-            </svg>
-          `;
+            const parser = new DOMParser();
+            const svgElement = parser.parseFromString(svg, 'image/svg+xml').documentElement;
 
-          const parser = new DOMParser();
-          const svgElement = parser.parseFromString(svg, 'image/svg+xml').documentElement;
+            return new (window as any).google.maps.marker.AdvancedMarkerElement({
+              position,
+              content: svgElement,
+              zIndex: Number((window as any).google.maps.Marker.MAX_ZINDEX) + count,
+            });
+          },
+        };
 
-          return new (window as any).google.maps.marker.AdvancedMarkerElement({
-            position,
-            content: svgElement,
-            zIndex: Number((window as any).google.maps.Marker.MAX_ZINDEX) + count,
-          });
-        },
-      };
-
-      // Create marker clusterer for better performance with many markers
-      // Increase radius when zoomed out for more aggressive clustering
-      markerClusterer.current = new MarkerClusterer({
-        map: map.current,
-        markers: newMarkers,
-        renderer,
-      });
+        markerClusterer.current = new MarkerClusterer({
+          map: map.current,
+          markers: newMarkers,
+          renderer,
+        });
+      } else {
+        // Add new markers to existing clusterer
+        markerClusterer.current.addMarkers(newMarkers);
+      }
     };
 
-    addMarkers();
-  }, [mapLoaded, locations, currentZoom]);
+    addNewMarkers();
+  }, [mapLoaded, locations]);
 
   // Update marker visibility based on active filters and open now status
   useEffect(() => {
