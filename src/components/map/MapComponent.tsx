@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { MapLocation } from './types';
 import { locationColors, defaultMapConfig } from './MapConfig';
-import { fetchEnhancedMapData, MapDataFilters } from '../../services/enhancedMapDataService';
+import { fetchEnhancedMapData, MapDataFilters, ProgressCallback } from '../../services/enhancedMapDataService';
 import LocationPopup from './LocationPopup';
 import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 import { isLocationOpen } from '@/lib/hoursParser';
@@ -62,32 +62,42 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [currentZoom, setCurrentZoom] = useState(defaultMapConfig.zoom);
 
-  // Fetch enhanced data from all sources - memoized to prevent unnecessary refetches
+  // Fetch enhanced data progressively
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        console.log('🌱 Starting to load enhanced map data with filters...');
+        setLoadProgress(0);
+        setLocations([]); // Clear existing locations
+        console.log('🌱 Starting progressive map data load...');
         
-        // Build filters object
         const filters: MapDataFilters = {
           types: activeFilters && activeFilters.size > 0 ? Array.from(activeFilters) : undefined,
         };
         
-        const allLocations = await fetchEnhancedMapData(filters);
-        console.log('📍 Total locations loaded for map:', allLocations.length);
-        setLocations(allLocations);
+        // Progressive callback - adds markers as batches arrive
+        const onProgress: ProgressCallback = (batch, progress) => {
+          if (batch.length > 0) {
+            setLocations(prev => [...prev, ...batch]);
+            console.log(`📍 Added ${batch.length} locations (${progress}% complete)`);
+          }
+          setLoadProgress(progress);
+        };
+        
+        await fetchEnhancedMapData(filters, onProgress);
       } catch (error) {
         console.error('Failed to load enhanced map data:', error);
       } finally {
         setLoading(false);
+        setLoadProgress(100);
       }
     };
     
     loadData();
-  }, [activeFilters]); // Only reload when filters actually change
+  }, [activeFilters]);
 
   // Initialize Google Maps
   useEffect(() => {

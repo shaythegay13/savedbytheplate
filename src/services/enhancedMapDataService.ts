@@ -302,14 +302,20 @@ const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 // Only select the columns we need for the map (excludes sensitive contact info)
 const MAP_SELECT_COLUMNS = 'id,name,type,description,address,latitude,longitude,organization,website,hours,tags,details,open_hours,neighborhood,borough,zip_code,cross_streets,status';
 
-export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<MapLocation[]> => {
+// Progressive loading callback type
+export type ProgressCallback = (batch: MapLocation[], progress: number) => void;
+
+export const fetchEnhancedMapData = async (filters?: MapDataFilters, onProgress?: ProgressCallback): Promise<MapLocation[]> => {
   try {
     const filtersKey = JSON.stringify(filters || {});
     const now = Date.now();
     
-    // Return cached data if valid
+    // Return cached data if valid (call progress with 100% immediately)
     if (mapDataCache && cacheFiltersKey === filtersKey && (now - cacheTimestamp) < CACHE_TTL_MS) {
       console.log('📦 Using cached map data:', mapDataCache.length, 'locations');
+      if (onProgress) {
+        onProgress(mapDataCache, 100);
+      }
       return mapDataCache;
     }
 
@@ -343,64 +349,89 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<Ma
       return q;
     };
 
-    // Page through results to bypass the 1000 row cap
-    const pageSize = 1000;
-    const maxPages = 10; // safety cap (10k rows)
-    let page = 0;
-    let allRows: any[] = [];
+    // Transform a batch of rows to MapLocation format
+    const transformBatch = (rows: any[], startIndex: number): MapLocation[] => {
+      return rows.map((loc, index) => ({
+        id: loc.id || `loc-${startIndex + index}`,
+        name: loc.name,
+        type: loc.type as MapLocation['type'],
+        description: loc.description || '',
+        tags: loc.tags || [],
+        lngLat: [loc.longitude, loc.latitude] as [number, number],
+        address: loc.address || undefined,
+        website: loc.website || undefined,
+        details: loc.details || undefined,
+        hoursText: loc.open_hours || undefined,
+        borough: loc.borough || undefined,
+        zipcode: loc.zip_code || undefined,
+        crossstreets: loc.cross_streets || undefined,
+        status: loc.status || undefined,
+      }));
+    };
 
-    while (page < maxPages) {
+    // Page through results to bypass the 1000 row cap
+    // Use smaller batches for progressive loading
+    const pageSize = onProgress ? 200 : 1000; // Smaller batches when progressive
+    const maxPages = onProgress ? 50 : 10; // More pages with smaller batches
+    let page = 0;
+    let allLocations: MapLocation[] = [];
+    let hasMore = true;
+
+    while (page < maxPages && hasMore) {
       const from = page * pageSize;
       const to = from + pageSize - 1;
       const { data, error } = await buildQuery().range(from, to);
+      
       if (error) {
         console.error('Error fetching locations from Supabase:', error);
         break;
       }
+      
       const batch = data ?? [];
-      allRows = allRows.concat(batch);
-      if (batch.length < pageSize) break; // last page
+      
+      if (batch.length > 0) {
+        const transformedBatch = transformBatch(batch, allLocations.length);
+        allLocations = allLocations.concat(transformedBatch);
+        
+        // Call progress callback with the new batch
+        if (onProgress) {
+          // Estimate progress (we don't know total, so estimate based on batch size)
+          const progress = batch.length < pageSize ? 100 : Math.min(95, (page + 1) * 10);
+          onProgress(transformedBatch, progress);
+        }
+      }
+      
+      if (batch.length < pageSize) {
+        hasMore = false;
+      }
       page++;
     }
 
-    if (allRows.length === 0) {
+    if (allLocations.length === 0) {
       console.warn('No locations found in Supabase table');
       return [];
     }
-
-    // Transform Supabase data to MapLocation format
-    const locations: MapLocation[] = allRows.map((loc, index) => ({
-      id: loc.id || `loc-${index}`,
-      name: loc.name,
-      type: loc.type as MapLocation['type'],
-      description: loc.description || '',
-      tags: loc.tags || [],
-      lngLat: [loc.longitude, loc.latitude] as [number, number],
-      address: loc.address || undefined,
-      website: loc.website || undefined,
-      details: loc.details || undefined,
-      hoursText: loc.open_hours || undefined,
-      borough: loc.borough || undefined,
-      zipcode: loc.zip_code || undefined,
-      crossstreets: loc.cross_streets || undefined,
-      status: loc.status || undefined,
-    }));
     
     // Cache the results
-    mapDataCache = locations;
+    mapDataCache = allLocations;
     cacheFiltersKey = filtersKey;
     cacheTimestamp = now;
     
+    // Final progress callback
+    if (onProgress) {
+      onProgress([], 100);
+    }
+    
     // Final summary with proper counts
     const summary = {
-      gardens: locations.filter(l => l.type === 'garden').length,
-      fridges: locations.filter(l => l.type === 'fridge').length,
-      markets: locations.filter(l => l.type === 'market').length,
-      foodbanks: locations.filter(l => l.type === 'foodbank').length,
-      farms: locations.filter(l => l.type === 'farm').length,
-      urbanfarms: locations.filter(l => l.type === 'urbanfarm').length,
-      businesses: locations.filter(l => l.type === 'business').length,
-      csa: locations.filter(l => l.type === 'csa').length,
+      gardens: allLocations.filter(l => l.type === 'garden').length,
+      fridges: allLocations.filter(l => l.type === 'fridge').length,
+      markets: allLocations.filter(l => l.type === 'market').length,
+      foodbanks: allLocations.filter(l => l.type === 'foodbank').length,
+      farms: allLocations.filter(l => l.type === 'farm').length,
+      urbanfarms: allLocations.filter(l => l.type === 'urbanfarm').length,
+      businesses: allLocations.filter(l => l.type === 'business').length,
+      csa: allLocations.filter(l => l.type === 'csa').length,
     };
     
     console.log('📊 Map data loaded from Supabase:');
@@ -412,9 +443,9 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters): Promise<Ma
     console.log(`  • Urban Farms: ${summary.urbanfarms}`);
     console.log(`  • Businesses: ${summary.businesses}`);
     console.log(`  • CSAs: ${summary.csa}`);
-    console.log(`  • Total Locations: ${locations.length}`);
+    console.log(`  • Total Locations: ${allLocations.length}`);
     
-    return locations;
+    return allLocations;
   } catch (error) {
     console.error('Error fetching enhanced map data:', error);
     return [];

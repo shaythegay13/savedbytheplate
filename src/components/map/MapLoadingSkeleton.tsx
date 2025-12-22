@@ -1,6 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 
-const MapLoadingSkeleton = () => {
+interface MapLoadingSkeletonProps {
+  progress?: number;
+  locationsLoaded?: number;
+}
+
+const MapLoadingSkeleton = ({ progress = 0, locationsLoaded = 0 }: MapLoadingSkeletonProps) => {
   return (
     <div className="absolute inset-0 bg-muted/30 flex flex-col">
       {/* Map background skeleton */}
@@ -61,14 +67,21 @@ const MapLoadingSkeleton = () => {
         
         {/* Loading indicator overlay */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="bg-background/95 backdrop-blur-sm px-6 py-4 rounded-xl shadow-lg border border-border flex flex-col items-center gap-3">
+          <div className="bg-background/95 backdrop-blur-sm px-6 py-4 rounded-xl shadow-lg border border-border flex flex-col items-center gap-3 min-w-[200px]">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
               <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
               <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
             <span className="text-sm font-medium text-foreground">Loading map data...</span>
-            <span className="text-xs text-muted-foreground">Fetching food access locations</span>
+            {progress > 0 && (
+              <>
+                <Progress value={progress} className="w-full h-2" />
+                <span className="text-xs text-muted-foreground">
+                  {locationsLoaded > 0 ? `${locationsLoaded} locations loaded` : `${progress}% complete`}
+                </span>
+              </>
+            )}
           </div>
         </div>
         
