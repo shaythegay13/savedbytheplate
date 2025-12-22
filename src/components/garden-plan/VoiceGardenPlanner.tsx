@@ -30,7 +30,13 @@ interface PlanRequest {
 
 type MicPermissionStatus = 'unknown' | 'granted' | 'denied' | 'prompt';
 
-const VoiceBox: React.FC = () => {
+interface VoiceBoxProps {
+  onResponseChange?: (response: string) => void;
+  onSpeakingChange?: (isSpeaking: boolean) => void;
+  onProcessingChange?: (isProcessing: boolean) => void;
+}
+
+const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange, onProcessingChange }) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [recognition, setRecognition] = useState<null | (typeof window.SpeechRecognition)>(null);
@@ -41,6 +47,19 @@ const VoiceBox: React.FC = () => {
   const [micPermission, setMicPermission] = useState<MicPermissionStatus>('unknown');
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+
+  // Notify parent of state changes
+  useEffect(() => {
+    onResponseChange?.(response);
+  }, [response, onResponseChange]);
+
+  useEffect(() => {
+    onSpeakingChange?.(isSpeaking);
+  }, [isSpeaking, onSpeakingChange]);
+
+  useEffect(() => {
+    onProcessingChange?.(isProcessing);
+  }, [isProcessing, onProcessingChange]);
 
   // Check microphone permission on mount
   useEffect(() => {
