@@ -252,14 +252,29 @@ const GardenPlan = () => {
                     }`}
                     aria-label={isListening ? "Click to send your question" : "Click to start talking to Jane"}
                   >
+                    {/* Glow effect when speaking */}
+                    {isSpeaking && (
+                      <>
+                        <div className="absolute inset-0 rounded-full bg-blue-400/30 blur-xl animate-pulse scale-110" />
+                        <div className="absolute inset-0 rounded-full bg-blue-300/20 blur-2xl animate-ping scale-125" style={{ animationDuration: '2s' }} />
+                        <div className="absolute inset-0 rounded-full border-4 border-blue-400/50 animate-ping scale-105" style={{ animationDuration: '1.5s' }} />
+                      </>
+                    )}
+                    {/* Glow effect when listening */}
+                    {isListening && (
+                      <>
+                        <div className="absolute inset-0 rounded-full bg-green-400/30 blur-xl animate-pulse scale-110" />
+                        <div className="absolute inset-0 rounded-full border-4 border-green-400/50 animate-ping scale-105" style={{ animationDuration: '1.5s' }} />
+                      </>
+                    )}
                     <img 
                       src={janeAvatar} 
                       alt="Jane - Your Garden Assistant" 
-                      className={`h-48 object-contain drop-shadow-xl transition-all duration-300 ${
+                      className={`relative h-48 object-contain drop-shadow-xl transition-all duration-300 ${
                         isListening 
-                          ? 'animate-pulse ring-4 ring-green-400 ring-offset-4 rounded-full' 
+                          ? 'scale-105' 
                           : isSpeaking 
-                          ? 'animate-bounce' 
+                          ? 'scale-105 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]' 
                           : 'group-hover:drop-shadow-2xl'
                       }`}
                     />
