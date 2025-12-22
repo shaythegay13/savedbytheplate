@@ -14,7 +14,7 @@ const GardenPlan = () => {
               <img 
                 src={janeAvatar} 
                 alt="Jane - Your Garden Assistant" 
-                className="w-32 h-32 mx-auto rounded-full object-cover mb-4 shadow-xl border-4 border-green-200"
+                className="h-48 mx-auto object-contain mb-4 drop-shadow-xl"
               />
               <h1 className="text-5xl font-bold text-green-800 dark:text-green-400 mb-4">
                 Jane
