@@ -27,6 +27,8 @@ interface PlanRequest {
   additional_notes?: string;
 }
 
+type MicPermissionStatus = 'unknown' | 'granted' | 'denied' | 'prompt';
+
 const VoiceBox: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -35,8 +37,37 @@ const VoiceBox: React.FC = () => {
   const [response, setResponse] = useState<string>("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [micPermission, setMicPermission] = useState<MicPermissionStatus>('unknown');
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+
+  // Check microphone permission on mount
+  useEffect(() => {
+    const checkMicPermission = async () => {
+      try {
+        // Use Permissions API if available
+        if (navigator.permissions && navigator.permissions.query) {
+          const result = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+          setMicPermission(result.state as MicPermissionStatus);
+          
+          // Listen for permission changes
+          result.onchange = () => {
+            setMicPermission(result.state as MicPermissionStatus);
+          };
+        } else {
+          // Fallback: try to enumerate devices to check if we have permission
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const hasAudioInput = devices.some(d => d.kind === 'audioinput' && d.label);
+          setMicPermission(hasAudioInput ? 'granted' : 'prompt');
+        }
+      } catch (err) {
+        console.log('Could not check mic permission:', err);
+        setMicPermission('prompt');
+      }
+    };
+
+    checkMicPermission();
+  }, []);
 
   useEffect(() => {
     if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
@@ -95,6 +126,7 @@ const VoiceBox: React.FC = () => {
       stream.getTracks().forEach(track => track.stop());
     } catch (err) {
       console.error("Microphone permission denied:", err);
+      setMicPermission('denied');
       toast({
         title: "Microphone Access Required",
         description: "Please allow microphone access to use voice features.",
@@ -278,6 +310,48 @@ const VoiceBox: React.FC = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-2xl shadow-xl">
+      {/* Microphone Permission Status Indicator */}
+      <div className="flex justify-center mb-3">
+        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
+          micPermission === 'granted' 
+            ? 'bg-green-100 text-green-700' 
+            : micPermission === 'denied'
+            ? 'bg-red-100 text-red-700'
+            : 'bg-amber-100 text-amber-700'
+        }`}>
+          {micPermission === 'granted' ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              </svg>
+              Microphone ready
+            </>
+          ) : micPermission === 'denied' ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="2" x2="22" y1="2" y2="22"/>
+                <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/>
+                <path d="M5 10v2a7 7 0 0 0 12 5"/>
+                <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/>
+                <path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+              </svg>
+              Microphone blocked
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
+              Tap mic to allow access
+            </>
+          )}
+        </div>
+      </div>
+
       <div className="flex justify-center mb-6">
         <button
           onClick={toggleListening}
@@ -290,6 +364,8 @@ const VoiceBox: React.FC = () => {
           className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 touch-manipulation ${
             isListening
               ? "bg-gradient-to-br from-green-500 to-green-300 shadow-lg shadow-green-300 animate-pulse"
+              : micPermission === 'denied'
+              ? "bg-gradient-to-br from-gray-400 to-gray-300"
               : "bg-gradient-to-br from-green-700 to-green-400 hover:shadow-lg hover:shadow-green-200"
           }`}
         >
