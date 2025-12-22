@@ -77,9 +77,29 @@ const VoiceBox: React.FC = () => {
     }
   }, []);
 
-  const toggleListening = () => {
+  const toggleListening = async () => {
     if (!recognition) {
-      alert("Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.");
+      toast({
+        title: "Not Supported",
+        description: "Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // On mobile, we need to explicitly request microphone permission first
+    try {
+      // Request microphone permission - this is required on mobile
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Stop the stream immediately - we just needed the permission
+      stream.getTracks().forEach(track => track.stop());
+    } catch (err) {
+      console.error("Microphone permission denied:", err);
+      toast({
+        title: "Microphone Access Required",
+        description: "Please allow microphone access to use voice features.",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -87,8 +107,17 @@ const VoiceBox: React.FC = () => {
       recognition.stop();
       setIsListening(false);
     } else {
-      recognition.start();
-      setIsListening(true);
+      try {
+        recognition.start();
+        setIsListening(true);
+      } catch (err) {
+        console.error("Failed to start recognition:", err);
+        toast({
+          title: "Error",
+          description: "Failed to start voice recognition. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -252,7 +281,13 @@ const VoiceBox: React.FC = () => {
       <div className="flex justify-center mb-6">
         <button
           onClick={toggleListening}
-          className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 ${
+          onTouchEnd={(e) => {
+            e.preventDefault(); // Prevent double-firing on mobile
+            toggleListening();
+          }}
+          type="button"
+          aria-label={isListening ? "Stop listening" : "Start voice recording"}
+          className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 touch-manipulation ${
             isListening
               ? "bg-gradient-to-br from-green-500 to-green-300 shadow-lg shadow-green-300 animate-pulse"
               : "bg-gradient-to-br from-green-700 to-green-400 hover:shadow-lg hover:shadow-green-200"
