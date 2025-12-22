@@ -6,6 +6,7 @@ import LocationPopup from './LocationPopup';
 import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 import { isLocationOpen } from '@/lib/hoursParser';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
+import MapLoadingSkeleton from './MapLoadingSkeleton';
 
 // Icon path definitions matching the legend
 const getIconPath = (type: string) => {
@@ -280,17 +281,11 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const activeLocation = activePopup ? locations.find(loc => loc.id === activePopup) : null;
 
   return (
-    <div className="relative w-full h-full min-h-[300px] bg-white rounded-lg overflow-hidden border border-sbtp-green-200 shadow-lg">
+    <div className="relative w-full h-full min-h-[300px] bg-background rounded-lg overflow-hidden border border-border shadow-lg">
       <div ref={mapContainer} className="absolute inset-0" />
       
-      {loading && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-md shadow-md z-10">
-          <div className="flex items-center gap-2">
-            <div className="animate-spin h-4 w-4 border-2 border-sbtp-green-500 border-t-transparent rounded-full"></div>
-            <span className="text-sm text-sbtp-brown-700">Loading food access locations...</span>
-          </div>
-        </div>
-      )}
+      {/* Show skeleton while loading data or map not yet initialized */}
+      {(loading || !mapLoaded) && <MapLoadingSkeleton />}
       
       {/* Popup for active location */}
       {activeLocation && popupPosition && (
