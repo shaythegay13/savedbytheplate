@@ -66,7 +66,7 @@ const Index = () => {
                   <h3 className="text-xl font-semibold">Local Food Resources</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Find local food sources and get personalized gardening advice through our AI-powered voice agent.
+                  Find local food sources and get personalized gardening advice through Jane, your personal gardening assistant.
                 </p>
                 <Link 
                   to="/local-food" 

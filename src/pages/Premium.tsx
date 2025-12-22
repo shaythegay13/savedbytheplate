@@ -34,7 +34,7 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
       priceId: PRICE_IDS.monthly,
       savings: undefined,
       features: [
-        "Personalized Gardening Voice Agent",
+        "Ask Jane - Your Personal Gardening Assistant",
         "Access curated educational content",
         "Discord community access",
         "Priority support",
@@ -47,7 +47,7 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
       priceId: PRICE_IDS.annual,
       savings: "Save $20 vs monthly billing",
       features: [
-        "Personalized Gardening Voice Agent",
+        "Ask Jane - Your Personal Gardening Assistant",
         "Access curated educational content",
         "Discord community access",
         "Priority support",
@@ -62,7 +62,7 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
       savings: "Special pricing for educators",
       features: [
         "All premium features included",
-        "Personalized Gardening Voice Agent",
+        "Ask Jane - Your Personal Gardening Assistant",
         "Access curated educational content",
         "Discord community access",
         "Priority support",
@@ -230,8 +230,8 @@ const PremiumFeatures = () => (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sbtp-green-600"><path d="M7 20h10"></path><path d="M10 20c1.5 0 3.485-2.857 4-6.5"></path><path d="M14 20c-1.5 0-2.5-5.5-2.5-9s1-7 3-8c1 1 2 2 2.5 5s.5 4 .5 7-1 5-3 5Z"></path></svg>
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Gardening Voice Agent</h3>
-          <p className="text-sbtp-brown-500">Get personalized gardening advice through our AI-powered voice assistant tailored to your space, climate, and goals.</p>
+          <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Ask Jane - Your Personal Gardening Assistant</h3>
+          <p className="text-sbtp-brown-500">Get personalized gardening advice through Jane, your AI-powered voice assistant tailored to your space, climate, and goals.</p>
         </div>
       </div>
     </div>
@@ -387,7 +387,7 @@ const Premium = () => {
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Unlock Premium</h1>
             <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6 px-4">
-              Gain access to our personalized Gardening Voice Agent, curated educational content, and Discord community
+              Gain access to Ask Jane - Your Personal Gardening Assistant, curated educational content, and Discord community
             </p>
             <div className="bg-white/10 rounded-lg p-4 sm:p-6 inline-block mx-4">
               <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
@@ -432,7 +432,7 @@ const Premium = () => {
                       <span>After School Programming</span>
                     </li>
                     <li className="flex items-center min-h-[40px]">
-                      <span>Gardening Voice Agent</span>
+                      <span>Ask Jane - Your Personal Gardening Assistant</span>
                     </li>
                     <li className="flex items-center min-h-[40px]">
                       <span>Educational Resources</span>
@@ -569,7 +569,7 @@ const Premium = () => {
                   </div>
                 </div>
                 <p className="text-sbtp-brown-700">
-                  "The voice agent helped me transform my small balcony into a thriving food source. I'm now growing enough herbs and greens for my family's needs!"
+                  "Jane helped me transform my small balcony into a thriving food source. I'm now growing enough herbs and greens for my family's needs!"
                 </p>
               </div>
               
