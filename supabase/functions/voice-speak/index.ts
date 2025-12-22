@@ -131,7 +131,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'tts-1',
         input: processedText,
-        voice: 'nova',
+        voice: 'shimmer', // Female voice - warm and pleasant
         response_format: 'mp3',
       }),
     });

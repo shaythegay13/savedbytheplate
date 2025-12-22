@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+
 declare global {
   interface Window {
     SpeechRecognition: any;
@@ -158,12 +159,28 @@ const VoiceBox: React.FC = () => {
     setResponse("");
   };
 
-  // Use browser's built-in speech synthesis as fallback
+  // Use browser's built-in speech synthesis as fallback with female voice
   const useBrowserTTS = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 1.0;
-      utterance.pitch = 1.0;
+      utterance.pitch = 1.1; // Slightly higher pitch for female voice
+      
+      // Try to find a female voice
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice = voices.find(v => 
+        v.name.toLowerCase().includes('female') || 
+        v.name.toLowerCase().includes('samantha') ||
+        v.name.toLowerCase().includes('victoria') ||
+        v.name.toLowerCase().includes('karen') ||
+        v.name.toLowerCase().includes('moira') ||
+        v.name.toLowerCase().includes('tessa') ||
+        v.name.toLowerCase().includes('fiona')
+      );
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+      
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => setIsSpeaking(false);
       window.speechSynthesis.speak(utterance);
