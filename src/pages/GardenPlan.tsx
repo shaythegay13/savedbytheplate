@@ -1,6 +1,6 @@
 import VoiceGardenPlanner from '@/components/garden-plan/VoiceGardenPlanner';
 import Navbar from '@/components/layout/Navbar';
-import janeAvatar from '@/assets/jane-avatar.png';
+import janeAvatar from '@/assets/jane-avatar-transparent.png';
 
 const GardenPlan = () => {
   return (
