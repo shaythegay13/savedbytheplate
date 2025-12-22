@@ -1,5 +1,6 @@
 import VoiceGardenPlanner from '@/components/garden-plan/VoiceGardenPlanner';
 import Navbar from '@/components/layout/Navbar';
+import janeAvatar from '@/assets/jane-avatar.png';
 
 const GardenPlan = () => {
   return (
@@ -8,10 +9,15 @@ const GardenPlan = () => {
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto py-12 px-4">
           <div className="max-w-4xl mx-auto">
-            {/* Header */}
+            {/* Header with Jane Avatar */}
             <div className="text-center mb-8">
+              <img 
+                src={janeAvatar} 
+                alt="Jane - Your Garden Assistant" 
+                className="w-32 h-32 mx-auto rounded-full object-cover mb-4 shadow-xl border-4 border-green-200"
+              />
               <h1 className="text-5xl font-bold text-green-800 dark:text-green-400 mb-4">
-                🌱 Gardening Voice Agent
+                Jane
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">
                 Your Personal Gardening Assistant
