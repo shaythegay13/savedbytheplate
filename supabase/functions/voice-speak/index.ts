@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 // Input validation configuration
-const MAX_WORDS = 175;
+const MAX_WORDS = 300; // Allow longer responses for detailed explanations
 const COOLDOWN_MINUTES = 10;
 const COOLDOWN_MS = COOLDOWN_MINUTES * 60 * 1000;
 
@@ -72,18 +72,14 @@ serve(async (req) => {
       throw new Error('No text provided');
     }
 
-    // Validate word count
+    // Validate word count - truncate if too long instead of erroring
     const wordCount = countWords(text);
+    let processedText = text;
+    
     if (wordCount > MAX_WORDS) {
-      console.log(`Text too long: ${wordCount} words (max: ${MAX_WORDS})`);
-      return new Response(
-        JSON.stringify({ 
-          use_browser_tts: true,
-          synthesized_text: text.split(/\s+/).slice(0, MAX_WORDS).join(' '),
-          error: `Text exceeds ${MAX_WORDS} word limit (${wordCount} words provided). Please shorten your message to one paragraph.`
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      console.log(`Text too long: ${wordCount} words (max: ${MAX_WORDS}), truncating`);
+      // Truncate to MAX_WORDS and add ellipsis
+      processedText = text.split(/\s+/).slice(0, MAX_WORDS).join(' ') + '...';
     }
 
     // Update rate limit record
@@ -116,7 +112,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           use_browser_tts: true,
-          synthesized_text: text,
+          synthesized_text: processedText,
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -134,7 +130,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: 'tts-1',
-        input: text,
+        input: processedText,
         voice: 'nova',
         response_format: 'mp3',
       }),
@@ -150,7 +146,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({
             use_browser_tts: true,
-            synthesized_text: text,
+            synthesized_text: processedText,
             error_reason: 'quota_exceeded',
           }),
           {
@@ -172,7 +168,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         audio_base64: base64Audio,
-        synthesized_text: text,
+        synthesized_text: processedText,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
