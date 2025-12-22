@@ -295,7 +295,12 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
       <div ref={mapContainer} className="absolute inset-0" />
       
       {/* Show skeleton while loading data or map not yet initialized */}
-      {(loading || !mapLoaded) && <MapLoadingSkeleton />}
+      {(loading || !mapLoaded) && (
+        <MapLoadingSkeleton 
+          progress={loadProgress} 
+          locationsLoaded={locations.length} 
+        />
+      )}
       
       {/* Popup for active location */}
       {activeLocation && popupPosition && (
