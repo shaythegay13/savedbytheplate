@@ -138,8 +138,9 @@ const GardenPlan = () => {
     }
   };
 
-  const sendQuestion = async () => {
-    if (!transcript.trim()) return;
+  const sendQuestion = async (questionText?: string) => {
+    const question = questionText || transcript;
+    if (!question.trim()) return;
 
     setIsProcessing(true);
     
@@ -154,7 +155,7 @@ const GardenPlan = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text_question: transcript,
+          text_question: question,
           context: {}
         })
       });
@@ -427,26 +428,27 @@ const GardenPlan = () => {
                 Try asking me:
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    &quot;What vegetables grow well in shade?&quot;
-                  </p>
-                </div>
-                <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    &quot;I want to start a raised bed garden&quot;
-                  </p>
-                </div>
-                <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    &quot;What are good companion plants for tomatoes?&quot;
-                  </p>
-                </div>
-                <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    &quot;When should I plant lettuce in New York?&quot;
-                  </p>
-                </div>
+                {[
+                  "What vegetables grow well in shade?",
+                  "I want to start a raised bed garden",
+                  "What are good companion plants for tomatoes?",
+                  "When should I plant lettuce in New York?"
+                ].map((question) => (
+                  <button
+                    key={question}
+                    onClick={() => sendQuestion(question)}
+                    disabled={isProcessing || isListening}
+                    className={`bg-green-100 dark:bg-green-900 rounded-lg p-4 text-left transition-all duration-200 border-2 border-transparent ${
+                      isProcessing || isListening
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:bg-green-200 dark:hover:bg-green-800 hover:border-green-400 hover:scale-[1.02] cursor-pointer hover:shadow-md'
+                    }`}
+                  >
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      &quot;{question}&quot;
+                    </p>
+                  </button>
+                ))}
               </div>
             </div>
 
