@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscription } from '@/hooks/useSubscription';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Lock, Star, Loader2 } from 'lucide-react';
+import { User } from '@supabase/supabase-js';
 import janeAvatar from '@/assets/jane-transparent.png';
 
 declare global {
@@ -11,6 +18,11 @@ declare global {
 }
 
 const GardenPlan = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const { subscribed, loading: subscriptionLoading } = useSubscription(user);
+  const navigate = useNavigate();
+  
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [recognition, setRecognition] = useState<null | (typeof window.SpeechRecognition)>(null);
@@ -20,6 +32,21 @@ const GardenPlan = () => {
   const [isMuted, setIsMuted] = useState(false);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+
+  // Check authentication
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -235,13 +262,117 @@ const GardenPlan = () => {
     }
   };
 
+  // Show loading state while checking auth and subscription
+  if (authLoading || subscriptionLoading) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-green-600 mx-auto mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Show paywall for non-subscribers
+  if (!user || !subscribed) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
+          <div className="container mx-auto py-12 px-4">
+            <div className="max-w-2xl mx-auto">
+              <Card className="border-2 border-amber-200 shadow-xl">
+                <CardHeader className="text-center pb-4">
+                  <div className="mx-auto mb-4 relative">
+                    <img 
+                      src={janeAvatar} 
+                      alt="Jane - Your Garden Assistant" 
+                      className="h-32 sm:h-40 object-contain opacity-50 grayscale"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-amber-500 rounded-full p-3">
+                        <Lock className="h-8 w-8 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  <CardTitle className="text-2xl sm:text-3xl font-bold text-green-800 dark:text-green-400">
+                    Premium Feature
+                  </CardTitle>
+                  <CardDescription className="text-lg text-gray-600 dark:text-gray-400">
+                    Ask Jane is available exclusively for premium subscribers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                    <h3 className="font-semibold text-green-800 dark:text-green-400 mb-2 flex items-center gap-2">
+                      <Star className="h-5 w-5" />
+                      What you'll get with Premium:
+                    </h3>
+                    <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-600">✓</span>
+                        <span>Ask Jane - Your Personal AI Gardening Assistant</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-600">✓</span>
+                        <span>Voice-powered gardening advice and tips</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-600">✓</span>
+                        <span>Curated educational content</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-600">✓</span>
+                        <span>Discord community access</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div className="flex flex-col gap-3">
+                    {!user ? (
+                      <>
+                        <Button 
+                          onClick={() => navigate('/auth')}
+                          className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg"
+                        >
+                          Sign In to Subscribe
+                        </Button>
+                        <p className="text-center text-sm text-gray-500">
+                          Already have an account?{' '}
+                          <Link to="/auth" className="text-green-600 hover:underline">
+                            Log in here
+                          </Link>
+                        </p>
+                      </>
+                    ) : (
+                      <Button 
+                        onClick={() => navigate('/premium')}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg"
+                      >
+                        <Star className="mr-2 h-5 w-5" />
+                        Upgrade to Premium
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto py-12 px-4">
           <div className="max-w-4xl mx-auto">
-            {/* Header with Jane Avatar and Speech Bubble */}
             <div className="mb-8">
               <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                 {/* Clickable Jane Avatar */}
