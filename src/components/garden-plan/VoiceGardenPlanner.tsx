@@ -390,14 +390,16 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
 
       <div className="flex justify-center mb-6">
         <button
-          onClick={toggleListening}
-          onTouchEnd={(e) => {
-            e.preventDefault(); // Prevent double-firing on mobile
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Mic button clicked');
             toggleListening();
           }}
           type="button"
           aria-label={isListening ? "Stop listening" : "Start voice recording"}
-          className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 touch-manipulation ${
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+          className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 touch-manipulation select-none ${
             isListening
               ? "bg-gradient-to-br from-green-500 to-green-300 shadow-lg shadow-green-300 animate-pulse"
               : micPermission === 'denied'
