@@ -204,14 +204,17 @@ const GardenPlan = () => {
         body: formData
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data.use_browser_tts) {
-          useBrowserTTS(text);
-          return;
-        }
-        
+      // Always try to parse JSON response (even on 429)
+      const data = await response.json().catch(() => null);
+      
+      // If rate limited or instructed to use browser TTS, fall back gracefully
+      if (!response.ok || data?.use_browser_tts) {
+        console.log('Using browser TTS (rate limit or fallback)');
+        useBrowserTTS(text);
+        return;
+      }
+      
+      if (data?.audio_base64) {
         const audioBytes = atob(data.audio_base64);
         const arrayBuffer = new ArrayBuffer(audioBytes.length);
         const view = new Uint8Array(arrayBuffer);
