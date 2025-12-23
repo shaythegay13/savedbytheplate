@@ -565,7 +565,7 @@ const GardenPlan = () => {
                       ? 'border-amber-300 shadow-amber-50' 
                       : 'border-green-200'
                   }`}>
-                    {/* Speech bubble pointer */}
+                    {/* Speech bubble pointer - left side on desktop */}
                     <div className="hidden md:block absolute left-0 top-1/2 -translate-x-3 -translate-y-1/2">
                       <div className={`w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-r-[12px] transition-colors ${
                         isListening 
@@ -575,6 +575,18 @@ const GardenPlan = () => {
                           : isProcessing 
                           ? 'border-r-amber-300' 
                           : 'border-r-green-200'
+                      }`}></div>
+                    </div>
+                    {/* Speech bubble pointer - top on mobile (pointing up to Jane) */}
+                    <div className="md:hidden absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3">
+                      <div className={`w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[12px] transition-colors ${
+                        isListening 
+                          ? 'border-b-green-500' 
+                          : isSpeaking 
+                          ? 'border-b-blue-400' 
+                          : isProcessing 
+                          ? 'border-b-amber-300' 
+                          : 'border-b-green-200'
                       }`}></div>
                     </div>
                     
