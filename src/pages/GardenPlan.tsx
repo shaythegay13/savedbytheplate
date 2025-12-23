@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, Star, Loader2 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
-import janeAvatar from '@/assets/jane-avatar-alpha.png';
+import TransparentJaneAvatar from '@/components/garden-plan/TransparentJaneAvatar';
 declare global {
   interface Window {
     SpeechRecognition: any;
@@ -372,8 +372,7 @@ const GardenPlan = () => {
               <Card className="border-2 border-amber-200 shadow-xl">
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto mb-4 relative">
-                    <img 
-                      src={janeAvatar} 
+                    <TransparentJaneAvatar 
                       alt="Jane - Your Garden Assistant" 
                       className="h-40 sm:h-48 md:h-56 object-contain opacity-50 grayscale"
                     />
@@ -515,8 +514,7 @@ const GardenPlan = () => {
                         <div className="absolute inset-0 rounded-full border-4 border-green-400/50 animate-ping scale-105" style={{ animationDuration: '1.5s' }} />
                       </>
                     )}
-                    <img 
-                      src={janeAvatar} 
+                    <TransparentJaneAvatar 
                       alt="Jane - Your Garden Assistant" 
                       className={`relative h-40 sm:h-56 md:h-64 object-contain drop-shadow-xl transition-all duration-300 rounded-2xl ${
                         isListening 
