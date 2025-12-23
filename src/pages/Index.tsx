@@ -26,20 +26,6 @@ const Index = () => {
               Connecting communities with sustainable food options<br />
               and local agriculture, starting with our youth.
             </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-              <Link 
-                to="/local-food" 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
-              >
-                Local Food Resources
-              </Link>
-              <Link 
-                to="/education" 
-                className="bg-white hover:bg-green-100 text-green-800 px-6 py-3 rounded-lg font-medium text-center w-full sm:w-auto"
-              >
-                Learn About Our Course
-              </Link>
-            </div>
           </div>
         </div>
       </section>
