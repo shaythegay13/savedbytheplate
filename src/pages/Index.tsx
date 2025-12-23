@@ -130,7 +130,7 @@ const Index = () => {
                   Find local food sources and get personalized gardening advice through Jane, your personal gardening assistant.
                 </p>
                 <Link 
-                  to="/local-food" 
+                  to="/local-food/map"
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
                   Explore resources
