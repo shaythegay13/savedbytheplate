@@ -521,9 +521,9 @@ const GardenPlan = () => {
                       alt="Jane - Your Garden Assistant" 
                       className={`relative h-40 sm:h-56 md:h-64 object-contain drop-shadow-xl transition-all duration-300 ${
                         isListening 
-                          ? 'scale-105' 
+                          ? 'animate-gentle-bounce drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
                           : isSpeaking 
-                          ? 'scale-105 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]' 
+                          ? 'animate-gentle-bounce drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]' 
                           : 'group-hover:drop-shadow-2xl'
                       }`}
                     />
