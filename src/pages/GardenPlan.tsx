@@ -516,7 +516,12 @@ const GardenPlan = () => {
                         <div className="absolute inset-0 rounded-full border-4 border-green-400/50 animate-ping scale-105" style={{ animationDuration: '1.5s' }} />
                       </>
                     )}
-                    <div className="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-full p-2">
+                    <div 
+                      className="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4"
+                      style={{ 
+                        borderRadius: '60% 40% 45% 55% / 50% 60% 40% 50%',
+                      }}
+                    >
                       <img 
                         src={janeAvatar} 
                         alt="Jane - Your Garden Assistant" 
