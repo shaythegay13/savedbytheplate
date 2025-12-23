@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, Star, Loader2 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
-import janeAvatar from '@/assets/jane-avatar-cutout.png';
+import janeAvatar from '@/assets/jane-garden-helper-cutout.png';
 declare global {
   interface Window {
     SpeechRecognition: any;
