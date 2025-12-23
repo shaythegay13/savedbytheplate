@@ -585,6 +585,7 @@ export type Database = {
       location_reviews: {
         Row: {
           created_at: string | null
+          deleted_at: string | null
           helpful_count: number | null
           id: string
           is_verified_visit: boolean | null
@@ -597,6 +598,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          deleted_at?: string | null
           helpful_count?: number | null
           id?: string
           is_verified_visit?: boolean | null
@@ -609,6 +611,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          deleted_at?: string | null
           helpful_count?: number | null
           id?: string
           is_verified_visit?: boolean | null
