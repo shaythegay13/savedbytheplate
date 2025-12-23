@@ -87,11 +87,20 @@ const TransparentJaneAvatar = ({ className = '', alt = 'Jane - Your Garden Assis
   }
 
   return (
-    <img 
-      src={processedSrc || janeAvatarOriginal}
-      alt={alt}
-      className={className}
-    />
+    <div className="relative inline-block">
+      {/* Glow layer */}
+      <div 
+        className="absolute inset-0 blur-xl opacity-40 scale-110"
+        style={{
+          background: 'radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)'
+        }}
+      />
+      <img 
+        src={processedSrc || janeAvatarOriginal}
+        alt={alt}
+        className={`${className} relative z-10 drop-shadow-[0_8px_24px_hsl(var(--primary)/0.3)]`}
+      />
+    </div>
   );
 };
 
