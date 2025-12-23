@@ -516,17 +516,19 @@ const GardenPlan = () => {
                         <div className="absolute inset-0 rounded-full border-4 border-green-400/50 animate-ping scale-105" style={{ animationDuration: '1.5s' }} />
                       </>
                     )}
-                    <img 
-                      src={janeAvatar} 
-                      alt="Jane - Your Garden Assistant" 
-                      className={`relative h-40 sm:h-56 md:h-64 object-contain drop-shadow-xl transition-all duration-300 ${
-                        isListening 
-                          ? 'animate-gentle-bounce drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
-                          : isSpeaking 
-                          ? 'animate-gentle-bounce drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]' 
-                          : 'group-hover:drop-shadow-2xl'
-                      }`}
-                    />
+                    <div className="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-full p-2">
+                      <img 
+                        src={janeAvatar} 
+                        alt="Jane - Your Garden Assistant" 
+                        className={`relative h-40 sm:h-56 md:h-64 object-contain drop-shadow-xl transition-all duration-300 ${
+                          isListening 
+                            ? 'animate-gentle-bounce drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
+                            : isSpeaking 
+                            ? 'animate-gentle-bounce drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]' 
+                            : 'group-hover:drop-shadow-2xl'
+                        }`}
+                      />
+                    </div>
                     {/* Status indicator */}
                     <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                       isListening 
