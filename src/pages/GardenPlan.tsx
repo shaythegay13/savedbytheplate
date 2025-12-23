@@ -376,7 +376,7 @@ const GardenPlan = () => {
                     <img 
                       src={janeAvatar} 
                       alt="Jane - Your Garden Assistant" 
-                      className="h-32 sm:h-40 object-contain opacity-50 grayscale"
+                      className="h-40 sm:h-48 md:h-56 object-contain opacity-50 grayscale"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="bg-amber-500 rounded-full p-3">
@@ -519,7 +519,7 @@ const GardenPlan = () => {
                     <img 
                       src={janeAvatar} 
                       alt="Jane - Your Garden Assistant" 
-                      className={`relative h-32 sm:h-48 object-contain drop-shadow-xl transition-all duration-300 ${
+                      className={`relative h-40 sm:h-56 md:h-64 object-contain drop-shadow-xl transition-all duration-300 ${
                         isListening 
                           ? 'scale-105' 
                           : isSpeaking 
