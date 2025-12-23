@@ -64,7 +64,7 @@ const Navbar = () => {
     { href: "/index", label: "Home" },
     { href: "/education", label: "Education" },
     { href: "/local-food/garden-planner", label: "Ask Jane" },
-    { href: "/local-food", label: "Local Food" },
+    { href: "/local-food/map", label: "Local Food" },
     { href: "/about", label: "About" },
   ];
 
