@@ -1,6 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
 import shayPhoto from "@/assets/shay-bouchles.jpeg";
+import larsPhoto from "@/assets/lars-heidenreich.jpg";
+import khurramPhoto from "@/assets/khurram-kalimi.jpg";
+import saraPhoto from "@/assets/sara-bruno.jpg";
+import carolAnnePhoto from "@/assets/carolanne-bouchles.jpg";
+import kelseyPhoto from "@/assets/kelsey-estevez.jpg";
 import ccpLogo from "@/assets/ccp-logo.jpg";
 import modularYearLogo from "@/assets/modular-year-logo.svg";
 import communitasLogo from "@/assets/communitas-ventures.png";
@@ -83,7 +88,81 @@ const AboutUs = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
 
+          {/* Board of Directors Section */}
+          <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6">Board of Directors</h2>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {/* Shay Bouchles - President */}
+                <div className="text-center">
+                  <img 
+                    src={shayPhoto} 
+                    alt="Shay Bouchles, President" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Shay Bouchles</h3>
+                  <p className="text-sm text-sbtp-brown-500">President</p>
+                </div>
+
+                {/* Lars Heidenreich - Secretary */}
+                <div className="text-center">
+                  <img 
+                    src={larsPhoto} 
+                    alt="Lars Heidenreich, Secretary" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Lars Heidenreich</h3>
+                  <p className="text-sm text-sbtp-brown-500">Secretary</p>
+                </div>
+
+                {/* Khurram Kalimi */}
+                <div className="text-center">
+                  <img 
+                    src={khurramPhoto} 
+                    alt="Khurram Kalimi" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Khurram Kalimi</h3>
+                  <p className="text-sm text-sbtp-brown-500">Board Member</p>
+                </div>
+
+                {/* Sara Bruno */}
+                <div className="text-center">
+                  <img 
+                    src={saraPhoto} 
+                    alt="Sara Bruno" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Sara Bruno</h3>
+                  <p className="text-sm text-sbtp-brown-500">Board Member</p>
+                </div>
+
+                {/* CarolAnne Bouchles - Treasurer */}
+                <div className="text-center">
+                  <img 
+                    src={carolAnnePhoto} 
+                    alt="CarolAnne Bouchles, Treasurer" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">CarolAnne Bouchles</h3>
+                  <p className="text-sm text-sbtp-brown-500">Treasurer</p>
+                </div>
+
+                {/* Kelsey Estevez */}
+                <div className="text-center">
+                  <img 
+                    src={kelseyPhoto} 
+                    alt="Kelsey Estevez" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Kelsey Estevez</h3>
+                  <p className="text-sm text-sbtp-brown-500">Board Member</p>
+                </div>
               </div>
             </CardContent>
           </Card>
