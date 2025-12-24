@@ -181,35 +181,33 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
           title: location.name,
         });
 
-        marker.addListener('click', (event: any) => {
+        marker.addListener('click', () => {
           setActivePopup(location.id);
           
-          // Get the marker's position in screen coordinates
-          const projection = map.current.getProjection();
-          const bounds = map.current.getBounds();
-          if (projection && bounds) {
-            const point = projection.fromLatLngToPoint(marker.position);
-            const scale = Math.pow(2, map.current.getZoom());
-            const worldPoint = new (window as any).google.maps.Point(
-              point.x * scale,
-              point.y * scale
-            );
+          // Get the marker's screen position using the overlay projection
+          const mapDiv = mapContainer.current;
+          if (mapDiv && map.current) {
+            const bounds = map.current.getBounds();
+            const projection = map.current.getProjection();
             
-            // Get map container position
-            const mapDiv = mapContainer.current;
-            if (mapDiv) {
-              const rect = mapDiv.getBoundingClientRect();
-              const topLeft = projection.fromLatLngToPoint(bounds.getNorthEast());
-              const topLeftWorldPoint = new (window as any).google.maps.Point(
-                topLeft.x * scale,
-                topLeft.y * scale
-              );
+            if (bounds && projection) {
+              const ne = bounds.getNorthEast();
+              const sw = bounds.getSouthWest();
               
-              // Calculate pixel position relative to map container
-              const pixelX = (worldPoint.x - topLeftWorldPoint.x);
-              const pixelY = (worldPoint.y - topLeftWorldPoint.y);
+              // Get the marker's lat/lng
+              const markerLatLng = marker.position;
               
-              setPopupPosition({ x: pixelX, y: pixelY });
+              // Calculate the position as a percentage of the map bounds
+              const mapWidth = mapDiv.offsetWidth;
+              const mapHeight = mapDiv.offsetHeight;
+              
+              const lngRange = ne.lng() - sw.lng();
+              const latRange = ne.lat() - sw.lat();
+              
+              const x = ((markerLatLng.lng - sw.lng()) / lngRange) * mapWidth;
+              const y = ((ne.lat() - markerLatLng.lat) / latRange) * mapHeight;
+              
+              setPopupPosition({ x, y });
             }
           }
         });
