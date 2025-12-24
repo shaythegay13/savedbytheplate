@@ -6,6 +6,8 @@ import khurramPhoto from "@/assets/khurram-kalimi.jpg";
 import saraPhoto from "@/assets/sara-bruno.jpg";
 import carolAnnePhoto from "@/assets/carolanne-bouchles.jpg";
 import kelseyPhoto from "@/assets/kelsey-estevez.jpg";
+import shanePhoto from "@/assets/shane-nantais.png";
+import charlesPhoto from "@/assets/charles-kirby.jpg";
 import ccpLogo from "@/assets/ccp-logo.jpg";
 import modularYearLogo from "@/assets/modular-year-logo.svg";
 import communitasLogo from "@/assets/communitas-ventures.png";
@@ -167,7 +169,36 @@ const AboutUs = () => {
             </CardContent>
           </Card>
 
-          {/* Partners Section */}
+          {/* Founding Advisors Section */}
+          <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6">Founding Advisors</h2>
+              
+              <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
+                {/* Shane Nantais */}
+                <div className="text-center">
+                  <img 
+                    src={shanePhoto} 
+                    alt="Shane Nantais, Founding Advisor" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Shane Nantais</h3>
+                  <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
+                </div>
+
+                {/* Charles Kirby */}
+                <div className="text-center">
+                  <img 
+                    src={charlesPhoto} 
+                    alt="Charles Kirby, Founding Advisor" 
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                  />
+                  <h3 className="text-lg font-semibold text-sbtp-green-600">Charles Kirby</h3>
+                  <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
             <CardContent className="pt-8 pb-8">
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">In Partnership With</h2>
