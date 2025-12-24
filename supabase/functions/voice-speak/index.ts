@@ -129,70 +129,12 @@ serve(async (req) => {
 
     console.log(`Text-to-speech request from ${identifier}, word count: ${wordCount}`);
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    
-    if (!OPENAI_API_KEY) {
-      // Return a flag telling client to use browser TTS
-      console.log('No OpenAI API key, returning browser TTS flag');
-      return new Response(
-        JSON.stringify({
-          use_browser_tts: true,
-          synthesized_text: processedText,
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    console.log('Generating speech using OpenAI TTS');
-
-    const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'tts-1',
-        input: processedText,
-        voice: 'shimmer', // Female voice - warm and pleasant
-        response_format: 'mp3',
-      }),
-    });
-
-    if (!ttsResponse.ok) {
-      const errorText = await ttsResponse.text();
-      console.error('TTS error:', errorText);
-      
-      // Check for quota exceeded
-      if (errorText.includes('insufficient_quota') || ttsResponse.status === 429) {
-        console.log('OpenAI quota exceeded, returning browser TTS flag');
-        return new Response(
-          JSON.stringify({
-            use_browser_tts: true,
-            synthesized_text: processedText,
-            error_reason: 'quota_exceeded',
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
-        );
-      }
-      
-      throw new Error('Failed to generate speech');
-    }
-
-    const audioBuffer = await ttsResponse.arrayBuffer();
-    const base64Audio = btoa(
-      String.fromCharCode(...new Uint8Array(audioBuffer))
-    );
-
-    console.log('Speech generated successfully');
-
+    // Always use browser TTS - OpenAI TTS disabled to save costs
+    // The browser TTS has been enhanced with better voice selection
+    console.log('Using browser TTS (OpenAI TTS disabled)');
     return new Response(
       JSON.stringify({
-        audio_base64: base64Audio,
+        use_browser_tts: true,
         synthesized_text: processedText,
       }),
       {
