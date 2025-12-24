@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
 import shayPhoto from "@/assets/shay-bouchles.jpeg";
-import hebatallahPhoto from "@/assets/hebatallah-tharhan.jpeg";
 import ccpLogo from "@/assets/ccp-logo.jpg";
 import modularYearLogo from "@/assets/modular-year-logo.svg";
 import communitasLogo from "@/assets/communitas-ventures.png";
@@ -85,34 +84,6 @@ const AboutUs = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-shrink-0">
-                    <img 
-                      src={hebatallahPhoto} 
-                      alt="Hebatallah Tharhan, Full Stack Developer" 
-                      className="w-48 h-48 rounded-lg object-cover shadow-md"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-sbtp-green-600 mb-4">
-                      Hebatallah Tharhan, Full Stack Developer
-                    </h3>
-                    
-                    <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
-                      <p>
-                        Starting as a Web Development Intern and growing into her role as Full Stack Developer at Saved by the Plate Inc., Hebatallah drives the creation of accessible, user-focused technology that powers the organization's educational and community impact.
-                      </p>
-                      
-                      <p>
-                        With a strong foundation in full stack development, automated regression testing, quality assurance, and educational technology systems, she ensures that every platform is built for reliability, scalability, and ease of use. Her work spans the full development cycle—from designing interactive learning tools and optimizing performance to integrating analytics that inform data-driven decisions in education technology.
-                      </p>
-                      
-                      <p>
-                        Known for her creativity, initiative, and collaborative mindset, Hebatallah blends technical excellence with a deep commitment to equity and accessibility. Passionate about leveraging technology to advance education and social good, she continues to expand the reach of Saved by the Plate's mission through innovation, thoughtful engineering, and community-driven design.
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </CardContent>
           </Card>
