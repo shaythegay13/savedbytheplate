@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import janeAvatarOriginal from '@/assets/jane-avatar.png';
+import janeAvatarOriginal from '@/assets/jane-new-avatar.png';
 
 interface TransparentJaneAvatarProps {
   className?: string;
