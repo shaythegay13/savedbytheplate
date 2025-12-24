@@ -6,7 +6,7 @@ import khurramPhoto from "@/assets/khurram-kalimi.jpg";
 import saraPhoto from "@/assets/sara-bruno.jpg";
 import carolAnnePhoto from "@/assets/carolanne-bouchles.jpg";
 import kelseyPhoto from "@/assets/kelsey-estevez.jpg";
-import shanePhoto from "@/assets/shane-nantais.png";
+import shanePhoto from "@/assets/shane-nantais-cropped.jpg";
 import charlesPhoto from "@/assets/charles-kirby.jpg";
 import ccpLogo from "@/assets/ccp-logo.jpg";
 import modularYearLogo from "@/assets/modular-year-logo.svg";
@@ -181,7 +181,6 @@ const AboutUs = () => {
                     src={shanePhoto} 
                     alt="Shane Nantais, Founding Advisor" 
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    style={{ objectPosition: 'center 65%' }}
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Shane Nantais</h3>
                   <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
