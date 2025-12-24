@@ -59,13 +59,13 @@ const AboutUs = () => {
                   <div className="flex-shrink-0">
                     <img 
                       src={shayPhoto} 
-                      alt="Shay Bouchles, Executive Director & Founder" 
+                      alt="Shay Bouchles, Founder, President, and Executive Director" 
                       className="w-48 h-48 rounded-lg object-cover shadow-md"
                     />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-semibold text-sbtp-green-600 mb-4">
-                      Shay Bouchles, Executive Director & Founder
+                      Shay Bouchles, Founder, President, and Executive Director
                     </h3>
                     
                     <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
