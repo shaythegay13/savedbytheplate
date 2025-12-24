@@ -180,7 +180,8 @@ const AboutUs = () => {
                   <img 
                     src={shanePhoto} 
                     alt="Shane Nantais, Founding Advisor" 
-                    className="w-32 h-32 rounded-lg object-cover object-top shadow-md mx-auto mb-3"
+                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    style={{ objectPosition: 'center 65%' }}
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Shane Nantais</h3>
                   <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
