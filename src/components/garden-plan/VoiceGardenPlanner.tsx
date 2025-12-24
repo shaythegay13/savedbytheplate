@@ -178,26 +178,63 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     setResponse("");
   };
 
-  // Use browser's built-in speech synthesis as fallback with female voice
+  // Use browser's built-in speech synthesis with enhanced natural voice selection
   const useBrowserTTS = (text: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.1; // Slightly higher pitch for female voice
+      // Cancel any ongoing speech first
+      window.speechSynthesis.cancel();
       
-      // Try to find a female voice
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95; // Slightly slower for more natural pacing
+      utterance.pitch = 1.05; // Slightly higher for warmth
+      utterance.volume = 1.0;
+      
+      // Get available voices - prioritize high-quality neural/enhanced voices
       const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(v => 
-        v.name.toLowerCase().includes('female') || 
-        v.name.toLowerCase().includes('samantha') ||
-        v.name.toLowerCase().includes('victoria') ||
-        v.name.toLowerCase().includes('karen') ||
-        v.name.toLowerCase().includes('moira') ||
-        v.name.toLowerCase().includes('tessa') ||
-        v.name.toLowerCase().includes('fiona')
-      );
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
+      
+      // Priority order for natural-sounding female voices
+      const preferredVoicePatterns = [
+        // Google's neural voices (highest quality)
+        /google.*female/i,
+        /google.*us.*english/i,
+        // Microsoft neural voices
+        /microsoft.*aria/i,
+        /microsoft.*jenny/i,
+        /microsoft.*sara/i,
+        // Apple voices (macOS/iOS)
+        /samantha/i,
+        /ava/i,
+        /allison/i,
+        /susan/i,
+        // Other quality female voices
+        /zira/i,
+        /hazel/i,
+        /karen/i,
+        /moira/i,
+        /tessa/i,
+        /victoria/i,
+        /fiona/i,
+        // Fallback - any English female
+        /female.*en/i,
+        /en.*female/i,
+      ];
+      
+      let selectedVoice = null;
+      
+      // Try each pattern in priority order
+      for (const pattern of preferredVoicePatterns) {
+        selectedVoice = voices.find(v => pattern.test(v.name));
+        if (selectedVoice) break;
+      }
+      
+      // If no preferred voice found, try any English voice
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang.startsWith('en'));
+      }
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log('Using voice:', selectedVoice.name);
       }
       
       utterance.onend = () => setIsSpeaking(false);
