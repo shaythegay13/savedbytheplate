@@ -516,7 +516,7 @@ const GardenPlan = () => {
                     )}
                     <TransparentJaneAvatar 
                       alt="Jane - Your Garden Assistant" 
-                      className={`relative h-40 sm:h-56 md:h-64 object-contain drop-shadow-xl transition-all duration-300 rounded-2xl ${
+                      className={`relative h-60 sm:h-84 md:h-96 object-contain drop-shadow-xl transition-all duration-300 rounded-2xl ${
                         isListening 
                           ? 'animate-gentle-bounce drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
                           : isSpeaking 
