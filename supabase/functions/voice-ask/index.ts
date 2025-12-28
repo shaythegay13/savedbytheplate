@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { GoogleGenerativeAI } from "https://esm.sh/@google/genai@latest";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,11 +9,13 @@ const corsHeaders = {
 
 const RENDER_BACKEND_URL = 'https://agenticaigardenplanner.onrender.com';
 
-// Fetch crop data from Render backend
+// ============================================================================
+// Helper Functions - Render Backend Integration
+// ============================================================================
+
 async function fetchCrops(query: string = ""): Promise<any[]> {
   try {
     const controller = new AbortController();
-    // Increased timeout to 15s to handle Render cold starts
     const timeout = setTimeout(() => controller.abort(), 15000);
     
     const response = await fetch(`${RENDER_BACKEND_URL}/api/crops`, {
@@ -24,7 +27,6 @@ async function fetchCrops(query: string = ""): Promise<any[]> {
       const data = await response.json();
       const crops = Array.isArray(data) ? data : [];
       
-      // Filter by query if provided
       if (query) {
         const keywords = query.toLowerCase().split(' ');
         return crops.filter((crop: any) => 
@@ -44,11 +46,9 @@ async function fetchCrops(query: string = ""): Promise<any[]> {
   }
 }
 
-// Fetch enum data from Render backend
 async function fetchEnums(): Promise<any> {
   try {
     const controller = new AbortController();
-    // Increased timeout to 15s to handle Render cold starts
     const timeout = setTimeout(() => controller.abort(), 15000);
     
     const response = await fetch(`${RENDER_BACKEND_URL}/api/enums`, {
@@ -66,32 +66,10 @@ async function fetchEnums(): Promise<any> {
   }
 }
 
-// Generate garden plan from Render backend
-async function generateGardenPlan(planData: any): Promise<any> {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
-    
-    const response = await fetch(`${RENDER_BACKEND_URL}/api/v1/garden-plan/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(planData),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    
-    if (response.ok) {
-      return await response.json();
-    }
-    console.error('Garden plan generation failed:', response.status);
-    return null;
-  } catch (e) {
-    console.warn('Garden plan generation error:', e);
-    return null;
-  }
-}
+// ============================================================================
+// Intent Parsing
+// ============================================================================
 
-// Parse user question to extract garden planning intent
 function parseGardenIntent(question: string): any {
   const lowerQ = question.toLowerCase();
   
@@ -104,7 +82,6 @@ function parseGardenIntent(question: string): any {
     experience: null,
   };
   
-  // Extract mentioned crops
   const commonCrops = ['tomato', 'pepper', 'lettuce', 'carrot', 'bean', 'cucumber', 'squash', 'kale', 'spinach', 'basil', 'mint', 'cilantro', 'parsley'];
   commonCrops.forEach(crop => {
     if (lowerQ.includes(crop)) {
@@ -112,7 +89,6 @@ function parseGardenIntent(question: string): any {
     }
   });
   
-  // Extract size
   if (lowerQ.includes('small') || lowerQ.includes('balcony') || lowerQ.includes('container')) {
     intent.size = 'small';
   } else if (lowerQ.includes('medium') || lowerQ.includes('raised bed')) {
@@ -121,7 +97,6 @@ function parseGardenIntent(question: string): any {
     intent.size = 'large';
   }
   
-  // Extract sunlight
   if (lowerQ.includes('full sun') || lowerQ.includes('sunny')) {
     intent.sunlight = 'full_sun';
   } else if (lowerQ.includes('partial') || lowerQ.includes('part shade')) {
@@ -130,7 +105,6 @@ function parseGardenIntent(question: string): any {
     intent.sunlight = 'full_shade';
   }
   
-  // Extract experience
   if (lowerQ.includes('beginner') || lowerQ.includes('new to') || lowerQ.includes('first time')) {
     intent.experience = 'beginner';
   } else if (lowerQ.includes('experienced') || lowerQ.includes('advanced')) {
@@ -139,6 +113,101 @@ function parseGardenIntent(question: string): any {
   
   return intent;
 }
+
+// ============================================================================
+// Jane's System Prompt - Reusable for future Live API integration
+// ============================================================================
+
+function buildJaneSystemPrompt(dataContext: string): string {
+  return `You are Jane, a friendly and knowledgeable garden planning assistant for Saved By The Plate, a community-focused urban gardening platform in NYC.
+
+Your personality:
+- Warm, encouraging, and approachable
+- Passionate about helping people grow their own food
+- Especially supportive of teens and beginners
+- Uses simple language, avoids jargon
+
+You help people plan their gardens with practical advice about:
+- What to plant based on their climate, space, and season
+- Spacing and companion planting
+- Container and raised bed gardening
+- Watering and care tips
+- Pest management and organic methods
+
+Keep responses conversational, helpful, and concise (2-3 paragraphs max).
+When users ask about specific plants, provide planting tips, spacing, and care instructions.
+For NYC gardeners, consider the local growing season (Zone 7a/7b).
+${dataContext}`;
+}
+
+// ============================================================================
+// Gemini API Integration
+// ============================================================================
+
+async function callGeminiAPI(systemPrompt: string, userQuestion: string): Promise<string> {
+  const GOOGLE_AI_API_KEY = Deno.env.get('GOOGLE_AI_API_KEY');
+  
+  if (!GOOGLE_AI_API_KEY) {
+    throw new Error('GOOGLE_AI_API_KEY not configured');
+  }
+
+  const genAI = new GoogleGenerativeAI(GOOGLE_AI_API_KEY);
+  
+  // Using the native audio model for future Live API compatibility
+  // For text-only mode, this still works as a standard generative model
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash-preview-05-20",
+    systemInstruction: systemPrompt,
+  });
+
+  console.log('Calling Gemini API with model: gemini-2.5-flash-preview-05-20');
+
+  const result = await model.generateContent(userQuestion);
+  const response = result.response;
+  const text = response.text();
+
+  if (!text) {
+    throw new Error('Empty response from Gemini API');
+  }
+
+  return text;
+}
+
+// ============================================================================
+// TODO: Future Live API Integration
+// ============================================================================
+/*
+ * To upgrade to real-time voice with Gemini Live API:
+ * 
+ * 1. Import LiveClient:
+ *    import { GoogleGenerativeAI, LiveClient } from "https://esm.sh/@google/genai@latest";
+ * 
+ * 2. Create a separate edge function (e.g., voice-ask-live) that:
+ *    - Handles WebSocket upgrade
+ *    - Creates a LiveClient session:
+ *      
+ *      const client = new LiveClient({
+ *        model: "gemini-2.5-flash-native-audio-preview-12-2025",
+ *        config: {
+ *          responseModalities: ["AUDIO", "TEXT"],
+ *          systemInstruction: buildJaneSystemPrompt(dataContext),
+ *        },
+ *      });
+ * 
+ * 3. Message protocol:
+ *    - Receive: { type: "text", text: string } or { type: "audio", chunk: base64 }
+ *    - Send: { type: "assistant_text", text: string } or { type: "assistant_audio", chunk: base64 }
+ * 
+ * 4. Audio specs:
+ *    - Input: 16kHz, 16-bit PCM, mono
+ *    - Output: 24kHz, 16-bit PCM, mono
+ * 
+ * 5. Or use ephemeral tokens for client-direct Live connection
+ */
+
+// ============================================================================
+// Main Handler
+// ============================================================================
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -153,12 +222,6 @@ serve(async (req) => {
     }
 
     console.log('Voice question received:', text_question);
-
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
-    }
 
     // Parse intent from question
     const intent = parseGardenIntent(text_question);
@@ -184,53 +247,12 @@ serve(async (req) => {
     }
 
     // Build system prompt
-    const systemPrompt = `You are a friendly, knowledgeable garden planning assistant for Saved By The Plate, a community-focused urban gardening platform in NYC.
+    const systemPrompt = buildJaneSystemPrompt(dataContext);
 
-You help people plan their gardens with practical advice about:
-- What to plant based on their climate, space, and season
-- Spacing and companion planting
-- Container and raised bed gardening
-- Watering and care tips
-- Pest management and organic methods
+    // Call Gemini API directly
+    const answerText = await callGeminiAPI(systemPrompt, text_question);
 
-Keep responses conversational, helpful, and concise (2-3 paragraphs max).
-When users ask about specific plants, provide planting tips, spacing, and care instructions.
-For NYC gardeners, consider the local growing season (Zone 7a/7b).
-${dataContext}`;
-
-    // Use Lovable AI Gateway
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: text_question }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Lovable AI error:', response.status, errorText);
-      
-      if (response.status === 429) {
-        throw new Error('Rate limit exceeded. Please try again in a moment.');
-      }
-      if (response.status === 402) {
-        throw new Error('AI service quota exceeded. Please try again later.');
-      }
-      throw new Error(`AI service error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const answerText = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't generate a response. Please try asking again.";
-
-    console.log('Answer generated successfully');
+    console.log('Answer generated successfully via Gemini API');
 
     // Prepare response with relevant crop data
     const responseData: any = {
@@ -250,10 +272,20 @@ ${dataContext}`;
 
   } catch (error) {
     console.error('Error in voice-ask function:', error);
+    
+    // Handle specific error types
+    let statusCode = 500;
+    let errorMessage = error.message;
+    
+    if (error.message?.includes('rate') || error.message?.includes('quota')) {
+      statusCode = 429;
+      errorMessage = 'Rate limit exceeded. Please try again in a moment.';
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
-        status: 500,
+        status: statusCode,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
