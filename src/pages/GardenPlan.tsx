@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { useToast } from '@/hooks/use-toast';
@@ -9,12 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Lock, Star, Loader2 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import TransparentJaneAvatar from '@/components/garden-plan/TransparentJaneAvatar';
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: typeof window.SpeechRecognition;
-  }
-}
+import { useVoiceLive } from '@/hooks/useVoiceLive';
 
 const TRIAL_DURATION_DAYS = 2;
 
@@ -31,15 +26,42 @@ const GardenPlan = () => {
   const { subscribed, loading: subscriptionLoading } = useSubscription(user);
   const navigate = useNavigate();
   
-  const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState("");
-  const [recognition, setRecognition] = useState<null | (typeof window.SpeechRecognition)>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [janeResponse, setJaneResponse] = useState<string>("");
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+
+  // Use the new Voice Live hook for Gemini Live WebSocket
+  const {
+    status: voiceStatus,
+    isListening,
+    isSpeaking,
+    transcript,
+    startListening,
+    stopListening,
+    disconnect,
+    clearTranscript
+  } = useVoiceLive({
+    onText: (text) => {
+      setJaneResponse(prev => prev + text);
+    },
+    onToolCall: (tool, args) => {
+      console.log('Tool being called:', tool, args);
+      // Could show a loading indicator or info about what Jane is looking up
+    },
+    onTurnComplete: () => {
+      console.log('Jane finished speaking');
+    },
+    onError: (error) => {
+      toast({
+        title: "Voice Error",
+        description: error,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Derived state
+  const isProcessing = voiceStatus === 'connecting';
 
   // Check authentication
   useEffect(() => {
@@ -126,215 +148,28 @@ const GardenPlan = () => {
     }
   }, [user, subscribed]);
 
-  // Initialize speech recognition
+  // Cleanup on unmount
   useEffect(() => {
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognitionInstance = new SpeechRecognition();
-
-      recognitionInstance.continuous = true;
-      recognitionInstance.interimResults = true;
-      recognitionInstance.lang = "en-US";
-
-      recognitionInstance.onresult = (event: any) => {
-        let finalTranscript = "";
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcriptPiece = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcriptPiece + " ";
-          }
-        }
-
-        if (finalTranscript) {
-          setTranscript(prev => prev + finalTranscript);
-        }
-      };
-
-      recognitionInstance.onerror = (event: any) => {
-        console.error("Speech recognition error:", event.error);
-        setIsListening(false);
-      };
-
-      recognitionInstance.onend = () => setIsListening(false);
-
-      setRecognition(recognitionInstance);
-    }
-  }, []);
-
-  const useBrowserTTS = (text: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.1;
-      
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(v => 
-        v.name.toLowerCase().includes('female') || 
-        v.name.toLowerCase().includes('samantha') ||
-        v.name.toLowerCase().includes('victoria') ||
-        v.name.toLowerCase().includes('karen')
-      );
-      if (femaleVoice) utterance.voice = femaleVoice;
-      
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(utterance);
-    } else {
-      setIsSpeaking(false);
-    }
-  };
-
-  const speakText = async (text: string) => {
-    try {
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-        currentAudioRef.current = null;
-      }
-      window.speechSynthesis?.cancel();
-      
-      setIsSpeaking(true);
-      
-      const formData = new FormData();
-      formData.append('text', text);
-      
-      const response = await fetch('https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-speak', {
-        method: 'POST',
-        body: formData
-      });
-      
-      // Always try to parse JSON response (even on 429)
-      const data = await response.json().catch(() => null);
-      
-      // If rate limited or instructed to use browser TTS, fall back gracefully
-      if (!response.ok || data?.use_browser_tts) {
-        console.log('Using browser TTS (rate limit or fallback)');
-        useBrowserTTS(text);
-        return;
-      }
-      
-      if (data?.audio_base64) {
-        const audioBytes = atob(data.audio_base64);
-        const arrayBuffer = new ArrayBuffer(audioBytes.length);
-        const view = new Uint8Array(arrayBuffer);
-        for (let i = 0; i < audioBytes.length; i++) {
-          view[i] = audioBytes.charCodeAt(i);
-        }
-        
-        const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(blob);
-        const audio = new Audio(audioUrl);
-        
-        currentAudioRef.current = audio;
-        
-        audio.onended = () => {
-          setIsSpeaking(false);
-          currentAudioRef.current = null;
-        };
-        audio.onerror = () => {
-          setIsSpeaking(false);
-          currentAudioRef.current = null;
-        };
-        
-        await audio.play();
-      } else {
-        useBrowserTTS(text);
-      }
-    } catch (error) {
-      console.error('Speech error:', error);
-      useBrowserTTS(text);
-    }
-  };
-
-  const sendQuestion = async (questionText?: string) => {
-    const question = questionText || transcript;
-    if (!question.trim()) return;
-
-    setIsProcessing(true);
-    
-    if (currentAudioRef.current) {
-      currentAudioRef.current.pause();
-      currentAudioRef.current = null;
-      setIsSpeaking(false);
-    }
-
-    try {
-      const apiResponse = await fetch(`https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text_question: question,
-          context: {}
-        })
-      });
-
-      if (!apiResponse.ok) {
-        const errorData = await apiResponse.json();
-        throw new Error(errorData.error || 'Failed to get response');
-      }
-
-      const data = await apiResponse.json();
-      const responseText = data.answer_text || "I'm here to help you with your garden!";
-      
-      let fullResponse = responseText;
-      
-      if (data.relevant_crops && data.relevant_crops.length > 0) {
-        fullResponse += "\n\n📋 Related crops:";
-        data.relevant_crops.slice(0, 3).forEach((crop: any) => {
-          fullResponse += `\n• ${crop.name}${crop.category ? ` (${crop.category})` : ''}`;
-        });
-      }
-      
-      setJaneResponse(fullResponse);
-      setTranscript(""); // Clear transcript after sending
-      
-      if (!isMuted) {
-        speakText(responseText);
-      }
-      
-    } catch (err) {
-      console.error("Error sending request:", err);
-      const errorMsg = err instanceof Error ? err.message : "Sorry, I encountered an error.";
-      setJaneResponse(errorMsg);
-      toast({
-        title: "Error",
-        description: errorMsg,
-        variant: "destructive"
-      });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+    return () => {
+      disconnect();
+    };
+  }, [disconnect]);
 
   const handleJaneClick = async () => {
-    if (!recognition) {
-      toast({
-        title: "Not Supported",
-        description: "Speech recognition is not supported in your browser.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // If currently listening, stop and send the question
+    // If currently listening, stop listening
     if (isListening) {
-      recognition.stop();
-      setIsListening(false);
-      // Send the question after stopping
-      setTimeout(() => sendQuestion(), 100);
+      stopListening();
       return;
     }
 
-    // Request mic permission and start listening
+    // Clear previous response and start listening
+    setJaneResponse("");
+    clearTranscript();
+    
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop());
-      
-      recognition.start();
-      setIsListening(true);
-      setJaneResponse(""); // Clear previous response
+      await startListening();
     } catch (err) {
-      console.error("Microphone permission denied:", err);
+      console.error("Failed to start listening:", err);
       toast({
         title: "Microphone Access Required",
         description: "Please allow microphone access to talk to Jane.",
@@ -643,16 +478,12 @@ const GardenPlan = () => {
                     )}
                   </div>
                   
-                  {/* Mute button */}
+                  {/* Mute button - with Gemini Live, audio is streamed so mute just toggles visual indicator */}
                   <button
                     onClick={() => {
                       setIsMuted(!isMuted);
-                      if (!isMuted && currentAudioRef.current) {
-                        currentAudioRef.current.pause();
-                        currentAudioRef.current = null;
-                        setIsSpeaking(false);
-                      }
-                      window.speechSynthesis?.cancel();
+                      // Note: With Gemini Live, audio playback is managed by the hook
+                      // This just controls user preference
                     }}
                     className={`absolute -top-2 -right-2 p-2 rounded-full shadow-md transition-all ${
                       isMuted 
@@ -691,20 +522,14 @@ const GardenPlan = () => {
                   "What are good companion plants for tomatoes?",
                   "When should I plant lettuce in New York?"
                 ].map((question) => (
-                  <button
+                  <div
                     key={question}
-                    onClick={() => sendQuestion(question)}
-                    disabled={isProcessing || isListening}
-                    className={`bg-green-100 dark:bg-green-900 rounded-lg p-4 text-left transition-all duration-200 border-2 border-transparent ${
-                      isProcessing || isListening
-                        ? 'opacity-50 cursor-not-allowed'
-                        : 'hover:bg-green-200 dark:hover:bg-green-800 hover:border-green-400 hover:scale-[1.02] cursor-pointer hover:shadow-md'
-                    }`}
+                    className="bg-green-100 dark:bg-green-900 rounded-lg p-4 text-left border-2 border-transparent hover:bg-green-200 dark:hover:bg-green-800 hover:border-green-400"
                   >
                     <p className="text-sm text-green-800 dark:text-green-200">
                       &quot;{question}&quot;
                     </p>
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
