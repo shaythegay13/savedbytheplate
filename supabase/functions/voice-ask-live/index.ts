@@ -437,7 +437,7 @@ serve(async (req) => {
             for (const part of message.serverContent.modelTurn.parts) {
               if (socket.readyState !== WebSocket.OPEN) continue;
               
-              // Text response
+              // Text response (from inline text or thought summaries)
               if (part.text) {
                 socket.send(JSON.stringify({
                   type: "assistant_text",
@@ -453,6 +453,16 @@ serve(async (req) => {
                   mimeType: part.inlineData.mimeType // audio/pcm;rate=24000
                 }));
               }
+            }
+          }
+
+          // Handle outputTranscription (transcription of Jane's audio)
+          if (message.serverContent?.outputTranscription?.text) {
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                type: "assistant_text",
+                text: message.serverContent.outputTranscription.text
+              }));
             }
           }
 
@@ -483,7 +493,10 @@ serve(async (req) => {
       geminiSession = await ai.live.connect({
         model: "gemini-2.5-flash-native-audio-preview-12-2025",
         config: {
-          responseModalities: [Modality.AUDIO, Modality.TEXT],
+          // IMPORTANT: Live API only allows ONE modality per session
+          responseModalities: [Modality.AUDIO],
+          // Enable transcription so we still get text of what Jane says
+          outputAudioTranscription: {},
           systemInstruction: {
             parts: [{ text: JANE_SYSTEM_PROMPT }]
           },
