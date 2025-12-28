@@ -190,59 +190,64 @@ const gardeningTools = [
 ];
 
 // ============================================================================
-// Tool Execution - Calls Render API
+// Tool Execution - Calls Render API via /api/conversation endpoint
 // ============================================================================
 
 async function executeToolCall(toolName: string, args: Record<string, any>): Promise<string> {
-  console.log(`Executing tool: ${toolName}`, args);
+  console.log(`Executing tool: ${toolName}`, JSON.stringify(args));
   
   try {
-    let endpoint = '';
-    let queryParams = new URLSearchParams();
+    // Build a natural language query for the Render conversation API
+    let message = '';
 
     switch (toolName) {
       case 'getPlantInfo':
-        endpoint = '/api/plants/info';
-        queryParams.set('plant', args.plantName);
-        if (args.infoType) queryParams.set('type', args.infoType);
+        message = args.infoType 
+          ? `Tell me about ${args.infoType} information for ${args.plantName} in NYC.`
+          : `Tell me about growing ${args.plantName} in NYC. Include care tips, spacing, and growing requirements.`;
         break;
         
       case 'getCompanionPlants':
-        endpoint = '/api/plants/companions';
-        queryParams.set('plant', args.plantName);
+        message = `What are good companion plants for ${args.plantName}? Also tell me what plants to avoid planting near it.`;
         break;
         
       case 'getDiseaseInfo':
-        endpoint = '/api/plants/diseases';
-        queryParams.set('query', args.query);
-        if (args.plantName) queryParams.set('plant', args.plantName);
+        message = args.plantName
+          ? `My ${args.plantName} has ${args.query}. What could be causing this and how can I treat it organically?`
+          : `How do I deal with ${args.query} in my garden? What organic treatments work best?`;
         break;
         
       case 'getPlantingCalendar':
-        endpoint = '/api/plants/calendar';
-        if (args.month) queryParams.set('month', args.month);
-        if (args.plantName) queryParams.set('plant', args.plantName);
+        if (args.plantName && args.month) {
+          message = `When should I plant ${args.plantName} in NYC? Is ${args.month} a good time?`;
+        } else if (args.plantName) {
+          message = `What is the best time to plant ${args.plantName} in NYC Zone 7?`;
+        } else if (args.month) {
+          message = `What vegetables and herbs should I plant in ${args.month} in NYC?`;
+        } else {
+          message = `What should I plant right now in NYC? Give me seasonal recommendations.`;
+        }
         break;
         
       default:
         return JSON.stringify({ error: `Unknown tool: ${toolName}` });
     }
 
-    const url = `${RENDER_API_BASE}${endpoint}?${queryParams.toString()}`;
-    console.log(`Calling Render API: ${url}`);
+    const url = `${RENDER_API_BASE}/api/conversation`;
+    console.log(`Calling Render API: ${url} with message: ${message}`);
     
     const response = await fetch(url, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Add auth header if needed
-        // 'Authorization': `Bearer ${Deno.env.get('RENDER_API_KEY')}`
-      }
+      },
+      body: JSON.stringify({ message })
     });
 
     if (!response.ok) {
-      console.error(`Render API error: ${response.status}`);
-      // Return fallback so Jane can still respond gracefully
+      console.error(`Render API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`Error body: ${errorText}`);
       return JSON.stringify({
         error: "Could not fetch from knowledge base",
         fallback: true,
@@ -251,8 +256,15 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
     }
 
     const data = await response.json();
-    console.log(`Tool result for ${toolName}:`, JSON.stringify(data).slice(0, 200));
-    return JSON.stringify(data);
+    console.log(`Tool result for ${toolName}:`, JSON.stringify(data).slice(0, 300));
+    
+    // Extract the response text from the conversation API
+    return JSON.stringify({
+      tool: toolName,
+      query: message,
+      answer: data.response || data.answer || JSON.stringify(data),
+      garden_plan: data.garden_plan || null
+    });
 
   } catch (error) {
     console.error(`Tool execution error for ${toolName}:`, error);
