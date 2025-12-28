@@ -16,20 +16,23 @@ class AudioQueue {
   private isPlaying = false;
   private audioContext: AudioContext;
   private onPlayingChange?: (isPlaying: boolean) => void;
+  private scheduledTime: number = 0;
+  private readonly SAMPLE_RATE = 24000; // Gemini sends 24kHz audio
 
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
     this.audioContext = audioContext;
     this.onPlayingChange = onPlayingChange;
   }
 
-  async addToQueue(audioData: Uint8Array, sampleRate: number = 24000) {
+  async addToQueue(audioData: Uint8Array) {
     this.queue.push(audioData);
     if (!this.isPlaying) {
-      await this.playNext(sampleRate);
+      this.scheduledTime = this.audioContext.currentTime;
+      await this.playNext();
     }
   }
 
-  private async playNext(sampleRate: number = 24000) {
+  private async playNext() {
     if (this.queue.length === 0) {
       this.isPlaying = false;
       this.onPlayingChange?.(false);
@@ -41,7 +44,7 @@ class AudioQueue {
     const audioData = this.queue.shift()!;
 
     try {
-      // Convert PCM to AudioBuffer
+      // Convert PCM16 to Float32
       const float32Data = new Float32Array(audioData.length / 2);
       const dataView = new DataView(audioData.buffer, audioData.byteOffset, audioData.byteLength);
       
@@ -50,24 +53,30 @@ class AudioQueue {
         float32Data[i] = int16 / 32768; // normalize to -1 to 1
       }
 
-      const audioBuffer = this.audioContext.createBuffer(1, float32Data.length, sampleRate);
+      // Create buffer at the correct sample rate
+      const audioBuffer = this.audioContext.createBuffer(1, float32Data.length, this.SAMPLE_RATE);
       audioBuffer.getChannelData(0).set(float32Data);
 
       const source = this.audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(this.audioContext.destination);
 
-      source.onended = () => this.playNext(sampleRate);
-      source.start(0);
+      // Schedule precisely to avoid gaps or overlaps
+      const startTime = Math.max(this.scheduledTime, this.audioContext.currentTime);
+      source.start(startTime);
+      this.scheduledTime = startTime + audioBuffer.duration;
+
+      source.onended = () => this.playNext();
     } catch (error) {
       console.error('Error playing audio chunk:', error);
-      this.playNext(sampleRate); // Continue with next segment
+      this.playNext(); // Continue with next segment
     }
   }
 
   clear() {
     this.queue = [];
     this.isPlaying = false;
+    this.scheduledTime = 0;
     this.onPlayingChange?.(false);
   }
 }
@@ -212,7 +221,7 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
               }
 
-              await audioQueueRef.current.addToQueue(bytes, sampleRate);
+              await audioQueueRef.current.addToQueue(bytes);
               break;
             }
 
