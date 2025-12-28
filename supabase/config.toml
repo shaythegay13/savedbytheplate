@@ -74,7 +74,10 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.voice-ask]
-verify_jwt = false  # Public voice interface
+verify_jwt = false  # Public voice interface (text fallback)
+
+[functions.voice-ask-live]
+verify_jwt = false  # Public real-time voice WebSocket
 
 [functions.voice-speak]
 verify_jwt = false  # Public text-to-speech
