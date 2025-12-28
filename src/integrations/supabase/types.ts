@@ -544,6 +544,36 @@ export type Database = {
         }
         Relationships: []
       }
+      jane_voice_rate_limits: {
+        Row: {
+          call_count: number
+          created_at: string
+          id: string
+          identifier: string
+          identifier_type: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          call_count?: number
+          created_at?: string
+          id?: string
+          identifier: string
+          identifier_type: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          call_count?: number
+          created_at?: string
+          id?: string
+          identifier?: string
+          identifier_type?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       location_photos: {
         Row: {
           caption: string | null
@@ -1093,6 +1123,7 @@ export type Database = {
     }
     Functions: {
       cleanup_google_maps_rate_limits: { Args: never; Returns: undefined }
+      cleanup_jane_voice_rate_limits: { Args: never; Returns: undefined }
       cleanup_newsletter_rate_limits: { Args: never; Returns: undefined }
       find_nearby_locations: {
         Args: {

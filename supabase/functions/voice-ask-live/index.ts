@@ -1,10 +1,111 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { GoogleGenAI, Modality, Type } from "https://esm.sh/@google/genai@latest";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Rate limit constants
+const DAILY_LIMIT = 15;
+const WINDOW_HOURS = 24;
+
+// ============================================================================
+// Rate Limiting Functions
+// ============================================================================
+
+async function checkRateLimit(identifier: string, identifierType: 'ip' | 'user'): Promise<{ allowed: boolean; remaining: number; resetAt: Date }> {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  
+  const windowStart = new Date(Date.now() - WINDOW_HOURS * 60 * 60 * 1000);
+  
+  // Check existing rate limit entry
+  const { data: existing } = await supabase
+    .from('jane_voice_rate_limits')
+    .select('*')
+    .eq('identifier', identifier)
+    .eq('identifier_type', identifierType)
+    .gte('window_start', windowStart.toISOString())
+    .maybeSingle();
+  
+  if (existing) {
+    // Entry exists and is within window
+    if (existing.call_count >= DAILY_LIMIT) {
+      const resetAt = new Date(new Date(existing.window_start).getTime() + WINDOW_HOURS * 60 * 60 * 1000);
+      return { allowed: false, remaining: 0, resetAt };
+    }
+    
+    // Increment count
+    await supabase
+      .from('jane_voice_rate_limits')
+      .update({ 
+        call_count: existing.call_count + 1,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', existing.id);
+    
+    const resetAt = new Date(new Date(existing.window_start).getTime() + WINDOW_HOURS * 60 * 60 * 1000);
+    return { allowed: true, remaining: DAILY_LIMIT - existing.call_count - 1, resetAt };
+  }
+  
+  // No entry or expired - create new
+  // First, delete any old entries for this identifier
+  await supabase
+    .from('jane_voice_rate_limits')
+    .delete()
+    .eq('identifier', identifier)
+    .eq('identifier_type', identifierType);
+  
+  // Insert new entry
+  await supabase
+    .from('jane_voice_rate_limits')
+    .insert({
+      identifier,
+      identifier_type: identifierType,
+      call_count: 1,
+      window_start: new Date().toISOString()
+    });
+  
+  const resetAt = new Date(Date.now() + WINDOW_HOURS * 60 * 60 * 1000);
+  return { allowed: true, remaining: DAILY_LIMIT - 1, resetAt };
+}
+
+function getClientIP(req: Request): string {
+  // Check various headers for client IP
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  const realIP = req.headers.get('x-real-ip');
+  if (realIP) {
+    return realIP;
+  }
+  const cfIP = req.headers.get('cf-connecting-ip');
+  if (cfIP) {
+    return cfIP;
+  }
+  return 'unknown';
+}
+
+function getUserIdFromAuth(req: Request): string | null {
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  
+  try {
+    const token = authHeader.substring(7);
+    // Decode JWT payload (base64url)
+    const payloadPart = token.split('.')[1];
+    const payload = JSON.parse(atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')));
+    return payload.sub || null;
+  } catch {
+    return null;
+  }
+}
 
 // ============================================================================
 // Render API Configuration (Gardening Knowledge Base)
@@ -222,6 +323,45 @@ serve(async (req) => {
       }
     );
   }
+
+  // ========== RATE LIMITING ==========
+  const clientIP = getClientIP(req);
+  const userId = getUserIdFromAuth(req);
+  
+  console.log(`Rate limit check - IP: ${clientIP}, User: ${userId || 'anonymous'}`);
+  
+  // Check IP rate limit
+  const ipLimit = await checkRateLimit(clientIP, 'ip');
+  if (!ipLimit.allowed) {
+    console.log(`Rate limit exceeded for IP: ${clientIP}`);
+    return new Response(
+      JSON.stringify({ 
+        error: "Rate limit exceeded",
+        message: `You've reached the daily limit of ${DAILY_LIMIT} Jane voice sessions. Please try again later.`,
+        resetAt: ipLimit.resetAt.toISOString()
+      }),
+      { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+  
+  // Check user rate limit if authenticated
+  if (userId) {
+    const userLimit = await checkRateLimit(userId, 'user');
+    if (!userLimit.allowed) {
+      console.log(`Rate limit exceeded for user: ${userId}`);
+      return new Response(
+        JSON.stringify({ 
+          error: "Rate limit exceeded",
+          message: `You've reached the daily limit of ${DAILY_LIMIT} Jane voice sessions. Please try again later.`,
+          resetAt: userLimit.resetAt.toISOString()
+        }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+  }
+  
+  console.log(`Rate limit passed - IP remaining: ${ipLimit.remaining}`);
+  // ========== END RATE LIMITING ==========
 
   const GOOGLE_AI_API_KEY = Deno.env.get('GOOGLE_AI_API_KEY');
   
