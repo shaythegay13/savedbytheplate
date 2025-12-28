@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenAI, Modality, Type } from "https://esm.sh/@google/genai@latest";
+import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "https://esm.sh/@google/genai@latest";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -498,13 +498,12 @@ serve(async (req) => {
               }
             }
           },
-          // Audio format specifications with VAD for automatic turn detection
+          // Audio input config (keep server-side VAD on)
           realtimeInputConfig: {
-            mediaResolution: "MEDIA_RESOLUTION_LOW",
             automaticActivityDetection: {
               disabled: false,
-              startOfSpeechSensitivity: "START_OF_SPEECH_SENSITIVITY_HIGH",
-              endOfSpeechSensitivity: "END_OF_SPEECH_SENSITIVITY_HIGH",
+              startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_HIGH,
+              endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH,
               prefixPaddingMs: 300,
               silenceDurationMs: 1000
             }
@@ -575,19 +574,21 @@ serve(async (req) => {
       if (message.type === "audio" && message.chunk) {
         // Send audio chunk to Gemini Live
         // Expecting base64 encoded PCM audio at 16kHz
-        await geminiSession.sendRealtimeInput({
-          media: {
-            mimeType: "audio/pcm;rate=16000",
-            data: message.chunk
-          }
-        });
+        const bin = atob(message.chunk);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+        const audioBlob = new Blob([bytes], { type: "audio/pcm;rate=16000" });
+        geminiSession.sendRealtimeInput({ audio: audioBlob });
       } else if (message.type === "end_turn") {
         // Client signals end of speech (fallback when VAD is unreliable)
-        console.log("Client signaled end of turn - sending audioStreamEnd to Gemini");
+        console.log("Client signaled end of turn - sending audioStreamEnd + turnComplete to Gemini");
         try {
           geminiSession.sendRealtimeInput({ audioStreamEnd: true });
+          // Force a response if VAD didn't trigger.
+          geminiSession.sendClientContent({ turnComplete: true });
         } catch (e) {
-          console.error("Failed to send audioStreamEnd:", e);
+          console.error("Failed to end turn:", e);
         }
       } else {
         console.log("Ignoring non-audio message type:", message.type);
