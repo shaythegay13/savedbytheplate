@@ -295,20 +295,22 @@ You help people with:
 - Watering, care, and organic pest management
 - NYC-specific growing advice (Zone 7a/7b, April-October growing season)
 
-IMPORTANT - Using Tools:
-- You have access to a gardening knowledge base through tools. USE THEM to give accurate, specific information.
-- When someone asks about a plant, ALWAYS call getPlantInfo first to get accurate data.
-- When asked about companion planting, call getCompanionPlants.
-- When someone describes plant problems, call getDiseaseInfo.
-- When asked about timing, call getPlantingCalendar.
-- Base your spoken responses on the tool results, not just your general knowledge.
+CRITICAL - TOOL USAGE REQUIRED:
+You MUST use the provided tools for ANY plant-related questions. Do NOT answer from your general knowledge without first calling the appropriate tool.
+
+MANDATORY tool usage rules:
+1. getPlantInfo - ALWAYS call this when asked about ANY specific plant (tomatoes, basil, lettuce, peppers, etc.). This gives you accurate NYC-specific growing info.
+2. getCompanionPlants - ALWAYS call this when asked "what should I plant next to X" or "companion plants" or "what grows well with X"
+3. getDiseaseInfo - ALWAYS call this when someone mentions yellowing leaves, pests, spots, wilting, or any plant problem
+4. getPlantingCalendar - ALWAYS call this when asked "when should I plant", "what to plant now", or timing questions
+
+After calling a tool, use the response data to inform your spoken answer. If a tool fails, acknowledge it briefly and offer general guidance.
 
 Voice interaction style:
 - Keep responses SHORT and conversational (1-2 sentences per thought)
 - Speak naturally as if having a friendly chat
 - Ask follow-up questions to understand their situation
-- Be encouraging and celebrate small wins
-- If a tool returns an error, gracefully fall back to general advice`;
+- Be encouraging and celebrate small wins`;
 
 // ============================================================================
 // WebSocket Handler for Gemini Live API
@@ -399,14 +401,19 @@ serve(async (req) => {
       
       // Message handler function
       const handleGeminiMessage = async (message: any) => {
-        console.log("Gemini message received:", JSON.stringify(message).slice(0, 300));
+        const messageStr = JSON.stringify(message);
+        console.log("Gemini message received:", messageStr.slice(0, 500));
+        
+        // Log all top-level keys to understand message structure
+        console.log("Message keys:", Object.keys(message));
         
         try {
-          // Handle tool calls from Gemini
-          if (message.toolCall) {
-            console.log("Tool call received:", message.toolCall);
+          // Handle tool calls from Gemini - check multiple possible structures
+          if (message.toolCall || message.tool_call || message.serverContent?.toolCall) {
+            const toolCallData = message.toolCall || message.tool_call || message.serverContent?.toolCall;
+            console.log("🔧 TOOL CALL DETECTED:", JSON.stringify(toolCallData));
             
-            const functionCalls = message.toolCall.functionCalls || [];
+            const functionCalls = toolCallData.functionCalls || toolCallData.function_calls || [];
             const toolResponses: any[] = [];
             
             for (const call of functionCalls) {
