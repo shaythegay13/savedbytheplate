@@ -582,8 +582,13 @@ serve(async (req) => {
           }
         });
       } else if (message.type === "end_turn") {
-        // Client signals end of speech (optional, VAD handles this automatically)
-        console.log("Client signaled end of turn");
+        // Client signals end of speech (fallback when VAD is unreliable)
+        console.log("Client signaled end of turn - sending audioStreamEnd to Gemini");
+        try {
+          geminiSession.sendRealtimeInput({ audioStreamEnd: true });
+        } catch (e) {
+          console.error("Failed to send audioStreamEnd:", e);
+        }
       } else {
         console.log("Ignoring non-audio message type:", message.type);
       }
