@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const VOICE_LIVE_WS_URL = 'wss://rxwynfplditdwqtjhkpw.functions.supabase.co/functions/v1/voice-ask-live';
+const VOICE_LIVE_WS_URL = 'wss://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask-live';
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 
