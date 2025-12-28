@@ -603,14 +603,29 @@ serve(async (req) => {
           }
         }
       } else if (message.type === "end_turn") {
-        // Client signals end of speech (fallback when VAD is unreliable)
-        console.log("Client signaled end of turn - sending audioStreamEnd + turnComplete to Gemini");
+        // Client signals end of speech.
+        // IMPORTANT: The Live API already handles turn-taking via server-side VAD.
+        // Sending unsupported end-of-stream events can close the session ("invalid argument").
+        // Instead, we send a brief silence chunk so VAD can confidently detect end-of-speech.
+        console.log("Client signaled end of turn - sending silence to trigger server VAD");
         try {
-          await geminiSession.sendRealtimeInput({ audioStreamEnd: true });
-          // Force a response if VAD didn't trigger.
-          await geminiSession.sendClientContent({ turnComplete: true });
+          const silenceBytes = new Uint8Array(16000 * 2); // 1s of PCM16 @ 16kHz (all zeros)
+          let binary = "";
+          const chunkSize = 0x8000;
+          for (let i = 0; i < silenceBytes.length; i += chunkSize) {
+            const chunk = silenceBytes.subarray(i, Math.min(i + chunkSize, silenceBytes.length));
+            binary += String.fromCharCode.apply(null, Array.from(chunk));
+          }
+          const silenceBase64 = btoa(binary);
+
+          await geminiSession.sendRealtimeInput({
+            audio: {
+              data: silenceBase64,
+              mimeType: "audio/pcm;rate=16000",
+            },
+          });
         } catch (e) {
-          console.error("Failed to end turn:", e);
+          console.error("Failed to send end_turn silence:", e);
         }
       } else {
         console.log("Ignoring non-audio message type:", message.type);
