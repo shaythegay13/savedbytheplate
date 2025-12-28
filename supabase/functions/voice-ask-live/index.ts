@@ -385,51 +385,8 @@ serve(async (req) => {
       // Initialize Gemini Live client
       const ai = new GoogleGenAI({ apiKey: GOOGLE_AI_API_KEY });
       
-      // Create Live session with native audio model and tools
-      geminiSession = await ai.live.connect({
-        model: "gemini-2.5-flash-native-audio-preview-12-2025",
-        config: {
-          responseModalities: [Modality.AUDIO, Modality.TEXT],
-          systemInstruction: {
-            parts: [{ text: JANE_SYSTEM_PROMPT }]
-          },
-          // Register gardening tools
-          tools: [{
-            functionDeclarations: gardeningTools
-          }],
-          speechConfig: {
-            voiceConfig: {
-              prebuiltVoiceConfig: {
-                voiceName: "Aoede" // Warm, friendly female voice
-              }
-            }
-          },
-          // Audio format specifications
-          realtimeInputConfig: {
-            mediaResolution: "MEDIA_RESOLUTION_LOW",
-            automaticActivityDetection: {
-              disabled: false,
-              startOfSpeechSensitivity: "START_OF_SPEECH_SENSITIVITY_HIGH",
-              endOfSpeechSensitivity: "END_OF_SPEECH_SENSITIVITY_HIGH",
-              prefixPaddingMs: 300,
-              silenceDurationMs: 1000
-            }
-          }
-        }
-      });
-
-      isConnected = true;
-      console.log("Gemini Live session established with tools:", gardeningTools.map(t => t.name).join(", "));
-
-      // Send ready message to client
-      socket.send(JSON.stringify({ 
-        type: "session_ready",
-        message: "Jane is ready to listen",
-        tools: gardeningTools.map(t => t.name)
-      }));
-
-      // Handle responses from Gemini
-      geminiSession.on("message", async (message: any) => {
+      // Message handler function
+      const handleGeminiMessage = async (message: any) => {
         console.log("Gemini message received:", JSON.stringify(message).slice(0, 300));
         
         try {
@@ -445,11 +402,13 @@ serve(async (req) => {
               const args = call.args || {};
               
               // Notify client that we're fetching data
-              socket.send(JSON.stringify({
-                type: "tool_call",
-                tool: toolName,
-                args: args
-              }));
+              if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({
+                  type: "tool_call",
+                  tool: toolName,
+                  args: args
+                }));
+              }
               
               // Execute the tool call against Render API
               const result = await executeToolCall(toolName, args);
@@ -465,7 +424,9 @@ serve(async (req) => {
             
             // Send tool results back to Gemini
             for (const toolResponse of toolResponses) {
-              await geminiSession.sendToolResponse(toolResponse);
+              if (geminiSession) {
+                await geminiSession.sendToolResponse(toolResponse);
+              }
             }
             
             return;
@@ -474,6 +435,8 @@ serve(async (req) => {
           // Handle audio/text responses
           if (message.serverContent?.modelTurn?.parts) {
             for (const part of message.serverContent.modelTurn.parts) {
+              if (socket.readyState !== WebSocket.OPEN) continue;
+              
               // Text response
               if (part.text) {
                 socket.send(JSON.stringify({
@@ -495,41 +458,95 @@ serve(async (req) => {
 
           // Handle turn completion
           if (message.serverContent?.turnComplete) {
-            socket.send(JSON.stringify({
-              type: "turn_complete"
-            }));
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                type: "turn_complete"
+              }));
+            }
           }
 
           // Handle interruption
           if (message.serverContent?.interrupted) {
-            socket.send(JSON.stringify({
-              type: "interrupted"
-            }));
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                type: "interrupted"
+              }));
+            }
           }
 
         } catch (e) {
           console.error("Error processing Gemini message:", e);
         }
-      });
-
-      geminiSession.on("error", (error: any) => {
-        console.error("Gemini session error:", error);
-        socket.send(JSON.stringify({
-          type: "error",
-          message: "Voice session error: " + (error.message || "Unknown error")
-        }));
-      });
-
-      geminiSession.on("close", () => {
-        console.log("Gemini session closed");
-        isConnected = false;
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({
-            type: "session_ended",
-            message: "Voice session ended"
-          }));
+      };
+      
+      // Create Live session with callbacks pattern
+      geminiSession = await ai.live.connect({
+        model: "gemini-2.5-flash-native-audio-preview-12-2025",
+        config: {
+          responseModalities: [Modality.AUDIO, Modality.TEXT],
+          systemInstruction: {
+            parts: [{ text: JANE_SYSTEM_PROMPT }]
+          },
+          // Register gardening tools
+          tools: [{
+            functionDeclarations: gardeningTools
+          }],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: {
+                voiceName: "Aoede" // Warm, friendly female voice
+              }
+            }
+          },
+          // Audio format specifications with VAD for automatic turn detection
+          realtimeInputConfig: {
+            mediaResolution: "MEDIA_RESOLUTION_LOW",
+            automaticActivityDetection: {
+              disabled: false,
+              startOfSpeechSensitivity: "START_OF_SPEECH_SENSITIVITY_HIGH",
+              endOfSpeechSensitivity: "END_OF_SPEECH_SENSITIVITY_HIGH",
+              prefixPaddingMs: 300,
+              silenceDurationMs: 1000
+            }
+          }
+        },
+        // Use callbacks pattern instead of .on() methods
+        callbacks: {
+          onopen: () => {
+            console.log("Gemini Live connection opened");
+          },
+          onmessage: handleGeminiMessage,
+          onerror: (e: any) => {
+            console.error("Gemini session error:", e);
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                type: "error",
+                message: "Voice session error: " + (e.message || "Unknown error")
+              }));
+            }
+          },
+          onclose: (e: any) => {
+            console.log("Gemini session closed:", e?.reason || "No reason");
+            isConnected = false;
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                type: "session_ended",
+                message: "Voice session ended"
+              }));
+            }
+          }
         }
       });
+
+      isConnected = true;
+      console.log("Gemini Live session established with tools:", gardeningTools.map(t => t.name).join(", "));
+
+      // Send ready message to client
+      socket.send(JSON.stringify({ 
+        type: "session_ready",
+        message: "Jane is ready to listen",
+        tools: gardeningTools.map(t => t.name)
+      }));
 
     } catch (error) {
       console.error("Failed to initialize Gemini Live:", error);
