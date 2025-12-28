@@ -123,6 +123,24 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
     return audioContextRef.current;
   }, []);
 
+  // Stop listening - defined first so connect can reference it
+  const stopListening = useCallback(() => {
+    if (sourceRef.current) {
+      sourceRef.current.disconnect();
+      sourceRef.current = null;
+    }
+    if (processorRef.current) {
+      processorRef.current.disconnect();
+      processorRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current = null;
+    }
+    setIsListening(false);
+    console.log('Stopped listening');
+  }, []);
+
   // Connect to WebSocket
   const connect = useCallback(async () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -319,25 +337,6 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       options.onError?.('Microphone access denied');
     }
   }, [status, connect, options]);
-
-  // Stop listening
-  const stopListening = useCallback(() => {
-    if (sourceRef.current) {
-      sourceRef.current.disconnect();
-      sourceRef.current = null;
-    }
-    if (processorRef.current) {
-      processorRef.current.disconnect();
-      processorRef.current = null;
-    }
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach(track => track.stop());
-      mediaStreamRef.current = null;
-    }
-    setIsListening(false);
-    console.log('Stopped listening');
-  }, []);
-
   // Disconnect
   const disconnect = useCallback(() => {
     stopListening();
