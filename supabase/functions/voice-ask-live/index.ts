@@ -572,21 +572,30 @@ serve(async (req) => {
 
       // Only handle audio input (voice-only interface)
       if (message.type === "audio" && message.chunk) {
-        // Send audio chunk to Gemini Live
-        // Expecting base64 encoded PCM audio at 16kHz
-        const bin = atob(message.chunk);
-        const bytes = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-
-        const audioBlob = new Blob([bytes], { type: "audio/pcm;rate=16000" });
-        geminiSession.sendRealtimeInput({ audio: audioBlob });
+        // Send audio chunk to Gemini Live (base64 encoded PCM @ 16kHz)
+        try {
+          await geminiSession.sendRealtimeInput({
+            audio: {
+              data: message.chunk,
+              mimeType: "audio/pcm;rate=16000",
+            },
+          });
+        } catch (e) {
+          console.error("Failed to send audio chunk to Gemini:", e);
+          if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+              type: "error",
+              message: "Failed to stream audio to Jane",
+            }));
+          }
+        }
       } else if (message.type === "end_turn") {
         // Client signals end of speech (fallback when VAD is unreliable)
         console.log("Client signaled end of turn - sending audioStreamEnd + turnComplete to Gemini");
         try {
-          geminiSession.sendRealtimeInput({ audioStreamEnd: true });
+          await geminiSession.sendRealtimeInput({ audioStreamEnd: true });
           // Force a response if VAD didn't trigger.
-          geminiSession.sendClientContent({ turnComplete: true });
+          await geminiSession.sendClientContent({ turnComplete: true });
         } catch (e) {
           console.error("Failed to end turn:", e);
         }
