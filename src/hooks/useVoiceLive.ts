@@ -85,6 +85,36 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
+  // Gate sending audio until the server explicitly tells us the Gemini session is ready.
+  const sessionReadyRef = useRef(false);
+  const sessionReadyDeferredRef = useRef<null | {
+    promise: Promise<void>;
+    resolve: () => void;
+    reject: (err: unknown) => void;
+  }>(null);
+
+  const createDeferred = () => {
+    let resolve!: () => void;
+    let reject!: (err: unknown) => void;
+    const promise = new Promise<void>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+
+  const waitForSessionReady = async (timeoutMs = 12000) => {
+    const deferred = sessionReadyDeferredRef.current;
+    if (!deferred) return;
+
+    await Promise.race([
+      deferred.promise,
+      new Promise<void>((_, reject) =>
+        setTimeout(() => reject(new Error('Voice session timed out')), timeoutMs)
+      ),
+    ]);
+  };
+
   // Initialize audio context
   const getAudioContext = useCallback(() => {
     if (!audioContextRef.current) {
@@ -100,8 +130,12 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       return;
     }
 
+    // Reset readiness for the next session
+    sessionReadyRef.current = false;
+    sessionReadyDeferredRef.current = createDeferred();
+
     setStatus('connecting');
-    
+
     try {
       const ws = new WebSocket(VOICE_LIVE_WS_URL);
       wsRef.current = ws;
@@ -118,22 +152,28 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
           switch (data.type) {
             case 'session_ready':
               console.log('Session ready, tools:', data.tools);
+              sessionReadyRef.current = true;
+              sessionReadyDeferredRef.current?.resolve();
               setStatus('connected');
               break;
 
             case 'assistant_text':
-              setTranscript(prev => prev + data.text);
+              // Once the assistant starts responding, stop recording automatically.
+              stopListening();
               options.onText?.(data.text);
               break;
 
-            case 'assistant_audio':
+            case 'assistant_audio': {
+              // Once the assistant starts responding, stop recording automatically.
+              stopListening();
+
               // Decode base64 to Uint8Array
               const binaryString = atob(data.chunk);
               const bytes = new Uint8Array(binaryString.length);
               for (let i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);
               }
-              
+
               // Extract sample rate from mimeType (audio/pcm;rate=24000)
               let sampleRate = 24000;
               if (data.mimeType) {
@@ -146,9 +186,10 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
                 const ctx = getAudioContext();
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
               }
-              
+
               await audioQueueRef.current.addToQueue(bytes, sampleRate);
               break;
+            }
 
             case 'tool_call':
               console.log('Tool call:', data.tool, data.args);
@@ -156,6 +197,8 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               break;
 
             case 'turn_complete':
+              // Defensive: ensure mic is off when a turn ends.
+              stopListening();
               console.log('Turn complete');
               options.onTurnComplete?.();
               break;
@@ -166,7 +209,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               break;
 
             case 'error':
+              // This happens when we start streaming audio before the server session is ready.
+              // Treat it as transient and don't flip the whole UI into an error state.
+              if (data.message === 'Session not ready') {
+                console.warn('Session not ready yet (ignoring)');
+                return;
+              }
               console.error('Session error:', data.message);
+              sessionReadyDeferredRef.current?.reject(new Error(String(data.message || 'Session error')));
               options.onError?.(data.message);
               setStatus('error');
               break;
@@ -183,30 +233,32 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        sessionReadyDeferredRef.current?.reject(error);
         setStatus('error');
         options.onError?.('Connection error');
       };
 
       ws.onclose = () => {
         console.log('WebSocket closed');
+        sessionReadyDeferredRef.current?.reject(new Error('WebSocket closed'));
         setStatus('disconnected');
         stopListening();
       };
 
     } catch (error) {
       console.error('Failed to connect:', error);
+      sessionReadyDeferredRef.current?.reject(error);
       setStatus('error');
       options.onError?.('Failed to connect');
     }
-  }, [options, getAudioContext]);
+  }, [options, getAudioContext, stopListening]);
 
   // Start listening (recording)
   const startListening = useCallback(async () => {
     if (status !== 'connected') {
       console.log('Not connected, connecting first...');
       await connect();
-      // Wait a bit for connection to establish
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await waitForSessionReady();
     }
 
     try {
@@ -227,9 +279,10 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
       processorRef.current.onaudioprocess = (e) => {
         if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+        if (!sessionReadyRef.current) return;
 
         const inputData = e.inputBuffer.getChannelData(0);
-        
+
         // Convert Float32 to Int16 PCM
         const int16Array = new Int16Array(inputData.length);
         for (let i = 0; i < inputData.length; i++) {
