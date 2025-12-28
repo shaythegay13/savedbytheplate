@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const VOICE_LIVE_WS_URL = 'wss://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask-live';
+const VOICE_LIVE_WS_URL = 'wss://rxwynfplditdwqtjhkpw.functions.supabase.co/functions/v1/voice-ask-live';
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -92,6 +92,13 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
     resolve: () => void;
     reject: (err: unknown) => void;
   }>(null);
+
+  // Local silence detection fallback (in case server-side VAD doesn't trigger reliably)
+  const hasSpokenRef = useRef(false);
+  const lastVoiceAtRef = useRef<number>(0);
+  const endTurnSentRef = useRef(false);
+  const SPEECH_RMS_THRESHOLD = 0.012;
+  const SILENCE_MS = 1200;
 
   const createDeferred = () => {
     let resolve!: () => void;
@@ -295,11 +302,30 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       sourceRef.current = audioContext.createMediaStreamSource(stream);
       processorRef.current = audioContext.createScriptProcessor(4096, 1, 1);
 
+      // Reset local silence detection state
+      hasSpokenRef.current = false;
+      endTurnSentRef.current = false;
+      lastVoiceAtRef.current = Date.now();
+
       processorRef.current.onaudioprocess = (e) => {
         if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
         if (!sessionReadyRef.current) return;
 
         const inputData = e.inputBuffer.getChannelData(0);
+
+        // Local RMS-based silence detection (fallback)
+        let sum = 0;
+        for (let i = 0; i < inputData.length; i++) {
+          const v = inputData[i];
+          sum += v * v;
+        }
+        const rms = Math.sqrt(sum / inputData.length);
+        const now = Date.now();
+
+        if (rms > SPEECH_RMS_THRESHOLD) {
+          hasSpokenRef.current = true;
+          lastVoiceAtRef.current = now;
+        }
 
         // Convert Float32 to Int16 PCM
         const int16Array = new Int16Array(inputData.length);
@@ -323,6 +349,21 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
           type: 'audio',
           chunk: base64
         }));
+
+        // If we've detected speech and then enough silence, end the turn.
+        if (
+          hasSpokenRef.current &&
+          !endTurnSentRef.current &&
+          now - lastVoiceAtRef.current > SILENCE_MS
+        ) {
+          endTurnSentRef.current = true;
+          try {
+            wsRef.current.send(JSON.stringify({ type: 'end_turn' }));
+          } catch {
+            // ignore
+          }
+          stopListening();
+        }
       };
 
       sourceRef.current.connect(processorRef.current);
