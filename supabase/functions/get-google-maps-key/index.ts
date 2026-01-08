@@ -110,10 +110,11 @@ serve(async (req) => {
       JSON.stringify({ value, type }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("Error in get-google-maps-key:", e);
+    const errorMessage = e instanceof Error ? e.message : "Unknown error";
     return new Response(
-      JSON.stringify({ error: e.message ?? "Unknown error" }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
