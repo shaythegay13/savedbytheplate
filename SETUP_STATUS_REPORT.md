@@ -162,7 +162,6 @@ curl https://agenticaigardenplanner.onrender.com/health
 
 ### 3. Environment Variables on Render
 **ACTION REQUIRED:** Check these are set:
-- `OPENAI_API_KEY` (if using OpenAI)
 - `GOOGLE_MAPS_API_KEY` (if using Google Maps)
 - Any database credentials
 - Any other API keys

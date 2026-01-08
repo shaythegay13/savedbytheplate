@@ -1,3 +1,6 @@
+/// <reference lib="dom" />
+/// <reference lib="es2021" />
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "https://esm.sh/@google/genai@latest";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -6,6 +9,8 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+declare const Deno: any;
 
 // Rate limit constants
 const DAILY_LIMIT = 15;
@@ -108,10 +113,10 @@ function getUserIdFromAuth(req: Request): string | null {
 }
 
 // ============================================================================
-// Render API Configuration (Gardening Knowledge Base)
+// Backend API Configuration (Gardening Knowledge Base)
 // ============================================================================
 
-const RENDER_API_BASE = Deno.env.get('RENDER_API_URL') || 'https://your-render-service.onrender.com';
+const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://agenticaigardenplanner.onrender.com';
 
 // ============================================================================
 // Tool Definitions for Gemini Function Calling
@@ -233,8 +238,8 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
         return JSON.stringify({ error: `Unknown tool: ${toolName}` });
     }
 
-    const url = `${RENDER_API_BASE}/api/conversation`;
-    console.log(`Calling Render API: ${url} with message: ${message}`);
+    const url = `${BACKEND_API_URL}/api/conversation`;
+    console.log(`Calling Backend API: ${url} with message: ${message}`);
     
     const response = await fetch(url, {
       method: 'POST',

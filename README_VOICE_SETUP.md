@@ -8,11 +8,10 @@ Your garden planner is now **voice-only**! The complex form UI has been replaced
 
 ```
 new-garden-planner/
-├── voice_garden_api.py              ← Voice API (Deepgram + Polly + Claude)
-├── voice_garden_api_updated.py      ← Updated version (uses Render backend)
-├── conversational_garden_api.py     ← Conversational layer
+├── backend/apps/voice_garden_api.py              ← Voice API (backend-powered)
+├── backend/apps/conversational_garden_api.py     ← Conversational layer
 ├── .env.local                       ← Your API keys
-├── test_voice_api.py                ← Test suite
+├── backend/tests/test_voice_api.py   ← Test suite
 ├── setup-voice.sh                   ← Automated setup script
 ├── VOICE_INTEGRATION_GUIDE.md       ← Detailed guide
 ├── src/
@@ -33,7 +32,7 @@ cd ~/CascadeProjects/new-garden-planner
 
 # 2. Start voice API (in new terminal when prompted)
 source venv/bin/activate
-python voice_garden_api.py
+python backend/apps/voice_garden_api.py
 
 # 3. Start frontend (in another terminal when prompted)
 npm run dev
@@ -50,36 +49,30 @@ Then visit: **http://localhost:5173/garden-plan**
    - "Tell me about companion planting"
 3. **AI responds with:**
    - Text display
-   - Natural voice (AWS Polly - Kendra voice)
-   - Personalized garden advice from Claude AI
+   - Voice handled client-side
 
 ## Technical Stack
 
 - **Voice Input**: Browser Speech Recognition
-- **Voice Output**: AWS Polly (Kendra - natural female voice)
-- **AI Brain**: Claude 3 Haiku (via AWS Bedrock)
-- **Speech-to-Text**: Deepgram (for advanced features)
+- **Voice Output**: Browser Text-to-Speech
+- **AI Brain**: Backend conversation endpoint
 - **Backend**: Your Python API on Render (ready when needed)
 
 ## API Keys Required
 
 Already configured in `.env.local`:
-- ✅ Deepgram API Key
-- ✅ AWS Access Key (Polly + Bedrock)
-- ✅ AWS Secret Key
-- ✅ AWS Region
+- ✅ Backend URL (optional override)
 
 ## Testing
 
 ```bash
 source venv/bin/activate
-python test_voice_api.py
+python backend/tests/test_voice_api.py
 ```
 
 Expected output:
 ```
 ✓ API is healthy
-✓ Speech synthesized successfully  
 ✓ Question processed successfully
 ```
 
@@ -89,7 +82,7 @@ Expected output:
 ```bash
 # Install dependencies
 source venv/bin/activate
-pip install fastapi uvicorn boto3 deepgram-sdk pydantic python-dotenv requests
+pip install fastapi uvicorn pydantic python-dotenv requests
 ```
 
 ### Frontend won't start
@@ -97,13 +90,6 @@ pip install fastapi uvicorn boto3 deepgram-sdk pydantic python-dotenv requests
 npm install
 npm run dev
 ```
-
-### Voice sounds robotic
-Edit `voice_garden_api.py` line 147 to try different voices:
-- **Kendra** (current) - Most natural
-- **Joanna** - Clear, standard
-- **Salli** - Warm
-- **Ivy** - Younger, friendly
 
 ### No audio output
 - Check browser allows audio playback
@@ -115,9 +101,7 @@ Edit `voice_garden_api.py` line 147 to try different voices:
 User speaks → Browser captures
      ↓
 Voice API (localhost:8001)
-     ├→ Deepgram STT
-     ├→ Claude AI (AWS Bedrock) 
-     └→ AWS Polly TTS (Kendra voice)
+     └→ Backend conversation endpoint
      ↓
 User hears natural voice response
 ```

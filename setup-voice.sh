@@ -4,10 +4,9 @@
 echo "🎤 Setting up Voice-Only Garden Planner..."
 echo ""
 
-# Step 1: Replace voice API with updated version
-echo "1️⃣  Updating voice API to use Render backend..."
-mv voice_garden_api_updated.py voice_garden_api.py
-echo "✅ Voice API updated"
+# Step 1: Voice API location
+echo "1️⃣  Voice API is located under backend/apps"
+echo "✅ Voice API ready"
 echo ""
 
 # Step 2: Backup old garden plan page
@@ -40,7 +39,7 @@ echo ""
 # Step 5: Install Python dependencies
 echo "5️⃣  Installing Python dependencies..."
 source venv/bin/activate
-pip install -q fastapi uvicorn boto3 deepgram-sdk pydantic python-dotenv requests
+pip install -q fastapi uvicorn pydantic python-dotenv requests
 echo "✅ Python dependencies installed"
 echo ""
 
@@ -64,7 +63,7 @@ echo "🚀 Next Steps:"
 echo ""
 echo "Terminal 1 - Start Voice API:"
 echo "  source venv/bin/activate"
-echo "  python voice_garden_api.py"
+echo "  python backend/apps/voice_garden_api.py"
 echo ""
 echo "Terminal 2 - Start Frontend:"
 echo "  npm run dev"

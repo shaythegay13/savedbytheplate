@@ -6,10 +6,10 @@ The garden planner is now **voice-only** - users interact with the AI by speakin
 
 ## Files Added
 
-✅ **`voice_garden_api_updated.py`** - Voice API (uses your Render backend)
+✅ **`backend/apps/voice_garden_api.py`** - Voice API (backend-powered)
 ✅ **`src/components/garden-plan/VoiceGardenPlanner.tsx`** - Voice UI component
-✅ **`.env.local`** - Your API keys (Deepgram, AWS)
-✅ **`test_voice_api.py`** - Test suite
+✅ **`.env.local`** - Your local configuration
+✅ **`backend/tests/test_voice_api.py`** - Test suite
 
 ## Setup Steps
 
@@ -23,14 +23,13 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install requirements
-pip install fastapi uvicorn boto3 deepgram-sdk pydantic python-dotenv requests
+pip install fastapi uvicorn pydantic python-dotenv requests
 ```
 
 ### 2. Replace Voice API
 
 ```bash
-# Replace old version with updated one
-mv voice_garden_api_updated.py voice_garden_api.py
+# Voice API lives under backend/apps
 ```
 
 ### 3. Update Garden Plan Page
@@ -64,7 +63,7 @@ export default GardenPlan;
 ```bash
 # Terminal 1: Start voice API
 source venv/bin/activate
-python voice_garden_api.py
+python backend/apps/voice_garden_api.py
 ```
 
 Voice API will run on: **http://localhost:8001**
@@ -82,9 +81,8 @@ Frontend will run on: **http://localhost:5173** (or 3000)
 ## How It Works
 
 1. **User clicks microphone** → Browser captures speech
-2. **Speech sent to API** → AWS Polly converts to audio
-3. **Question sent to Claude** → AI generates garden advice
-4. **Response spoken back** → Natural Kendra voice
+2. **Question sent to API** → Backend generates a response
+3. **Response spoken back** → Browser TTS
 
 ## API Architecture
 
@@ -92,9 +90,7 @@ Frontend will run on: **http://localhost:5173** (or 3000)
 Browser (Voice UI)
     ↓
 Voice API (localhost:8001)
-    ├─→ Deepgram (Speech-to-Text)
-    ├─→ Claude/AWS Bedrock (AI Responses)  
-    └─→ AWS Polly (Text-to-Speech - Kendra voice)
+    └─→ Backend conversation endpoint
 ```
 
 Your Python backend on Render is ready for future full garden plan generation if needed.
@@ -104,7 +100,7 @@ Your Python backend on Render is ready for future full garden plan generation if
 ```bash
 # Test voice API
 source venv/bin/activate
-python test_voice_api.py
+python backend/tests/test_voice_api.py
 ```
 
 Should output:
@@ -116,12 +112,10 @@ Should output:
 
 ## Environment Variables
 
-Your `.env.local` has:
+Your `.env.local` can optionally include:
 ```bash
-DEEPGRAM_API_KEY=5f5630d4607221b37fb973599daad379b4c86187
-AWS_ACCESS_KEY_ID=AKIAXWHSJZBGTKVLZGN7
-AWS_SECRET_ACCESS_KEY=ChMEZlc8L/OtrPfThr/pQYjJREfvWnHVJyc++bbF
-AWS_REGION=us-west-2
+GARDEN_API_URL=https://agenticaigardenplanner.onrender.com
+GARDEN_CONVERSATION_URL=https://agenticaigardenplanner.onrender.com/api/conversation
 ```
 
 ## Usage
@@ -137,19 +131,14 @@ Users go to `/garden-plan` page and:
 ## Troubleshooting
 
 ### Voice API won't start
-- Check AWS credentials have Polly access
-- Verify Deepgram API key is valid
+- Verify the backend URL is reachable
 
 ### No audio output
 - Check browser allows audio playback
 - Test: `curl -X POST http://localhost:8001/api/voice/speak -F 'text=Test'`
 
 ### Voice sounds robotic
-Current voice: **Kendra** (most natural)
-To change, edit `voice_garden_api.py` line 147:
-- **Joanna** - Clear, standard
-- **Salli** - Warm, expressive
-- **Ivy** - Younger, friendly
+ Current voice: **Default** (browser TTS)
 
 ## What's Removed
 

@@ -156,18 +156,23 @@ const GardenPlan = () => {
   }, [disconnect]);
 
   const handleJaneClick = async () => {
+    alert('Jane clicked! isListening: ' + isListening);
+    console.log('=== Jane clicked === isListening:', isListening);
     // If currently listening, stop listening
     if (isListening) {
+      console.log('Stopping listening');
       stopListening();
       return;
     }
 
     // Clear previous response and start listening
+    console.log('Starting listening...');
     setJaneResponse("");
     clearTranscript();
     
     try {
       await startListening();
+      console.log('startListening returned successfully');
     } catch (err) {
       console.error("Failed to start listening:", err);
       toast({

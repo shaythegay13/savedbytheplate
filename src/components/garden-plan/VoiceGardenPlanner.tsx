@@ -3,6 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+const DEFAULT_SUPABASE_URL = "https://rxwynfplditdwqtjhkpw.supabase.co";
+const SUPABASE_URL = (import.meta as any)?.env?.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+const VOICE_SPEAK_URL = `${SUPABASE_URL.replace(/\/+$/, "")}/functions/v1/voice-speak`;
+const VOICE_ASK_URL = `${SUPABASE_URL.replace(/\/+$/, "")}/functions/v1/voice-ask`;
+
 
 declare global {
   interface Window {
@@ -262,7 +267,7 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
       const formData = new FormData();
       formData.append('text', text);
       
-      const response = await fetch('https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-speak', {
+      const response = await fetch(VOICE_SPEAK_URL, {
         method: 'POST',
         body: formData
       });
@@ -330,7 +335,7 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     setResponse("");
 
     try {
-      const apiResponse = await fetch(`https://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask`, {
+      const apiResponse = await fetch(VOICE_ASK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

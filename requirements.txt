@@ -5,8 +5,11 @@ geocoder==1.38.1
 # Voice API dependencies
 fastapi>=0.104.0
 uvicorn>=0.24.0
-boto3>=1.29.0
-deepgram-sdk>=3.0.0
 pydantic>=2.5.0
 python-dotenv>=1.0.0
 python-multipart>=0.0.6
+
+# Agent backend dependencies
+numpy>=1.21.0
+pandas>=1.3.0
+Pillow==10.0.0

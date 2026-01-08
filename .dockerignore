@@ -1,0 +1,17 @@
+.git
+.gitignore
+node_modules
+supabase
+.vscode
+.idea
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pytest_cache
+.venv
+venv
+.env
+.env.*
+dist
+build

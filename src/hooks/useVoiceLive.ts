@@ -1,6 +1,16 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const VOICE_LIVE_WS_URL = 'wss://rxwynfplditdwqtjhkpw.supabase.co/functions/v1/voice-ask-live';
+const DEFAULT_SUPABASE_URL = 'https://rxwynfplditdwqtjhkpw.supabase.co';
+const SUPABASE_URL = (import.meta as any)?.env?.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+
+const toWsUrl = (httpUrl: string) => {
+  const trimmed = httpUrl.replace(/\/+$/, '');
+  if (trimmed.startsWith('https://')) return `wss://${trimmed.slice('https://'.length)}`;
+  if (trimmed.startsWith('http://')) return `ws://${trimmed.slice('http://'.length)}`;
+  return trimmed;
+};
+
+const VOICE_LIVE_WS_URL = `${toWsUrl(SUPABASE_URL)}/functions/v1/voice-ask-live`;
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -17,26 +27,54 @@ class AudioQueue {
   private audioContext: AudioContext;
   private onPlayingChange?: (isPlaying: boolean) => void;
   private scheduledTime: number = 0;
-  private readonly SAMPLE_RATE = 24000; // Gemini sends 24kHz audio
+  private sampleRate = 24000; // updated from server mimeType (audio/pcm;rate=...)
+  private readonly FADE_MS = 12; // small fade to avoid clicks at chunk boundaries
+  private readonly LOOKAHEAD_MS = 40; // helps avoid underruns that cause pops
+  private readonly PREBUFFER_MS = 120; // accumulate a bit before starting playback to avoid jitter pops
 
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
     this.audioContext = audioContext;
     this.onPlayingChange = onPlayingChange;
   }
 
-  async addToQueue(audioData: Uint8Array) {
+  private getQueuedSeconds() {
+    // PCM16 mono => 2 bytes per sample
+    const samples = this.queue.reduce((sum, chunk) => sum + chunk.byteLength / 2, 0);
+    return samples / this.sampleRate;
+  }
+
+  async addToQueue(audioData: Uint8Array, sampleRate?: number) {
+    if (typeof sampleRate === 'number' && Number.isFinite(sampleRate) && sampleRate > 0) {
+      this.sampleRate = sampleRate;
+    }
     this.queue.push(audioData);
     if (!this.isPlaying) {
-      this.scheduledTime = this.audioContext.currentTime;
+      const prebufferS = this.PREBUFFER_MS / 1000;
+
+      // Wait until we have a small buffer built up so the queue doesn't underrun.
+      if (this.getQueuedSeconds() < prebufferS) return;
+
+      this.scheduledTime = this.audioContext.currentTime + this.LOOKAHEAD_MS / 1000;
+      console.log('AudioQueue: prebuffer reached, starting playback');
       await this.playNext();
     }
   }
 
   private async playNext() {
     if (this.queue.length === 0) {
+      console.log('AudioQueue: queue empty, stopping playback');
       this.isPlaying = false;
       this.onPlayingChange?.(false);
       return;
+    }
+
+    // Autoplay policies can leave AudioContext suspended until an explicit resume.
+    try {
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+    } catch {
+      // ignore
     }
 
     this.isPlaying = true;
@@ -50,22 +88,42 @@ class AudioQueue {
       
       for (let i = 0; i < float32Data.length; i++) {
         const int16 = dataView.getInt16(i * 2, true); // little endian
-        float32Data[i] = int16 / 32768; // normalize to -1 to 1
+        // Normalize to [-1, 1] and clamp (prevents rare overflows from causing harsh distortion)
+        const f = int16 / 32768;
+        float32Data[i] = Math.max(-1, Math.min(1, f));
       }
 
-      // Create buffer at the correct sample rate
-      const audioBuffer = this.audioContext.createBuffer(1, float32Data.length, this.SAMPLE_RATE);
+      // Create buffer at the sample rate specified by the server
+      const audioBuffer = this.audioContext.createBuffer(1, float32Data.length, this.sampleRate);
       audioBuffer.getChannelData(0).set(float32Data);
 
       const source = this.audioContext.createBufferSource();
       source.buffer = audioBuffer;
-      source.connect(this.audioContext.destination);
+
+      // Add a tiny fade-in/out to avoid audible clicks between chunks
+      const gain = this.audioContext.createGain();
+      source.connect(gain);
+      gain.connect(this.audioContext.destination);
 
       // Schedule precisely to avoid gaps or overlaps
-      const startTime = Math.max(this.scheduledTime, this.audioContext.currentTime);
+      const startTime = Math.max(
+        this.scheduledTime,
+        this.audioContext.currentTime + this.LOOKAHEAD_MS / 1000
+      );
+
+      // Envelope ramps
+      const fade = Math.min(this.FADE_MS / 1000, audioBuffer.duration / 4);
+      const peak = 0.9; // a little headroom helps avoid harsh clipping/distortion
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(peak, startTime + fade);
+      gain.gain.setValueAtTime(peak, Math.max(startTime + fade, startTime + audioBuffer.duration - fade));
+      gain.gain.linearRampToValueAtTime(0, startTime + audioBuffer.duration);
+
       source.start(startTime);
+      // Queue the next buffer to start right after this one ends.
       this.scheduledTime = startTime + audioBuffer.duration;
 
+      console.log('AudioQueue: scheduled chunk, duration:', audioBuffer.duration.toFixed(3), 's, start at:', startTime.toFixed(3));
       source.onended = () => this.playNext();
     } catch (error) {
       console.error('Error playing audio chunk:', error);
@@ -134,7 +192,8 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
   // Initialize audio context
   const getAudioContext = useCallback(() => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext({ sampleRate: 24000 });
+      // Don't force a specific sample rate; we'll create buffers at the server-provided rate.
+      audioContextRef.current = new AudioContext();
     }
     return audioContextRef.current;
   }, []);
@@ -171,6 +230,16 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
     setStatus('connecting');
 
     try {
+      console.log('Opening Voice Live WebSocket:', VOICE_LIVE_WS_URL);
+
+      // Best-effort: pre-warm the playback audio context on a user gesture.
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') await ctx.resume();
+      } catch {
+        // ignore
+      }
+
       const ws = new WebSocket(VOICE_LIVE_WS_URL);
       wsRef.current = ws;
 
@@ -221,7 +290,8 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
               }
 
-              await audioQueueRef.current.addToQueue(bytes);
+              console.log('Received assistant_audio chunk:', bytes.length, 'bytes, rate:', sampleRate);
+              await audioQueueRef.current.addToQueue(bytes, sampleRate);
               break;
             }
 
@@ -293,6 +363,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       console.log('Not connected, connecting first...');
       await connect();
       await waitForSessionReady();
+    }
+
+    // Autoplay policy: ensure playback context is resumed from this user gesture.
+    try {
+      const ctx = getAudioContext();
+      if (ctx.state === 'suspended') await ctx.resume();
+    } catch {
+      // ignore
     }
 
     try {
@@ -377,14 +455,19 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
       sourceRef.current.connect(processorRef.current);
       processorRef.current.connect(audioContext.destination);
-
       setIsListening(true);
-      setTranscript(''); // Clear previous transcript
-      console.log('Started listening');
-
-    } catch (error) {
-      console.error('Failed to start listening:', error);
-      options.onError?.('Microphone access denied');
+      console.log('Microphone access granted and listening started');
+    } catch (err) {
+      console.error('Microphone access error:', err);
+      // Provide a clear, actionable error message
+      const isPermissionDenied = err instanceof DOMException && (
+        err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
+      );
+      const errorMessage = isPermissionDenied
+        ? 'Microphone access was denied. Please click the microphone icon in your browser address bar to allow access, then refresh the page and try again.'
+        : 'Failed to access microphone. Please ensure your browser has microphone permissions and try again.';
+      options.onError?.(errorMessage);
+      throw err;
     }
   }, [status, connect, options]);
   // Disconnect

@@ -1,6 +1,11 @@
+/// <reference lib="dom" />
+/// <reference lib="es2021" />
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+declare const Deno: any;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -39,7 +44,7 @@ const sanitizeForSpeech = (text: string): string => {
     .trim();
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -142,14 +147,15 @@ serve(async (req) => {
       }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in voice-speak function:', error);
+    const err = error instanceof Error ? error : new Error(String(error));
     
     // On any error, suggest browser TTS as fallback
     return new Response(
       JSON.stringify({ 
         use_browser_tts: true,
-        error: error.message 
+        error: err.message 
       }),
       {
         status: 200, // Return 200 so client can handle fallback

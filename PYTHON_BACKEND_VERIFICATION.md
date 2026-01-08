@@ -120,7 +120,6 @@ If the service needs to be redeployed:
 
 ### Required Environment Variables on Render
 Check that these are set in your Render service:
-- `OPENAI_API_KEY` (if using OpenAI for AI generation)
 - `GOOGLE_MAPS_API_KEY` (if using Google Maps)
 - Any database connection strings
 - Any other API keys your backend needs

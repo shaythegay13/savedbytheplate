@@ -1,13 +1,18 @@
+/// <reference lib="dom" />
+/// <reference lib="es2021" />
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenerativeAI } from "https://esm.sh/@google/genai@latest";
+import { GoogleGenAI } from "https://esm.sh/@google/genai@latest";
+
+declare const Deno: any;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const RENDER_BACKEND_URL = 'https://agenticaigardenplanner.onrender.com';
+const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://agenticaigardenplanner.onrender.com';
 
 // ============================================================================
 // Helper Functions - Render Backend Integration
@@ -18,14 +23,14 @@ async function fetchCrops(query: string = ""): Promise<any[]> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     
-    const response = await fetch(`${RENDER_BACKEND_URL}/api/crops`, {
+    const response = await fetch(`${BACKEND_API_URL}/api/crops`, {
       signal: controller.signal,
     });
     clearTimeout(timeout);
     
     if (response.ok) {
       const data = await response.json();
-      const crops = Array.isArray(data) ? data : [];
+      const crops = Array.isArray(data) ? data : (Array.isArray(data?.crops) ? data.crops : []);
       
       if (query) {
         const keywords = query.toLowerCase().split(' ');
@@ -51,7 +56,7 @@ async function fetchEnums(): Promise<any> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     
-    const response = await fetch(`${RENDER_BACKEND_URL}/api/enums`, {
+    const response = await fetch(`${BACKEND_API_URL}/api/enums`, {
       signal: controller.signal,
     });
     clearTimeout(timeout);
@@ -151,20 +156,19 @@ async function callGeminiAPI(systemPrompt: string, userQuestion: string): Promis
     throw new Error('GOOGLE_AI_API_KEY not configured');
   }
 
-  const genAI = new GoogleGenerativeAI(GOOGLE_AI_API_KEY);
-  
-  // Using the native audio model for future Live API compatibility
-  // For text-only mode, this still works as a standard generative model
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash-preview-05-20",
-    systemInstruction: systemPrompt,
+  const ai = new GoogleGenAI({ apiKey: GOOGLE_AI_API_KEY });
+
+  console.log('Calling Gemini API with model: gemini-2.5-flash');
+
+  const result = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: userQuestion,
+    config: {
+      systemInstruction: systemPrompt,
+    },
   });
 
-  console.log('Calling Gemini API with model: gemini-2.5-flash-preview-05-20');
-
-  const result = await model.generateContent(userQuestion);
-  const response = result.response;
-  const text = response.text();
+  const text = (result as any)?.text as string | undefined;
 
   if (!text) {
     throw new Error('Empty response from Gemini API');
@@ -243,7 +247,7 @@ serve(async (req) => {
     }
     
     if (enumData) {
-      dataContext += `\n\nAvailable options:\n- Growing methods: ${enumData.growing_methods?.join(', ') || 'container, raised bed, in-ground'}\n- Sunlight: ${enumData.sunlight_options?.join(', ') || 'full sun, partial shade, full shade'}\n- Experience levels: ${enumData.experience_levels?.join(', ') || 'beginner, intermediate, advanced'}`;
+      dataContext += `\n\nAvailable options:\n- Growing methods: ${enumData.methods?.join(', ') || 'container, raised bed, in-ground'}\n- Sunlight: ${enumData.sunlight?.join(', ') || 'full sun, partial shade, full shade'}\n- Experience levels: ${enumData.experience?.join(', ') || 'beginner, intermediate, advanced'}`;
     }
 
     // Build system prompt
@@ -270,20 +274,35 @@ serve(async (req) => {
       }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in voice-ask function:', error);
-    
+
+    const err = error instanceof Error ? error : new Error(String(error));
+    const details = err.message;
+
     // Handle specific error types
     let statusCode = 500;
-    let errorMessage = error.message;
-    
-    if (error.message?.includes('rate') || error.message?.includes('quota')) {
+    let errorMessage = 'Internal server error';
+
+    const lower = details.toLowerCase();
+    if (
+      lower.includes('rate limit') ||
+      lower.includes('quota') ||
+      lower.includes('resource_exhausted') ||
+      lower.includes('429')
+    ) {
       statusCode = 429;
       errorMessage = 'Rate limit exceeded. Please try again in a moment.';
+    } else if (lower.includes('api key') || lower.includes('permission') || lower.includes('unauthorized') || lower.includes('forbidden')) {
+      statusCode = 401;
+      errorMessage = 'AI API key is invalid or not authorized for this model.';
+    } else if (lower.includes('not found') || lower.includes('model')) {
+      statusCode = 400;
+      errorMessage = 'AI model is unavailable or not enabled for this project.';
     }
-    
+
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: errorMessage, details }),
       {
         status: statusCode,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
