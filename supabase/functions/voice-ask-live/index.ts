@@ -122,7 +122,15 @@ const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://agenticaigar
 // Tool Definitions for Gemini Function Calling
 // ============================================================================
 
-const gardeningTools = [
+const gardeningTools: Array<{
+  name: string;
+  description: string;
+  parameters: {
+    type: typeof Type.OBJECT;
+    properties: Record<string, { type: typeof Type.STRING; description: string; enum?: string[] }>;
+    required: string[];
+  };
+}> = [
   {
     name: "getPlantInfo",
     description: "Get detailed information about a specific plant including growing requirements, care tips, and NYC-specific advice. Use this when a user asks about how to grow a plant, what conditions it needs, or general plant information.",
@@ -271,10 +279,11 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
       garden_plan: data.garden_plan || null
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(`Tool execution error for ${toolName}:`, error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return JSON.stringify({
-      error: error.message,
+      error: errorMessage,
       fallback: true,
       suggestion: "I'm having trouble accessing my plant database, but I can help with general advice."
     });
@@ -584,17 +593,18 @@ serve(async (req) => {
         tools: gardeningTools.map(t => t.name)
       }));
 
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to initialize Gemini Live:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       socket.send(JSON.stringify({
         type: "error",
-        message: "Failed to start voice session: " + (error.message || "Unknown error")
+        message: "Failed to start voice session: " + errorMessage
       }));
       socket.close();
     }
   };
 
-  socket.onmessage = async (event) => {
+  socket.onmessage = async (event: MessageEvent) => {
     if (!isConnected || !geminiSession) {
       socket.send(JSON.stringify({
         type: "error",
@@ -655,11 +665,12 @@ serve(async (req) => {
         console.log("Ignoring non-audio message type:", message.type);
       }
 
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error processing client message:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       socket.send(JSON.stringify({
         type: "error",
-        message: "Failed to process audio: " + (error.message || "Unknown error")
+        message: "Failed to process audio: " + errorMessage
       }));
     }
   };
@@ -676,7 +687,7 @@ serve(async (req) => {
     isConnected = false;
   };
 
-  socket.onerror = (error) => {
+  socket.onerror = (error: Event) => {
     console.error("WebSocket error:", error);
     if (geminiSession) {
       try {

@@ -330,10 +330,11 @@ serve(async (req) => {
       if (!healthResponse.ok) {
         console.warn('Python backend health check failed:', healthResponse.status);
       }
-    } catch (healthError) {
+    } catch (healthError: unknown) {
       clearTimeout(healthTimeoutId);
       console.error('Python backend health check error:', healthError);
-      throw new Error(`Python backend is not responding. The service may be sleeping (Render free tier cold start). Error: ${healthError.message}`);
+      const errorMessage = healthError instanceof Error ? healthError.message : 'Unknown error';
+      throw new Error(`Python backend is not responding. The service may be sleeping (Render free tier cold start). Error: ${errorMessage}`);
     }
     
     // Increase timeout for main request (Render free tier cold starts can take 30-50 seconds)
@@ -445,7 +446,7 @@ serve(async (req) => {
           user_id: formData.user_id,
           space_type: formData.spaceType,
           space_size: formData.spaceSize,
-          sunlight: formData.sunlight,
+          sunlight: sunlight,
           soil_contaminated: formData.soil_contaminated,
           soil_type: formData.soil_type,
           rainfall: formData.rainfall,
@@ -477,17 +478,20 @@ serve(async (req) => {
     });
 
 
-  } catch (error) {
+  } catch (error: unknown) {
     const requestId = crypto.randomUUID();
     console.error('=== ERROR in generate-smart-garden-plan ===');
     console.error('Request ID:', requestId);
-    console.error('Error type:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
+    const errorName = error instanceof Error ? error.name : 'UnknownError';
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('Error type:', errorName);
+    console.error('Error message:', errorMessage);
+    console.error('Error stack:', errorStack);
     console.error('=== ERROR END ===');
     
     // Determine if it's a timeout error
-    const isTimeout = error.name === 'AbortError' || error.message?.includes('aborted');
+    const isTimeout = errorName === 'AbortError' || errorMessage?.includes('aborted');
     
     return new Response(JSON.stringify({ 
       error: isTimeout 

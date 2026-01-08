@@ -140,12 +140,13 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Disease analysis error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
       JSON.stringify({ 
         error: 'Failed to analyze plant image',
-        details: error.message 
+        details: errorMessage 
       }),
       { 
         status: 500, 

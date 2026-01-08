@@ -111,11 +111,15 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in get-usda-climate-data function:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    // Use default coordinates for fallback if the request failed before parsing
+    const fallbackLat = 40.7128;
+    const fallbackLon = -74.0060;
     return new Response(JSON.stringify({ 
-      error: error.message,
-      fallbackData: getFallbackData(latitude, longitude)
+      error: errorMessage,
+      fallbackData: getFallbackData(fallbackLat, fallbackLon)
     }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -368,7 +372,7 @@ function getClimateTrends(region: string, latitude: number) {
     }
   };
 
-  return trends[region] || trends["Northern Plains"];
+  return trends[region as keyof typeof trends] || trends["Northern Plains"];
 }
 
 function getRegionalRecommendations(region: string, latitude: number) {
@@ -403,7 +407,7 @@ function getRegionalRecommendations(region: string, latitude: number) {
     }
   };
 
-  return recommendations[region] || recommendations["Northern Plains"];
+  return recommendations[region as keyof typeof recommendations] || recommendations["Northern Plains"];
 }
 
 function getFallbackCropData() {
@@ -427,7 +431,12 @@ function getFallbackData(lat: number, lon: number): USDAClimateData {
   const climateHub = determineClimateHub(lat, lon);
   
   return {
-    regionalInsights: climateHub,
+    regionalInsights: {
+      climateHub: climateHub.name,
+      region: climateHub.region,
+      primaryConcerns: climateHub.concerns,
+      adaptationStrategies: climateHub.strategies
+    },
     agriculturalStatistics: {
       majorCrops: getFallbackCropData(),
       livestockData: getFallbackLivestockData()

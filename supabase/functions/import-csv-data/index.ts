@@ -158,7 +158,7 @@ Deno.serve(async (req) => {
               totalErrors += batch.length;
             } else {
               // Track unique keys across all sources
-              for (const loc of batch) {
+              for (const loc of batch as CSVLocation[]) {
                 uniqueKeys.add(`${loc.name}|${loc.latitude}|${loc.longitude}`);
               }
             }
@@ -293,7 +293,7 @@ Deno.serve(async (req) => {
           if (contentType.includes('text/html')) throw new Error(`Expected CSV but got HTML at ${url}`);
           const csvText = await res.text();
 
-          const rows = (await parseCsv(csvText, { columns: true })) as CSVRow[];
+          const rows = (await parseCsv(csvText, { skipFirstRow: true })) as unknown as CSVRow[];
           const locations = rows
             .map((row) => {
               const lat = parseFloat(row.latitude || row.lat || row.Latitude || '0');
