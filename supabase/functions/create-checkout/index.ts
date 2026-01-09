@@ -48,11 +48,12 @@ serve(async (req) => {
     // Validate Authorization header format
     const authValidation = authHeaderSchema.safeParse(authHeader);
     if (!authValidation.success) {
-      logStep("Authorization validation failed", authValidation.error.format());
+      const authErrorDetails = authValidation.error.format();
+      logStep("Authorization validation failed", authErrorDetails);
       return new Response(
         JSON.stringify({ 
           error: "Invalid authorization format", 
-          details: authValidation.error.format() 
+          details: authErrorDetails 
         }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -68,11 +69,12 @@ serve(async (req) => {
     const requestBody = await req.json();
     const bodyValidation = checkoutRequestSchema.safeParse(requestBody);
     if (!bodyValidation.success) {
-      logStep("Request body validation failed", bodyValidation.error.format());
+      const bodyErrorDetails = bodyValidation.error.format();
+      logStep("Request body validation failed", bodyErrorDetails);
       return new Response(
         JSON.stringify({ 
           error: "Invalid request body", 
-          details: bodyValidation.error.format() 
+          details: bodyErrorDetails 
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
