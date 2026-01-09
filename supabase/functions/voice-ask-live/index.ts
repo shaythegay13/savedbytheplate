@@ -525,20 +525,42 @@ Voice interaction style:
 - Ask follow-up questions to understand their situation
 - Be encouraging and celebrate small wins`;
 
-const WORD_SEGMENTATION_VOCAB = new Set(
-  [
-    'a','about','above','across','after','again','against','all','also','always','am','an','and','another','any','are','around','as','at',
-    'away','basil','be','because','before','beginner','beginners','best','better','but','by','calendar','can','choice','choices','classic','climate',
-    'companion','companions','companionplanting','container','containers','could','day','days','deter','deterpests','disease','do','does','doable','done',
-    'down','easy','enough','especially','every','fantastic','favor','flavor','for','from','frost','garden','gardening','get','good','great','grow','growing',
-    'had','has','have','help','helpful','here','how','i','if','important','improve','in','indoors','into','is','it','its','key','keep','keeping','last','lettuce',
-    'like','look','make','makes','marigold','marigolds','may','me','mix','mother','much','near','nearby','need','now','of','off','often','on','once','options','or',
-    'out','over','parsley','partner','pests','perfect','plant','planting','plenty','pots','protect','question','raise','raised','really','right','room','said','seedling',
-    'seedlings','shade','should','since','sky','soil','some','spacing','start','state','such','sunlight','super','sure','that','thats','the','them','there','these','this',
-    'those','time','timing','to','today','tomato','tomatoes','totally','trade','try','until','up','use','varieties','variety','want','way','we','well','when','which','will',
-    'with','without','work','works','would','you','your'
-  ].map((w) => w.toLowerCase())
-);
+const CUSTOM_SEGMENTATION_WORDS = [
+  'basil',
+  'companionplanting',
+  'gardening',
+  'marigolds',
+  'parsley',
+  'seedlings',
+  'soil',
+  'spacing',
+  'steer',
+  'sunlight',
+  'tomatoes',
+  'tuck',
+  'cabbage',
+  'fennel'
+];
+
+function buildWordSegmentationVocab(): Set<string> {
+  const vocab = new Set<string>();
+  try {
+    const dictUrl = new URL('./google-10000-english.txt', import.meta.url);
+    const rawDict = Deno.readTextFileSync(dictUrl);
+    rawDict
+      .split(/\s+/)
+      .map((word) => word.trim().toLowerCase())
+      .filter(Boolean)
+      .forEach((word) => vocab.add(word));
+  } catch (error) {
+    console.error('Failed to load google-10000-english dictionary for word segmentation', error);
+  }
+
+  CUSTOM_SEGMENTATION_WORDS.forEach((word) => vocab.add(word.toLowerCase()));
+  return vocab;
+}
+
+const WORD_SEGMENTATION_VOCAB = buildWordSegmentationVocab();
 
 function segmentGluedToken(token: string): string {
   const raw = token;
@@ -661,6 +683,11 @@ function sanitizeAssistantText(text: string): string {
     // Fix glued common adjectives/adverbs
     .replace(
       /([a-z])((?:great|good|best|some|many|even|also|really|very|quite|just)\b)/gi,
+      '$1 $2'
+    )
+    // Fix glued quantifiers and adverbs that precede nouns/verbs
+    .replace(
+      /([a-z])((?:almost|always|never|ever|often|sometimes|together|nearby|near|close|still)\b)/gi,
       '$1 $2'
     )
     // Ensure space after punctuation when followed by letter or number
