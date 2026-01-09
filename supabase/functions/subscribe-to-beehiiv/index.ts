@@ -194,7 +194,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Cleanup old rate limit entries (async, don't wait)
     supabase.rpc('cleanup_newsletter_rate_limits').then(() => {
       console.log('Cleaned up old rate limit entries');
-    }).catch((err: unknown) => {
+    }, (err: unknown) => {
       console.error('Cleanup error (non-critical):', err);
     });
 
