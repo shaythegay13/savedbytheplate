@@ -472,12 +472,29 @@ function sanitizeAssistantText(text: string): string {
   out = out.replace(/\*\*\s*Answering[\s\S]*?\*\*/gi, '');
   out = out.replace(/\bAnswering\s+the\s+Query\b/gi, '');
 
+  // Even broader meta headers we don't want shown to users.
+  out = out.replace(/\*\*\s*Analyzing[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Prioritizing[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Addressing[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Refining[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Adjusting[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Rethinking[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Re-?Evaluating[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+
   // Remove common planning/narration sentences that sometimes leak into text output.
   // (We only want the user-facing answer.)
   out = out.replace(/\bI(?:'|’)ve\s+determined\b[\s\S]*?(?=(\n\n|$))/gi, '');
   out = out.replace(/\bMy\s+focus\s+has\s+shifted\b[\s\S]*?(?=(\n\n|$))/gi, '');
   out = out.replace(/\bI\s+now\s+plan\b[\s\S]*?(?=(\n\n|$))/gi, '');
   out = out.replace(/\bI\s+am\s+now\s+formulating\b[\s\S]*?(?=(\n\n|$))/gi, '');
+
+  // Remove common tool-failure preambles; keep the helpful advice that follows.
+  out = out.replace(/\bOh\s+wow\s*,?\s*I\s*(?:am|'m)\s+running\s+into\s+some\s+trouble[\s\S]*?(?=\bBut\b)/gi, '');
+  out = out.replace(/\bI\s*(?:am|'m)\s+hitting\s+a\s+roadblock\b[\s\S]*?(?=(\n\n|$))/gi, '');
+
+  // Strip placeholder tool names sometimes rendered as empty backticks.
+  out = out.replace(/`{2,}/g, '');
+  out = out.replace(/`[^`]*`/g, '');
 
   // Remove any leftover tool/process narration lines.
   out = out.replace(/\b(getPlantInfo|getCompanionPlants|getDiseaseInfo|getPlantingCalendar|getSoilAdvice|getClimateAdvice|getSpacingLayout|getVarietyRecommendations)\b/gi, '');
@@ -648,16 +665,6 @@ serve(async (req) => {
           if (message.serverContent?.modelTurn?.parts) {
             for (const part of message.serverContent.modelTurn.parts) {
               if (socket.readyState !== WebSocket.OPEN) continue;
-              
-              // Text response (from inline text or thought summaries)
-              if (part.text) {
-                const sanitized = sanitizeAssistantText(part.text);
-                if (!sanitized) continue;
-                socket.send(JSON.stringify({
-                  type: "assistant_text",
-                  text: sanitized
-                }));
-              }
               
               // Audio response (base64 encoded)
               if (part.inlineData?.mimeType?.includes("audio")) {
