@@ -416,7 +416,8 @@ async function executeToolCall(
 // Jane's System Prompt for Live Voice Interaction
 // ============================================================================
 
-const JANE_SYSTEM_PROMPT = `You are Jane, a friendly and knowledgeable garden planning assistant for Saved By The Plate, a community-focused urban gardening platform in NYC.
+const JANE_SYSTEM_PROMPT = `You are Jane, an expert gardening assistant.
+d knowledgeable garden planning assistant for Saved By The Plate, a community-focused urban gardening platform in NYC.
 
 Your personality:
 - Warm, encouraging, and approachable like a supportive mentor
@@ -457,6 +458,66 @@ Voice interaction style:
 - Speak naturally as if having a friendly chat
 - Ask follow-up questions to understand their situation
 - Be encouraging and celebrate small wins`;
+
+const WORD_SEGMENTATION_VOCAB = new Set(
+  [
+    'a','about','above','across','after','again','against','all','also','always','am','an','and','another','any','are','around','as','at',
+    'away','basil','be','because','before','beginner','beginners','best','better','but','by','calendar','can','choice','choices','classic','climate',
+    'companion','companions','companionplanting','container','containers','could','day','days','deter','deterpests','disease','do','does','doable','done',
+    'down','easy','enough','especially','every','fantastic','favor','flavor','for','from','frost','garden','gardening','get','good','great','grow','growing',
+    'had','has','have','help','helpful','here','how','i','if','important','improve','in','indoors','into','is','it','its','key','keep','keeping','last','lettuce',
+    'like','look','make','makes','marigold','marigolds','may','me','mix','mother','much','near','nearby','need','now','of','off','often','on','once','options','or',
+    'out','over','parsley','partner','pests','perfect','plant','planting','plenty','pots','protect','question','raise','raised','really','right','room','said','seedling',
+    'seedlings','shade','should','since','sky','soil','some','spacing','start','state','such','sunlight','super','sure','that','thats','the','them','there','these','this',
+    'those','time','timing','to','today','tomato','tomatoes','totally','trade','try','until','up','use','varieties','variety','want','way','we','well','when','which','will',
+    'with','without','work','works','would','you','your'
+  ].map((w) => w.toLowerCase())
+);
+
+function segmentGluedToken(token: string): string {
+  const raw = token;
+  const lower = token.toLowerCase();
+  const n = lower.length;
+  if (n < 12) return raw;
+  if (!/^[a-z]+$/i.test(raw)) return raw;
+
+  const maxWordLen = 20;
+  const dpScore = new Array<number>(n + 1).fill(-Infinity);
+  const dpNext = new Array<number>(n + 1).fill(-1);
+  dpScore[n] = 0;
+
+  for (let i = n - 1; i >= 0; i--) {
+    let bestScore = -Infinity;
+    let bestJ = i + 1;
+
+    for (let j = i + 1; j <= Math.min(n, i + maxWordLen); j++) {
+      const part = lower.slice(i, j);
+      const isKnown = WORD_SEGMENTATION_VOCAB.has(part);
+      const partScore = isKnown ? part.length * part.length : -2;
+      const total = partScore + dpScore[j];
+      if (total > bestScore) {
+        bestScore = total;
+        bestJ = j;
+      }
+    }
+
+    dpScore[i] = bestScore;
+    dpNext[i] = bestJ;
+  }
+
+  const pieces: string[] = [];
+  let i = 0;
+  while (i < n && dpNext[i] > i) {
+    const j = dpNext[i];
+    pieces.push(raw.slice(i, j));
+    i = j;
+  }
+
+  if (pieces.length <= 1) return raw;
+  const knownCount = pieces.reduce((sum, p) => sum + (WORD_SEGMENTATION_VOCAB.has(p.toLowerCase()) ? 1 : 0), 0);
+  if (knownCount / pieces.length < 0.6) return raw;
+  return pieces.join(' ');
+}
 
 function sanitizeAssistantText(text: string): string {
   let out = String(text || '');
@@ -532,6 +593,8 @@ function sanitizeAssistantText(text: string): string {
     .replace(/([a-zA-Z])([A-Z])/g, '$1 $2')
     .replace(/\s{2,}/g, ' ')
     .trim();
+
+  out = out.replace(/\b[A-Za-z]{12,}\b/g, (m) => segmentGluedToken(m));
 
   return out;
 }
