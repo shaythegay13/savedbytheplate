@@ -365,7 +365,24 @@ async function executeToolCall(
     }
 
     const url = `${BACKEND_API_URL}/api/conversation`;
-    const finalMessage = (userQuestion && String(userQuestion).trim()) ? String(userQuestion).trim() : message;
+
+    const trimmedQuestion = (userQuestion ?? '').toString().trim();
+    const normalizedQuestion = trimmedQuestion.toLowerCase();
+    const normalizedPlant = (args?.plantName ?? '').toString().trim().toLowerCase();
+
+    let shouldUseUserQuestion = false;
+    if (trimmedQuestion.length >= 20) {
+      shouldUseUserQuestion = true;
+    } else if (normalizedPlant && normalizedQuestion.includes(normalizedPlant)) {
+      shouldUseUserQuestion = true;
+    }
+
+    const finalMessage = shouldUseUserQuestion ? trimmedQuestion : message;
+    if (!shouldUseUserQuestion && trimmedQuestion) {
+      console.warn(
+        `Ignoring partial transcription "${trimmedQuestion}" for ${toolName}; falling back to templated query "${message}".`
+      );
+    }
     const context = {
       ...(userContext || {}),
       tool: {
