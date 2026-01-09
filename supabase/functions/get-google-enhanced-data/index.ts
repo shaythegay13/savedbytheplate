@@ -232,7 +232,8 @@ serve(async (req) => {
     const validationResult = enhancedDataSchema.safeParse(rawData);
     
     if (!validationResult.success) {
-      const errorDetails = validationResult.error.format();
+      const validationError = validationResult.error;
+      const errorDetails = validationError.format();
       console.error("Validation failed:", errorDetails);
       return new Response(
         JSON.stringify({ 

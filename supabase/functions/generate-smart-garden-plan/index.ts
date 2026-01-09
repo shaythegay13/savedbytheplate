@@ -138,7 +138,8 @@ serve(async (req) => {
     
     const validationResult = gardenPlanRequestSchema.safeParse(rawRequest);
     if (!validationResult.success) {
-      const errorDetails = validationResult.error.format();
+      const validationError = validationResult.error;
+      const errorDetails = validationError.format();
       console.error('Validation failed:', JSON.stringify(errorDetails, null, 2));
       return new Response(
         JSON.stringify({ 

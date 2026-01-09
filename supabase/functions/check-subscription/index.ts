@@ -42,7 +42,8 @@ serve(async (req) => {
     // Validate Authorization header format
     const validationResult = authHeaderSchema.safeParse(authHeader);
     if (!validationResult.success) {
-      const errorDetails = validationResult.error.format();
+      const validationError = validationResult.error;
+      const errorDetails = validationError.format();
       logStep("Authorization validation failed", errorDetails);
       return new Response(
         JSON.stringify({ 
