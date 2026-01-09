@@ -13,7 +13,7 @@ const corsHeaders = {
 declare const Deno: any;
 
 // Rate limit constants
-const DAILY_LIMIT = 15;
+const DAILY_LIMIT = 100; // Increased for testing/development
 const WINDOW_HOURS = 24;
 
 // ============================================================================
