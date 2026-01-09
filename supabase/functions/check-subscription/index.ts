@@ -42,12 +42,11 @@ serve(async (req) => {
     // Validate Authorization header format
     const validationResult = authHeaderSchema.safeParse(authHeader);
     if (!validationResult.success) {
-      const errorDetails = validationResult.error?.format?.() ?? "Validation failed";
-      logStep("Authorization validation failed", errorDetails);
+      logStep("Authorization validation failed", validationResult.error.format());
       return new Response(
         JSON.stringify({ 
           error: "Invalid authorization format", 
-          details: errorDetails 
+          details: validationResult.error.format() 
         }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
