@@ -28,10 +28,10 @@ class AudioQueue {
   private onPlayingChange?: (isPlaying: boolean) => void;
   private scheduledTime: number = 0;
   private sampleRate = 24000; // updated from server mimeType (audio/pcm;rate=...)
-  private readonly FADE_MS = 12; // small fade to avoid clicks at chunk boundaries
-  private readonly LOOKAHEAD_MS = 80; // helps avoid underruns that cause pops
-  private readonly PREBUFFER_MS = 240; // accumulate a bit before starting playback to avoid jitter pops
-  private readonly UNDERRUN_GRACE_MS = 250; // wait briefly for more chunks before stopping (reduces "spotty" restarts)
+  private readonly FADE_MS = 4; // keep tiny, but avoid audible "dips" between chunks
+  private readonly LOOKAHEAD_MS = 120; // helps avoid underruns that cause pops/robotic gaps
+  private readonly PREBUFFER_MS = 420; // accumulate more before starting to better survive jitter
+  private readonly UNDERRUN_GRACE_MS = 500; // wait longer for more chunks before stopping (reduces "spotty" restarts)
   private underrunTimer: number | null = null;
 
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
