@@ -116,7 +116,11 @@ function getUserIdFromAuth(req: Request): string | null {
 // Backend API Configuration (Gardening Knowledge Base)
 // ============================================================================
 
-const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://voiceagentrender.onrender.com';
+const BACKEND_API_URL = (Deno.env.get('BACKEND_API_URL') || 'https://voiceagentrender.onrender.com').replace(/\/+$/g, '');
+
+async function sleep(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // ============================================================================
 // Tool Definitions for Gemini Function Calling
@@ -370,19 +374,64 @@ async function executeToolCall(
       }
     };
     console.log(`Calling Backend API: ${url} with message: ${finalMessage}`);
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: finalMessage, context })
-    });
 
-    if (!response.ok) {
-      console.error(`Render API error: ${response.status} ${response.statusText}`);
-      const errorText = await response.text();
-      console.error(`Error body: ${errorText}`);
+    const maxAttempts = 3;
+    let response: Response | undefined;
+    let lastError: unknown = undefined;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: finalMessage, context }),
+          signal: controller.signal
+        });
+
+        if (response.ok) break;
+
+        // Retry transient upstream issues (Render cold start / gateway).
+        if ([429, 502, 503, 504].includes(response.status) && attempt < maxAttempts) {
+          console.warn(`Backend API non-OK (attempt ${attempt}/${maxAttempts}): ${response.status} ${response.statusText}`);
+          await sleep(400 * attempt);
+          continue;
+        }
+
+        break;
+      } catch (err: unknown) {
+        lastError = err;
+
+        // Retry network/timeout errors.
+        if (attempt < maxAttempts) {
+          console.warn(`Backend API fetch error (attempt ${attempt}/${maxAttempts}):`, err);
+          await sleep(400 * attempt);
+          continue;
+        }
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    if (!response || !response.ok) {
+      const status = response?.status;
+      const statusText = response?.statusText;
+      let errorText = '';
+
+      try {
+        if (response) errorText = await response.text();
+      } catch (_) {
+        // ignore
+      }
+
+      console.error(`Render API error: ${status ?? 'NO_RESPONSE'} ${statusText ?? ''}`);
+      if (errorText) console.error(`Error body: ${errorText}`);
+      if (lastError) console.error(`Fetch error:`, lastError);
+
       return JSON.stringify({
         error: "Could not fetch from knowledge base",
         fallback: true,
@@ -566,31 +615,44 @@ function sanitizeAssistantText(text: string): string {
   out = out
     .replace(/[\t\r]+/g, ' ')
     .replace(/\u00A0/g, ' ')
-    // Fix glued common verbs/auxiliaries/pronouns: marigoldsare -> marigolds are, whichis -> which is
+    // CRITICAL FIX: Add space before common verbs/auxiliaries when glued to previous word
+    // Handles: "lovesare" -> "loves are", "neighbors!Basil" -> "neighbors! Basil"
     .replace(
-      /([a-zA-Z])((?:is|are|was|were|be|been|being|can|could|should|would|will|won't|dont|don't|does|doesn't|did|didn't|have|has|had|help|keep|make|get|start|wait|look|need|want|try|use|find|plant|grow|water|feed|protect)(?=[a-zA-Z]))/g,
+      /([a-z])((?:is|are|was|were|be|been|being|can|could|should|would|will|won't|dont|don't|does|doesn't|did|didn't|have|has|had|haven't|hasn't|hadn't)\b)/gi,
       '$1 $2'
     )
-    // Fix glued question/relative words: that'sa -> that's a, whichis -> which is, thatcan -> that can
+    // Add space before common action verbs when glued
     .replace(
-      /([a-zA-Z])((?:which|that|this|these|those|here|there)(?=[a-zA-Z]))/g,
+      /([a-z])((?:help|helps|keep|keeps|make|makes|get|gets|start|starts|wait|waits|look|looks|need|needs|want|wants|try|tries|use|uses|find|finds|plant|plants|grow|grows|water|waters|feed|feeds|protect|protects|love|loves|enhance|enhances)\b)/gi,
       '$1 $2'
     )
-    // Fix common "jammed" connector words when followed by whitespace/punctuation.
-    // Examples: tomatoesin Brooklyn -> tomatoes in Brooklyn, getthe -> get the
+    // Fix glued question/relative words and determiners
     .replace(
-      /([a-zA-Z])((?:the|a|an|and|or|but|so|to|of|in|on|at|for|from|with|without|as|by|into|until|after|before|around|about|over|under|up|out|off|per)(?=(?:\s|[.,;:!?)])))/g,
+      /([a-z])((?:which|that|this|these|those|here|there|the|a|an)\b)/gi,
       '$1 $2'
     )
-    // Common pronouns/determiners that frequently get glued in transcriptions.
+    // Fix glued conjunctions and prepositions (CRITICAL for "neighbors!Basil" -> "neighbors! Basil")
     .replace(
-      /([a-zA-Z])((?:you|your|we|they|them|their|it|its|this|that|these|those|here|there)(?=(?:\s|[.,;:!?)])))/g,
+      /([a-z!?.,;:])((?:and|or|but|so|to|of|in|on|at|for|from|with|without|as|by|into|until|after|before|around|about|over|under|up|out|off|per)\b)/gi,
       '$1 $2'
     )
-    // Ensure a single space after punctuation when followed by a non-space character.
-    .replace(/([,.;:!?])(\S)/g, '$1 $2')
+    // Fix glued pronouns
+    .replace(
+      /([a-z])((?:you|your|we|they|them|their|it|its|I|my|me)\b)/gi,
+      '$1 $2'
+    )
+    // Fix glued common adjectives/adverbs
+    .replace(
+      /([a-z])((?:great|good|best|some|many|even|also|really|very|quite|just)\b)/gi,
+      '$1 $2'
+    )
+    // Ensure space after punctuation when followed by letter or number
+    .replace(/([,.;:!?])([a-zA-Z0-9])/g, '$1 $2')
+    // Remove space before punctuation
     .replace(/\s+([,.;:!?])/g, '$1')
-    .replace(/([a-zA-Z])([A-Z])/g, '$1 $2')
+    // Add space between lowercase and uppercase (camelCase fix)
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    // Collapse multiple spaces
     .replace(/\s{2,}/g, ' ')
     .trim();
 
@@ -764,7 +826,14 @@ serve(async (req) => {
           // Handle outputTranscription (transcription of Jane's audio)
           if (message.serverContent?.outputTranscription?.text) {
             if (socket.readyState === WebSocket.OPEN) {
-              const sanitized = sanitizeAssistantText(message.serverContent.outputTranscription.text);
+              const rawText = message.serverContent.outputTranscription.text;
+              console.log('[GEMINI RAW TEXT]:', rawText);
+              console.log('[GEMINI RAW SPACES]:', (rawText.match(/ /g) || []).length);
+              
+              const sanitized = sanitizeAssistantText(rawText);
+              console.log('[SANITIZED TEXT]:', sanitized);
+              console.log('[SANITIZED SPACES]:', (sanitized.match(/ /g) || []).length);
+              
               if (!sanitized) return;
               socket.send(JSON.stringify({
                 type: "assistant_text",
