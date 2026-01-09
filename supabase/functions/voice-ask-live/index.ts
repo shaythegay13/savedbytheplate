@@ -466,12 +466,32 @@ function sanitizeAssistantText(text: string): string {
   out = out.replace(/\*\*\s*Re-evaluating Tool Response\s*\*\*[\s\S]*?(?=\*\*|$)/gi, '');
   out = out.replace(/\*\*\s*Formulating User Interaction\s*\*\*[\s\S]*?(?=\*\*|$)/gi, '');
 
+  // Additional meta-reasoning headers observed in Gemini Live output.
+  out = out.replace(/\*\*\s*Assessing[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Formulating[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+
+  // Remove common planning/narration sentences that sometimes leak into text output.
+  // (We only want the user-facing answer.)
+  out = out.replace(/\bI(?:'|’)ve\s+determined\b[\s\S]*?(?=(\n\n|$))/gi, '');
+  out = out.replace(/\bMy\s+focus\s+has\s+shifted\b[\s\S]*?(?=(\n\n|$))/gi, '');
+  out = out.replace(/\bI\s+now\s+plan\b[\s\S]*?(?=(\n\n|$))/gi, '');
+  out = out.replace(/\bI\s+am\s+now\s+formulating\b[\s\S]*?(?=(\n\n|$))/gi, '');
+
   // Remove any leftover tool/process narration lines.
   out = out.replace(/\b(getPlantInfo|getCompanionPlants|getDiseaseInfo|getPlantingCalendar|getSoilAdvice|getClimateAdvice|getSpacingLayout|getVarietyRecommendations)\b/gi, '');
   out = out.replace(/\btool\s*call\b/gi, '');
   out = out.replace(/\bquery\s*scope\b/gi, '');
 
-  return out.trim();
+  // Normalize whitespace (Gemini output sometimes arrives with missing spaces/newlines).
+  out = out
+    .replace(/[\t\r]+/g, ' ')
+    .replace(/\u00A0/g, ' ')
+    .replace(/\s+([,.;:!?])/g, '$1')
+    .replace(/([a-zA-Z])([A-Z])/g, '$1 $2')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  return out;
 }
 
 // ============================================================================
