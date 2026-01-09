@@ -505,6 +505,16 @@ function sanitizeAssistantText(text: string): string {
   out = out
     .replace(/[\t\r]+/g, ' ')
     .replace(/\u00A0/g, ' ')
+    // Fix glued common verbs/auxiliaries/pronouns: marigoldsare -> marigolds are, whichis -> which is
+    .replace(
+      /([a-zA-Z])((?:is|are|was|were|be|been|being|can|could|should|would|will|won't|dont|don't|does|doesn't|did|didn't|have|has|had|help|keep|make|get|start|wait|look|need|want|try|use|find|plant|grow|water|feed|protect)(?=[a-zA-Z]))/g,
+      '$1 $2'
+    )
+    // Fix glued question/relative words: that'sa -> that's a, whichis -> which is, thatcan -> that can
+    .replace(
+      /([a-zA-Z])((?:which|that|this|these|those|here|there)(?=[a-zA-Z]))/g,
+      '$1 $2'
+    )
     // Fix common "jammed" connector words when followed by whitespace/punctuation.
     // Examples: tomatoesin Brooklyn -> tomatoes in Brooklyn, getthe -> get the
     .replace(
