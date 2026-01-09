@@ -156,7 +156,6 @@ const GardenPlan = () => {
   }, [disconnect]);
 
   const handleJaneClick = async () => {
-    alert('Jane clicked! isListening: ' + isListening);
     console.log('=== Jane clicked === isListening:', isListening);
     // If currently listening, stop listening
     if (isListening) {
