@@ -48,7 +48,8 @@ serve(async (req) => {
     // Validate Authorization header format
     const authValidation = authHeaderSchema.safeParse(authHeader);
     if (!authValidation.success) {
-      const authErrorDetails = authValidation.error.format();
+      const authError = authValidation.error;
+      const authErrorDetails = authError.format();
       logStep("Authorization validation failed", authErrorDetails);
       return new Response(
         JSON.stringify({ 
@@ -69,7 +70,8 @@ serve(async (req) => {
     const requestBody = await req.json();
     const bodyValidation = checkoutRequestSchema.safeParse(requestBody);
     if (!bodyValidation.success) {
-      const bodyErrorDetails = bodyValidation.error.format();
+      const bodyError = bodyValidation.error;
+      const bodyErrorDetails = bodyError.format();
       logStep("Request body validation failed", bodyErrorDetails);
       return new Response(
         JSON.stringify({ 
