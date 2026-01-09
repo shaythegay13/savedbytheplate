@@ -174,10 +174,15 @@ const GardenPlan = () => {
       console.log('startListening returned successfully');
     } catch (err) {
       console.error("Failed to start listening:", err);
+      
+      // Show the actual error message instead of assuming it's microphone
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      const isMicrophoneError = errorMessage.includes('microphone') || errorMessage.includes('Microphone');
+      
       toast({
-        title: "Microphone Access Required",
-        description: "Please allow microphone access to talk to Jane.",
-        variant: "destructive"
+        title: isMicrophoneError ? "Microphone Access Required" : "Connection Error",
+        description: errorMessage || "Failed to connect to Jane. Please try again.",
+        variant: "destructive",
       });
     }
   };

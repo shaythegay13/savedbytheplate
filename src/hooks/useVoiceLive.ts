@@ -204,15 +204,28 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
   };
 
   const waitForSessionReady = async (timeoutMs = 12000) => {
+    console.log('Waiting for session ready...');
     const deferred = sessionReadyDeferredRef.current;
-    if (!deferred) return;
+    if (!deferred) {
+      console.warn('No deferred promise for session ready');
+      return;
+    }
 
-    await Promise.race([
-      deferred.promise,
-      new Promise<void>((_, reject) =>
-        setTimeout(() => reject(new Error('Voice session timed out')), timeoutMs)
-      ),
-    ]);
+    try {
+      await Promise.race([
+        deferred.promise,
+        new Promise<void>((_, reject) =>
+          setTimeout(() => {
+            console.error('Session ready timeout after', timeoutMs, 'ms');
+            reject(new Error('Voice session timed out - the server did not respond in time. Please try again.'));
+          }, timeoutMs)
+        ),
+      ]);
+      console.log('Session ready confirmed');
+    } catch (err) {
+      console.error('waitForSessionReady failed:', err);
+      throw err;
+    }
   };
 
   // Initialize audio context
