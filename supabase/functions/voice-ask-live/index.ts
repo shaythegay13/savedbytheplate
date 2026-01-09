@@ -469,6 +469,8 @@ function sanitizeAssistantText(text: string): string {
   // Additional meta-reasoning headers observed in Gemini Live output.
   out = out.replace(/\*\*\s*Assessing[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
   out = out.replace(/\*\*\s*Formulating[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Answering[\s\S]*?\*\*/gi, '');
+  out = out.replace(/\bAnswering\s+the\s+Query\b/gi, '');
 
   // Remove common planning/narration sentences that sometimes leak into text output.
   // (We only want the user-facing answer.)
@@ -486,6 +488,8 @@ function sanitizeAssistantText(text: string): string {
   out = out
     .replace(/[\t\r]+/g, ' ')
     .replace(/\u00A0/g, ' ')
+    // Ensure a single space after punctuation when followed by a non-space character.
+    .replace(/([,.;:!?])(\S)/g, '$1 $2')
     .replace(/\s+([,.;:!?])/g, '$1')
     .replace(/([a-zA-Z])([A-Z])/g, '$1 $2')
     .replace(/\s{2,}/g, ' ')
