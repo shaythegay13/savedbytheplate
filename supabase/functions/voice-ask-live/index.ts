@@ -505,6 +505,17 @@ function sanitizeAssistantText(text: string): string {
   out = out
     .replace(/[\t\r]+/g, ' ')
     .replace(/\u00A0/g, ' ')
+    // Fix common "jammed" connector words when followed by whitespace/punctuation.
+    // Examples: tomatoesin Brooklyn -> tomatoes in Brooklyn, getthe -> get the
+    .replace(
+      /([a-zA-Z])((?:the|a|an|and|or|but|so|to|of|in|on|at|for|from|with|without|as|by|into|until|after|before|around|about|over|under|up|out|off|per)(?=(?:\s|[.,;:!?)])))/g,
+      '$1 $2'
+    )
+    // Common pronouns/determiners that frequently get glued in transcriptions.
+    .replace(
+      /([a-zA-Z])((?:you|your|we|they|them|their|it|its|this|that|these|those|here|there)(?=(?:\s|[.,;:!?)])))/g,
+      '$1 $2'
+    )
     // Ensure a single space after punctuation when followed by a non-space character.
     .replace(/([,.;:!?])(\S)/g, '$1 $2')
     .replace(/\s+([,.;:!?])/g, '$1')
