@@ -18,7 +18,7 @@ import requests
 load_dotenv('.env.local')
 
 # Backend conversation endpoint
-GARDEN_API_URL = os.getenv("GARDEN_API_URL", "https://agenticaigardenplanner.onrender.com")
+GARDEN_API_URL = os.getenv("GARDEN_API_URL", "https://voiceagentrender.onrender.com")
 CONVERSATION_ENDPOINT = os.getenv("GARDEN_CONVERSATION_URL", f"{GARDEN_API_URL}/api/conversation")
 
 # Import backend garden planner

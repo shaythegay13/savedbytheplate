@@ -38,6 +38,12 @@ from agi_agent.gardening.google_enhanced_data import (
 from agi_agent.gardening.companion_planting import get_companion_info
 from agi_agent.gardening.crop_timing import get_crop_timing
 from agi_agent.gardening.troubleshooting import get_troubleshooting_info
+from agi_agent.gardening.care_guides import CARE_DATABASE, get_care_guide, generate_fertilization_guide
+from agi_agent.gardening.crop_timing import CROP_TIMING_DATABASE
+from agi_agent.gardening.crop_varieties import generate_variety_guide, get_recommended_varieties
+from agi_agent.gardening.rotation_planner import generate_soil_improvement_plan
+from agi_agent.gardening.disease_prevention import get_disease_info, get_regional_disease_risk
+from agi_agent.gardening.climate_adaptation import get_climate_hub_for_location
 
 app = FastAPI(
     title="AI Garden Planner API",
@@ -209,26 +215,78 @@ async def conversation(request: ConversationRequest):
 
     lower = message.lower()
 
-    crop_candidates = [
-        "tomato",
-        "tomatoes",
-        "pepper",
-        "peppers",
-        "lettuce",
-        "cucumber",
-        "cucumbers",
-        "squash",
-        "beans",
-        "carrot",
-        "carrots",
-        "basil",
-        "mint",
-        "spinach",
-        "broccoli",
-        "cauliflower",
-        "onion",
-        "onions",
-    ]
+    def build_location_followup() -> ConversationResponse:
+        return ConversationResponse(
+            response=(
+                "To give accurate timing/climate advice, what’s your location? "
+                "A city + state, neighborhood, or ZIP code works.".strip()
+            )
+        )
+
+    def extract_location_from_context() -> Dict:
+        ctx = request.context or {}
+        # Accept multiple shapes since different clients may send different context payloads.
+        lat = ctx.get("latitude") or ctx.get("lat")
+        lon = ctx.get("longitude") or ctx.get("lon")
+        address = ctx.get("address") or ctx.get("location") or ctx.get("city")
+        state = ctx.get("state")
+        if address and state and isinstance(address, str) and isinstance(state, str):
+            address = f"{address}, {state}"
+        return {"latitude": lat, "longitude": lon, "address": address}
+
+    def ensure_lat_lon(location_ctx: Dict) -> Optional[Dict]:
+        lat = location_ctx.get("latitude")
+        lon = location_ctx.get("longitude")
+        address = location_ctx.get("address")
+        if lat and lon:
+            return {"latitude": float(lat), "longitude": float(lon)}
+        if address and isinstance(address, str) and address.strip():
+            try:
+                loc = LocationInput(address=address.strip())
+                glat, glon = geocode_location(loc)
+                return {"latitude": float(glat), "longitude": float(glon)}
+            except Exception:
+                return None
+        return None
+
+    location_ctx = extract_location_from_context()
+
+    def normalize_crop_name(c: str) -> str:
+        c = (c or "").strip().lower()
+        # Very small normalization layer so our internal databases match.
+        # Keep it conservative: only handle a few common plurals.
+        plural_map = {
+            "tomatoes": "tomato",
+            "peppers": "pepper",
+            "cucumbers": "cucumber",
+            "carrots": "carrot",
+            "onions": "onion",
+        }
+        return plural_map.get(c, c)
+
+    def build_crop_candidates() -> List[str]:
+        candidates = set()
+        try:
+            candidates.update([k.lower() for k in CARE_DATABASE.keys()])
+        except Exception:
+            pass
+        try:
+            candidates.update([k.lower() for k in VARIETY_DATABASE.keys()])
+        except Exception:
+            pass
+        try:
+            candidates.update([k.lower() for k in CROP_FAMILIES.keys()])
+        except Exception:
+            pass
+        try:
+            candidates.update([k.lower() for k in CROP_TIMING_DATABASE.keys()])
+        except Exception:
+            pass
+        # Add a few common plural spellings where our DB keys are singular.
+        candidates.update(["tomatoes", "peppers", "cucumbers", "carrots", "onions"])
+        return sorted(candidates, key=lambda s: (-len(s), s))
+
+    crop_candidates = build_crop_candidates()
 
     def pick_crop() -> Optional[str]:
         for c in crop_candidates:
@@ -238,16 +296,23 @@ async def conversation(request: ConversationRequest):
 
     crop = pick_crop()
 
+    crop_norm = normalize_crop_name(crop) if crop else None
+
     if crop and ("companion" in lower or "plant next" in lower or "good with" in lower or "avoid" in lower):
-        info = get_companion_info(crop)
+        info = get_companion_info(crop_norm or crop)
         if info:
             good = ", ".join(info.good_companions[:8])
             bad = ", ".join(info.bad_companions[:8])
             response_text = f"Good companions for {crop}: {good}. Plants to avoid near {crop}: {bad}."
             return ConversationResponse(response=response_text)
 
-    if crop and ("when" in lower or "planting" in lower or "plant" in lower or "harvest" in lower):
-        timing = get_crop_timing(crop)
+    timing_intent = any(k in lower for k in ["when", "planting", "harvest", "start indoors", "last frost", "first frost", "calendar", "this month", "right now"])
+    if crop and timing_intent:
+        # Timing is location/zone sensitive. If we don't have a location, ask.
+        loc = ensure_lat_lon(location_ctx)
+        if not loc:
+            return build_location_followup()
+        timing = get_crop_timing(crop_norm or crop)
         if timing:
             response_text = (
                 f"{timing.name}: typically plant in {', '.join(timing.planting_months)} "
@@ -269,7 +334,7 @@ async def conversation(request: ConversationRequest):
             "tip_burn",
             "slugs",
         ]:
-            info = get_troubleshooting_info(crop, problem)
+            info = get_troubleshooting_info(crop_norm, problem)
             if info:
                 response_text = (
                     f"{crop.title()} – {problem.replace('_', ' ').title()}: "
@@ -278,9 +343,105 @@ async def conversation(request: ConversationRequest):
                 )
                 return ConversationResponse(response=response_text)
 
+        # Broader disease prevention / common issues (not symptom-specific)
+        diseases = get_disease_info(crop_norm)
+        if diseases:
+            names = ", ".join([d.name for d in diseases[:5]])
+            return ConversationResponse(
+                response=(
+                    f"Common diseases/pests to watch for on {crop_norm}: {names}. "
+                    "Tell me your location (city/state or ZIP) and any symptoms if you want a more specific diagnosis."
+                )
+            )
+
+    # Soil advice intent
+    soil_intent = any(k in lower for k in ["soil", "compost", "fertil", "nutrient", "ph", "amend", "manure", "mulch"])
+    if soil_intent:
+        # Soil advice can be general without location.
+        crops_for_soil = [crop_norm] if crop_norm else []
+        response_parts: List[str] = []
+        if crop_norm:
+            response_parts.append(generate_fertilization_guide(crops_for_soil).strip())
+            response_parts.append(generate_soil_improvement_plan(crops_for_soil).strip())
+        else:
+            response_parts.append(
+                "Tell me what you’re growing (or plan to grow) and whether you’re in containers, raised beds, or in-ground, and I’ll tailor soil and compost advice."
+            )
+        response_text = "\n\n".join([p for p in response_parts if p]).strip()
+        if response_text:
+            return ConversationResponse(response=response_text)
+
+    # Climate advice intent
+    climate_intent = any(k in lower for k in ["climate", "weather", "frost", "heat", "drought", "rain", "zone", "hardiness"])
+    if climate_intent:
+        loc = ensure_lat_lon(location_ctx)
+        if not loc:
+            return build_location_followup()
+        climate = fetch_simple_forecast(loc["latitude"], loc["longitude"])
+        hub = get_climate_hub_for_location(climate.state, climate.us_region)
+        hub_text = f"Climate hub: {hub.get('name')} ({hub.get('url')})" if hub else ""
+        response_text = "\n".join([t for t in [climate.summary, f"USDA zone: {climate.usda_zone}", f"Typical last frost: {climate.frost_last_spring}", f"Typical first frost: {climate.frost_first_fall}", hub_text] if t and str(t).strip()]).strip()
+        if response_text:
+            return ConversationResponse(response=response_text)
+
+    # Variety recommendations intent
+    variety_intent = any(k in lower for k in ["variety", "cultivar", "heirloom", "best type", "recommend", "which kind", "container variety"])
+    if crop_norm and variety_intent:
+        varieties = get_recommended_varieties(crop_norm)
+        if varieties:
+            picks = "\n".join([f"- {v.variety_name}: {v.description}" for v in varieties[:3]])
+            return ConversationResponse(response=f"Here are a few {crop_norm} varieties to consider:\n{picks}")
+
+    # Spacing/layout intent (best-effort using variety database)
+    spacing_intent = any(k in lower for k in ["spacing", "space", "how far", "distance", "layout", "plant apart", "square feet"])
+    if crop_norm and spacing_intent:
+        varieties = get_recommended_varieties(crop_norm)
+        if varieties:
+            v = varieties[0]
+            response_text = (
+                f"A common spacing starting point for {crop_norm} is about {v.space_per_plant_sqft} sq ft per plant "
+                f"(spread: {v.plant_spread}). If you tell me your bed/container size, I can suggest a simple layout."
+            )
+            return ConversationResponse(response=response_text)
+
+    # If we detected a crop but didn't match the specialized intent keywords above,
+    # return practical growing/care guidance instead of the generic fallback.
+    if crop_norm:
+        care = get_care_guide(crop_norm)
+        if care:
+            # Build a short, user-friendly summary.
+            # Keep it compact since this endpoint feeds voice + UI.
+            response_parts: List[str] = []
+
+            response_parts.append(
+                f"Here are the basics for growing {crop_norm}:\n"
+                f"Watering: {care.get('watering')}\n"
+                f"Fertilization: {care.get('fertilization')}\n"
+                f"Support: {care.get('support')}\n"
+                f"Pruning: {care.get('pruning')}"
+            )
+
+            common_tasks = care.get('common_tasks') or []
+            if isinstance(common_tasks, list) and common_tasks:
+                tasks = "\n".join([f"- {t}" for t in common_tasks[:5]])
+                response_parts.append(f"Weekly checklist:\n{tasks}")
+
+            # Add a small variety hint if we have it (kept short)
+            try:
+                variety_guide = generate_variety_guide(crop_norm, max_varieties=2)
+                if isinstance(variety_guide, str) and variety_guide.strip():
+                    response_parts.append(variety_guide.strip())
+            except Exception:
+                # Don't fail the whole endpoint if variety info has an issue
+                pass
+
+            response_text = "\n\n".join(response_parts).strip()
+            return ConversationResponse(response=response_text)
+
     return ConversationResponse(
         response="I can help with planting times, companion planting, and troubleshooting. Tell me which plant you’re asking about (e.g., tomatoes) and what you’re trying to do."
     )
+
 
 async def _generate_garden_plan_logic(request: PlanRequest):
     """Shared logic for generating garden plans"""

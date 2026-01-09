@@ -116,7 +116,7 @@ function getUserIdFromAuth(req: Request): string | null {
 // Backend API Configuration (Gardening Knowledge Base)
 // ============================================================================
 
-const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://agenticaigardenplanner.onrender.com';
+const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://voiceagentrender.onrender.com';
 
 // ============================================================================
 // Tool Definitions for Gemini Function Calling
@@ -200,13 +200,91 @@ const gardeningTools: Array<{
       required: []
     }
   }
+  ,
+  {
+    name: "getSoilAdvice",
+    description: "Get soil, compost, fertilizing, and pH advice for a plant or general garden soil questions.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        plantName: {
+          type: Type.STRING,
+          description: "Optional plant name to tailor soil advice (e.g., 'tomato')"
+        },
+        query: {
+          type: Type.STRING,
+          description: "Optional user question/context (e.g., 'container soil mix', 'how much compost', 'pH for tomatoes')"
+        }
+      },
+      required: []
+    }
+  },
+  {
+    name: "getClimateAdvice",
+    description: "Get location-specific climate and timing context (USDA zone, frost dates, heat/drought notes). Use this when weather, frost, zone, or climate affects the answer.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        location: {
+          type: Type.STRING,
+          description: "User location like city/state, neighborhood, or ZIP (if known)"
+        },
+        query: {
+          type: Type.STRING,
+          description: "Optional question context (e.g., 'last frost', 'heat wave', 'drought')"
+        }
+      },
+      required: []
+    }
+  },
+  {
+    name: "getSpacingLayout",
+    description: "Get spacing and layout guidance for a specific plant and bed/container size.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        plantName: {
+          type: Type.STRING,
+          description: "Plant name (e.g., 'tomato', 'basil')"
+        },
+        bedSize: {
+          type: Type.STRING,
+          description: "Optional bed/container size (e.g., '2x4 raised bed', '10 gallon pot')"
+        }
+      },
+      required: ["plantName"]
+    }
+  },
+  {
+    name: "getVarietyRecommendations",
+    description: "Recommend varieties/cultivars for a plant based on goals like container growing, flavor, disease resistance, or season length.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        plantName: {
+          type: Type.STRING,
+          description: "Plant name (e.g., 'tomato')"
+        },
+        preferences: {
+          type: Type.STRING,
+          description: "Optional preferences (e.g., 'container', 'heirloom', 'early', 'high yield')"
+        }
+      },
+      required: ["plantName"]
+    }
+  }
 ];
 
 // ============================================================================
 // Tool Execution - Calls Render API via /api/conversation endpoint
 // ============================================================================
 
-async function executeToolCall(toolName: string, args: Record<string, any>): Promise<string> {
+async function executeToolCall(
+  toolName: string,
+  args: Record<string, any>,
+  userQuestion?: string,
+  userContext?: Record<string, any>
+): Promise<string> {
   console.log(`Executing tool: ${toolName}`, JSON.stringify(args));
   
   try {
@@ -216,8 +294,8 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
     switch (toolName) {
       case 'getPlantInfo':
         message = args.infoType 
-          ? `Tell me about ${args.infoType} information for ${args.plantName} in NYC.`
-          : `Tell me about growing ${args.plantName} in NYC. Include care tips, spacing, and growing requirements.`;
+          ? `Tell me about ${args.infoType} information for ${args.plantName}.`
+          : `Tell me about growing ${args.plantName}. Include care tips, spacing, and growing requirements.`;
         break;
         
       case 'getCompanionPlants':
@@ -232,14 +310,50 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
         
       case 'getPlantingCalendar':
         if (args.plantName && args.month) {
-          message = `When should I plant ${args.plantName} in NYC? Is ${args.month} a good time?`;
+          message = `When should I plant ${args.plantName}? Is ${args.month} a good time?`;
         } else if (args.plantName) {
-          message = `What is the best time to plant ${args.plantName} in NYC Zone 7?`;
+          message = `What is the best time to plant ${args.plantName}?`;
         } else if (args.month) {
-          message = `What vegetables and herbs should I plant in ${args.month} in NYC?`;
+          message = `What vegetables and herbs should I plant in ${args.month}?`;
         } else {
-          message = `What should I plant right now in NYC? Give me seasonal recommendations.`;
+          message = `What should I plant right now? Give me seasonal recommendations.`;
         }
+        break;
+
+      case 'getSoilAdvice':
+        if (args.plantName && args.query) {
+          message = `Soil question for ${args.plantName}: ${args.query}`;
+        } else if (args.plantName) {
+          message = `What soil, compost, and fertilizing basics should I follow for ${args.plantName}?`;
+        } else if (args.query) {
+          message = `Soil question: ${args.query}`;
+        } else {
+          message = `Give general soil and compost advice for a home garden.`;
+        }
+        break;
+
+      case 'getClimateAdvice':
+        if (args.location && args.query) {
+          message = `Climate question for ${args.location}: ${args.query}`;
+        } else if (args.location) {
+          message = `What is the climate/growing season like in ${args.location} (zone and frost dates)?`;
+        } else if (args.query) {
+          message = `Climate question: ${args.query}`;
+        } else {
+          message = `Climate and frost-date guidance for gardening.`;
+        }
+        break;
+
+      case 'getSpacingLayout':
+        message = args.bedSize
+          ? `How should I space ${args.plantName} in a ${args.bedSize}?`
+          : `How far apart should I plant ${args.plantName}?`;
+        break;
+
+      case 'getVarietyRecommendations':
+        message = args.preferences
+          ? `Recommend ${args.plantName} varieties. Preferences: ${args.preferences}`
+          : `Recommend good ${args.plantName} varieties.`;
         break;
         
       default:
@@ -247,14 +361,22 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
     }
 
     const url = `${BACKEND_API_URL}/api/conversation`;
-    console.log(`Calling Backend API: ${url} with message: ${message}`);
+    const finalMessage = (userQuestion && String(userQuestion).trim()) ? String(userQuestion).trim() : message;
+    const context = {
+      ...(userContext || {}),
+      tool: {
+        name: toolName,
+        args: args || {}
+      }
+    };
+    console.log(`Calling Backend API: ${url} with message: ${finalMessage}`);
     
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ message: finalMessage, context })
     });
 
     if (!response.ok) {
@@ -274,7 +396,7 @@ async function executeToolCall(toolName: string, args: Record<string, any>): Pro
     // Extract the response text from the conversation API
     return JSON.stringify({
       tool: toolName,
-      query: message,
+      query: finalMessage,
       answer: data.response || data.answer || JSON.stringify(data),
       garden_plan: data.garden_plan || null
     });
@@ -307,7 +429,13 @@ You help people with:
 - Practical tips for container and raised bed gardening
 - Companion planting and spacing advice
 - Watering, care, and organic pest management
-- NYC-specific growing advice (Zone 7a/7b, April-October growing season)
+- Location-aware growing advice. If timing/climate matters, ask for their city/state, neighborhood, or ZIP.
+
+CRITICAL - OUTPUT RULES (STRICT):
+- Do NOT reveal your internal reasoning, planning, scratch work, or analysis.
+- Do NOT narrate tool usage (do not mention tools, function names, "tool calls", "query scope", or what you are about to do).
+- Do NOT include headings like "Defining the Query Scope" or "Re-evaluating Tool Response".
+- Only say the final, user-facing answer.
 
 CRITICAL - TOOL USAGE REQUIRED:
 You MUST use the provided tools for ANY plant-related questions. Do NOT answer from your general knowledge without first calling the appropriate tool.
@@ -317,6 +445,10 @@ MANDATORY tool usage rules:
 2. getCompanionPlants - ALWAYS call this when asked "what should I plant next to X" or "companion plants" or "what grows well with X"
 3. getDiseaseInfo - ALWAYS call this when someone mentions yellowing leaves, pests, spots, wilting, or any plant problem
 4. getPlantingCalendar - ALWAYS call this when asked "when should I plant", "what to plant now", or timing questions
+5. getSoilAdvice - ALWAYS call this for soil/compost/fertilizer/pH questions
+6. getClimateAdvice - ALWAYS call this when weather, frost dates, drought, heat, or USDA zone affects the answer
+7. getSpacingLayout - ALWAYS call this for spacing/layout/"how far apart" questions
+8. getVarietyRecommendations - ALWAYS call this for variety/cultivar/heirloom/recommendation questions
 
 After calling a tool, use the response data to inform your spoken answer. If a tool fails, acknowledge it briefly and offer general guidance.
 
@@ -325,6 +457,22 @@ Voice interaction style:
 - Speak naturally as if having a friendly chat
 - Ask follow-up questions to understand their situation
 - Be encouraging and celebrate small wins`;
+
+function sanitizeAssistantText(text: string): string {
+  let out = String(text || '');
+
+  // Remove common meta-reasoning section headers if they appear.
+  out = out.replace(/\*\*\s*Defining the Query Scope\s*\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Re-evaluating Tool Response\s*\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+  out = out.replace(/\*\*\s*Formulating User Interaction\s*\*\*[\s\S]*?(?=\*\*|$)/gi, '');
+
+  // Remove any leftover tool/process narration lines.
+  out = out.replace(/\b(getPlantInfo|getCompanionPlants|getDiseaseInfo|getPlantingCalendar|getSoilAdvice|getClimateAdvice|getSpacingLayout|getVarietyRecommendations)\b/gi, '');
+  out = out.replace(/\btool\s*call\b/gi, '');
+  out = out.replace(/\bquery\s*scope\b/gi, '');
+
+  return out.trim();
+}
 
 // ============================================================================
 // WebSocket Handler for Gemini Live API
@@ -405,6 +553,8 @@ serve(async (req) => {
   
   let geminiSession: any = null;
   let isConnected = false;
+  let lastUserText: string | undefined = undefined;
+  let lastUserContext: Record<string, any> | undefined = undefined;
 
   socket.onopen = async () => {
     console.log("Client WebSocket connected");
@@ -422,6 +572,11 @@ serve(async (req) => {
         console.log("Message keys:", Object.keys(message));
         
         try {
+          // If input transcription is enabled, capture the user's transcribed speech.
+          if (message.serverContent?.inputTranscription?.text) {
+            lastUserText = String(message.serverContent.inputTranscription.text || '').trim() || lastUserText;
+          }
+
           // Handle tool calls from Gemini - check multiple possible structures
           if (message.toolCall || message.tool_call || message.serverContent?.toolCall) {
             const toolCallData = message.toolCall || message.tool_call || message.serverContent?.toolCall;
@@ -444,7 +599,7 @@ serve(async (req) => {
               }
               
               // Execute the tool call against Render API
-              const result = await executeToolCall(toolName, args);
+              const result = await executeToolCall(toolName, args, lastUserText, lastUserContext);
               
               toolResponses.push({
                 functionResponses: [{
@@ -472,9 +627,11 @@ serve(async (req) => {
               
               // Text response (from inline text or thought summaries)
               if (part.text) {
+                const sanitized = sanitizeAssistantText(part.text);
+                if (!sanitized) continue;
                 socket.send(JSON.stringify({
                   type: "assistant_text",
-                  text: part.text
+                  text: sanitized
                 }));
               }
               
@@ -492,9 +649,11 @@ serve(async (req) => {
           // Handle outputTranscription (transcription of Jane's audio)
           if (message.serverContent?.outputTranscription?.text) {
             if (socket.readyState === WebSocket.OPEN) {
+              const sanitized = sanitizeAssistantText(message.serverContent.outputTranscription.text);
+              if (!sanitized) return;
               socket.send(JSON.stringify({
                 type: "assistant_text",
-                text: message.serverContent.outputTranscription.text
+                text: sanitized
               }));
             }
           }
@@ -530,6 +689,8 @@ serve(async (req) => {
           responseModalities: [Modality.AUDIO],
           // Enable transcription so we still get text of what Jane says
           outputAudioTranscription: {},
+          // Enable transcription so we can forward the user's actual question to the backend.
+          inputAudioTranscription: {},
           systemInstruction: {
             parts: [{ text: JANE_SYSTEM_PROMPT }]
           },
@@ -619,6 +780,10 @@ serve(async (req) => {
 
       // Only handle audio input (voice-only interface)
       if (message.type === "audio" && message.chunk) {
+        // Allow client to attach context (location, coords, etc.) alongside audio.
+        if (message.context && typeof message.context === 'object') {
+          lastUserContext = message.context;
+        }
         // Send audio chunk to Gemini Live (base64 encoded PCM @ 16kHz)
         try {
           await geminiSession.sendRealtimeInput({

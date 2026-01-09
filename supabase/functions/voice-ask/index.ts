@@ -12,7 +12,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://agenticaigardenplanner.onrender.com';
+const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://voiceagentrender.onrender.com';
 
 // ============================================================================
 // Helper Functions - Render Backend Integration
@@ -131,6 +131,12 @@ Your personality:
 - Passionate about helping people grow their own food
 - Especially supportive of teens and beginners
 - Uses simple language, avoids jargon
+
+CRITICAL - OUTPUT RULES (STRICT):
+- Do NOT reveal your internal reasoning, planning, scratch work, or analysis.
+- Do NOT narrate tool usage, data fetching, or system behavior.
+- Do NOT include headings like "Defining the Query Scope" or "Re-evaluating Tool Response".
+- Only output the final, user-facing answer.
 
 You help people plan their gardens with practical advice about:
 - What to plant based on their climate, space, and season

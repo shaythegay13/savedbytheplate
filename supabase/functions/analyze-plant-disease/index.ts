@@ -3,6 +3,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
+declare const Deno: any;
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -16,7 +18,7 @@ const diseaseAnalysisSchema = z.object({
   analysisType: z.enum(['basic', 'detailed']).optional(),
 });
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -110,7 +112,7 @@ serve(async (req) => {
         });
     }
 
-    const PYTHON_API_URL = 'https://agenticaigardenplanner.onrender.com';
+    const PYTHON_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://voiceagentrender.onrender.com';
     
     console.log('Calling Python backend disease identifier at:', `${PYTHON_API_URL}/api/v1/disease/identify`);
 

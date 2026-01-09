@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const PYTHON_API_URL = "https://agenticaigardenplanner.onrender.com";
+const PYTHON_API_URL = Deno.env.get('BACKEND_API_URL') || "https://voiceagentrender.onrender.com";
 
 const RATE_LIMIT_WINDOW_MINUTES = 60;
 const MAX_REQUESTS_PER_WINDOW = 10;
