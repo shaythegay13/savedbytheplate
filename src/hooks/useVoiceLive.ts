@@ -29,8 +29,10 @@ class AudioQueue {
   private scheduledTime: number = 0;
   private sampleRate = 24000; // updated from server mimeType (audio/pcm;rate=...)
   private readonly FADE_MS = 12; // small fade to avoid clicks at chunk boundaries
-  private readonly LOOKAHEAD_MS = 40; // helps avoid underruns that cause pops
-  private readonly PREBUFFER_MS = 120; // accumulate a bit before starting playback to avoid jitter pops
+  private readonly LOOKAHEAD_MS = 80; // helps avoid underruns that cause pops
+  private readonly PREBUFFER_MS = 240; // accumulate a bit before starting playback to avoid jitter pops
+  private readonly UNDERRUN_GRACE_MS = 250; // wait briefly for more chunks before stopping (reduces "spotty" restarts)
+  private underrunTimer: number | null = null;
 
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
     this.audioContext = audioContext;
@@ -48,6 +50,13 @@ class AudioQueue {
       this.sampleRate = sampleRate;
     }
     this.queue.push(audioData);
+
+    // If we were waiting for more audio, cancel the underrun grace timer.
+    if (this.underrunTimer !== null) {
+      clearTimeout(this.underrunTimer);
+      this.underrunTimer = null;
+    }
+
     if (!this.isPlaying) {
       const prebufferS = this.PREBUFFER_MS / 1000;
 
@@ -62,9 +71,22 @@ class AudioQueue {
 
   private async playNext() {
     if (this.queue.length === 0) {
-      console.log('AudioQueue: queue empty, stopping playback');
-      this.isPlaying = false;
-      this.onPlayingChange?.(false);
+      // Avoid hard stop/restart loops due to tiny gaps in chunk delivery.
+      // Wait a short grace period for additional chunks before we actually stop.
+      if (this.underrunTimer !== null) return;
+
+      this.underrunTimer = window.setTimeout(() => {
+        this.underrunTimer = null;
+        if (this.queue.length === 0) {
+          console.log('AudioQueue: queue empty after grace, stopping playback');
+          this.isPlaying = false;
+          this.onPlayingChange?.(false);
+        } else {
+          // More audio arrived during the grace period; resume scheduling.
+          void this.playNext();
+        }
+      }, this.UNDERRUN_GRACE_MS);
+
       return;
     }
 
@@ -135,6 +157,10 @@ class AudioQueue {
     this.queue = [];
     this.isPlaying = false;
     this.scheduledTime = 0;
+    if (this.underrunTimer !== null) {
+      clearTimeout(this.underrunTimer);
+      this.underrunTimer = null;
+    }
     this.onPlayingChange?.(false);
   }
 }
