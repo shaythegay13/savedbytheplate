@@ -243,7 +243,7 @@ const PremiumFeatures = () => (
         </div>
         <div>
           <h3 className="text-lg font-semibold text-sbtp-green-800 mb-2">Curated Educational Content</h3>
-          <p className="text-sbtp-brown-500">Access articles, videos, and course recommendations from reputable gardening organizations.</p>
+          <p className="text-sbtp-brown-500">Access articles, videos, and program recommendations from reputable gardening organizations.</p>
         </div>
       </div>
     </div>

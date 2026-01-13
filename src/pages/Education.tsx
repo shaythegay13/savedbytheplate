@@ -10,7 +10,7 @@ import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, Ma
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-// Course 1: Community Gardens & Food Justice
+// Program 1: Community Gardens & Food Justice
 const communityGardensCurriculum = [
   {
     week: 1,
@@ -44,7 +44,7 @@ const communityGardensCurriculum = [
   }
 ];
 
-// Course 2: Composting, Soil Science & Sustainability
+// Program 2: Composting, Soil Science & Sustainability
 const soilScienceCurriculum = [
   {
     week: 1,
@@ -161,8 +161,8 @@ const downloadableGuides = [
 ];
 
 
-// Sample course data
-const freeCourses = [
+// Sample program data
+const freePrograms = [
   {
     title: "Introduction to Urban Gardening",
     description: "Learn the basics of starting your own urban garden in small spaces.",
@@ -189,7 +189,7 @@ const freeCourses = [
   }
 ];
 
-const premiumCourses = [
+const premiumPrograms = [
   {
     title: "Advanced Container Gardening",
     description: "Master techniques for maximizing yields in small containers and urban spaces.",
@@ -208,7 +208,7 @@ const premiumCourses = [
   },
   {
     title: "Permaculture Design Certification",
-    description: "Comprehensive course on designing sustainable and productive ecosystems.",
+    description: "Comprehensive program on designing sustainable and productive ecosystems.",
     imageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
     platform: "Systeme.io",
     duration: "12 hours",
@@ -216,7 +216,7 @@ const premiumCourses = [
   },
   {
     title: "Sustainable Agriculture Basics",
-    description: "This course teaches you about some of the basic knowledge about the varied topics underneath sustainable agriculture such as composting, water-saving techniques, and organic growing.",
+    description: "This program teaches you about some of the basic knowledge about the varied topics underneath sustainable agriculture such as composting, water-saving techniques, and organic growing.",
     imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b",
     platform: "Systeme.io",
     duration: "8 hours",
@@ -227,7 +227,7 @@ const premiumCourses = [
 const ShayEmailDialog = () => {
   const [open, setOpen] = useState(false);
   const email = 'info@savedbytheplate.org';
-  const subject = '6-Week Youth Course Inquiry';
+  const subject = 'Youth Education Program Inquiry';
   
   const emailServices = [
     {
@@ -287,9 +287,9 @@ const Education = () => {
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">6-Week Youth Education Courses</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Youth Education Programs</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Two comprehensive programs for middle and high school students exploring food justice, sustainability, 
+              Customizable programs for middle and high school students exploring food justice, sustainability, 
               community gardens, composting, and environmental science
             </p>
           </div>
@@ -307,14 +307,14 @@ const Education = () => {
                   <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Users className="h-10 w-10 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl text-primary">Contact Shay Bouchles</CardTitle>
+                  <CardTitle className="text-2xl text-primary">Contact Us</CardTitle>
                   <CardDescription className="text-lg">
-                    Executive Director - Course Coordinator
+                    Youth Education Programs
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-center text-muted-foreground">
-                    Interested in bringing one of our 6-week courses to your school? Contact us to learn more
+                    Interested in bringing one of our programs to your school? Contact us to learn more
                   </p>
                   <div className="flex justify-center">
                     <ShayEmailDialog />
@@ -325,11 +325,28 @@ const Education = () => {
 
             {/* Program Information */}
             <div className="space-y-8">
+              {/* Customization Notice */}
+              <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 mb-8">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center justify-center text-xl text-primary">
+                    <Clock className="mr-3 h-6 w-6" />
+                    Fully Customizable Programs
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-center text-muted-foreground">
+                    All of our programs are fully customizable in terms of length and content. Whether your school wants us to come in for 
+                    <strong> a single session</strong>, <strong>a 6-week series</strong>, or <strong>a full 12-week semester</strong>, 
+                    we can tailor our curriculum to fit your needs. Contact us to discuss how we can create the perfect program for your students.
+                  </p>
+                </CardContent>
+              </Card>
+
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-primary mb-4">Choose Your Course</h2>
+                <h2 className="text-3xl font-bold text-primary mb-4">Choose Your Program</h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  We offer two 6-week programs designed for middle and high school students. Both courses include 
-                  a guest speaker in week 5 and an optional 7th week garden tour.
+                  We offer programs designed for middle and high school students. Both programs can include 
+                  a guest speaker and an optional garden tour.
                 </p>
               </div>
 
@@ -473,7 +490,7 @@ const Education = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground text-center">
-                    Both courses offer an optional 7th week where students tour the nearest community garden 
+                    Both programs offer an optional session where students tour the nearest community garden 
                     during the normal session time. This hands-on field trip brings everything learned to life!
                   </p>
                 </CardContent>
