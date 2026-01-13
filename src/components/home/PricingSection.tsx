@@ -65,7 +65,7 @@ const PricingSection = () => {
                 <ul className="space-y-4">
                   <li className="flex items-start">
                     <Check className="mr-2 h-5 w-5 text-sbtp-yellow" />
-                    <span>Advanced gardening courses</span>
+                    <span>Advanced gardening programs</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="mr-2 h-5 w-5 text-sbtp-yellow" />
