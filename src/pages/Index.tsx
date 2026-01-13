@@ -60,7 +60,7 @@ const Index = () => {
                   to="/education" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Contact Shay about the course
+                  Contact us about our programs
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
