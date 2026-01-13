@@ -548,50 +548,6 @@ const Premium = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-16 bg-sbtp-green-100">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">What Our Members Say</h2>
-              <p className="text-sbtp-brown-500">Hear from people who have transformed their food choices with our premium features.</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex items-center mb-4">
-                  <div className="bg-sbtp-green-500 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                    M
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sbtp-green-800">Maria L.</h4>
-                    <p className="text-sm text-sbtp-brown-500">Urban Gardener</p>
-                  </div>
-                </div>
-                <p className="text-sbtp-brown-700">
-                  "Jane helped me transform my small balcony into a thriving food source. I'm now growing enough herbs and greens for my family's needs!"
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex items-center mb-4">
-                  <div className="bg-sbtp-blue w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                    J
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sbtp-green-800">James K.</h4>
-                    <p className="text-sm text-sbtp-brown-500">School Teacher</p>
-                  </div>
-                </div>
-                <p className="text-sbtp-brown-700">
-                  "As an educator, the premium content has been invaluable for creating engaging curriculum about sustainable agriculture for my students."
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="py-16">
         <div className="container mx-auto px-4">
