@@ -49,12 +49,12 @@ const Index = () => {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Book className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">6-Week Youth Education Course</h3>
+                  <h3 className="text-xl font-semibold">Educational Programming</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  A comprehensive 6-week program for middle and high school students 
-                  exploring food justice, food sovereignty, community gardens, 
-                  urban agriculture, and hands-on learning about growing their own food.
+                  Customizable educational programs for youth exploring food justice, 
+                  food sovereignty, community gardens, and urban agriculture. Programs 
+                  can be tailored to fit your student population and desired length.
                 </p>
                 <Link 
                   to="/education" 
