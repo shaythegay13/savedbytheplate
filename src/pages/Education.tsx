@@ -246,7 +246,7 @@ const ShayEmailDialog = () => {
     <>
       <Button size="lg" onClick={() => setOpen(true)}>
         <Mail className="mr-2 h-5 w-5" />
-        Email Shay Directly
+        Email Us Directly
       </Button>
       
       <Dialog open={open} onOpenChange={setOpen}>
@@ -254,7 +254,7 @@ const ShayEmailDialog = () => {
           <DialogHeader>
             <DialogTitle className="text-primary">Choose Your Email Service</DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Please select your preferred email service to contact Shay
+              Please select your preferred email service to contact us
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-3 py-4">
@@ -314,7 +314,7 @@ const Education = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-center text-muted-foreground">
-                    Interested in bringing one of our 6-week courses to your school? Contact Shay to learn more
+                    Interested in bringing one of our 6-week courses to your school? Contact us to learn more
                   </p>
                   <div className="flex justify-center">
                     <ShayEmailDialog />
@@ -484,7 +484,7 @@ const Education = () => {
                   <CardContent className="p-6">
                     <h3 className="font-semibold text-lg mb-2">Ready to Get Started?</h3>
                     <p className="text-muted-foreground mb-4">
-                      Contact Shay to discuss bringing this program to your school
+                      Contact us to discuss bringing this program to your school
                     </p>
                     <ShayEmailDialog />
                   </CardContent>
