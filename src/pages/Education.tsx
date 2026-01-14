@@ -17,10 +17,10 @@ import educationGarden5 from "@/assets/education-garden-5.jpeg";
 
 // Gallery images configuration
 const galleryImages = [
-  { src: educationGarden1, alt: "Youth education in community garden", caption: "Hands-on learning in community gardens" },
-  { src: educationGarden2, alt: "Students learning about plants", caption: "Students exploring plant identification and urban biodiversity" },
-  { src: educationGarden3, alt: "Garden workshop session", caption: "Hands-on workshops teaching sustainable gardening techniques" },
-  { src: educationGarden4, alt: "Students in the garden", caption: "Connecting students with nature in urban environments" },
+  { src: educationGarden1, alt: "Students describing beneficial microfauna", caption: "Students describing what beneficial microfauna and micronutrients are." },
+  { src: educationGarden2, alt: "Student providing examples of beneficial microbes", caption: "A student providing some examples of microbes that are beneficial to the environment and sustainability." },
+  { src: educationGarden3, alt: "Nando Rodriguez and Che talking to students", caption: "Nando Rodriguez, Senior Manager for Environmental Programming at Brotherhood Sister Sol, and Che, a community gardener in the Bronx, talking to students about the benefits of composting locally." },
+  { src: educationGarden4, alt: "Vermicomposting education", caption: "Educating the students on the benefits of vermicomposting - worms that digest our food waste." },
   { src: educationGarden5, alt: "Community garden tour", caption: "Building lasting connections through experiential learning" },
 ];
 
