@@ -10,6 +10,10 @@ import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, Ma
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import educationGarden1 from "@/assets/education-garden-1.jpg";
+import educationGarden2 from "@/assets/education-garden-2.jpg";
+import educationGarden3 from "@/assets/education-garden-3.jpg";
+import educationGarden4 from "@/assets/education-garden-4.jpg";
+import educationGarden5 from "@/assets/education-garden-5.jpg";
 
 // Program 1: Community Gardens & Food Justice
 const communityGardensCurriculum = [
@@ -373,7 +377,14 @@ const Education = () => {
                 </TabsList>
 
                 <TabsContent value="community-gardens">
-                  <Card className="bg-primary/5 border-primary/20 mb-6">
+                  <Card className="bg-primary/5 border-primary/20 mb-6 overflow-hidden">
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src={educationGarden2} 
+                        alt="Youth learning in community garden" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <CardHeader>
                       <CardTitle className="text-center text-2xl text-primary">Community Gardens & Food Justice</CardTitle>
                       <CardDescription className="text-center">
@@ -398,7 +409,14 @@ const Education = () => {
                   </Card>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-                    <Card className="border-primary/20">
+                    <Card className="border-primary/20 overflow-hidden">
+                      <div className="h-32 overflow-hidden">
+                        <img 
+                          src={educationGarden4} 
+                          alt="Hands-on garden education" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                           <BookOpen className="mr-3 h-6 w-6 text-primary" />
@@ -413,7 +431,14 @@ const Education = () => {
                       </CardContent>
                     </Card>
 
-                    <Card className="border-primary/20">
+                    <Card className="border-primary/20 overflow-hidden">
+                      <div className="h-32 overflow-hidden">
+                        <img 
+                          src={educationGarden5} 
+                          alt="Community garden connection" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                           <Users className="mr-3 h-6 w-6 text-primary" />
@@ -431,7 +456,14 @@ const Education = () => {
                 </TabsContent>
 
                 <TabsContent value="soil-science">
-                  <Card className="bg-primary/5 border-primary/20 mb-6">
+                  <Card className="bg-primary/5 border-primary/20 mb-6 overflow-hidden">
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src={educationGarden3} 
+                        alt="Students learning about soil science" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <CardHeader>
                       <CardTitle className="text-center text-2xl text-primary">Composting, Soil Science & Sustainability</CardTitle>
                       <CardDescription className="text-center">
