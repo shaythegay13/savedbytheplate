@@ -232,13 +232,12 @@ serve(async (req) => {
     const validationResult = enhancedDataSchema.safeParse(rawData);
     
     if (!validationResult.success) {
-      const validationError = validationResult.error;
-      const errorDetails = validationError.format();
-      console.error("Validation failed:", errorDetails);
+      const requestId = crypto.randomUUID();
+      console.error(`[${requestId}] Validation failed:`, validationResult.error.format());
       return new Response(
         JSON.stringify({ 
-          error: "Invalid request data", 
-          details: errorDetails 
+          error: "Invalid request format",
+          requestId
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );

@@ -48,13 +48,12 @@ serve(async (req) => {
     // Validate Authorization header format
     const authValidation = authHeaderSchema.safeParse(authHeader);
     if (!authValidation.success) {
-      const authError = authValidation.error;
-      const authErrorDetails = authError.format();
-      logStep("Authorization validation failed", authErrorDetails);
+      const requestId = crypto.randomUUID();
+      console.error(`[${requestId}] Authorization validation failed:`, authValidation.error.format());
       return new Response(
         JSON.stringify({ 
-          error: "Invalid authorization format", 
-          details: authErrorDetails 
+          error: "Invalid authorization format",
+          requestId
         }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -70,13 +69,12 @@ serve(async (req) => {
     const requestBody = await req.json();
     const bodyValidation = checkoutRequestSchema.safeParse(requestBody);
     if (!bodyValidation.success) {
-      const bodyError = bodyValidation.error;
-      const bodyErrorDetails = bodyError.format();
-      logStep("Request body validation failed", bodyErrorDetails);
+      const requestId = crypto.randomUUID();
+      console.error(`[${requestId}] Request body validation failed:`, bodyValidation.error.format());
       return new Response(
         JSON.stringify({ 
-          error: "Invalid request body", 
-          details: bodyErrorDetails 
+          error: "Invalid request format",
+          requestId
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -117,8 +115,12 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-checkout", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    const requestId = crypto.randomUUID();
+    logStep("ERROR in create-checkout", { requestId, message: errorMessage });
+    return new Response(JSON.stringify({ 
+      error: "Unable to create checkout session. Please try again.",
+      requestId 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

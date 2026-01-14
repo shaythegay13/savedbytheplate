@@ -32,11 +32,34 @@ export const FridgeResearchTool = () => {
   const [researchResult, setResearchResult] = useState<ResearchResult | null>(null);
   const [manualData, setManualData] = useState('');
 
+  // Validate API key format (prevent injection and ensure valid format)
+  const validateApiKey = (key: string): boolean => {
+    const trimmed = key.trim();
+    // Perplexity API keys are typically alphanumeric with underscores/hyphens
+    if (!trimmed || trimmed.length < 20 || trimmed.length > 200) {
+      return false;
+    }
+    // Only allow alphanumeric and common key characters (no newlines/control chars)
+    if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
+      return false;
+    }
+    return true;
+  };
+
   const handlePerplexityResearch = async () => {
     if (!apiKey.trim()) {
       toast({
         title: "API Key Required",
         description: "Please enter your Perplexity API key to conduct research",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateApiKey(apiKey)) {
+      toast({
+        title: "Invalid API Key Format",
+        description: "Please enter a valid Perplexity API key (alphanumeric characters, underscores, and hyphens only)",
         variant: "destructive",
       });
       return;
@@ -58,13 +81,15 @@ export const FridgeResearchTool = () => {
       const allFridges: FridgeData[] = [];
       let queryCount = 0;
 
+      const sanitizedApiKey = apiKey.trim();
+
       for (const query of queries) {
         setProgress((queryCount / queries.length) * 100);
         
         const response = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
+            'Authorization': `Bearer ${sanitizedApiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
