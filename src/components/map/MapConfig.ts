@@ -17,5 +17,7 @@ export const GOOGLE_MAPS_API_KEY = '';
 export const defaultMapConfig = {
   center: { lat: 40.73, lng: -73.98 }, // Manhattan, NYC
   zoom: 12,
-  mapId: 'food-access-map' // Required for advanced markers
+  mapId: 'food-access-map', // Required for advanced markers
+  scrollwheel: true, // Enable mouse wheel zoom
+  gestureHandling: 'greedy', // Allow scroll zoom without requiring Ctrl key
 };
