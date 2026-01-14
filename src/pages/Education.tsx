@@ -257,7 +257,7 @@ const Education = () => {
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
-                      Students exploring plant identification and urban biodiversity
+                      Students describing what beneficial microfauna and micronutrients are.
                     </p>
                   </div>
                 </button>
@@ -277,7 +277,7 @@ const Education = () => {
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
-                      Hands-on workshops teaching sustainable gardening techniques
+                      A student providing some examples of microbes that are beneficial to the environment and sustainability.
                     </p>
                   </div>
                 </button>
@@ -432,7 +432,7 @@ const Education = () => {
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
-                      Connecting students with nature in urban environments
+                      Nando Rodriguez, Senior Manager for Environmental Programming at Brotherhood Sister Sol, and Che, a community gardener in the Bronx, talking to students about the benefits of composting locally.
                     </p>
                   </div>
                 </button>
@@ -452,7 +452,7 @@ const Education = () => {
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
-                      Building lasting connections through experiential learning
+                      Educating the students on the benefits of vermicomposting - worms that digest our food waste.
                     </p>
                   </div>
                 </button>
