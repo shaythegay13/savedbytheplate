@@ -10,10 +10,10 @@ import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PhotoLightbox } from "@/components/ui/photo-lightbox";
 import educationGarden1 from "@/assets/education-garden-1.jpg";
-import educationGarden2 from "@/assets/education-garden-2.jpg";
-import educationGarden3 from "@/assets/education-garden-3.jpg";
-import educationGarden4 from "@/assets/education-garden-4.jpg";
-import educationGarden5 from "@/assets/education-garden-5.jpg";
+import educationGarden2 from "@/assets/education-garden-2.jpeg";
+import educationGarden3 from "@/assets/education-garden-3.jpeg";
+import educationGarden4 from "@/assets/education-garden-4.jpeg";
+import educationGarden5 from "@/assets/education-garden-5.jpeg";
 
 // Gallery images configuration
 const galleryImages = [
