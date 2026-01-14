@@ -125,9 +125,10 @@ serve(async (req) => {
     // Server-side validation
     const validation = validateLocationSubmission(locationData);
     if (!validation.valid) {
-      console.error('Validation errors:', validation.errors);
+      const requestId = crypto.randomUUID();
+      console.error(`[${requestId}] Validation errors:`, validation.errors);
       return new Response(
-        JSON.stringify({ error: 'Validation failed', details: validation.errors }),
+        JSON.stringify({ error: 'Invalid location data', requestId }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 400,

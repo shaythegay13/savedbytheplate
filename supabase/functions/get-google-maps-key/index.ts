@@ -24,21 +24,51 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get user from JWT if available
-    let userId = "anonymous";
+    // Helper function to get client IP for rate limiting
+    const getClientIP = (request: Request): string => {
+      const forwarded = request.headers.get('x-forwarded-for');
+      if (forwarded) {
+        return forwarded.split(',')[0].trim();
+      }
+      const realIP = request.headers.get('x-real-ip');
+      if (realIP) {
+        return realIP;
+      }
+      const cfIP = request.headers.get('cf-connecting-ip');
+      if (cfIP) {
+        return cfIP;
+      }
+      return 'unknown';
+    };
+
+    // Use IP-based rate limiting for authenticated users, fall back to IP for anonymous
+    let identifier: string;
+    let identifierType: 'user' | 'ip';
+    
     if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
-      const { data: { user } } = await supabase.auth.getUser(token);
-      if (user) {
-        userId = user.id;
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (user && !error) {
+        identifier = user.id;
+        identifierType = 'user';
+      } else {
+        // Invalid token, use IP-based rate limiting
+        identifier = `ip:${getClientIP(req)}`;
+        identifierType = 'ip';
       }
+    } else {
+      // No auth header, use IP-based rate limiting
+      identifier = `ip:${getClientIP(req)}`;
+      identifierType = 'ip';
     }
+    
+    console.log(`Rate limiting identifier: ${identifierType}:${identifier.substring(0, 8)}...`);
 
     // Check rate limit using the google_maps_rate_limits table
     const { data: rateLimit, error: rateLimitError } = await supabase
       .from("google_maps_rate_limits")
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", identifier)
       .single();
 
     const now = new Date();
@@ -49,7 +79,7 @@ serve(async (req) => {
 
       // If within rate limit window and exceeded limit
       if (timeSinceFirst < RATE_LIMIT_WINDOW_MS && rateLimit.request_count >= MAX_REQUESTS_PER_HOUR) {
-        console.log(`Rate limit exceeded for user: ${userId}, count: ${rateLimit.request_count}`);
+        console.log(`Rate limit exceeded for ${identifierType}: ${identifier.substring(0, 8)}..., count: ${rateLimit.request_count}`);
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -61,18 +91,18 @@ serve(async (req) => {
         await supabase
           .from("google_maps_rate_limits")
           .update({ request_count: 1, last_request_at: now.toISOString() })
-          .eq("user_id", userId);
+          .eq("user_id", identifier);
       } else {
         await supabase
           .from("google_maps_rate_limits")
           .update({ request_count: rateLimit.request_count + 1, last_request_at: now.toISOString() })
-          .eq("user_id", userId);
+          .eq("user_id", identifier);
       }
     } else {
       // Create new rate limit entry
       await supabase
         .from("google_maps_rate_limits")
-        .insert({ user_id: userId, request_count: 1, last_request_at: now.toISOString() });
+        .insert({ user_id: identifier, request_count: 1, last_request_at: now.toISOString() });
     }
 
     // Support multiple possible secret names just in case
@@ -104,7 +134,7 @@ serve(async (req) => {
     const isApiKey = value.startsWith("AIza");
     const type = isApiKey ? "apiKey" : "clientId";
 
-    console.log(`Google Maps key retrieved successfully for user: ${userId}`);
+    console.log(`Google Maps key retrieved successfully for ${identifierType}: ${identifier.substring(0, 8)}...`);
     
     return new Response(
       JSON.stringify({ value, type }),

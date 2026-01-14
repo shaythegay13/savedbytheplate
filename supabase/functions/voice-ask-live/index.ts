@@ -95,7 +95,7 @@ function getClientIP(req: Request): string {
   return 'unknown';
 }
 
-function getUserIdFromAuth(req: Request): string | null {
+async function getAuthenticatedUserId(req: Request): Promise<string | null> {
   const authHeader = req.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -103,11 +103,19 @@ function getUserIdFromAuth(req: Request): string | null {
   
   try {
     const token = authHeader.substring(7);
-    // Decode JWT payload (base64url)
-    const payloadPart = token.split('.')[1];
-    const payload = JSON.parse(atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')));
-    return payload.sub || null;
-  } catch {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    
+    // Properly verify JWT signature using Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) {
+      console.error('JWT verification failed:', error?.message || 'No user found');
+      return null;
+    }
+    return user.id;
+  } catch (error) {
+    console.error('Error verifying JWT:', error);
     return null;
   }
 }
@@ -733,9 +741,13 @@ serve(async (req) => {
 
   // ========== RATE LIMITING ==========
   const clientIP = getClientIP(req);
-  const userId = getUserIdFromAuth(req);
+  const userId = await getAuthenticatedUserId(req);
   
-  console.log(`Rate limit check - IP: ${clientIP}, User: ${userId || 'anonymous'}`);
+  console.log(`Rate limit check - IP: ${clientIP}, User: ${userId || 'anonymous (IP-based)'}`);
+  
+  // Determine which identifier to use for primary rate limiting
+  const identifier = userId || `ip:${clientIP}`;
+  const identifierType: 'user' | 'ip' = userId ? 'user' : 'ip';
   
   // Check IP rate limit
   const ipLimit = await checkRateLimit(clientIP, 'ip');
