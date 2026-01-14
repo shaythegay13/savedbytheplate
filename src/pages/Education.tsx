@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,14 +5,24 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin, GraduationCap, Sprout } from "lucide-react";
+import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin, GraduationCap, Sprout, ZoomIn } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { PhotoLightbox } from "@/components/ui/photo-lightbox";
 import educationGarden1 from "@/assets/education-garden-1.jpg";
 import educationGarden2 from "@/assets/education-garden-2.jpg";
 import educationGarden3 from "@/assets/education-garden-3.jpg";
 import educationGarden4 from "@/assets/education-garden-4.jpg";
 import educationGarden5 from "@/assets/education-garden-5.jpg";
+
+// Gallery images configuration
+const galleryImages = [
+  { src: educationGarden1, alt: "Youth education in community garden", caption: "Hands-on learning in community gardens" },
+  { src: educationGarden2, alt: "Students learning about plants", caption: "Students exploring plant identification and urban biodiversity" },
+  { src: educationGarden3, alt: "Garden workshop session", caption: "Hands-on workshops teaching sustainable gardening techniques" },
+  { src: educationGarden4, alt: "Students in the garden", caption: "Connecting students with nature in urban environments" },
+  { src: educationGarden5, alt: "Community garden tour", caption: "Building lasting connections through experiential learning" },
+];
 
 // Program 1: Community Gardens & Food Justice
 const communityGardensCurriculum = [
@@ -138,8 +147,22 @@ const ShayEmailDialog = () => {
 };
 
 const Education = () => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <PhotoLightbox
+        images={galleryImages}
+        initialIndex={lightboxIndex}
+        open={lightboxOpen}
+        onOpenChange={setLightboxOpen}
+      />
       <Navbar />
       
       {/* Hero Section */}
@@ -168,38 +191,62 @@ const Education = () => {
           <div className="text-center mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-3">See Our Work in Action</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Photos from our youth education programs showing hands-on learning in community gardens
+              Photos from our youth education programs showing hands-on learning in community gardens. Click any photo to view full-screen.
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+            <button 
+              onClick={() => openLightbox(1)}
+              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
               <img 
                 src={educationGarden2} 
                 alt="Youth learning in community garden" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-            </div>
-            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+              </div>
+            </button>
+            <button 
+              onClick={() => openLightbox(2)}
+              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
               <img 
                 src={educationGarden3} 
                 alt="Students exploring soil science" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-            </div>
-            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+              </div>
+            </button>
+            <button 
+              onClick={() => openLightbox(3)}
+              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
               <img 
                 src={educationGarden4} 
                 alt="Hands-on garden education" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-            </div>
-            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+              </div>
+            </button>
+            <button 
+              onClick={() => openLightbox(4)}
+              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
               <img 
                 src={educationGarden5} 
                 alt="Community garden learning" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-            </div>
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+              </div>
+            </button>
           </div>
         </div>
       </section>
@@ -232,22 +279,28 @@ const Education = () => {
             </div>
 
             {/* Featured Photo - Full Width */}
-            <div className="mb-12 rounded-2xl overflow-hidden shadow-xl">
+            <button 
+              onClick={() => openLightbox(0)}
+              className="mb-12 rounded-2xl overflow-hidden shadow-xl w-full cursor-pointer group focus:outline-none focus:ring-2 focus:ring-primary"
+            >
               <div className="relative aspect-[16/9]">
                 <img 
                   src={educationGarden1} 
                   alt="Youth engaged in garden education" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <div className="absolute top-4 right-4 bg-black/40 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn className="h-6 w-6 text-white" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-left">
                   <h3 className="text-xl sm:text-2xl font-bold mb-2">Hands-On Learning</h3>
                   <p className="text-white/90 text-sm sm:text-base">
                     Our programs bring students into real community gardens for immersive educational experiences
                   </p>
                 </div>
               </div>
-            </div>
+            </button>
 
             {/* Program Information */}
             <div className="space-y-8">
@@ -278,34 +331,46 @@ const Education = () => {
 
               {/* Two-Column Photo Feature */}
               <div className="grid md:grid-cols-2 gap-6 my-8">
-                <div className="rounded-xl overflow-hidden shadow-lg">
-                  <div className="aspect-[4/3]">
+                <button 
+                  onClick={() => openLightbox(1)}
+                  className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <div className="aspect-[4/3] relative">
                     <img 
                       src={educationGarden2} 
                       alt="Students learning about plants" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+                    </div>
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
                       Students exploring plant identification and urban biodiversity
                     </p>
                   </div>
-                </div>
-                <div className="rounded-xl overflow-hidden shadow-lg">
-                  <div className="aspect-[4/3]">
+                </button>
+                <button 
+                  onClick={() => openLightbox(2)}
+                  className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <div className="aspect-[4/3] relative">
                     <img 
                       src={educationGarden3} 
                       alt="Garden workshop session" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+                    </div>
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
                       Hands-on workshops teaching sustainable gardening techniques
                     </p>
                   </div>
-                </div>
+                </button>
               </div>
 
               <Tabs defaultValue="community-gardens" className="w-full">
@@ -441,34 +506,46 @@ const Education = () => {
 
               {/* Another Photo Feature */}
               <div className="grid md:grid-cols-2 gap-6 my-8">
-                <div className="rounded-xl overflow-hidden shadow-lg">
-                  <div className="aspect-[4/3]">
+                <button 
+                  onClick={() => openLightbox(3)}
+                  className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <div className="aspect-[4/3] relative">
                     <img 
                       src={educationGarden4} 
                       alt="Students in the garden" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+                    </div>
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
                       Connecting students with nature in urban environments
                     </p>
                   </div>
-                </div>
-                <div className="rounded-xl overflow-hidden shadow-lg">
-                  <div className="aspect-[4/3]">
+                </button>
+                <button 
+                  onClick={() => openLightbox(4)}
+                  className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <div className="aspect-[4/3] relative">
                     <img 
                       src={educationGarden5} 
                       alt="Community garden tour" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
+                    </div>
                   </div>
                   <div className="p-4 bg-primary/5">
                     <p className="text-sm text-muted-foreground text-center font-medium">
                       Building lasting connections through experiential learning
                     </p>
                   </div>
-                </div>
+                </button>
               </div>
 
               <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
