@@ -87,7 +87,7 @@ const TransparentJaneAvatar = ({ className = '', alt = 'Jane - Your Garden Assis
   }
 
   return (
-    <div className="relative inline-block">
+    <div className={`relative inline-block ${className}`}>
       {/* Glow layer */}
       <div 
         className="absolute inset-0 blur-xl opacity-40 scale-110"
@@ -98,7 +98,7 @@ const TransparentJaneAvatar = ({ className = '', alt = 'Jane - Your Garden Assis
       <img 
         src={processedSrc || janeAvatarOriginal}
         alt={alt}
-        className={`${className} relative z-10 drop-shadow-[0_8px_24px_hsl(var(--primary)/0.3)]`}
+        className="h-full w-full object-contain relative z-10 drop-shadow-[0_8px_24px_hsl(var(--primary)/0.3)]"
       />
     </div>
   );
