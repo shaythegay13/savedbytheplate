@@ -490,39 +490,6 @@ export type Database = {
         }
         Relationships: []
       }
-      lungs_data1: {
-        Row: {
-          Address: string
-          "Contact Information": string | null
-          Hours: string | null
-          latitude: number | null
-          longitude: number | null
-          "Name of Garden": string
-          Neighborhood: string | null
-          Website: string | null
-        }
-        Insert: {
-          Address: string
-          "Contact Information"?: string | null
-          Hours?: string | null
-          latitude?: number | null
-          longitude?: number | null
-          "Name of Garden": string
-          Neighborhood?: string | null
-          Website?: string | null
-        }
-        Update: {
-          Address?: string
-          "Contact Information"?: string | null
-          Hours?: string | null
-          latitude?: number | null
-          longitude?: number | null
-          "Name of Garden"?: string
-          Neighborhood?: string | null
-          Website?: string | null
-        }
-        Relationships: []
-      }
       moderation_logs: {
         Row: {
           action_type: string
