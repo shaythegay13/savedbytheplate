@@ -112,7 +112,7 @@ const Index = () => {
                   <h3 className="text-xl font-semibold">Local Food Resources</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Find local food sources and get personalized gardening advice through Jane, your personal gardening assistant.
+                  Discover community gardens, farmers markets, food banks, and community fridges near you with our interactive map.
                 </p>
                 <Link 
                   to="/local-food/map"
