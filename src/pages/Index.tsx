@@ -4,6 +4,7 @@ import { MapPin, Book, Leaf, Users } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 import educationGardenImage from "@/assets/education-garden-1.jpg";
+import localFoodResourcesImage from "@/assets/local-food-resources.jpeg";
 import TransparentJaneAvatar from "@/components/garden-plan/TransparentJaneAvatar";
 
 const Index = () => {
@@ -100,8 +101,8 @@ const Index = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                  alt="Local food resources" 
+                  src={localFoodResourcesImage} 
+                  alt="Community garden with labeled vegetable beds" 
                   className="w-full h-full object-cover" 
                 />
               </div>
