@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin, GraduationCap, Sprout } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import educationGarden1 from "@/assets/education-garden-1.jpg";
 
 // Program 1: Community Gardens & Food Justice
 const communityGardensCurriculum = [
@@ -284,8 +285,15 @@ const Education = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16">
-        <div className="container mx-auto px-4 sm:px-6">
+      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={educationGarden1} 
+            alt="Youth education in community garden" 
+            className="w-full h-full object-cover opacity-20"
+          />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Youth Education Programs</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
