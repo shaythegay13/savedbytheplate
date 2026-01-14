@@ -24,22 +24,28 @@ const getIconPath = (type: string) => {
   return iconPaths[type as keyof typeof iconPaths] || iconPaths.farm;
 };
 
-// Create SVG icon for markers matching the legend with fixed size for performance
-const createIconSvg = (type: string, color: string) => {
+// Create SVG icon for markers matching the legend with zoom-based sizing
+const createIconSvg = (type: string, color: string, zoom: number = 12) => {
   const iconPath = getIconPath(type);
-  const size = 24; // Fixed size for better performance
+  
+  // Scale marker size based on zoom level - larger when zoomed in for visibility
+  const baseSize = zoom >= 16 ? 36 : zoom >= 14 ? 32 : zoom >= 12 ? 28 : 24;
+  const strokeWidth = zoom >= 14 ? 3 : 2;
+  const glowIntensity = zoom >= 14 ? 0.6 : 0.3;
+  const shadowBlur = zoom >= 14 ? 8 : 4;
   
   return `
     <svg 
-      width="${size}" 
-      height="${size}" 
+      width="${baseSize}" 
+      height="${baseSize}" 
       viewBox="0 0 24 24" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
-      style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); cursor: pointer;"
+      style="filter: drop-shadow(0 0 ${shadowBlur}px ${color}) drop-shadow(0 2px 4px rgba(0,0,0,0.4)); cursor: pointer;"
     >
-      <circle cx="12" cy="12" r="11" fill="white" stroke="${color}" stroke-width="2"/>
-      <g transform="translate(0, 0)" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <circle cx="12" cy="12" r="11" fill="white" stroke="${color}" stroke-width="${strokeWidth}"/>
+      <circle cx="12" cy="12" r="11" fill="${color}" fill-opacity="${glowIntensity * 0.3}" stroke="none"/>
+      <g transform="translate(0, 0)" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
         ${iconPath}
       </g>
     </svg>
@@ -134,10 +140,13 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
           fullscreenControl: true,
         });
 
-        // Listen to zoom changes to update cluster sizes
+        // Listen to zoom changes to update marker sizes
         map.current.addListener('zoom_changed', () => {
           const zoom = map.current?.getZoom() || defaultMapConfig.zoom;
           setCurrentZoom(zoom);
+          
+          // Update all marker icons with new zoom-based size
+          updateMarkerSizes(zoom);
         });
 
         setMapLoaded(true);
@@ -148,6 +157,17 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
 
     initMap();
   }, []);
+
+  // Function to update marker sizes based on zoom level
+  const updateMarkerSizes = (zoom: number) => {
+    markersData.current.forEach(({ marker, location }) => {
+      const color = locationColors[location.type] || '#4CAF50';
+      const iconSvg = createIconSvg(location.type, color, zoom);
+      const parser = new DOMParser();
+      const iconElement = parser.parseFromString(iconSvg, 'image/svg+xml').documentElement;
+      marker.content = iconElement;
+    });
+  };
 
   // Add markers incrementally when new locations arrive
   useEffect(() => {
@@ -169,8 +189,8 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
         
         const color = locationColors[location.type] || '#4CAF50';
         
-        // Create custom SVG icon matching the legend with fixed size
-        const iconSvg = createIconSvg(location.type, color);
+        // Create custom SVG icon matching the legend with zoom-based sizing
+        const iconSvg = createIconSvg(location.type, color, currentZoom);
         const parser = new DOMParser();
         const iconElement = parser.parseFromString(iconSvg, 'image/svg+xml').documentElement;
 
