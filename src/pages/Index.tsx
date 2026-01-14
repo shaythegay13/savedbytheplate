@@ -72,8 +72,8 @@ const Index = () => {
 
             {/* Ask Jane */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-48 overflow-hidden bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
-                <TransparentJaneAvatar className="h-full object-contain" />
+              <div className="h-48 overflow-hidden bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-2">
+                <TransparentJaneAvatar className="max-h-full max-w-full object-contain" />
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
