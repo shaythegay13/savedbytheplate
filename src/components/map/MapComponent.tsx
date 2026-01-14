@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { MapLocation } from './types';
 import { locationColors, defaultMapConfig } from './MapConfig';
 import { fetchEnhancedMapData, MapDataFilters, ProgressCallback } from '../../services/enhancedMapDataService';
@@ -7,6 +7,9 @@ import { loadGoogleMaps } from '@/lib/googleMapsLoader';
 import { isLocationOpen } from '@/lib/hoursParser';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import MapLoadingSkeleton from './MapLoadingSkeleton';
+import { Locate } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 // Icon path definitions matching the legend
 const getIconPath = (type: string) => {
@@ -71,6 +74,8 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   const [loading, setLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
   const [currentZoom, setCurrentZoom] = useState(defaultMapConfig.zoom);
+  const [locatingUser, setLocatingUser] = useState(false);
+  const userLocationMarker = useRef<any>(null);
 
   // Fetch enhanced data progressively
   useEffect(() => {
@@ -318,9 +323,96 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
   // Get current active location
   const activeLocation = activePopup ? locations.find(loc => loc.id === activePopup) : null;
 
+  // Handle find my location
+  const handleFindMyLocation = useCallback(async () => {
+    if (!map.current || !mapLoaded) {
+      toast.error('Map is not ready yet');
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setLocatingUser(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        // Center map on user location with smooth animation
+        map.current.panTo({ lat: latitude, lng: longitude });
+        map.current.setZoom(15);
+        
+        // Remove previous user location marker if exists
+        if (userLocationMarker.current) {
+          userLocationMarker.current.map = null;
+        }
+        
+        // Create user location marker
+        const { AdvancedMarkerElement } = await (window as any).google.maps.importLibrary('marker');
+        
+        const userMarkerSvg = `
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" fill="#3b82f6" stroke="white" stroke-width="3"/>
+            <circle cx="12" cy="12" r="4" fill="white"/>
+          </svg>
+        `;
+        
+        const parser = new DOMParser();
+        const markerElement = parser.parseFromString(userMarkerSvg, 'image/svg+xml').documentElement;
+        
+        userLocationMarker.current = new AdvancedMarkerElement({
+          map: map.current,
+          position: { lat: latitude, lng: longitude },
+          content: markerElement,
+          title: 'Your Location',
+          zIndex: 9999,
+        });
+        
+        setLocatingUser(false);
+        toast.success('Found your location!');
+      },
+      (error) => {
+        setLocatingUser(false);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            toast.error('Location permission denied. Please enable location access.');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            toast.error('Location information is unavailable.');
+            break;
+          case error.TIMEOUT:
+            toast.error('Location request timed out.');
+            break;
+          default:
+            toast.error('An error occurred while getting your location.');
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      }
+    );
+  }, [mapLoaded]);
+
   return (
     <div className="relative w-full h-full min-h-[300px] bg-background rounded-lg overflow-hidden border border-border shadow-lg">
       <div ref={mapContainer} className="absolute inset-0" />
+      
+      {/* Find My Location Button */}
+      <Button
+        onClick={handleFindMyLocation}
+        disabled={locatingUser || !mapLoaded}
+        size="icon"
+        variant="secondary"
+        className="absolute top-4 left-4 z-10 bg-background/95 backdrop-blur-sm shadow-lg hover:bg-background border border-border"
+        title="Find my location"
+      >
+        <Locate className={`h-5 w-5 ${locatingUser ? 'animate-pulse' : ''}`} />
+      </Button>
       
       {/* Show skeleton while loading data or map not yet initialized */}
       {(loading || !mapLoaded) && (
