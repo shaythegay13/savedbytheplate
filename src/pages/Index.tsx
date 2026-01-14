@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Book, Leaf, Users } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
+import educationGardenImage from "@/assets/education-garden-1.jpg";
 
 const Index = () => {
   return (
@@ -41,8 +42,8 @@ const Index = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1972&q=80" 
-                  alt="Learning to garden" 
+                  src={educationGardenImage} 
+                  alt="Youth education program in community garden" 
                   className="w-full h-full object-cover" 
                 />
               </div>
