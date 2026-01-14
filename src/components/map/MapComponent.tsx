@@ -407,8 +407,7 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
         onClick={handleFindMyLocation}
         disabled={locatingUser || !mapLoaded}
         size="icon"
-        variant="secondary"
-        className="absolute top-16 left-4 z-10 bg-background/95 backdrop-blur-sm shadow-lg hover:bg-background border border-border"
+        className="absolute top-16 left-4 z-10 bg-teal-500 hover:bg-teal-600 text-white shadow-lg border-none"
         title="Find my location"
       >
         <Locate className={`h-5 w-5 ${locatingUser ? 'animate-pulse' : ''}`} />
