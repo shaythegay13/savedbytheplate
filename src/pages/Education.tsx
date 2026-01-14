@@ -185,99 +185,9 @@ const Education = () => {
         </div>
       </section>
 
-      {/* Photo Gallery Showcase - See Our Work */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-3">See Our Work in Action</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Photos from our youth education programs showing hands-on learning in community gardens. Click any photo to view full-screen.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button 
-              onClick={() => openLightbox(1)}
-              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <img 
-                src={educationGarden2} 
-                alt="Youth learning in community garden" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
-              </div>
-            </button>
-            <button 
-              onClick={() => openLightbox(2)}
-              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <img 
-                src={educationGarden3} 
-                alt="Students exploring soil science" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
-              </div>
-            </button>
-            <button 
-              onClick={() => openLightbox(3)}
-              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <img 
-                src={educationGarden4} 
-                alt="Hands-on garden education" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
-              </div>
-            </button>
-            <button 
-              onClick={() => openLightbox(4)}
-              className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <img 
-                src={educationGarden5} 
-                alt="Community garden learning" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
-              </div>
-            </button>
-          </div>
-        </div>
-      </section>
-
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
-            
-            {/* Contact Section */}
-            <div className="text-center mb-12">
-              <Card className="border-2 border-primary/20 shadow-lg">
-                <CardHeader className="pb-4">
-                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-10 w-10 text-primary" />
-                  </div>
-                  <CardTitle className="text-2xl text-primary">Contact Us</CardTitle>
-                  <CardDescription className="text-lg">
-                    Youth Education Programs
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-center text-muted-foreground">
-                    Interested in bringing one of our programs to your school? Contact us to learn more
-                  </p>
-                  <div className="flex justify-center">
-                    <ShayEmailDialog />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
             {/* Featured Photo - Full Width */}
             <button 
               onClick={() => openLightbox(0)}
