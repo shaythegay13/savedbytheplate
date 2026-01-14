@@ -299,8 +299,8 @@ let cacheFiltersKey: string | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
-// Only select the columns we need for the map (excludes sensitive contact info)
-const MAP_SELECT_COLUMNS = 'id,name,type,description,address,latitude,longitude,organization,website,hours,tags,details,open_hours,neighborhood,borough,zip_code,cross_streets,status';
+// Select columns for the map display (contact info requires premium)
+const MAP_SELECT_COLUMNS = 'id,name,type,description,address,latitude,longitude,organization,website,hours,tags,details,open_hours,neighborhood,borough,zip_code,cross_streets,status,owner,local_items_selling,contact_information,phone,email,social_media_website1,social_media_website2';
 
 // Progressive loading callback type
 export type ProgressCallback = (batch: MapLocation[], progress: number) => void;
@@ -363,9 +363,18 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters, onProgress?
         details: loc.details || undefined,
         hoursText: loc.open_hours || undefined,
         borough: loc.borough || undefined,
+        neighborhood: loc.neighborhood || undefined,
         zipcode: loc.zip_code || undefined,
         crossstreets: loc.cross_streets || undefined,
         status: loc.status || undefined,
+        organization: loc.organization || undefined,
+        owner: loc.owner || undefined,
+        localItemsSelling: loc.local_items_selling || undefined,
+        contactInformation: loc.contact_information || undefined,
+        phone: loc.phone || undefined,
+        email: loc.email || undefined,
+        socialMedia1: loc.social_media_website1 || undefined,
+        socialMedia2: loc.social_media_website2 || undefined,
       }));
     };
 
