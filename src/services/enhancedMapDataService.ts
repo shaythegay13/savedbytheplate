@@ -299,8 +299,9 @@ let cacheFiltersKey: string | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
-// Select columns for the map display (contact info requires premium)
-const MAP_SELECT_COLUMNS = 'id,name,type,description,address,latitude,longitude,organization,website,hours,tags,details,open_hours,neighborhood,borough,zip_code,cross_streets,status,owner,local_items_selling,contact_information,phone,email,social_media_website1,social_media_website2';
+// Public columns from the public_locations view (excludes sensitive contact info)
+// Sensitive fields (email, phone, contact_information, submitted_by) are only accessible via locations table with proper RLS
+const PUBLIC_MAP_SELECT_COLUMNS = 'id,name,type,description,address,latitude,longitude,organization,website,hours,tags,details,open_hours,neighborhood,borough,zip_code,cross_streets,status,owner,local_items_selling,social_media_website1,social_media_website2';
 
 // Progressive loading callback type
 export type ProgressCallback = (batch: MapLocation[], progress: number) => void;
@@ -322,10 +323,11 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters, onProgress?
     console.log('🌱 Fetching location data from Supabase with filters:', filters);
 
     // Helper to build a fresh query with the same filters (for pagination)
+    // Uses public_locations view which excludes sensitive contact fields
     const buildQuery = () => {
       let q = supabase
-        .from('locations')
-        .select(MAP_SELECT_COLUMNS)
+        .from('public_locations')  // Use view that excludes sensitive fields
+        .select(PUBLIC_MAP_SELECT_COLUMNS)
         .eq('status', 'active')
         .eq('verified', true);
 
@@ -350,6 +352,7 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters, onProgress?
     };
 
     // Transform a batch of rows to MapLocation format
+    // Note: sensitive fields (email, phone, contact_information) are excluded from public_locations view
     const transformBatch = (rows: any[], startIndex: number): MapLocation[] => {
       return rows.map((loc, index) => ({
         id: loc.id || `loc-${startIndex + index}`,
@@ -370,9 +373,8 @@ export const fetchEnhancedMapData = async (filters?: MapDataFilters, onProgress?
         organization: loc.organization || undefined,
         owner: loc.owner || undefined,
         localItemsSelling: loc.local_items_selling || undefined,
-        contactInformation: loc.contact_information || undefined,
-        phone: loc.phone || undefined,
-        email: loc.email || undefined,
+        // Sensitive contact info not available from public_locations view
+        // Subscribers can access via separate authenticated endpoint
         socialMedia1: loc.social_media_website1 || undefined,
         socialMedia2: loc.social_media_website2 || undefined,
       }));
