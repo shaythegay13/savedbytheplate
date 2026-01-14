@@ -402,13 +402,13 @@ const MapComponent = ({ activeFilters, showOpenNow }: MapComponentProps) => {
     <div className="relative w-full h-full min-h-[300px] bg-background rounded-lg overflow-hidden border border-border shadow-lg">
       <div ref={mapContainer} className="absolute inset-0" />
       
-      {/* Find My Location Button */}
+      {/* Find My Location Button - positioned below Add Location button */}
       <Button
         onClick={handleFindMyLocation}
         disabled={locatingUser || !mapLoaded}
         size="icon"
         variant="secondary"
-        className="absolute top-4 left-4 z-10 bg-background/95 backdrop-blur-sm shadow-lg hover:bg-background border border-border"
+        className="absolute top-16 left-4 z-10 bg-background/95 backdrop-blur-sm shadow-lg hover:bg-background border border-border"
         title="Find my location"
       >
         <Locate className={`h-5 w-5 ${locatingUser ? 'animate-pulse' : ''}`} />
