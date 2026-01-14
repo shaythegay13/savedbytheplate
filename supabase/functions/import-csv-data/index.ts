@@ -178,7 +178,6 @@ Deno.serve(async (req) => {
           const rows = rawRows as CSVRow[];
           const locations = rows
             .map((row) => {
-              // Handle lungs_data source with special column names
               const lat = parseFloat(
                 row.latitude || 
                 (row as any).lat || 
@@ -197,7 +196,6 @@ Deno.serve(async (req) => {
 
               const name = (
                 row.name || 
-                (row as any)['Name of Garden'] || 
                 (row as any)['Name'] || 
                 'Unnamed Location'
               ).toString();
@@ -205,7 +203,7 @@ Deno.serve(async (req) => {
                 (row.type || 
                  (row as any).category || 
                  (row as any).facility_type || 
-                 (source === 'lungs_data' ? 'garden' : 'garden')
+                 'garden'
                 ).toString()
               );
 

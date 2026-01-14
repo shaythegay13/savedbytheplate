@@ -1,7 +1,6 @@
 
 import { MapLocation, NYCDataItem } from '../components/map/types';
 import { fetchGreenThumbData, mergeGardenData } from './greenThumbService';
-import { fetchSupabaseGardenData } from './supabaseMapService';
 
 const NYC_DATA_URL = 'https://data.cityofnewyork.us/resource/p78i-pat6.json';
 
@@ -123,30 +122,14 @@ export const fetchNYCMapData = async (): Promise<MapLocation[]> => {
       })
       .filter((location): location is MapLocation => location !== null);
 
-    // Fetch Supabase garden data
-    console.log('Fetching Supabase garden data...');
-    const supabaseLocations = await fetchSupabaseGardenData();
-    
     // Fetch and merge GreenThumb data
     console.log('Fetching GreenThumb data...');
     const greenThumbLocations = await fetchGreenThumbData();
     
     // Merge all data sources
-    let allLocations = mergeGardenData(nycLocations, greenThumbLocations);
+    const allLocations = mergeGardenData(nycLocations, greenThumbLocations);
     
-    // Add Supabase data (avoiding duplicates by name)
-    supabaseLocations.forEach(supabaseGarden => {
-      const exists = allLocations.some(existing => 
-        existing.name.toLowerCase() === supabaseGarden.name.toLowerCase()
-      );
-      
-      if (!exists) {
-        allLocations.push(supabaseGarden);
-      }
-    });
-    
-    console.log('Total locations (NYC + GreenThumb + Supabase):', allLocations.length);
-    console.log('Supabase locations added:', supabaseLocations.length);
+    console.log('Total locations (NYC + GreenThumb):', allLocations.length);
     
     return allLocations;
   } catch (error) {
