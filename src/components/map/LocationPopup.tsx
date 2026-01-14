@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock, Star, Camera, User, ShoppingBag, Building, Globe } from 'lucide-react';
+import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock, Star, Camera, User, ShoppingBag, Building, Globe, Navigation } from 'lucide-react';
 import { MapLocation } from './types';
 import { useState, useEffect } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -110,12 +110,24 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
             )}
           </div>
           
-          <button
-            onClick={() => setDetailsOpen(true)}
-            className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline"
-          >
-            View Details
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setDetailsOpen(true)}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline"
+            >
+              View Details
+            </button>
+            <span className="text-gray-300">|</span>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${location.lngLat[1]},${location.lngLat[0]}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline flex items-center gap-1"
+            >
+              <Navigation className="h-3 w-3" />
+              Directions
+            </a>
+          </div>
         </div>
       </div>
       
@@ -171,10 +183,27 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
             {/* Address Section */}
             {location.address && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  Location Information
-                </h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-sbtp-green-700 flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    Location Information
+                  </h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                  >
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${location.lngLat[1]},${location.lngLat[0]}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Navigation className="h-4 w-4 mr-1" />
+                      Get Directions
+                    </a>
+                  </Button>
+                </div>
                 <div className="space-y-1 text-sm">
                   <p><span className="font-medium">Address:</span> {location.address}</p>
                   {location.crossstreets && (
