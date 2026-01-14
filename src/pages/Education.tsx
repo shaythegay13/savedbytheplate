@@ -83,152 +83,6 @@ const soilScienceCurriculum = [
   }
 ];
 
-
-// Featured Articles
-const featuredArticles = [
-  {
-    title: "Container Gardening in Small NYC Apartments",
-    excerpt: "Maximize your growing potential with these space-saving container gardening techniques perfect for NYC living.",
-    author: "Sarah Green",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
-    category: "Urban Gardening"
-  },
-  {
-    title: "Seasonal Growing Guide for Zone 7a",
-    excerpt: "A complete month-by-month guide to growing vegetables in New York's climate zone.",
-    author: "Mike Rodriguez",
-    readTime: "12 min read",
-    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
-    category: "Seasonal Guides"
-  },
-  {
-    title: "Building Community Through Urban Farming",
-    excerpt: "How neighborhood gardens are strengthening communities across the five boroughs.",
-    author: "Lisa Chen",
-    readTime: "6 min read",
-    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
-    category: "Community"
-  }
-];
-
-// Video Tutorials
-const videoTutorials = [
-  {
-    title: "Setting Up Your First Balcony Garden",
-    duration: "15:30",
-    instructor: "Garden Expert Maria",
-    views: "24.5K",
-    thumbnail: "https://images.unsplash.com/photo-1426604966848-d7adac402bff",
-    difficulty: "Beginner"
-  },
-  {
-    title: "Composting in Small Spaces",
-    duration: "12:45",
-    instructor: "Eco-Warrior Jake",
-    views: "18.2K",
-    thumbnail: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-    difficulty: "Beginner"
-  },
-  {
-    title: "Advanced Companion Planting Techniques",
-    duration: "22:15",
-    instructor: "Dr. Plant Science",
-    views: "31.8K",
-    thumbnail: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
-    difficulty: "Advanced"
-  }
-];
-
-// Downloadable Guides
-const downloadableGuides = [
-  {
-    title: "NYC Planting Calendar PDF",
-    description: "Month-by-month planting guide specifically for New York City's climate",
-    fileSize: "2.3 MB",
-    downloads: "5.2K",
-    format: "PDF"
-  },
-  {
-    title: "Pest Identification Handbook",
-    description: "Identify and treat common garden pests in urban environments",
-    fileSize: "4.1 MB",
-    downloads: "3.8K",
-    format: "PDF"
-  },
-  {
-    title: "Seed Starting Checklist",
-    description: "Complete checklist for starting seeds indoors successfully",
-    fileSize: "1.5 MB",
-    downloads: "7.1K",
-    format: "PDF"
-  }
-];
-
-
-// Sample program data
-const freePrograms = [
-  {
-    title: "Introduction to Urban Gardening",
-    description: "Learn the basics of starting your own urban garden in small spaces.",
-    imageUrl: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
-    platform: "YouTube",
-    duration: "45 minutes",
-    link: "#"
-  },
-  {
-    title: "Sustainable Agriculture Fundamentals",
-    description: "Understand the core principles of sustainability in modern agriculture.",
-    imageUrl: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
-    platform: "YouTube",
-    duration: "1 hour",
-    link: "#"
-  },
-  {
-    title: "Composting for Beginners",
-    description: "Transform your kitchen waste into garden gold with simple composting techniques.",
-    imageUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86",
-    platform: "YouTube",
-    duration: "30 minutes",
-    link: "#"
-  }
-];
-
-const premiumPrograms = [
-  {
-    title: "Advanced Container Gardening",
-    description: "Master techniques for maximizing yields in small containers and urban spaces.",
-    imageUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff",
-    platform: "Systeme.io",
-    duration: "2 hours",
-    link: "#"
-  },
-  {
-    title: "Season Extension Techniques",
-    description: "Learn how to grow food year-round with greenhouses, row covers, and cold frames.",
-    imageUrl: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843",
-    platform: "Systeme.io",
-    duration: "3 hours",
-    link: "#"
-  },
-  {
-    title: "Permaculture Design Certification",
-    description: "Comprehensive program on designing sustainable and productive ecosystems.",
-    imageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-    platform: "Systeme.io",
-    duration: "12 hours",
-    link: "#"
-  },
-  {
-    title: "Sustainable Agriculture Basics",
-    description: "This program teaches you about some of the basic knowledge about the varied topics underneath sustainable agriculture such as composting, water-saving techniques, and organic growing.",
-    imageUrl: "https://images.unsplash.com/photo-1560493676-04071c5f467b",
-    platform: "Systeme.io",
-    duration: "8 hours",
-    link: "https://savedbytheplate.systeme.io/start"
-  }
-];
-
 const ShayEmailDialog = () => {
   const [open, setOpen] = useState(false);
   const email = 'info@savedbytheplate.org';
@@ -308,11 +162,53 @@ const Education = () => {
         </div>
       </section>
 
+      {/* Photo Gallery Showcase - See Our Work */}
+      <section className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-3">See Our Work in Action</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Photos from our youth education programs showing hands-on learning in community gardens
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <img 
+                src={educationGarden2} 
+                alt="Youth learning in community garden" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <img 
+                src={educationGarden3} 
+                alt="Students exploring soil science" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <img 
+                src={educationGarden4} 
+                alt="Hands-on garden education" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <img 
+                src={educationGarden5} 
+                alt="Community garden learning" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
             
-            {/* Contact Shay Section */}
+            {/* Contact Section */}
             <div className="text-center mb-12">
               <Card className="border-2 border-primary/20 shadow-lg">
                 <CardHeader className="pb-4">
@@ -333,6 +229,24 @@ const Education = () => {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Featured Photo - Full Width */}
+            <div className="mb-12 rounded-2xl overflow-hidden shadow-xl">
+              <div className="relative aspect-[16/9]">
+                <img 
+                  src={educationGarden1} 
+                  alt="Youth engaged in garden education" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Hands-On Learning</h3>
+                  <p className="text-white/90 text-sm sm:text-base">
+                    Our programs bring students into real community gardens for immersive educational experiences
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Program Information */}
@@ -362,6 +276,38 @@ const Education = () => {
                 </p>
               </div>
 
+              {/* Two-Column Photo Feature */}
+              <div className="grid md:grid-cols-2 gap-6 my-8">
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <div className="aspect-[4/3]">
+                    <img 
+                      src={educationGarden2} 
+                      alt="Students learning about plants" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 bg-primary/5">
+                    <p className="text-sm text-muted-foreground text-center font-medium">
+                      Students exploring plant identification and urban biodiversity
+                    </p>
+                  </div>
+                </div>
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <div className="aspect-[4/3]">
+                    <img 
+                      src={educationGarden3} 
+                      alt="Garden workshop session" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 bg-primary/5">
+                    <p className="text-sm text-muted-foreground text-center font-medium">
+                      Hands-on workshops teaching sustainable gardening techniques
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <Tabs defaultValue="community-gardens" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="community-gardens" className="flex items-center gap-2">
@@ -377,14 +323,7 @@ const Education = () => {
                 </TabsList>
 
                 <TabsContent value="community-gardens">
-                  <Card className="bg-primary/5 border-primary/20 mb-6 overflow-hidden">
-                    <div className="h-48 overflow-hidden">
-                      <img 
-                        src={educationGarden2} 
-                        alt="Youth learning in community garden" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                  <Card className="bg-primary/5 border-primary/20 mb-6">
                     <CardHeader>
                       <CardTitle className="text-center text-2xl text-primary">Community Gardens & Food Justice</CardTitle>
                       <CardDescription className="text-center">
@@ -409,14 +348,7 @@ const Education = () => {
                   </Card>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-                    <Card className="border-primary/20 overflow-hidden">
-                      <div className="h-32 overflow-hidden">
-                        <img 
-                          src={educationGarden4} 
-                          alt="Hands-on garden education" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                    <Card className="border-primary/20">
                       <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                           <BookOpen className="mr-3 h-6 w-6 text-primary" />
@@ -431,14 +363,7 @@ const Education = () => {
                       </CardContent>
                     </Card>
 
-                    <Card className="border-primary/20 overflow-hidden">
-                      <div className="h-32 overflow-hidden">
-                        <img 
-                          src={educationGarden5} 
-                          alt="Community garden connection" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                    <Card className="border-primary/20">
                       <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                           <Users className="mr-3 h-6 w-6 text-primary" />
@@ -456,14 +381,7 @@ const Education = () => {
                 </TabsContent>
 
                 <TabsContent value="soil-science">
-                  <Card className="bg-primary/5 border-primary/20 mb-6 overflow-hidden">
-                    <div className="h-48 overflow-hidden">
-                      <img 
-                        src={educationGarden3} 
-                        alt="Students learning about soil science" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                  <Card className="bg-primary/5 border-primary/20 mb-6">
                     <CardHeader>
                       <CardTitle className="text-center text-2xl text-primary">Composting, Soil Science & Sustainability</CardTitle>
                       <CardDescription className="text-center">
@@ -520,6 +438,38 @@ const Education = () => {
                   </div>
                 </TabsContent>
               </Tabs>
+
+              {/* Another Photo Feature */}
+              <div className="grid md:grid-cols-2 gap-6 my-8">
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <div className="aspect-[4/3]">
+                    <img 
+                      src={educationGarden4} 
+                      alt="Students in the garden" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 bg-primary/5">
+                    <p className="text-sm text-muted-foreground text-center font-medium">
+                      Connecting students with nature in urban environments
+                    </p>
+                  </div>
+                </div>
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <div className="aspect-[4/3]">
+                    <img 
+                      src={educationGarden5} 
+                      alt="Community garden tour" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 bg-primary/5">
+                    <p className="text-sm text-muted-foreground text-center font-medium">
+                      Building lasting connections through experiential learning
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
                 <CardHeader>
