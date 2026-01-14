@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock, Star, Camera } from 'lucide-react';
+import { X, ExternalLink, Facebook, MapPin, Clock, Info, Mail, Phone, Lock, Star, Camera, User, ShoppingBag, Building, Globe } from 'lucide-react';
 import { MapLocation } from './types';
 import { useState, useEffect } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -180,6 +180,9 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
                   {location.crossstreets && (
                     <p><span className="font-medium">Cross Streets:</span> {location.crossstreets}</p>
                   )}
+                  {location.neighborhood && (
+                    <p><span className="font-medium">Neighborhood:</span> {location.neighborhood}</p>
+                  )}
                   {location.zipcode && (
                     <p><span className="font-medium">Zipcode:</span> {location.zipcode}</p>
                   )}
@@ -190,6 +193,35 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
                     <p><span className="font-medium">Community Board:</span> {location.communityboard}</p>
                   )}
                 </div>
+              </div>
+            )}
+            
+            {/* Organization & Owner */}
+            {(location.organization || location.owner) && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <Building className="h-4 w-4" />
+                  Organization
+                </h4>
+                <div className="space-y-1 text-sm">
+                  {location.organization && (
+                    <p><span className="font-medium">Organization:</span> {location.organization}</p>
+                  )}
+                  {location.owner && (
+                    <p><span className="font-medium">Owner/Operator:</span> {location.owner}</p>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Items for Sale / Vendors */}
+            {location.localItemsSelling && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <ShoppingBag className="h-4 w-4" />
+                  Items & Vendors
+                </h4>
+                <p className="text-sm text-sbtp-brown-600 whitespace-pre-line">{location.localItemsSelling}</p>
               </div>
             )}
             
@@ -243,19 +275,22 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
             )}
             
             {/* Contact Information - Premium Feature */}
-            {(fullLocationData?.email || fullLocationData?.phone) && (
+            {(location.email || location.phone || location.contactInformation) && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-sbtp-green-700 mb-2">Contact Information</h4>
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  Contact Information
+                </h4>
                 <div className="space-y-2">
-                  {fullLocationData.email && (
+                  {location.email && (
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-gray-500" />
                       {canSeeContactInfo ? (
                         <a 
-                          href={`mailto:${fullLocationData.email}`}
+                          href={`mailto:${location.email}`}
                           className="text-blue-600 hover:text-blue-800"
                         >
-                          {fullLocationData.email}
+                          {location.email}
                         </a>
                       ) : (
                         <span className="text-gray-400 flex items-center gap-1">
@@ -265,16 +300,29 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
                       )}
                     </div>
                   )}
-                  {fullLocationData.phone && (
+                  {location.phone && (
                     <div className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-gray-500" />
                       {canSeeContactInfo ? (
                         <a 
-                          href={`tel:${fullLocationData.phone}`}
+                          href={`tel:${location.phone}`}
                           className="text-blue-600 hover:text-blue-800"
                         >
-                          {fullLocationData.phone}
+                          {location.phone}
                         </a>
+                      ) : (
+                        <span className="text-gray-400 flex items-center gap-1">
+                          <Lock className="h-3 w-3" />
+                          Premium subscribers only
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {location.contactInformation && (
+                    <div className="flex items-start gap-2">
+                      <User className="h-4 w-4 text-gray-500 mt-0.5" />
+                      {canSeeContactInfo ? (
+                        <span className="text-sm text-sbtp-brown-600">{location.contactInformation}</span>
                       ) : (
                         <span className="text-gray-400 flex items-center gap-1">
                           <Lock className="h-3 w-3" />
@@ -285,7 +333,7 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
                   )}
                   {!canSeeContactInfo && (
                     <p className="text-xs text-gray-500 mt-2">
-                      <a href="/premium" className="text-blue-600 hover:underline">Upgrade to Premium</a> to access volunteer contact information
+                      <a href="/premium" className="text-blue-600 hover:underline">Upgrade to Premium</a> to access contact information
                     </p>
                   )}
                 </div>
@@ -293,9 +341,12 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
             )}
             
             {/* Links Section */}
-            {(location.website || location.facebook) && (
+            {(location.website || location.socialMedia1 || location.socialMedia2 || location.facebook) && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-sbtp-green-700 mb-2">Links</h4>
+                <h4 className="font-semibold text-sbtp-green-700 mb-2 flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  Links & Social Media
+                </h4>
                 <div className="space-y-2">
                   {location.website && (
                     <a 
@@ -306,6 +357,28 @@ const LocationPopup = ({ location, locationColors, onClose, fullLocationData, po
                     >
                       <ExternalLink className="h-4 w-4" />
                       Visit Website
+                    </a>
+                  )}
+                  {location.socialMedia1 && (
+                    <a 
+                      href={location.socialMedia1.startsWith('http') ? location.socialMedia1 : `https://${location.socialMedia1}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Social Media
+                    </a>
+                  )}
+                  {location.socialMedia2 && (
+                    <a 
+                      href={location.socialMedia2.startsWith('http') ? location.socialMedia2 : `https://${location.socialMedia2}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Social Media
                     </a>
                   )}
                   {location.facebook && (

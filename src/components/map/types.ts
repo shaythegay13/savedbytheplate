@@ -11,9 +11,16 @@ export interface MapLocation {
   crossstreets?: string;
   zipcode?: string;
   borough?: string;
+  neighborhood?: string;
   communityboard?: string;
   juris?: string;
   status?: string;
+  organization?: string;
+  owner?: string;
+  localItemsSelling?: string;
+  contactInformation?: string;
+  phone?: string;
+  email?: string;
   // Free-form hours text (e.g., "Mon-Fri 9-5") when structured hours aren't available
   hoursText?: string;
   operatingHours?: {
@@ -26,6 +33,8 @@ export interface MapLocation {
     sunday?: string;
   };
   website?: string;
+  socialMedia1?: string;
+  socialMedia2?: string;
   facebook?: string;
 }
 
