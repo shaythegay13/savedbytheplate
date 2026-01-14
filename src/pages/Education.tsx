@@ -224,20 +224,12 @@ const Education = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-center text-muted-foreground">
-                    All of our programs are fully customizable in terms of length and content. Whether your school wants us to come in for 
+                    Each of our programs is fully customizable in terms of length and content. Whether your school wants us to come in for 
                     <strong> a single session</strong>, <strong>a 6-week series</strong>, or <strong>a full 12-week semester</strong>, 
-                    we can tailor our curriculum to fit your needs. Contact us to discuss how we can create the perfect program for your students.
+                    we can tailor our curriculum to fit your needs. Programs include a guest speaker and an optional garden tour. Contact us to discuss how we can create the perfect program for your students.
                   </p>
                 </CardContent>
               </Card>
-
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-primary mb-4">Choose Your Program</h2>
-                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  We offer programs designed for middle and high school students. Both programs can include 
-                  a guest speaker and an optional garden tour.
-                </p>
-              </div>
 
               {/* Two-Column Photo Feature */}
               <div className="grid md:grid-cols-2 gap-6 my-8">
