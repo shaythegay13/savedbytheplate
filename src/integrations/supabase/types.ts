@@ -821,6 +821,7 @@ export type Database = {
       cleanup_google_maps_rate_limits: { Args: never; Returns: undefined }
       cleanup_jane_voice_rate_limits: { Args: never; Returns: undefined }
       cleanup_newsletter_rate_limits: { Args: never; Returns: undefined }
+      deduplicate_locations: { Args: never; Returns: undefined }
       find_nearby_locations: {
         Args: {
           location_type?: string
