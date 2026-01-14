@@ -4,6 +4,7 @@ import { MapPin, Book, Leaf, Users } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 import educationGardenImage from "@/assets/education-garden-1.jpg";
+import janeAvatar from "@/assets/jane-new-avatar.png";
 
 const Index = () => {
   return (
@@ -71,11 +72,11 @@ const Index = () => {
 
             {/* Ask Jane */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-48 overflow-hidden">
+              <div className="h-48 overflow-hidden bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
                 <img 
-                  src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                  alt="Ask Jane - AI Garden Assistant" 
-                  className="w-full h-full object-cover" 
+                  src={janeAvatar}
+                  alt="Jane - AI Garden Assistant" 
+                  className="h-full object-contain" 
                 />
               </div>
               <div className="p-6">
