@@ -127,13 +127,12 @@ class AudioQueue {
       source.connect(gain);
       gain.connect(this.audioContext.destination);
 
-      // Schedule precisely to avoid gaps or overlaps
-      const startTime = Math.max(
-        this.scheduledTime,
-        this.audioContext.currentTime + this.LOOKAHEAD_MS / 1000
-      );
+      // Schedule seamlessly: use nextStartTime or start immediately if we've fallen behind
+      // Never schedule in the past - if scheduledTime is behind currentTime, start immediately
+      const now = this.audioContext.currentTime;
+      const startTime = this.scheduledTime > now ? this.scheduledTime : now;
 
-      // Envelope ramps
+      // Envelope ramps for smooth transitions
       const fade = Math.min(this.FADE_MS / 1000, audioBuffer.duration / 4);
       const peak = 0.9; // a little headroom helps avoid harsh clipping/distortion
       gain.gain.setValueAtTime(0, startTime);
@@ -142,10 +141,10 @@ class AudioQueue {
       gain.gain.linearRampToValueAtTime(0, startTime + audioBuffer.duration);
 
       source.start(startTime);
-      // Queue the next buffer to start right after this one ends.
+      // Update when next chunk should start (immediately after this one ends)
       this.scheduledTime = startTime + audioBuffer.duration;
 
-      console.log('AudioQueue: scheduled chunk, duration:', audioBuffer.duration.toFixed(3), 's, start at:', startTime.toFixed(3));
+      console.log('AudioQueue: scheduled chunk, duration:', audioBuffer.duration.toFixed(3), 's, start:', startTime.toFixed(3), 'next:', this.scheduledTime.toFixed(3));
       source.onended = () => this.playNext();
     } catch (error) {
       console.error('Error playing audio chunk:', error);
