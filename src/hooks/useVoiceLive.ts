@@ -34,6 +34,11 @@ class AudioQueue {
   private readonly UNDERRUN_GRACE_MS = 750; // wait longer for more chunks before stopping (reduces "spotty" restarts)
   private underrunTimer: number | null = null;
 
+  // Debug metrics to pinpoint pops/static/underruns
+  private chunkCounter = 0;
+  private lastEnqueueAtMs: number | null = null;
+  private prevLastSample: number | null = null;
+
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
     this.audioContext = audioContext;
     this.onPlayingChange = onPlayingChange;
@@ -60,6 +65,7 @@ class AudioQueue {
 
     return this.audioContext;
   }
+
   private getQueuedSeconds() {
     // PCM16 mono => 2 bytes per sample
     const samples = this.queue.reduce((sum, chunk) => sum + chunk.byteLength / 2, 0);
@@ -71,8 +77,52 @@ class AudioQueue {
       this.sampleRate = sampleRate;
     }
 
+    // --- Diagnostics: inspect raw PCM chunk ---
+    const enqueueAtMs = performance.now();
+    const interArrivalMs = this.lastEnqueueAtMs === null ? null : enqueueAtMs - this.lastEnqueueAtMs;
+    this.lastEnqueueAtMs = enqueueAtMs;
+
+    const byteLen = audioData.byteLength;
+    if (byteLen % 2 !== 0) {
+      console.warn('AudioQueue: odd PCM byte length (dropping last byte):', byteLen);
+    }
+
+    const safeLen = byteLen - (byteLen % 2);
+    const sampleCount = safeLen / 2;
+    const chunkDurationS = sampleCount / this.sampleRate;
+
+    let peak = 0;
+    let first = 0;
+    let last = 0;
+    let jump: number | null = null;
+
+    if (sampleCount > 0) {
+      const dv = new DataView(audioData.buffer, audioData.byteOffset, safeLen);
+      first = dv.getInt16(0, true) / 32768;
+      last = dv.getInt16(safeLen - 2, true) / 32768;
+
+      for (let i = 0; i < sampleCount; i++) {
+        const v = dv.getInt16(i * 2, true) / 32768;
+        peak = Math.max(peak, Math.abs(v));
+      }
+
+      if (this.prevLastSample !== null) {
+        jump = Math.abs(first - this.prevLastSample);
+      }
+      this.prevLastSample = last;
+    }
+
     this.queue.push(audioData);
-    console.log('AudioQueue: added buffer, queue length:', this.queue.length);
+
+    const queuedS = this.getQueuedSeconds();
+    const chunkId = ++this.chunkCounter;
+    console.log(
+      `AudioQueue: enqueue #${chunkId} samples=${sampleCount} dur=${chunkDurationS.toFixed(3)}s ` +
+        `peak=${peak.toFixed(3)} first=${first.toFixed(3)} last=${last.toFixed(3)} ` +
+        `jump=${jump === null ? 'n/a' : jump.toFixed(3)} ` +
+        `inter=${interArrivalMs === null ? 'n/a' : interArrivalMs.toFixed(1)}ms ` +
+        `queued=${queuedS.toFixed(3)}s qLen=${this.queue.length}`
+    );
 
     // If we were waiting for more audio, cancel the underrun grace timer.
     if (this.underrunTimer !== null) {
@@ -88,7 +138,9 @@ class AudioQueue {
 
       const ctx = await this.ensureAudioContext();
       this.scheduledTime = ctx.currentTime + this.LOOKAHEAD_MS / 1000;
-      console.log('AudioQueue: prebuffer reached, starting playback');
+      console.log(
+        `AudioQueue: prebuffer reached (queued=${this.getQueuedSeconds().toFixed(3)}s), starting playback`
+      );
       await this.playNext();
     }
   }
@@ -98,7 +150,7 @@ class AudioQueue {
 
     if (this.queue.length === 0) {
       console.warn('⚠️ UNDERRUN - queue empty! Waiting for more chunks...');
-      
+
       // Avoid hard stop/restart loops due to tiny gaps in chunk delivery.
       // Wait a short grace period for additional chunks before we actually stop.
       if (this.underrunTimer !== null) return;
@@ -124,14 +176,28 @@ class AudioQueue {
       return;
     }
 
+    // Helpful scheduling diagnostics: are we falling behind?
+    const now = ctx.currentTime;
+    const lateByS = now - this.scheduledTime;
+    if (lateByS > 0.01) {
+      console.warn(`AudioQueue: scheduling late by ${(lateByS * 1000).toFixed(1)}ms`);
+    }
+
     this.isPlaying = true;
     this.onPlayingChange?.(true);
+
+    const queuedBeforeShift = this.queue.length;
     const audioData = this.queue.shift()!;
 
     try {
+      if (audioData.byteLength % 2 !== 0) {
+        console.warn('AudioQueue: odd PCM byte length in playNext (dropping last byte):', audioData.byteLength);
+      }
+
       // Convert PCM16 to Float32
-      const float32Data = new Float32Array(audioData.length / 2);
-      const dataView = new DataView(audioData.buffer, audioData.byteOffset, audioData.byteLength);
+      const float32Data = new Float32Array(Math.floor(audioData.length / 2));
+      const safeLen = float32Data.length * 2;
+      const dataView = new DataView(audioData.buffer, audioData.byteOffset, safeLen);
 
       for (let i = 0; i < float32Data.length; i++) {
         const int16 = dataView.getInt16(i * 2, true); // little endian
@@ -154,18 +220,25 @@ class AudioQueue {
 
       // Schedule seamlessly: use scheduledTime or start immediately if we've fallen behind.
       // Never schedule in the past.
-      const now = ctx.currentTime;
       const startTime = this.scheduledTime > now ? this.scheduledTime : now;
+      const startDelayMs = (startTime - now) * 1000;
 
       // Envelope ramps for smooth transitions
       const fade = Math.min(this.FADE_MS / 1000, audioBuffer.duration / 4);
-      const peak = 0.9; // a little headroom helps avoid harsh clipping/distortion
+      const peakGain = 0.9; // a little headroom helps avoid harsh clipping/distortion
       gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(peak, startTime + fade);
-      gain.gain.setValueAtTime(peak, Math.max(startTime + fade, startTime + audioBuffer.duration - fade));
+      gain.gain.linearRampToValueAtTime(peakGain, startTime + fade);
+      gain.gain.setValueAtTime(
+        peakGain,
+        Math.max(startTime + fade, startTime + audioBuffer.duration - fade)
+      );
       gain.gain.linearRampToValueAtTime(0, startTime + audioBuffer.duration);
 
-      console.log('AudioQueue: playing buffer, start:', startTime.toFixed(3), 'duration:', audioBuffer.duration.toFixed(3));
+      console.log(
+        `AudioQueue: play chunk queuedBefore=${queuedBeforeShift} queuedAfter=${this.queue.length} ` +
+          `now=${now.toFixed(3)} scheduled=${this.scheduledTime.toFixed(3)} start=${startTime.toFixed(3)} ` +
+          `delay=${startDelayMs.toFixed(1)}ms dur=${audioBuffer.duration.toFixed(3)}`
+      );
 
       source.start(startTime);
 
@@ -173,6 +246,7 @@ class AudioQueue {
       this.scheduledTime = startTime + audioBuffer.duration;
 
       source.onended = () => {
+        console.log(`AudioQueue: chunk ended, queuedRemaining=${this.queue.length}`);
         void this.playNext();
       };
     } catch (error) {
