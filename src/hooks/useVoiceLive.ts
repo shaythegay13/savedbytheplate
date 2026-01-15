@@ -287,9 +287,11 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       };
 
       ws.onmessage = async (event) => {
+        console.log('[WS RAW EVENT DATA]', event.data);
+        
         try {
           const data = JSON.parse(event.data);
-          console.log('Received:', data.type);
+          console.log('[WS PARSED MESSAGE]', data);
 
           switch (data.type) {
             case 'session_ready':
