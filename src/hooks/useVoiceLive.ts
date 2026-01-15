@@ -162,9 +162,6 @@ class AudioQueue {
         `queued=${queuedS.toFixed(3)}s qLen=${this.queue.length}`
     );
 
-    // Return whether caller should continue sending (false = pause upstream)
-    return !this.backpressureActive;
-
     // If we were waiting for more audio, cancel the underrun grace timer.
     if (this.underrunTimer !== null) {
       clearTimeout(this.underrunTimer);
@@ -175,7 +172,10 @@ class AudioQueue {
       const prebufferS = this.PREBUFFER_MS / 1000;
 
       // Wait until we have a small buffer built up so the queue doesn't underrun.
-      if (this.getQueuedSeconds() < prebufferS) return;
+      if (this.getQueuedSeconds() < prebufferS) {
+        // Signal backpressure status but don't start playback yet
+        return !this.backpressureActive;
+      }
 
       const ctx = await this.ensureAudioContext();
       this.scheduledTime = ctx.currentTime + this.LOOKAHEAD_MS / 1000;
@@ -184,6 +184,9 @@ class AudioQueue {
       );
       await this.playNext();
     }
+
+    // Return whether caller should continue sending (false = pause upstream)
+    return !this.backpressureActive;
   }
 
   private async playNext() {
