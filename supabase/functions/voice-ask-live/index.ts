@@ -639,8 +639,7 @@ function sanitizeAssistantText(text: string): string {
   out = out.replace(/\*\*\s*Re-?Evaluating[\s\S]*?\*\*[\s\S]*?(?=\*\*|$)/gi, '');
 
   // Remove common planning/narration sentences that sometimes leak into text output.
-  // (We only want the user-facing answer.)
-  out = out.replace(/\bI(?:'|’)ve\s+determined\b[\s\S]*?(?=(\n\n|$))/gi, '');
+  out = out.replace(/\bI(?:'|')ve\s+determined\b[\s\S]*?(?=(\n\n|$))/gi, '');
   out = out.replace(/\bMy\s+focus\s+has\s+shifted\b[\s\S]*?(?=(\n\n|$))/gi, '');
   out = out.replace(/\bI\s+now\s+plan\b[\s\S]*?(?=(\n\n|$))/gi, '');
   out = out.replace(/\bI\s+am\s+now\s+formulating\b[\s\S]*?(?=(\n\n|$))/gi, '');
@@ -658,46 +657,10 @@ function sanitizeAssistantText(text: string): string {
   out = out.replace(/\btool\s*call\b/gi, '');
   out = out.replace(/\bquery\s*scope\b/gi, '');
 
-  // Normalize whitespace (Gemini output sometimes arrives with missing spaces/newlines).
+  // Normalize whitespace
   out = out
     .replace(/[\t\r]+/g, ' ')
     .replace(/\u00A0/g, ' ')
-    // CRITICAL FIX: Add space before common verbs/auxiliaries when glued to previous word
-    // Handles: "lovesare" -> "loves are", "neighbors!Basil" -> "neighbors! Basil"
-    .replace(
-      /([a-z])((?:is|are|was|were|be|been|being|can|could|should|would|will|won't|dont|don't|does|doesn't|did|didn't|have|has|had|haven't|hasn't|hadn't)\b)/gi,
-      '$1 $2'
-    )
-    // Add space before common action verbs when glued
-    .replace(
-      /([a-z])((?:help|helps|keep|keeps|make|makes|get|gets|start|starts|wait|waits|look|looks|need|needs|want|wants|try|tries|use|uses|find|finds|plant|plants|grow|grows|water|waters|feed|feeds|protect|protects|love|loves|enhance|enhances)\b)/gi,
-      '$1 $2'
-    )
-    // Fix glued question/relative words and determiners
-    .replace(
-      /([a-z])((?:which|that|this|these|those|here|there|the|a|an)\b)/gi,
-      '$1 $2'
-    )
-    // Fix glued conjunctions and prepositions (CRITICAL for "neighbors!Basil" -> "neighbors! Basil")
-    .replace(
-      /([a-z!?.,;:])((?:and|or|but|so|to|of|in|on|at|for|from|with|without|as|by|into|until|after|before|around|about|over|under|up|out|off|per)\b)/gi,
-      '$1 $2'
-    )
-    // Fix glued pronouns
-    .replace(
-      /([a-z])((?:you|your|we|they|them|their|it|its|I|my|me)\b)/gi,
-      '$1 $2'
-    )
-    // Fix glued common adjectives/adverbs
-    .replace(
-      /([a-z])((?:great|good|best|some|many|even|also|really|very|quite|just)\b)/gi,
-      '$1 $2'
-    )
-    // Fix glued quantifiers and adverbs that precede nouns/verbs
-    .replace(
-      /([a-z])((?:almost|always|never|ever|often|sometimes|together|nearby|near|close|still)\b)/gi,
-      '$1 $2'
-    )
     // Ensure space after punctuation when followed by letter or number
     .replace(/([,.;:!?])([a-zA-Z0-9])/g, '$1 $2')
     // Remove space before punctuation
@@ -708,7 +671,9 @@ function sanitizeAssistantText(text: string): string {
     .replace(/\s{2,}/g, ' ')
     .trim();
 
-  out = out.replace(/\b[A-Za-z]{12,}\b/g, (m) => segmentGluedToken(m));
+  // FIXED: Only segment VERY long words that are clearly glued (16+ chars)
+  // This avoids fragmenting normal words like "containers" or "spinach"
+  out = out.replace(/\b[A-Za-z]{16,}\b/g, (m) => segmentGluedToken(m));
 
   return out;
 }
