@@ -23,6 +23,7 @@ const countWords = (text: string): number => {
 };
 
 // Remove special characters that shouldn't be read aloud
+// CRITICAL: Preserve paragraph breaks as sentence breaks for natural TTS pausing
 const sanitizeForSpeech = (text: string): string => {
   return text
     // Remove markdown-style formatting
@@ -39,8 +40,15 @@ const sanitizeForSpeech = (text: string): string => {
     .replace(/[~^<>|\\]/g, '')
     // Replace dashes with spaces for natural speech
     .replace(/\s*-\s*/g, ' ')
-    // Clean up extra whitespace
+    // CRITICAL FIX: Preserve paragraph breaks (2+ newlines) as sentence breaks
+    // Convert multiple newlines to periods for TTS pausing
+    .replace(/\n\n+/g, '. ')
+    // Single newlines become space (preserve some structure)
+    .replace(/\n/g, ' ')
+    // Clean up extra whitespace (but now we have periods for pauses)
     .replace(/\s+/g, ' ')
+    // Clean up double periods that might result from the conversion
+    .replace(/\.+\s*\.+/g, '. ')
     .trim();
 };
 
