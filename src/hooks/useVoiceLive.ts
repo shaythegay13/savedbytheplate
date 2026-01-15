@@ -30,8 +30,8 @@ class AudioQueue {
   private sampleRate = 24000; // updated from server mimeType (audio/pcm;rate=...)
   private readonly FADE_MS = 4; // keep tiny, but avoid audible "dips" between chunks
   private readonly LOOKAHEAD_MS = 120; // helps avoid underruns that cause pops/robotic gaps
-  private readonly PREBUFFER_MS = 420; // accumulate more before starting to better survive jitter
-  private readonly UNDERRUN_GRACE_MS = 500; // wait longer for more chunks before stopping (reduces "spotty" restarts)
+  private readonly PREBUFFER_MS = 600; // accumulate more before starting to better survive jitter (increased from 420)
+  private readonly UNDERRUN_GRACE_MS = 750; // wait longer for more chunks before stopping (reduces "spotty" restarts)
   private underrunTimer: number | null = null;
 
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
@@ -97,6 +97,8 @@ class AudioQueue {
     const ctx = await this.ensureAudioContext();
 
     if (this.queue.length === 0) {
+      console.warn('⚠️ UNDERRUN - queue empty! Waiting for more chunks...');
+      
       // Avoid hard stop/restart loops due to tiny gaps in chunk delivery.
       // Wait a short grace period for additional chunks before we actually stop.
       if (this.underrunTimer !== null) return;
@@ -108,6 +110,7 @@ class AudioQueue {
           this.isPlaying = false;
           this.onPlayingChange?.(false);
         } else {
+          console.log('AudioQueue: recovered from underrun, resuming playback');
           // More audio arrived during the grace period; resume scheduling.
           void this.playNext();
         }
