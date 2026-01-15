@@ -454,7 +454,7 @@ const Education = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl justify-center">
                     <MapPin className="mr-3 h-6 w-6 text-primary" />
-                    Optional 7th Week: Community Garden Tour
+                    Optional Week: Community Garden Tour
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
