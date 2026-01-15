@@ -28,16 +28,18 @@ class AudioQueue {
   private onPlayingChange?: (isPlaying: boolean) => void;
   private scheduledTime: number = 0;
   private sampleRate = 24000; // updated from server mimeType (audio/pcm;rate=...)
-  private readonly FADE_MS = 4; // keep tiny, but avoid audible "dips" between chunks
+  private readonly FADE_MS = 8; // increased for smoother transitions between chunks
   private readonly LOOKAHEAD_MS = 120; // helps avoid underruns that cause pops/robotic gaps
-  private readonly PREBUFFER_MS = 600; // accumulate more before starting to better survive jitter (increased from 420)
-  private readonly UNDERRUN_GRACE_MS = 750; // wait longer for more chunks before stopping (reduces "spotty" restarts)
+  private readonly PREBUFFER_MS = 600; // accumulate more before starting to better survive jitter
+  private readonly UNDERRUN_GRACE_MS = 750; // wait longer for more chunks before stopping
+  private readonly CROSSFADE_SAMPLES = 64; // samples to crossfade when large jumps detected
   private underrunTimer: number | null = null;
 
   // Debug metrics to pinpoint pops/static/underruns
   private chunkCounter = 0;
   private lastEnqueueAtMs: number | null = null;
   private prevLastSample: number | null = null;
+  private lastChunkEndSample: number = 0; // track last sample for crossfade
 
   constructor(audioContext: AudioContext, onPlayingChange?: (isPlaying: boolean) => void) {
     this.audioContext = audioContext;
@@ -204,6 +206,27 @@ class AudioQueue {
         // Normalize to [-1, 1] and clamp (prevents rare overflows from causing harsh distortion)
         const f = int16 / 32768;
         float32Data[i] = Math.max(-1, Math.min(1, f));
+      }
+
+      // Apply sample-level crossfade at chunk start to eliminate clicks from discontinuities
+      // This smooths the jump between the last sample of the previous chunk and the first sample of this chunk
+      if (float32Data.length > 0) {
+        const firstSample = float32Data[0];
+        const jump = Math.abs(firstSample - this.lastChunkEndSample);
+        
+        // Only apply crossfade if there's a significant discontinuity (> 0.1 amplitude jump)
+        if (jump > 0.1) {
+          const crossfadeSamples = Math.min(this.CROSSFADE_SAMPLES, float32Data.length);
+          for (let i = 0; i < crossfadeSamples; i++) {
+            const t = i / crossfadeSamples; // 0 to 1
+            // Blend from previous end sample to current sample
+            float32Data[i] = this.lastChunkEndSample * (1 - t) + float32Data[i] * t;
+          }
+          console.log(`AudioQueue: applied crossfade for jump=${jump.toFixed(3)}`);
+        }
+        
+        // Store last sample for next chunk's crossfade
+        this.lastChunkEndSample = float32Data[float32Data.length - 1];
       }
 
       // Create buffer at the sample rate specified by the server
