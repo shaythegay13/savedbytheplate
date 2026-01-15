@@ -39,6 +39,27 @@ class AudioQueue {
     this.onPlayingChange = onPlayingChange;
   }
 
+  private async ensureAudioContext(): Promise<AudioContext> {
+    const AudioCtx = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+
+    if (!this.audioContext || this.audioContext.state === 'closed') {
+      console.log('AudioQueue: creating new audio context');
+      this.audioContext = new AudioCtx();
+      this.scheduledTime = this.audioContext.currentTime;
+      this.isPlaying = false;
+      this.onPlayingChange?.(false);
+    }
+
+    if (this.audioContext.state === 'suspended') {
+      try {
+        await this.audioContext.resume();
+      } catch {
+        // ignore
+      }
+    }
+
+    return this.audioContext;
+  }
   private getQueuedSeconds() {
     // PCM16 mono => 2 bytes per sample
     const samples = this.queue.reduce((sum, chunk) => sum + chunk.byteLength / 2, 0);
@@ -49,7 +70,9 @@ class AudioQueue {
     if (typeof sampleRate === 'number' && Number.isFinite(sampleRate) && sampleRate > 0) {
       this.sampleRate = sampleRate;
     }
+
     this.queue.push(audioData);
+    console.log('AudioQueue: added buffer, queue length:', this.queue.length);
 
     // If we were waiting for more audio, cancel the underrun grace timer.
     if (this.underrunTimer !== null) {
@@ -63,13 +86,16 @@ class AudioQueue {
       // Wait until we have a small buffer built up so the queue doesn't underrun.
       if (this.getQueuedSeconds() < prebufferS) return;
 
-      this.scheduledTime = this.audioContext.currentTime + this.LOOKAHEAD_MS / 1000;
+      const ctx = await this.ensureAudioContext();
+      this.scheduledTime = ctx.currentTime + this.LOOKAHEAD_MS / 1000;
       console.log('AudioQueue: prebuffer reached, starting playback');
       await this.playNext();
     }
   }
 
   private async playNext() {
+    const ctx = await this.ensureAudioContext();
+
     if (this.queue.length === 0) {
       // Avoid hard stop/restart loops due to tiny gaps in chunk delivery.
       // Wait a short grace period for additional chunks before we actually stop.
@@ -90,13 +116,9 @@ class AudioQueue {
       return;
     }
 
-    // Autoplay policies can leave AudioContext suspended until an explicit resume.
-    try {
-      if (this.audioContext.state === 'suspended') {
-        await this.audioContext.resume();
-      }
-    } catch {
-      // ignore
+    if (ctx.state === 'closed') {
+      console.warn('AudioQueue: cannot playNext because AudioContext is closed');
+      return;
     }
 
     this.isPlaying = true;
@@ -107,7 +129,7 @@ class AudioQueue {
       // Convert PCM16 to Float32
       const float32Data = new Float32Array(audioData.length / 2);
       const dataView = new DataView(audioData.buffer, audioData.byteOffset, audioData.byteLength);
-      
+
       for (let i = 0; i < float32Data.length; i++) {
         const int16 = dataView.getInt16(i * 2, true); // little endian
         // Normalize to [-1, 1] and clamp (prevents rare overflows from causing harsh distortion)
@@ -116,20 +138,20 @@ class AudioQueue {
       }
 
       // Create buffer at the sample rate specified by the server
-      const audioBuffer = this.audioContext.createBuffer(1, float32Data.length, this.sampleRate);
+      const audioBuffer = ctx.createBuffer(1, float32Data.length, this.sampleRate);
       audioBuffer.getChannelData(0).set(float32Data);
 
-      const source = this.audioContext.createBufferSource();
+      const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
 
       // Add a tiny fade-in/out to avoid audible clicks between chunks
-      const gain = this.audioContext.createGain();
+      const gain = ctx.createGain();
       source.connect(gain);
-      gain.connect(this.audioContext.destination);
+      gain.connect(ctx.destination);
 
-      // Schedule seamlessly: use nextStartTime or start immediately if we've fallen behind
-      // Never schedule in the past - if scheduledTime is behind currentTime, start immediately
-      const now = this.audioContext.currentTime;
+      // Schedule seamlessly: use scheduledTime or start immediately if we've fallen behind.
+      // Never schedule in the past.
+      const now = ctx.currentTime;
       const startTime = this.scheduledTime > now ? this.scheduledTime : now;
 
       // Envelope ramps for smooth transitions
@@ -140,15 +162,20 @@ class AudioQueue {
       gain.gain.setValueAtTime(peak, Math.max(startTime + fade, startTime + audioBuffer.duration - fade));
       gain.gain.linearRampToValueAtTime(0, startTime + audioBuffer.duration);
 
+      console.log('AudioQueue: playing buffer, start:', startTime.toFixed(3), 'duration:', audioBuffer.duration.toFixed(3));
+
       source.start(startTime);
+
       // Update when next chunk should start (immediately after this one ends)
       this.scheduledTime = startTime + audioBuffer.duration;
 
-      console.log('AudioQueue: scheduled chunk, duration:', audioBuffer.duration.toFixed(3), 's, start:', startTime.toFixed(3), 'next:', this.scheduledTime.toFixed(3));
-      source.onended = () => this.playNext();
+      source.onended = () => {
+        void this.playNext();
+      };
     } catch (error) {
-      console.error('Error playing audio chunk:', error);
-      this.playNext(); // Continue with next segment
+      console.error('AudioQueue: error playing audio chunk:', error);
+      // Continue with next segment
+      void this.playNext();
     }
   }
 
@@ -261,13 +288,19 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
   // Initialize audio context
   const getAudioContext = useCallback(() => {
-    if (!audioContextRef.current) {
+    if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
+      console.log('Creating new audio context');
       // Don't force a specific sample rate; we'll create buffers at the server-provided rate.
       audioContextRef.current = new AudioContext();
     }
+
+    // Best-effort resume (may still require a user gesture depending on autoplay policy)
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume().catch(() => {});
+    }
+
     return audioContextRef.current;
   }, []);
-
   // Stop listening - defined first so connect can reference it
   const stopListening = useCallback(() => {
     if (sourceRef.current) {
@@ -577,13 +610,12 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       // Clear audio queue (can't wait async in cleanup)
       audioQueueRef.current?.clear();
       
-      // Close audio context after a delay to let any scheduled audio finish
-      const ctx = audioContextRef.current;
-      if (ctx) {
-        setTimeout(() => {
-          ctx.close().catch(() => {});
-        }, 1000);
-      }
+      // NOTE: Do NOT close the AudioContext here.
+      // In dev (and/or StrictMode) premature closure can cause subsequent playback to fail with
+      // "Construction of AudioBufferSourceNode is not useful when context is closed".
+      // The AudioQueue now recreates/resumes a closed/suspended context defensively.
+      audioContextRef.current = null;
+      audioQueueRef.current = null;
     };
   }, []);
 
