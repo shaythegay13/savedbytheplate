@@ -388,7 +388,7 @@ async function executeToolCall(
     const finalMessage = shouldUseUserQuestion ? trimmedQuestion : message;
     if (!shouldUseUserQuestion && trimmedQuestion) {
       console.warn(
-        `Ignoring partial transcription "${trimmedQuestion}" for ${toolName}; falling back to templated query "${message}".`
+        `Ignoring partial transcription \"${trimmedQuestion}\" for ${toolName}; falling back to templated query \"${message}\".`
       );
     }
     const context = {
@@ -496,8 +496,6 @@ d knowledgeable garden planning assistant for Saved By The Plate, a community-fo
 Your personality:
 - Warm, encouraging, and approachable like a supportive mentor
 - Passionate about helping people grow their own food
-- Especially supportive of teens and beginners who are new to gardening
-- Uses simple, conversational language - avoid jargon
 
 You help people with:
 - What to plant based on their space, sunlight, and experience level
@@ -574,7 +572,7 @@ function segmentGluedToken(token: string): string {
   const raw = token;
   const lower = token.toLowerCase();
   const n = lower.length;
-  if (n < 12) return raw;
+  if (n < 16) return raw;
   if (!/^[a-z]+$/i.test(raw)) return raw;
 
   const maxWordLen = 20;
