@@ -40,6 +40,7 @@ class AudioQueue {
   private backpressureActive = false;
   
   private underrunTimer: number | null = null;
+  private rafScheduled = false;
 
   // Debug metrics to pinpoint pops/static/underruns
   private chunkCounter = 0;
@@ -151,6 +152,20 @@ class AudioQueue {
     }
 
     this.queue.push(audioData);
+
+    // Schedule continuous queue draining via RAF for predictable timing
+    // This ensures we're actively pulling from the queue, not just waiting for onended
+    if (this.isPlaying && this.queue.length > 0) {
+      if (!this.rafScheduled) {
+        this.rafScheduled = true;
+        requestAnimationFrame(() => {
+          this.rafScheduled = false;
+          if (this.queue.length > 0 && this.isPlaying) {
+            void this.playNext();
+          }
+        });
+      }
+    }
     
     const queuedS = this.getQueuedSeconds();
     const chunkId = ++this.chunkCounter;
