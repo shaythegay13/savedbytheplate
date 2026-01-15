@@ -85,19 +85,18 @@ class AudioQueue {
       this.sampleRate = sampleRate;
     }
 
-    // Backpressure: reject chunks when queue is oversaturated
+    // Track backpressure state but ALWAYS queue the chunk
+    // Return value signals whether caller should continue sending more
+    const wasBackpressureActive = this.backpressureActive;
+    
     if (this.queue.length >= this.MAX_QUEUE_LEN) {
       if (!this.backpressureActive) {
         this.backpressureActive = true;
-        console.warn(`AudioQueue: BACKPRESSURE ON - rejecting chunks (qLen=${this.queue.length} >= ${this.MAX_QUEUE_LEN})`);
+        console.warn(`AudioQueue: BACKPRESSURE ON - signaling pause (qLen=${this.queue.length} >= ${this.MAX_QUEUE_LEN})`);
       }
-      return false; // Signal caller to stop sending
-    }
-    
-    // Release backpressure when queue drains
-    if (this.backpressureActive && this.queue.length < this.RESUME_QUEUE_LEN) {
+    } else if (this.backpressureActive && this.queue.length < this.RESUME_QUEUE_LEN) {
       this.backpressureActive = false;
-      console.log(`AudioQueue: BACKPRESSURE OFF - accepting chunks again (qLen=${this.queue.length} < ${this.RESUME_QUEUE_LEN})`);
+      console.log(`AudioQueue: BACKPRESSURE OFF - resume sending (qLen=${this.queue.length} < ${this.RESUME_QUEUE_LEN})`);
     }
 
     // --- Diagnostics: inspect raw PCM chunk ---
@@ -152,8 +151,7 @@ class AudioQueue {
     }
 
     this.queue.push(audioData);
-    return true; // Successfully queued
-
+    
     const queuedS = this.getQueuedSeconds();
     const chunkId = ++this.chunkCounter;
     console.log(
@@ -163,6 +161,9 @@ class AudioQueue {
         `inter=${interArrivalMs === null ? 'n/a' : interArrivalMs.toFixed(1)}ms ` +
         `queued=${queuedS.toFixed(3)}s qLen=${this.queue.length}`
     );
+
+    // Return whether caller should continue sending (false = pause upstream)
+    return !this.backpressureActive;
 
     // If we were waiting for more audio, cancel the underrun grace timer.
     if (this.underrunTimer !== null) {
@@ -527,12 +528,6 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
               }
 
-              // Check backpressure before decoding
-              if (!audioQueueRef.current.isAccepting()) {
-                console.warn('AudioQueue: backpressure active, dropping incoming TTS chunk');
-                break;
-              }
-
               // Decode base64 to Uint8Array
               const binaryString = atob(data.chunk);
               const bytes = new Uint8Array(binaryString.length);
@@ -547,10 +542,11 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
                 if (match) sampleRate = parseInt(match[1]);
               }
 
-              console.log('Received assistant_audio chunk:', bytes.length, 'bytes, rate:', sampleRate);
-              const accepted = await audioQueueRef.current.addToQueue(bytes, sampleRate);
-              if (!accepted) {
-                console.warn('AudioQueue: chunk rejected by backpressure');
+              // Always queue the chunk - addToQueue returns false when backpressure is active
+              // (signaling we should pause upstream, but chunk is still queued)
+              const shouldContinue = await audioQueueRef.current.addToQueue(bytes, sampleRate);
+              if (!shouldContinue) {
+                console.log('AudioQueue: backpressure active, chunk queued but upstream should pause');
               }
               break;
             }
