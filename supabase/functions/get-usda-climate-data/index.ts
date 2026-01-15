@@ -1,10 +1,28 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const climateRequestSchema = z.object({
+  latitude: z.number()
+    .min(-90, "Latitude must be >= -90")
+    .max(90, "Latitude must be <= 90"),
+  longitude: z.number()
+    .min(-180, "Longitude must be >= -180")
+    .max(180, "Longitude must be <= 180"),
+  state: z.string().max(50, "State must be less than 50 characters").optional(),
+  county: z.string().max(100, "County must be less than 100 characters").optional(),
+  year: z.number()
+    .int("Year must be an integer")
+    .min(1900, "Year must be >= 1900")
+    .max(2100, "Year must be <= 2100")
+    .optional()
+});
 
 interface USDAClimateRequest {
   latitude: number;
@@ -62,14 +80,19 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    const { latitude, longitude, state, county, year = new Date().getFullYear() }: USDAClimateRequest = await req.json();
-
-    if (!latitude || !longitude) {
-      return new Response(JSON.stringify({ error: 'Latitude and longitude are required' }), {
+    const rawBody = await req.json();
+    
+    // Validate input
+    const validationResult = climateRequestSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      return new Response(JSON.stringify({ error: 'Invalid input', details: errors }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    
+    const { latitude, longitude, state, county, year = new Date().getFullYear() } = validationResult.data;
 
     console.log(`Fetching USDA climate data for coordinates: ${latitude}, ${longitude}`);
 

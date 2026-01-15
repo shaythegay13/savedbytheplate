@@ -4,6 +4,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { GoogleGenAI } from "https://esm.sh/@google/genai@latest";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 declare const Deno: any;
 
@@ -11,6 +12,14 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const voiceAskSchema = z.object({
+  text_question: z.string()
+    .min(1, "Question cannot be empty")
+    .max(1000, "Question must be less than 1000 characters"),
+  context: z.record(z.unknown()).optional()
+});
 
 const BACKEND_API_URL = Deno.env.get('BACKEND_API_URL') || 'https://voiceagentrender.onrender.com';
 
@@ -240,13 +249,21 @@ serve(async (req) => {
   }
 
   try {
-    const { text_question, context } = await req.json();
+    const rawBody = await req.json();
     
-    if (!text_question) {
-      throw new Error('No question provided');
+    // Validate input
+    const validationResult = voiceAskSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(e => e.message).join(', ');
+      return new Response(
+        JSON.stringify({ error: 'Invalid input', details: errors }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+    
+    const { text_question, context } = validationResult.data;
 
-    console.log('Voice question received:', text_question);
+    console.log('Voice question received:', text_question.slice(0, 100));
 
     // Parse intent from question
     const intent = parseGardenIntent(text_question);
