@@ -114,6 +114,22 @@ class AudioQueue {
       this.prevLastSample = last;
     }
 
+    // Filter out problematic silent chunks with timing gaps (coming from API)
+    // These cause glitches because they're essentially dead air with discontinuities
+    const SILENCE_THRESHOLD = 0.005; // peak below this is considered silent
+    const GAP_THRESHOLD_MS = 25; // inter-arrival above this indicates a timing gap
+    
+    const isSilent = peak < SILENCE_THRESHOLD;
+    const hasTimingGap = interArrivalMs !== null && interArrivalMs > GAP_THRESHOLD_MS;
+    
+    if (isSilent && hasTimingGap) {
+      console.warn(
+        `AudioQueue: SKIPPING bad chunk - silent (peak=${peak.toFixed(4)}) with gap (inter=${interArrivalMs?.toFixed(1)}ms)`
+      );
+      // Don't add to queue, but don't reset prevLastSample so crossfade still works
+      return;
+    }
+
     this.queue.push(audioData);
 
     const queuedS = this.getQueuedSeconds();
