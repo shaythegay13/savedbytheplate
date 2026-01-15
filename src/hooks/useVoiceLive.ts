@@ -163,6 +163,38 @@ class AudioQueue {
     }
     this.onPlayingChange?.(false);
   }
+
+  // Wait for all queued audio to finish playing
+  async waitForCompletion(): Promise<void> {
+    // If nothing is playing, return immediately
+    if (!this.isPlaying && this.queue.length === 0) {
+      return;
+    }
+    
+    // Poll until audio finishes (check every 100ms)
+    return new Promise((resolve) => {
+      const checkInterval = setInterval(() => {
+        if (!this.isPlaying && this.queue.length === 0 && this.underrunTimer === null) {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 100);
+      
+      // Safety timeout: don't wait forever (max 30 seconds)
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve();
+      }, 30000);
+    });
+  }
+
+  getIsPlaying(): boolean {
+    return this.isPlaying;
+  }
+
+  getQueueLength(): number {
+    return this.queue.length;
+  }
 }
 
 export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
@@ -514,27 +546,47 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       throw err;
     }
   }, [status, connect, options]);
-  // Disconnect
-  const disconnect = useCallback(() => {
+  // Disconnect - waits for audio to finish before cleanup
+  const disconnect = useCallback(async () => {
     stopListening();
-    audioQueueRef.current?.clear();
     
+    // Close WebSocket first to stop receiving new audio
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
     }
+    
+    // Wait for any playing audio to finish before clearing
+    if (audioQueueRef.current) {
+      await audioQueueRef.current.waitForCompletion();
+      audioQueueRef.current.clear();
+    }
+    
     setStatus('disconnected');
   }, [stopListening]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      disconnect();
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
+      // For unmount, we need to do a synchronous cleanup
+      // Close WebSocket immediately
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+      
+      // Clear audio queue (can't wait async in cleanup)
+      audioQueueRef.current?.clear();
+      
+      // Close audio context after a delay to let any scheduled audio finish
+      const ctx = audioContextRef.current;
+      if (ctx) {
+        setTimeout(() => {
+          ctx.close().catch(() => {});
+        }, 1000);
       }
     };
-  }, [disconnect]);
+  }, []);
 
   return {
     status,
