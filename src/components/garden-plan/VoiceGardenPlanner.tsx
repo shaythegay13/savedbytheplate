@@ -183,68 +183,91 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     setResponse("");
   };
 
+  // Helper function to select voice and speak
+  const selectAndSpeakVoice = (utterance: SpeechSynthesisUtterance, text: string) => {
+    const voices = window.speechSynthesis.getVoices();
+    
+    // Priority order for natural-sounding female voices
+    const preferredVoicePatterns = [
+      // Google's neural voices (highest quality)
+      /google.*female.*en-us/i,
+      /google us english/i,
+      /google.*us.*english/i,
+      // Microsoft neural voices (excellent quality)
+      /microsoft.*aria/i,
+      /microsoft.*jenny/i,
+      /microsoft.*sara/i,
+      // Apple voices (macOS/iOS)
+      /samantha/i,
+      /ava/i,
+      /allison/i,
+      /susan/i,
+      // Other quality female voices
+      /zira/i,
+      /hazel/i,
+      /karen/i,
+      /moira/i,
+      /tessa/i,
+      /victoria/i,
+      /fiona/i,
+      // Fallback - any English female
+      /female.*en/i,
+      /en.*female/i,
+    ];
+    
+    let selectedVoice = null;
+    
+    // Try each pattern in priority order
+    for (const pattern of preferredVoicePatterns) {
+      selectedVoice = voices.find(v => pattern.test(v.name));
+      if (selectedVoice) break;
+    }
+    
+    // Fallback to any English voice
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
+    }
+    
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      console.log('Using voice:', selectedVoice.name);
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  };
+
   // Use browser's built-in speech synthesis with enhanced natural voice selection
   const useBrowserTTS = (text: string) => {
     if ('speechSynthesis' in window) {
       // Cancel any ongoing speech first
       window.speechSynthesis.cancel();
       
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.95; // Slightly slower for more natural pacing
-      utterance.pitch = 1.05; // Slightly higher for warmth
+      // Add breaks between sentences for more natural pauses
+      const enhancedText = text
+        .split(/(?<=[.!?])\s+/g)  // Split on sentence boundaries
+        .map(sentence => sentence.trim())
+        .filter(sentence => sentence.length > 0)
+        .join('\n');  // Rejoin with newlines for natural pauses
+      
+      const utterance = new SpeechSynthesisUtterance(enhancedText);
+      utterance.rate = 0.9;      // Slightly slower for clarity
+      utterance.pitch = 1.0;     // Neutral pitch for natural sound
       utterance.volume = 1.0;
-      
-      // Get available voices - prioritize high-quality neural/enhanced voices
-      const voices = window.speechSynthesis.getVoices();
-      
-      // Priority order for natural-sounding female voices
-      const preferredVoicePatterns = [
-        // Google's neural voices (highest quality)
-        /google.*female/i,
-        /google.*us.*english/i,
-        // Microsoft neural voices
-        /microsoft.*aria/i,
-        /microsoft.*jenny/i,
-        /microsoft.*sara/i,
-        // Apple voices (macOS/iOS)
-        /samantha/i,
-        /ava/i,
-        /allison/i,
-        /susan/i,
-        // Other quality female voices
-        /zira/i,
-        /hazel/i,
-        /karen/i,
-        /moira/i,
-        /tessa/i,
-        /victoria/i,
-        /fiona/i,
-        // Fallback - any English female
-        /female.*en/i,
-        /en.*female/i,
-      ];
-      
-      let selectedVoice = null;
-      
-      // Try each pattern in priority order
-      for (const pattern of preferredVoicePatterns) {
-        selectedVoice = voices.find(v => pattern.test(v.name));
-        if (selectedVoice) break;
-      }
-      
-      // If no preferred voice found, try any English voice
-      if (!selectedVoice) {
-        selectedVoice = voices.find(v => v.lang.startsWith('en'));
-      }
-      
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-        console.log('Using voice:', selectedVoice.name);
-      }
       
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(utterance);
+      
+      // Get available voices - handle async voice loading
+      const voices = window.speechSynthesis.getVoices();
+      
+      if (voices.length === 0) {
+        // Wait for voices to load (race condition fix for Chrome)
+        window.speechSynthesis.onvoiceschanged = () => {
+          selectAndSpeakVoice(utterance, enhancedText);
+        };
+      } else {
+        selectAndSpeakVoice(utterance, enhancedText);
+      }
     } else {
       setIsSpeaking(false);
     }
