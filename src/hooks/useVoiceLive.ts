@@ -301,11 +301,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               setStatus('connected');
               break;
 
-            case 'assistant_text':
+            case 'assistant_text': {
               // Once the assistant starts responding, stop recording automatically.
               stopListening();
-              options.onText?.(data.text);
+              // Add space between text fragments to prevent word gluing
+              const textFragment = data.text || '';
+              options.onText?.(textFragment.endsWith(' ') ? textFragment : textFragment + ' ');
               break;
+            }
 
             case 'assistant_audio': {
               // Once the assistant starts responding, stop recording automatically.
