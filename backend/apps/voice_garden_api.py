@@ -27,14 +27,21 @@ app = FastAPI(
     version="3.0.0"
 )
 
+import os
+
+# Get allowed origins from environment variable
+ALLOWED_ORIGINS = os.getenv(
+    'ALLOWED_ORIGINS',
+    'https://savedbytheplate.lovable.app'
+).split(',')
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 class VoiceQuestionRequest(BaseModel):
     """Request for voice-based garden question"""
