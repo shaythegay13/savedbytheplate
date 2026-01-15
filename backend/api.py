@@ -51,9 +51,17 @@ app = FastAPI(
     version="4.2.0",
 )
 
+import os
+
+# Get allowed origins from environment variable
+ALLOWED_ORIGINS = os.getenv(
+    'ALLOWED_ORIGINS',
+    'http://localhost:3000'
+).split(',')
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to your Lovable domain in production
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
