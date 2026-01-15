@@ -33,6 +33,12 @@ class AudioQueue {
   private readonly PREBUFFER_MS = 600; // accumulate more before starting to better survive jitter
   private readonly UNDERRUN_GRACE_MS = 750; // wait longer for more chunks before stopping
   private readonly CROSSFADE_SAMPLES = 64; // samples to crossfade when large jumps detected
+  
+  // Backpressure: reject new chunks when queue is too full
+  private readonly MAX_QUEUE_LEN = 30; // reject chunks above this
+  private readonly RESUME_QUEUE_LEN = 20; // start accepting again below this
+  private backpressureActive = false;
+  
   private underrunTimer: number | null = null;
 
   // Debug metrics to pinpoint pops/static/underruns
@@ -74,9 +80,24 @@ class AudioQueue {
     return samples / this.sampleRate;
   }
 
-  async addToQueue(audioData: Uint8Array, sampleRate?: number) {
+  async addToQueue(audioData: Uint8Array, sampleRate?: number): Promise<boolean> {
     if (typeof sampleRate === 'number' && Number.isFinite(sampleRate) && sampleRate > 0) {
       this.sampleRate = sampleRate;
+    }
+
+    // Backpressure: reject chunks when queue is oversaturated
+    if (this.queue.length >= this.MAX_QUEUE_LEN) {
+      if (!this.backpressureActive) {
+        this.backpressureActive = true;
+        console.warn(`AudioQueue: BACKPRESSURE ON - rejecting chunks (qLen=${this.queue.length} >= ${this.MAX_QUEUE_LEN})`);
+      }
+      return false; // Signal caller to stop sending
+    }
+    
+    // Release backpressure when queue drains
+    if (this.backpressureActive && this.queue.length < this.RESUME_QUEUE_LEN) {
+      this.backpressureActive = false;
+      console.log(`AudioQueue: BACKPRESSURE OFF - accepting chunks again (qLen=${this.queue.length} < ${this.RESUME_QUEUE_LEN})`);
     }
 
     // --- Diagnostics: inspect raw PCM chunk ---
@@ -127,10 +148,11 @@ class AudioQueue {
         `AudioQueue: SKIPPING bad chunk - silent (peak=${peak.toFixed(4)}) with gap (inter=${interArrivalMs?.toFixed(1)}ms)`
       );
       // Don't add to queue, but don't reset prevLastSample so crossfade still works
-      return;
+      return true; // Chunk was "handled" (skipped intentionally)
     }
 
     this.queue.push(audioData);
+    return true; // Successfully queued
 
     const queuedS = this.getQueuedSeconds();
     const chunkId = ++this.chunkCounter;
@@ -337,6 +359,11 @@ class AudioQueue {
   getQueueLength(): number {
     return this.queue.length;
   }
+
+  isAccepting(): boolean {
+    // When backpressure is active, don't accept new chunks until queue drains
+    return !this.backpressureActive;
+  }
 }
 
 export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
@@ -494,6 +521,18 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               // Once the assistant starts responding, stop recording automatically.
               stopListening();
 
+              // Initialize audio queue if needed
+              if (!audioQueueRef.current) {
+                const ctx = getAudioContext();
+                audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
+              }
+
+              // Check backpressure before decoding
+              if (!audioQueueRef.current.isAccepting()) {
+                console.warn('AudioQueue: backpressure active, dropping incoming TTS chunk');
+                break;
+              }
+
               // Decode base64 to Uint8Array
               const binaryString = atob(data.chunk);
               const bytes = new Uint8Array(binaryString.length);
@@ -508,14 +547,11 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
                 if (match) sampleRate = parseInt(match[1]);
               }
 
-              // Initialize audio queue if needed
-              if (!audioQueueRef.current) {
-                const ctx = getAudioContext();
-                audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
-              }
-
               console.log('Received assistant_audio chunk:', bytes.length, 'bytes, rate:', sampleRate);
-              await audioQueueRef.current.addToQueue(bytes, sampleRate);
+              const accepted = await audioQueueRef.current.addToQueue(bytes, sampleRate);
+              if (!accepted) {
+                console.warn('AudioQueue: chunk rejected by backpressure');
+              }
               break;
             }
 
