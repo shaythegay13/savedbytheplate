@@ -56,7 +56,7 @@ import os
 # Get allowed origins from environment variable
 ALLOWED_ORIGINS = os.getenv(
     'ALLOWED_ORIGINS',
-    'http://localhost:3000'
+    'https://savedbytheplate.lovable.app'
 ).split(',')
 
 app.add_middleware(
