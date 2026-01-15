@@ -4,6 +4,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "https://esm.sh/@google/genai@latest";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,6 +16,26 @@ declare const Deno: any;
 // Rate limit constants
 const DAILY_LIMIT = 100; // Increased for testing/development
 const WINDOW_HOURS = 24;
+
+// WebSocket message validation schemas
+const MAX_AUDIO_CHUNK_SIZE = 1024 * 1024; // 1MB max per chunk
+
+const audioMessageSchema = z.object({
+  type: z.literal("audio"),
+  chunk: z.string()
+    .min(1, "Audio chunk cannot be empty")
+    .max(MAX_AUDIO_CHUNK_SIZE, "Audio chunk too large (max 1MB)"),
+  context: z.record(z.unknown()).optional()
+});
+
+const endTurnMessageSchema = z.object({
+  type: z.literal("end_turn")
+});
+
+const wsMessageSchema = z.discriminatedUnion("type", [
+  audioMessageSchema,
+  endTurnMessageSchema
+]);
 
 // ============================================================================
 // Rate Limiting Functions
@@ -978,14 +999,30 @@ serve(async (req) => {
     }
 
     try {
-      const message = JSON.parse(event.data);
-      console.log("Received message type:", message.type);
+      const rawMessage = JSON.parse(event.data);
+      
+      // Validate WebSocket message
+      const validationResult = wsMessageSchema.safeParse(rawMessage);
+      if (!validationResult.success) {
+        const errors = validationResult.error.errors.map(e => e.message).join(', ');
+        console.warn("Invalid WebSocket message:", errors);
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({
+            type: "error",
+            message: `Invalid message format: ${errors}`
+          }));
+        }
+        return;
+      }
+      
+      const message = validationResult.data;
+      console.log("Received valid message type:", message.type);
 
       // Only handle audio input (voice-only interface)
-      if (message.type === "audio" && message.chunk) {
+      if (message.type === "audio") {
         // Allow client to attach context (location, coords, etc.) alongside audio.
         if (message.context && typeof message.context === 'object') {
-          lastUserContext = message.context;
+          lastUserContext = message.context as Record<string, unknown>;
         }
         // Send audio chunk to Gemini Live (base64 encoded PCM @ 16kHz)
         try {
@@ -1029,8 +1066,6 @@ serve(async (req) => {
         } catch (e) {
           console.error("Failed to send end_turn silence:", e);
         }
-      } else {
-        console.log("Ignoring non-audio message type:", message.type);
       }
 
     } catch (error: unknown) {
@@ -1038,7 +1073,7 @@ serve(async (req) => {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       socket.send(JSON.stringify({
         type: "error",
-        message: "Failed to process audio: " + errorMessage
+        message: "Failed to process message: " + errorMessage
       }));
     }
   };
