@@ -1,0 +1,336 @@
+{
+  "_instructions": "Add each schema block as a separate <script type='application/ld+json'> tag. Schemas marked [FILL: ...] require real data before deploying.",
+  "_implementation": "Use react-helmet-async for per-page schemas. Add homepage schemas directly to index.html.",
+
+  "homepage": {
+    "_file": "index.html",
+    "_placement": "Inside <head>, before </head>",
+    "organization": {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "NonprofitOrganization"],
+      "@id": "https://www.savedbytheplate.org/#organization",
+      "name": "Saved by the Plate",
+      "alternateName": "Saved by the Plate Inc.",
+      "url": "https://www.savedbytheplate.org",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.savedbytheplate.org/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png",
+        "width": 512,
+        "height": 512
+      },
+      "description": "Empowering individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education. We provide youth education programs in food justice, composting, and urban agriculture across New York City.",
+      "foundingDate": "[FILL: founding year]",
+      "email": "info@savedbytheplate.org",
+      "telephone": "[FILL: phone number if public]",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "New York",
+        "addressRegion": "NY",
+        "addressCountry": "US",
+        "streetAddress": "[FILL: street address if public]",
+        "postalCode": "[FILL: ZIP if public]"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "New York City"
+      },
+      "knowsAbout": [
+        "Food Justice",
+        "Food Sovereignty",
+        "Sustainable Agriculture",
+        "Urban Farming",
+        "Community Gardens",
+        "Youth Education",
+        "Composting",
+        "Soil Science",
+        "Environmental Science",
+        "Local Food Systems"
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Shay Bouchles",
+        "jobTitle": "Founder, President, and Executive Director",
+        "url": "https://www.savedbytheplate.org/about"
+      },
+      "employee": [
+        {
+          "@type": "Person",
+          "name": "Shay Bouchles",
+          "jobTitle": "Founder, President, and Executive Director"
+        }
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@savedbytheplate.org",
+        "contactType": "general inquiry",
+        "availableLanguage": "English"
+      },
+      "sameAs": [
+        "[FILL: Facebook URL if exists]",
+        "[FILL: Instagram URL if exists]",
+        "[FILL: LinkedIn URL if exists]",
+        "[FILL: Twitter/X URL if exists]"
+      ]
+    },
+    "website": {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://www.savedbytheplate.org/#website",
+      "url": "https://www.savedbytheplate.org",
+      "name": "Saved by the Plate",
+      "description": "Connecting communities with sustainable food options and local agriculture, starting with our youth.",
+      "publisher": {
+        "@id": "https://www.savedbytheplate.org/#organization"
+      },
+      "inLanguage": "en-US"
+    }
+  },
+
+  "education_page": {
+    "_file": "src/pages/Education.tsx",
+    "_implementation": "Add via <Helmet> from react-helmet-async inside the Education component",
+    "educational_organization": {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "@id": "https://www.savedbytheplate.org/education#educational-org",
+      "name": "Saved by the Plate — Youth Education Programs",
+      "url": "https://www.savedbytheplate.org/education",
+      "description": "Customizable youth education programs exploring food justice, sustainability, community gardens, composting, and environmental science for students of all ages.",
+      "parentOrganization": {
+        "@id": "https://www.savedbytheplate.org/#organization"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "New York City"
+      },
+      "email": "info@savedbytheplate.org",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Youth Education Programs",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@id": "https://www.savedbytheplate.org/education#course-community-gardens"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@id": "https://www.savedbytheplate.org/education#course-soil-science"
+            }
+          }
+        ]
+      }
+    },
+    "course_community_gardens": {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "@id": "https://www.savedbytheplate.org/education#course-community-gardens",
+      "name": "Community Gardens & Food Justice",
+      "description": "Explore food justice, food sovereignty, community gardens, and urban agriculture in New York City. A 6-week customizable program for youth covering the history and impact of urban gardens, sustainable growing strategies, biodiversity, and environmental advocacy.",
+      "url": "https://www.savedbytheplate.org/education",
+      "provider": {
+        "@id": "https://www.savedbytheplate.org/#organization"
+      },
+      "educationalLevel": "Youth / K-12",
+      "teaches": [
+        "Food Justice",
+        "Food Sovereignty",
+        "Community Garden History",
+        "Urban Growing Strategies",
+        "Urban Biodiversity",
+        "Environmental Justice"
+      ],
+      "numberOfCredits": 0,
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "onsite",
+        "duration": "P6W",
+        "courseWorkload": "PT1H",
+        "location": {
+          "@type": "Place",
+          "name": "New York City",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "addressCountry": "US"
+          }
+        }
+      },
+      "syllabusSections": [
+        { "@type": "Syllabus", "name": "Week 1: History of Community Gardens", "description": "Uncover the rich legacies of urban gardens and their pivotal role in NYC's food justice movements" },
+        { "@type": "Syllabus", "name": "Week 2: Community Gardens Today", "description": "Investigate the current state of gardens across NYC and their impacts on neighborhoods" },
+        { "@type": "Syllabus", "name": "Week 3: Urban Growing Strategies", "description": "Practice composting, urban planting, and other sustainable techniques for city environments" },
+        { "@type": "Syllabus", "name": "Week 4: Urban Biodiversity & Environmental Benefits", "description": "Explore how gardens support biodiversity, reduce heat island effect, and improve air quality" },
+        { "@type": "Syllabus", "name": "Week 5: Guest Speaker", "description": "Bring in a guest speaker who works in a community garden to talk about their experience" },
+        { "@type": "Syllabus", "name": "Week 6: Environmental Justice & Community Gardens", "description": "Examine the intersection of urban agriculture, equity, and environmental advocacy" }
+      ]
+    },
+    "course_soil_science": {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "@id": "https://www.savedbytheplate.org/education#course-soil-science",
+      "name": "Composting, Soil Science & Sustainability",
+      "description": "Learn about food waste, composting, soil nutrients, and the organisms that make soil alive. A 6-week youth program covering food waste reduction, composting fundamentals, soil health, micro and macro nutrients, and soil ecosystems.",
+      "url": "https://www.savedbytheplate.org/education",
+      "provider": {
+        "@id": "https://www.savedbytheplate.org/#organization"
+      },
+      "educationalLevel": "Youth / K-12",
+      "teaches": [
+        "Composting",
+        "Soil Science",
+        "Food Waste Reduction",
+        "Soil Nutrients",
+        "Microbiology",
+        "Environmental Sustainability"
+      ],
+      "numberOfCredits": 0,
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "onsite",
+        "duration": "P6W",
+        "courseWorkload": "PT1H",
+        "location": {
+          "@type": "Place",
+          "name": "New York City",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "addressCountry": "US"
+          }
+        }
+      },
+      "syllabusSections": [
+        { "@type": "Syllabus", "name": "Week 1: Understanding Food Waste", "description": "Explore the scale of food waste in our communities and its environmental impact" },
+        { "@type": "Syllabus", "name": "Week 2: Composting Fundamentals", "description": "Learn the science behind composting and how to turn food scraps into nutrient-rich soil" },
+        { "@type": "Syllabus", "name": "Week 3: Soil Nutrients & Health", "description": "Discover the essential nutrients plants need and how to build healthy, productive soil" },
+        { "@type": "Syllabus", "name": "Week 4: Micro & Macro Nutrients", "description": "Deep dive into the role of nitrogen, phosphorus, potassium, and micronutrients in plant growth" },
+        { "@type": "Syllabus", "name": "Week 5: Guest Speaker", "description": "Hear from a composting or soil science expert about real-world applications" },
+        { "@type": "Syllabus", "name": "Week 6: Soil Organisms & Ecosystems", "description": "Explore the fascinating world of bacteria, fungi, earthworms, and other organisms that make soil alive" }
+      ]
+    }
+  },
+
+  "garden_planner_page": {
+    "_file": "src/pages/GardenPlan.tsx",
+    "_implementation": "Add via <Helmet> from react-helmet-async inside the GardenPlan component",
+    "web_application": {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "@id": "https://www.savedbytheplate.org/local-food/garden-planner#app",
+      "name": "Ask Jane — AI Garden Planning Assistant",
+      "url": "https://www.savedbytheplate.org/local-food/garden-planner",
+      "description": "Meet Jane, your AI-powered garden assistant. Get personalized gardening advice and create custom growing plans for your space. Powered by Google Gemini AI.",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web Browser",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free Trial",
+          "description": "2-day free trial",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        {
+          "@type": "Offer",
+          "name": "Monthly Plan",
+          "price": "10",
+          "priceCurrency": "USD",
+          "billingPeriod": "P1M"
+        },
+        {
+          "@type": "Offer",
+          "name": "Annual Plan",
+          "price": "100",
+          "priceCurrency": "USD",
+          "billingPeriod": "P1Y"
+        },
+        {
+          "@type": "Offer",
+          "name": "Educator Plan",
+          "price": "8",
+          "priceCurrency": "USD",
+          "billingPeriod": "P1M"
+        }
+      ],
+      "publisher": {
+        "@id": "https://www.savedbytheplate.org/#organization"
+      },
+      "featureList": [
+        "AI-powered personalized gardening advice",
+        "Custom garden growing plans",
+        "Voice chat interface",
+        "Space-specific recommendations"
+      ]
+    }
+  },
+
+  "breadcrumbs": {
+    "_note": "Add the appropriate breadcrumb to each nested page via react-helmet-async",
+    "local_food": {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.savedbytheplate.org/" },
+        { "@type": "ListItem", "position": 2, "name": "Local Food Resources", "item": "https://www.savedbytheplate.org/local-food" }
+      ]
+    },
+    "map": {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.savedbytheplate.org/" },
+        { "@type": "ListItem", "position": 2, "name": "Local Food Resources", "item": "https://www.savedbytheplate.org/local-food" },
+        { "@type": "ListItem", "position": 3, "name": "Food Map", "item": "https://www.savedbytheplate.org/local-food/map" }
+      ]
+    },
+    "garden_planner": {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.savedbytheplate.org/" },
+        { "@type": "ListItem", "position": 2, "name": "Local Food Resources", "item": "https://www.savedbytheplate.org/local-food" },
+        { "@type": "ListItem", "position": 3, "name": "Ask Jane — Garden Planner", "item": "https://www.savedbytheplate.org/local-food/garden-planner" }
+      ]
+    },
+    "education": {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.savedbytheplate.org/" },
+        { "@type": "ListItem", "position": 2, "name": "Education Programs", "item": "https://www.savedbytheplate.org/education" }
+      ]
+    },
+    "about": {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.savedbytheplate.org/" },
+        { "@type": "ListItem", "position": 2, "name": "About Us", "item": "https://www.savedbytheplate.org/about" }
+      ]
+    }
+  },
+
+  "about_page_persons": {
+    "_file": "src/pages/AboutUs.tsx",
+    "_note": "Optional — low priority. Add these Person schemas for E-E-A-T signals.",
+    "founder": {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://www.savedbytheplate.org/about#shay-bouchles",
+      "name": "Shay Bouchles",
+      "jobTitle": "Founder, President, and Executive Director",
+      "worksFor": {
+        "@id": "https://www.savedbytheplate.org/#organization"
+      },
+      "description": "Founder and Executive Director of Saved by the Plate Inc. Expert in food justice education, social impact entrepreneurship, sustainable agriculture, and digital innovation.",
+      "knowsAbout": ["Food Justice", "Food Sovereignty", "Urban Agriculture", "Social Impact", "Youth Education", "Community Organizing"],
+      "image": "https://www.savedbytheplate.org/assets/shay-bouchles.jpeg",
+      "url": "https://www.savedbytheplate.org/about"
+    }
+  }
+}
