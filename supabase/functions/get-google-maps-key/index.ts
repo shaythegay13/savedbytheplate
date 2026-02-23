@@ -7,8 +7,11 @@ const corsHeaders = {
 };
 
 // Rate limiting configuration
-const MAX_REQUESTS_PER_HOUR = 100;
+const MAX_REQUESTS_PER_HOUR_AUTHENTICATED = 100;
+const MAX_REQUESTS_PER_HOUR_ANONYMOUS = 20; // Stricter for anonymous
+const MAX_GLOBAL_ANONYMOUS_PER_HOUR = 500; // Global cap across all anonymous requests
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const GLOBAL_ANON_IDENTIFIER = "global:anonymous";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,71 +24,99 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Require authentication — no anonymous access
+    // Determine identity: prefer authenticated user ID, fall back to IP
     const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Authentication required" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    let identifier: string;
+    let isAuthenticated = false;
+    let maxRequests = MAX_REQUESTS_PER_HOUR_ANONYMOUS;
+
+    if (authHeader) {
+      const token = authHeader.replace("Bearer ", "");
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (user && !error) {
+        identifier = user.id;
+        isAuthenticated = true;
+        maxRequests = MAX_REQUESTS_PER_HOUR_AUTHENTICATED;
+      } else {
+        // Invalid token — treat as anonymous with IP
+        const ip = getClientIP(req);
+        identifier = `ip:${ip}`;
+      }
+    } else {
+      const ip = getClientIP(req);
+      identifier = `ip:${ip}`;
     }
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (!user || authError) {
-      return new Response(
-        JSON.stringify({ error: "Invalid or expired authentication token" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    console.log(`Rate limiting: ${isAuthenticated ? 'user' : 'anon'}:${identifier.substring(0, 8)}...`);
+
+    const now = new Date();
+
+    // For anonymous users, also enforce a global anonymous request budget
+    if (!isAuthenticated) {
+      const { data: globalLimit } = await supabase
+        .from("google_maps_rate_limits")
+        .select("*")
+        .eq("user_id", GLOBAL_ANON_IDENTIFIER)
+        .single();
+
+      if (globalLimit) {
+        const timeSince = now.getTime() - new Date(globalLimit.last_request_at).getTime();
+        if (timeSince < RATE_LIMIT_WINDOW_MS && globalLimit.request_count >= MAX_GLOBAL_ANONYMOUS_PER_HOUR) {
+          console.log(`Global anonymous rate limit exceeded: ${globalLimit.request_count}`);
+          return new Response(
+            JSON.stringify({ error: "Service temporarily unavailable. Please try again later." }),
+            { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        // Update global counter
+        if (timeSince >= RATE_LIMIT_WINDOW_MS) {
+          await supabase.from("google_maps_rate_limits")
+            .update({ request_count: 1, last_request_at: now.toISOString() })
+            .eq("user_id", GLOBAL_ANON_IDENTIFIER);
+        } else {
+          await supabase.from("google_maps_rate_limits")
+            .update({ request_count: globalLimit.request_count + 1, last_request_at: now.toISOString() })
+            .eq("user_id", GLOBAL_ANON_IDENTIFIER);
+        }
+      } else {
+        await supabase.from("google_maps_rate_limits")
+          .insert({ user_id: GLOBAL_ANON_IDENTIFIER, request_count: 1, last_request_at: now.toISOString() });
+      }
     }
 
-    // Rate limit by authenticated user ID (cannot be spoofed)
-    const identifier = user.id;
-    
-    console.log(`Rate limiting for user: ${identifier.substring(0, 8)}...`);
-
-    // Check rate limit using the google_maps_rate_limits table
+    // Per-user/IP rate limit check
     const { data: rateLimit } = await supabase
       .from("google_maps_rate_limits")
       .select("*")
       .eq("user_id", identifier)
       .single();
 
-    const now = new Date();
-
     if (rateLimit) {
-      const lastRequest = new Date(rateLimit.last_request_at);
-      const timeSinceFirst = now.getTime() - lastRequest.getTime();
+      const timeSince = now.getTime() - new Date(rateLimit.last_request_at).getTime();
 
-      // If within rate limit window and exceeded limit
-      if (timeSinceFirst < RATE_LIMIT_WINDOW_MS && rateLimit.request_count >= MAX_REQUESTS_PER_HOUR) {
-        console.log(`Rate limit exceeded for user: ${identifier.substring(0, 8)}..., count: ${rateLimit.request_count}`);
+      if (timeSince < RATE_LIMIT_WINDOW_MS && rateLimit.request_count >= maxRequests) {
+        console.log(`Per-identity rate limit exceeded for ${identifier.substring(0, 8)}..., count: ${rateLimit.request_count}`);
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
-      // Reset counter if window has passed, otherwise increment
-      if (timeSinceFirst >= RATE_LIMIT_WINDOW_MS) {
-        await supabase
-          .from("google_maps_rate_limits")
+      if (timeSince >= RATE_LIMIT_WINDOW_MS) {
+        await supabase.from("google_maps_rate_limits")
           .update({ request_count: 1, last_request_at: now.toISOString() })
           .eq("user_id", identifier);
       } else {
-        await supabase
-          .from("google_maps_rate_limits")
+        await supabase.from("google_maps_rate_limits")
           .update({ request_count: rateLimit.request_count + 1, last_request_at: now.toISOString() })
           .eq("user_id", identifier);
       }
     } else {
-      // Create new rate limit entry
-      await supabase
-        .from("google_maps_rate_limits")
+      await supabase.from("google_maps_rate_limits")
         .insert({ user_id: identifier, request_count: 1, last_request_at: now.toISOString() });
     }
 
-    // Support multiple possible secret names just in case
+    // Support multiple possible secret names
     const possibleKeys = [
       "Google_Maps_API_Key",
       "GOOGLE_MAPS_API_KEY",
@@ -110,12 +141,11 @@ serve(async (req) => {
       );
     }
 
-    // Heuristically determine type
     const isApiKey = value.startsWith("AIza");
     const type = isApiKey ? "apiKey" : "clientId";
 
-    console.log(`Google Maps key retrieved successfully for user: ${identifier.substring(0, 8)}...`);
-    
+    console.log(`Google Maps key retrieved for ${isAuthenticated ? 'user' : 'anon'}:${identifier.substring(0, 8)}...`);
+
     return new Response(
       JSON.stringify({ value, type }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -129,3 +159,13 @@ serve(async (req) => {
     );
   }
 });
+
+function getClientIP(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) return forwarded.split(',')[0].trim();
+  const realIP = request.headers.get('x-real-ip');
+  if (realIP) return realIP;
+  const cfIP = request.headers.get('cf-connecting-ip');
+  if (cfIP) return cfIP;
+  return 'unknown';
+}
