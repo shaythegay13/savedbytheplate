@@ -288,6 +288,19 @@ const Education = () => {
                 </button>
               </div>
 
+              {/* Definition Block — What is Food Justice? */}
+              <div className="bg-green-50 border border-green-200 rounded-2xl p-6 sm:p-8 mb-8">
+                <h2 className="text-xl sm:text-2xl font-bold text-green-800 mb-3">What Is Food Justice?</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  Food justice is the belief that all people deserve access to healthy, affordable, culturally
+                  appropriate food regardless of income, race, or zip code. In New York City, food deserts
+                  disproportionately affect communities of color and low-income families. Our 6-week youth programs
+                  connect students with community gardens, composting practices, and local food systems — teaching
+                  the history of urban agriculture in NYC, hands-on growing techniques, and the role of food
+                  sovereignty in environmental justice.
+                </p>
+              </div>
+
               {/* Definition Block — What is Urban Agriculture? */}
               <div className="bg-green-50 border border-green-200 rounded-2xl p-6 sm:p-8 mb-8">
                 <h2 className="text-xl sm:text-2xl font-bold text-green-800 mb-3">What Is Urban Agriculture?</h2>
