@@ -1004,7 +1004,7 @@ serve(async (req) => {
       // Validate WebSocket message
       const validationResult = wsMessageSchema.safeParse(rawMessage);
       if (!validationResult.success) {
-        const errors = validationResult.error.errors.map(e => e.message).join(', ');
+        const errors = (validationResult as { success: false; error: z.ZodError }).error.errors.map(e => e.message).join(', ');
         console.warn("Invalid WebSocket message:", errors);
         if (socket.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify({

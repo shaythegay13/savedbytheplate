@@ -49,7 +49,7 @@ serve(async (req) => {
     const authValidation = authHeaderSchema.safeParse(authHeader);
     if (!authValidation.success) {
       const requestId = crypto.randomUUID();
-      console.error(`[${requestId}] Authorization validation failed:`, authValidation.error.format());
+      console.error(`[${requestId}] Authorization validation failed:`, (authValidation as { success: false; error: z.ZodError }).error.format());
       return new Response(
         JSON.stringify({ 
           error: "Invalid authorization format",
@@ -70,7 +70,7 @@ serve(async (req) => {
     const bodyValidation = checkoutRequestSchema.safeParse(requestBody);
     if (!bodyValidation.success) {
       const requestId = crypto.randomUUID();
-      console.error(`[${requestId}] Request body validation failed:`, bodyValidation.error.format());
+      console.error(`[${requestId}] Request body validation failed:`, (bodyValidation as { success: false; error: z.ZodError }).error.format());
       return new Response(
         JSON.stringify({ 
           error: "Invalid request format",

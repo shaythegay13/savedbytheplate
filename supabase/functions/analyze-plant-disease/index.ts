@@ -79,7 +79,7 @@ serve(async (req: Request) => {
     const validationResult = diseaseAnalysisSchema.safeParse(rawData);
     
     if (!validationResult.success) {
-      const validationError = validationResult.error;
+      const validationError = (validationResult as { success: false; error: z.ZodError }).error;
       const errorDetails = validationError.format();
       console.error("Validation failed:", errorDetails);
       return new Response(

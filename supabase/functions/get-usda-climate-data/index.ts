@@ -85,7 +85,7 @@ serve(async (req) => {
     // Validate input
     const validationResult = climateRequestSchema.safeParse(rawBody);
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      const errors = (validationResult as { success: false; error: z.ZodError }).error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
       return new Response(JSON.stringify({ error: 'Invalid input', details: errors }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
