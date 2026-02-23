@@ -233,7 +233,7 @@ serve(async (req) => {
     
     if (!validationResult.success) {
       const requestId = crypto.randomUUID();
-      console.error(`[${requestId}] Validation failed:`, validationResult.error.format());
+      console.error(`[${requestId}] Validation failed:`, (validationResult as { success: false; error: z.ZodError }).error.format());
       return new Response(
         JSON.stringify({ 
           error: "Invalid request format",

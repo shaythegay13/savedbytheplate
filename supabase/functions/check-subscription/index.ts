@@ -43,7 +43,7 @@ serve(async (req) => {
     const validationResult = authHeaderSchema.safeParse(authHeader);
     if (!validationResult.success) {
       const requestId = crypto.randomUUID();
-      console.error(`[${requestId}] Authorization validation failed:`, validationResult.error.format());
+      console.error(`[${requestId}] Authorization validation failed:`, (validationResult as { success: false; error: z.ZodError }).error.format());
       return new Response(
         JSON.stringify({ 
           error: "Invalid authorization format",
