@@ -32,27 +32,49 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get client IP for rate limiting (fallback to email if IP not available)
+    // Get client IP for rate limiting
     const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
                      req.headers.get('x-real-ip') || 
                      'unknown';
-    const identifier = `${clientIP}:${email}`;
+    const ipIdentifier = `${clientIP}:${email}`;
+    // Email-only identifier prevents bypass via IP rotation
+    const emailIdentifier = `email:${email.toLowerCase()}`;
 
-    // Check rate limit
-    const { data: rateLimitData, error: rateLimitError } = await supabase
-      .from('newsletter_rate_limits')
-      .select('*')
-      .eq('identifier', identifier)
-      .gte('last_attempt_at', new Date(Date.now() - RATE_LIMIT_WINDOW_HOURS * 60 * 60 * 1000).toISOString())
-      .single();
+    const windowCutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_HOURS * 60 * 60 * 1000).toISOString();
 
-    if (rateLimitError && rateLimitError.code !== 'PGRST116') {
-      console.error('Rate limit check error:', rateLimitError);
+    // Check both IP:email and email-only rate limits in parallel
+    const [ipRateResult, emailRateResult] = await Promise.all([
+      supabase
+        .from('newsletter_rate_limits')
+        .select('*')
+        .eq('identifier', ipIdentifier)
+        .gte('last_attempt_at', windowCutoff)
+        .single(),
+      supabase
+        .from('newsletter_rate_limits')
+        .select('*')
+        .eq('identifier', emailIdentifier)
+        .gte('last_attempt_at', windowCutoff)
+        .single(),
+    ]);
+
+    const rateLimitData = ipRateResult.data;
+    const emailRateLimitData = emailRateResult.data;
+
+    // Log non-expected errors
+    if (ipRateResult.error && ipRateResult.error.code !== 'PGRST116') {
+      console.error('IP rate limit check error:', ipRateResult.error);
+    }
+    if (emailRateResult.error && emailRateResult.error.code !== 'PGRST116') {
+      console.error('Email rate limit check error:', emailRateResult.error);
     }
 
-    // Enforce rate limit
-    if (rateLimitData && rateLimitData.attempt_count >= MAX_ATTEMPTS_PER_WINDOW) {
-      console.log('Rate limit exceeded for identifier:', identifier);
+    // Enforce rate limit on EITHER identifier (IP:email OR email-only)
+    const ipExceeded = rateLimitData && rateLimitData.attempt_count >= MAX_ATTEMPTS_PER_WINDOW;
+    const emailExceeded = emailRateLimitData && emailRateLimitData.attempt_count >= MAX_ATTEMPTS_PER_WINDOW;
+    
+    if (ipExceeded || emailExceeded) {
+      console.log(`Rate limit exceeded - IP: ${ipExceeded}, Email: ${emailExceeded}`);
       return new Response(
         JSON.stringify({ 
           error: "Too many subscription attempts. Please try again later." 
@@ -171,25 +193,28 @@ const handler = async (req: Request): Promise<Response> => {
     const result = await beehiivResponse.json();
     console.log("Successfully subscribed email to Beehiiv:", email);
 
-    // Update rate limit counter
-    if (rateLimitData) {
-      await supabase
-        .from('newsletter_rate_limits')
-        .update({
-          attempt_count: rateLimitData.attempt_count + 1,
-          last_attempt_at: new Date().toISOString()
-        })
-        .eq('id', rateLimitData.id);
-    } else {
-      await supabase
-        .from('newsletter_rate_limits')
-        .insert({
-          identifier,
-          attempt_count: 1,
-          first_attempt_at: new Date().toISOString(),
-          last_attempt_at: new Date().toISOString()
-        });
-    }
+    // Update rate limit counters for both IP:email and email-only identifiers
+    const nowISO = new Date().toISOString();
+    
+    // Helper to upsert a rate limit entry
+    const upsertRateLimit = async (id: string, existing: typeof rateLimitData) => {
+      if (existing) {
+        await supabase
+          .from('newsletter_rate_limits')
+          .update({ attempt_count: existing.attempt_count + 1, last_attempt_at: nowISO })
+          .eq('id', existing.id);
+      } else {
+        await supabase
+          .from('newsletter_rate_limits')
+          .insert({ identifier: id, attempt_count: 1, first_attempt_at: nowISO, last_attempt_at: nowISO });
+      }
+    };
+
+    // Update both identifiers in parallel
+    await Promise.all([
+      upsertRateLimit(ipIdentifier, rateLimitData),
+      upsertRateLimit(emailIdentifier, emailRateLimitData),
+    ]);
 
     // Cleanup old rate limit entries (async, don't wait)
     supabase.rpc('cleanup_newsletter_rate_limits').then(() => {

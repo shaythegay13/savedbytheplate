@@ -16,56 +16,36 @@ serve(async (req) => {
   }
 
   try {
-    // Get the authorization header for user identification
-    const authHeader = req.headers.get("authorization");
-    
     // Create Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Helper function to get client IP for rate limiting
-    const getClientIP = (request: Request): string => {
-      const forwarded = request.headers.get('x-forwarded-for');
-      if (forwarded) {
-        return forwarded.split(',')[0].trim();
-      }
-      const realIP = request.headers.get('x-real-ip');
-      if (realIP) {
-        return realIP;
-      }
-      const cfIP = request.headers.get('cf-connecting-ip');
-      if (cfIP) {
-        return cfIP;
-      }
-      return 'unknown';
-    };
-
-    // Use IP-based rate limiting for authenticated users, fall back to IP for anonymous
-    let identifier: string;
-    let identifierType: 'user' | 'ip';
-    
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data: { user }, error } = await supabase.auth.getUser(token);
-      if (user && !error) {
-        identifier = user.id;
-        identifierType = 'user';
-      } else {
-        // Invalid token, use IP-based rate limiting
-        identifier = `ip:${getClientIP(req)}`;
-        identifierType = 'ip';
-      }
-    } else {
-      // No auth header, use IP-based rate limiting
-      identifier = `ip:${getClientIP(req)}`;
-      identifierType = 'ip';
+    // Require authentication — no anonymous access
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (!user || authError) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired authentication token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Rate limit by authenticated user ID (cannot be spoofed)
+    const identifier = user.id;
     
-    console.log(`Rate limiting identifier: ${identifierType}:${identifier.substring(0, 8)}...`);
+    console.log(`Rate limiting for user: ${identifier.substring(0, 8)}...`);
 
     // Check rate limit using the google_maps_rate_limits table
-    const { data: rateLimit, error: rateLimitError } = await supabase
+    const { data: rateLimit } = await supabase
       .from("google_maps_rate_limits")
       .select("*")
       .eq("user_id", identifier)
@@ -79,7 +59,7 @@ serve(async (req) => {
 
       // If within rate limit window and exceeded limit
       if (timeSinceFirst < RATE_LIMIT_WINDOW_MS && rateLimit.request_count >= MAX_REQUESTS_PER_HOUR) {
-        console.log(`Rate limit exceeded for ${identifierType}: ${identifier.substring(0, 8)}..., count: ${rateLimit.request_count}`);
+        console.log(`Rate limit exceeded for user: ${identifier.substring(0, 8)}..., count: ${rateLimit.request_count}`);
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -134,7 +114,7 @@ serve(async (req) => {
     const isApiKey = value.startsWith("AIza");
     const type = isApiKey ? "apiKey" : "clientId";
 
-    console.log(`Google Maps key retrieved successfully for ${identifierType}: ${identifier.substring(0, 8)}...`);
+    console.log(`Google Maps key retrieved successfully for user: ${identifier.substring(0, 8)}...`);
     
     return new Response(
       JSON.stringify({ value, type }),
