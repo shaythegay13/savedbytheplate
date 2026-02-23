@@ -200,6 +200,39 @@ const Index = () => {
           </Link>
         </div>
       </section>
+
+      {/* Schools & Organizations CTA */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-green-700 to-green-900 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <GraduationCap className="w-16 h-16 mx-auto mb-6 text-green-200" />
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            Bring Food Justice Education to Your School
+          </h2>
+          <p className="text-lg sm:text-xl text-green-100 mb-8 max-w-2xl mx-auto">
+            Our customizable 6-week programs connect students with community gardens,
+            composting practices, and urban agriculture—teaching hands-on skills and the
+            principles of food sovereignty and environmental justice.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href="mailto:info@savedbytheplate.org?subject=Education Program Inquiry"
+              className="inline-flex items-center bg-white text-green-800 font-semibold px-8 py-4 rounded-lg hover:bg-green-50 transition-colors shadow-lg"
+            >
+              <Users className="w-5 h-5 mr-2" />
+              Contact Us for Your School
+            </a>
+            <Link
+              to="/education"
+              className="inline-flex items-center text-white font-semibold hover:text-green-200 transition-colors"
+            >
+              Learn more about our programs
+              <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

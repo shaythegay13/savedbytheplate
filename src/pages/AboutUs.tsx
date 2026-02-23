@@ -41,8 +41,11 @@ const AboutUs = () => {
                 </span>
                 Our Mission
               </h2>
-              <p className="text-sbtp-brown-500 leading-relaxed">
+              <p className="text-sbtp-brown-500 leading-relaxed mb-4">
                 Empower the next generation to build a resilient food future by connecting children and families to community gardens, sustainable eating education, and food justice initiatives across New York City and beyond. We provide experiential programs and resources that make urban gardening accessible, foster curiosity, and strengthen local communities.
+              </p>
+              <p className="text-sbtp-green-700 text-sm font-medium">
+                We are currently in the application process for our 501(c)(3) nonprofit status and remain committed to our mission of making food justice education accessible to all communities.
               </p>
             </CardContent>
           </Card>
@@ -58,6 +61,21 @@ const AboutUs = () => {
               </h2>
               <p className="text-sbtp-brown-500 leading-relaxed">
                 Create cities where every child and neighborhood has the opportunity to grow fresh food, learn the value of sustainability, and participate in a thriving, equitable local food system. Our vision is to cultivate lifelong advocates for healthy food, green spaces, and justice—reshaping cities with gardens at their hearts.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Our Story Section */}
+          <Card className="mb-8 border-sbtp-green-300 bg-white shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-4 flex items-center">
+                <span className="w-10 h-10 flex items-center justify-center bg-sbtp-green-500 text-white rounded-full mr-3 text-lg">
+                  S
+                </span>
+                Our Story
+              </h2>
+              <p className="text-sbtp-brown-500 leading-relaxed">
+                Saved by the Plate was founded by Shay Bouchles, who recognized a critical disconnect in urban environments between education, food spaces, and youth. In New York City, young people are often disconnected from where their food comes from and lack access to hands-on experiences with sustainable agriculture and food justice. Shay created this organization to bridge that gap—bringing youth education programs, community garden connections, and digital tools together to empower the next generation to become advocates for equitable, sustainable food systems. What started as a vision to connect kids with local food has grown into a comprehensive platform serving all five boroughs of NYC.
               </p>
             </CardContent>
           </Card>
