@@ -157,6 +157,11 @@ const Education = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <title>Youth Food Education Programs — Food Justice &amp; Urban Agriculture | Saved by the Plate</title>
+      <meta name="description" content="Customizable 6-week programs for youth exploring food justice, community gardens, composting, and urban agriculture in New York City. In-school and after-school programs available." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/education" />
+      <meta property="og:title" content="Youth Food Education Programs | Saved by the Plate" />
+      <meta property="og:url" content="https://www.savedbytheplate.org/education" />
       <PhotoLightbox
         images={galleryImages}
         initialIndex={lightboxIndex}
@@ -168,10 +173,11 @@ const Education = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16 overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src={educationGarden1} 
-            alt="Youth education in community garden" 
+          <img
+            src={educationGarden1}
+            alt="Youth education in community garden"
             className="w-full h-full object-cover opacity-20"
+            fetchPriority="high"
           />
         </div>
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
@@ -194,10 +200,11 @@ const Education = () => {
               className="mb-12 rounded-2xl overflow-hidden shadow-xl w-full cursor-pointer group focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <div className="relative aspect-[16/9]">
-                <img 
-                  src={educationGarden1} 
-                  alt="Youth engaged in garden education" 
+                <img
+                  src={educationGarden1}
+                  alt="Youth engaged in garden education"
                   className="w-full h-full object-contain bg-black/10 group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute top-4 right-4 bg-black/40 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -238,10 +245,11 @@ const Education = () => {
                   className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <div className="aspect-[4/3] relative">
-                    <img 
-                      src={educationGarden2} 
-                      alt="Students learning about plants" 
+                    <img
+                      src={educationGarden2}
+                      alt="Students learning about plants"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
@@ -258,10 +266,11 @@ const Education = () => {
                   className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <div className="aspect-[4/3] relative">
-                    <img 
-                      src={educationGarden3} 
-                      alt="Garden workshop session" 
+                    <img
+                      src={educationGarden3}
+                      alt="Garden workshop session"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
@@ -413,10 +422,11 @@ const Education = () => {
                   className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <div className="aspect-[4/3] relative">
-                    <img 
-                      src={educationGarden4} 
-                      alt="Students in the garden" 
+                    <img
+                      src={educationGarden4}
+                      alt="Students in the garden"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />
@@ -433,10 +443,11 @@ const Education = () => {
                   className="rounded-xl overflow-hidden shadow-lg group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <div className="aspect-[4/3] relative">
-                    <img 
-                      src={educationGarden5} 
-                      alt="Community garden tour" 
+                    <img
+                      src={educationGarden5}
+                      alt="Community garden tour"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8" />

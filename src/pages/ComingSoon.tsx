@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 export default function ComingSoon() {
   return (
     <div className="min-h-screen flex flex-col">
+      <meta name="robots" content="noindex, nofollow" />
       <Navbar />
       <main className="flex-grow flex items-center justify-center px-4 py-16">
         <div className="max-w-2xl mx-auto text-center space-y-8">

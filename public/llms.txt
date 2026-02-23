@@ -1,0 +1,62 @@
+# Saved by the Plate
+
+> Saved by the Plate is a nonprofit organization empowering communities to make
+> informed food choices by connecting them to local food resources and providing
+> youth education in food justice, sustainable agriculture, and urban gardening.
+> Based in New York City, serving schools and communities across the five boroughs.
+
+## About
+
+Saved by the Plate Inc. was founded by Shay Bouchles to bridge the gap between
+communities and local food systems. We provide experiential programs, an
+AI-powered garden planning assistant, and an interactive map of food resources
+including community gardens, farmers markets, food banks, and community fridges.
+
+Our mission: Empower the next generation to build a resilient food future by
+connecting children and families to community gardens, sustainable eating
+education, and food justice initiatives across New York City and beyond.
+
+## Programs
+
+- Community Gardens & Food Justice: 6-week customizable youth program covering
+  the history of urban gardens in NYC, community growing strategies, urban
+  biodiversity, and environmental justice
+- Composting, Soil Science & Sustainability: 6-week youth program covering food
+  waste reduction, composting fundamentals, soil nutrients, and soil ecosystems
+- Programs are fully customizable: single session, 6-week series, or 12-week semester
+- Optional community garden tour included with every program
+- Guest speaker included in every program
+
+## Tools & Features
+
+- Ask Jane (AI Garden Planner): AI-powered gardening assistant providing
+  personalized gardening advice and custom growing plans
+- Local Food Map: Interactive map of community gardens, farmers markets, food
+  banks, community fridges, urban farms, and CSAs across New York City
+
+## Key Pages
+
+- [Home](https://www.savedbytheplate.org/): Main landing page
+- [About Us](https://www.savedbytheplate.org/about): Mission, values, leadership team
+- [Youth Education Programs](https://www.savedbytheplate.org/education): 6-week customizable programs
+- [Local Food Resources](https://www.savedbytheplate.org/local-food): Hub for food access tools
+- [Interactive Food Map](https://www.savedbytheplate.org/local-food/map): Map of local food resources
+- [Ask Jane — AI Garden Planner](https://www.savedbytheplate.org/local-food/garden-planner): AI gardening assistant
+- [Premium Plans](https://www.savedbytheplate.org/premium): Subscription options
+
+## Contact
+
+- Email: info@savedbytheplate.org
+- Website: https://www.savedbytheplate.org
+
+## Leadership
+
+- Shay Bouchles — Founder, President, and Executive Director
+- Lars Heidenreich — Secretary, Board of Directors
+- CarolAnne Bouchles — Treasurer, Board of Directors
+
+## Partners
+
+- Calm Collected Professionals
+- Modular Year
+- Communitas Ventures

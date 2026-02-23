@@ -10,14 +10,20 @@ import TransparentJaneAvatar from "@/components/garden-plan/TransparentJaneAvata
 const Index = () => {
   return (
     <div className="w-full">
+      <title>Saved by the Plate — Grow Local, Eat Local</title>
+      <meta name="description" content="Connecting communities with sustainable food options and local agriculture education, starting with youth in New York City." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/" />
+      <meta property="og:title" content="Saved by the Plate — Grow Local, Eat Local" />
+      <meta property="og:url" content="https://www.savedbytheplate.org/" />
       <Navbar />
       {/* Hero Section */}
       <section className="relative bg-green-800 text-white">
         <div className="absolute inset-0 overflow-hidden">
-          <img 
-            src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-            alt="Urban garden" 
-            className="w-full h-full object-cover opacity-20" 
+          <img
+            src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+            alt="Urban garden"
+            className="w-full h-full object-cover opacity-20"
+            fetchPriority="high"
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32">
@@ -43,10 +49,11 @@ const Index = () => {
             {/* Education */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
-                <img 
-                  src={educationGardenImage} 
-                  alt="Youth education program in community garden" 
-                  className="w-full h-full object-cover" 
+                <img
+                  src={educationGardenImage}
+                  alt="Youth education program in community garden"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-6">
@@ -100,10 +107,11 @@ const Index = () => {
             {/* Local Food Resources */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
-                <img 
-                  src={localFoodResourcesImage} 
-                  alt="Community garden with labeled vegetable beds" 
-                  className="w-full h-full object-cover" 
+                <img
+                  src={localFoodResourcesImage}
+                  alt="Community garden with labeled vegetable beds"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-6">

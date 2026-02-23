@@ -322,6 +322,11 @@ const GardenPlan = () => {
 
   return (
     <>
+      <title>Ask Jane — AI Garden Planning Assistant | Saved by the Plate</title>
+      <meta name="description" content="Get personalized gardening advice and custom growing plans from Jane, your AI-powered garden assistant. Free 2-day trial." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/local-food/garden-planner" />
+      <meta property="og:title" content="Ask Jane — AI Garden Planning Assistant | Saved by the Plate" />
+      <meta property="og:url" content="https://www.savedbytheplate.org/local-food/garden-planner" />
       <Navbar />
       {trialBanner}
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">

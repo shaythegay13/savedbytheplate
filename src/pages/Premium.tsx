@@ -374,6 +374,11 @@ const Premium = () => {
   };
   return (
     <div className="min-h-screen bg-background">
+      <title>Premium Plans — Full Access to Ask Jane AI | Saved by the Plate</title>
+      <meta name="description" content="Unlock full access to Ask Jane AI garden planning and expanded local food resources. Plans from $8/month. Free 2-day trial." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/premium" />
+      <meta property="og:title" content="Premium Plans | Saved by the Plate" />
+      <meta property="og:url" content="https://www.savedbytheplate.org/premium" />
       <Navbar />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-12 sm:py-16 lg:py-20">

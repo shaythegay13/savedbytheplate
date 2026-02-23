@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core / Marketing Pages -->
+  <url>
+    <loc>https://www.savedbytheplate.org/</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+  <url>
+    <loc>https://www.savedbytheplate.org/about</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+
+  <!-- Education -->
+  <url>
+    <loc>https://www.savedbytheplate.org/education</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+
+  <!-- Local Food -->
+  <url>
+    <loc>https://www.savedbytheplate.org/local-food</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+  <url>
+    <loc>https://www.savedbytheplate.org/local-food/map</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+  <url>
+    <loc>https://www.savedbytheplate.org/local-food/garden-planner</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+
+  <!-- Premium -->
+  <url>
+    <loc>https://www.savedbytheplate.org/premium</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+
+  <!-- Legal (canonical versions only) -->
+  <url>
+    <loc>https://www.savedbytheplate.org/terms</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+  <url>
+    <loc>https://www.savedbytheplate.org/privacy</loc>
+    <lastmod>2026-02-23</lastmod>
+  </url>
+
+</urlset>

@@ -42,30 +42,6 @@ const scrollToId = (id: string) => {
 
 const Terms: React.FC = () => {
   useEffect(() => {
-    document.title = "Terms of Service | Saved by the Plate";
-
-    const metaDesc = document.querySelector('meta[name="description"]');
-    const content = "Read our Terms of Service for Saved by the Plate, including user rights, limitations of liability, and policies.";
-    if (metaDesc) {
-      metaDesc.setAttribute("content", content);
-    } else {
-      const m = document.createElement("meta");
-      m.setAttribute("name", "description");
-      m.setAttribute("content", content);
-      document.head.appendChild(m);
-    }
-
-    const canonical = document.querySelector('link[rel="canonical"]');
-    const url = `${window.location.origin}/terms`;
-    if (canonical) {
-      canonical.setAttribute("href", url);
-    } else {
-      const link = document.createElement("link");
-      link.setAttribute("rel", "canonical");
-      link.setAttribute("href", url);
-      document.head.appendChild(link);
-    }
-
     if (window.location.hash) {
       const id = window.location.hash.replace('#', '');
       setTimeout(() => scrollToId(id), 50);
@@ -74,6 +50,9 @@ const Terms: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <title>Terms of Service | Saved by the Plate</title>
+      <meta name="description" content="Read our Terms of Service for Saved by the Plate, including user rights, limitations of liability, and policies." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/terms" />
       <Navbar />
       
       <div className="max-w-5xl mx-auto px-4 py-10">

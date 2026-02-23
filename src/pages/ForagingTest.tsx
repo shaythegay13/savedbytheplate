@@ -188,8 +188,9 @@ const ForagingTest = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <meta name="robots" content="noindex, nofollow" />
       <Navbar />
-      
+
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 border-b border-green-700">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">

@@ -44,31 +44,6 @@ const scrollToId = (id: string) => {
 
 const Terms: React.FC = () => {
   useEffect(() => {
-    // Basic SEO
-    document.title = "Terms of Service | Saved by the Plate"; // <60 chars
-
-    const metaDesc = document.querySelector('meta[name="description"]');
-    const content = "Read our Terms of Service for Saved by the Plate, including user rights, limitations of liability, and policies.";
-    if (metaDesc) {
-      metaDesc.setAttribute("content", content);
-    } else {
-      const m = document.createElement("meta");
-      m.setAttribute("name", "description");
-      m.setAttribute("content", content);
-      document.head.appendChild(m);
-    }
-
-    const canonical = document.querySelector('link[rel="canonical"]');
-    const url = `${window.location.origin}/terms`;
-    if (canonical) {
-      canonical.setAttribute("href", url);
-    } else {
-      const link = document.createElement("link");
-      link.setAttribute("rel", "canonical");
-      link.setAttribute("href", url);
-      document.head.appendChild(link);
-    }
-
     // If the page loads with a hash, scroll to it
     if (window.location.hash) {
       const id = window.location.hash.replace('#', '');
@@ -78,6 +53,8 @@ const Terms: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <meta name="robots" content="noindex, nofollow" />
+      <link rel="canonical" href="https://www.savedbytheplate.org/terms" />
       <div className="container mx-auto px-4 py-6">
         <Link to="/waiting-list" className="inline-flex items-center text-sbtp-green-700 hover:text-sbtp-green-800 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
+      <meta name="robots" content="noindex, nofollow" />
+      <link rel="canonical" href="https://www.savedbytheplate.org/privacy" />
       <div className="container mx-auto px-4 py-6">
         <Link to="/waiting-list" className="inline-flex items-center text-sbtp-green-700 hover:text-sbtp-green-800 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">

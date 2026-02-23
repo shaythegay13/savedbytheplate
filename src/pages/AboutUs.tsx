@@ -16,6 +16,11 @@ import fsLogo from "@/assets/fs-logo.png";
 const AboutUs = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-sbtp-beige to-white">
+      <title>About Saved by the Plate — NYC Food Justice Nonprofit</title>
+      <meta name="description" content="Learn about our mission to empower NYC communities through sustainable food education. Meet our founder Shay Bouchles and leadership team." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/about" />
+      <meta property="og:title" content="About Saved by the Plate — NYC Food Justice Nonprofit" />
+      <meta property="og:url" content="https://www.savedbytheplate.org/about" />
       <Navbar />
       
       <div className="container mx-auto px-4 py-16">
@@ -64,10 +69,11 @@ const AboutUs = () => {
               <div className="space-y-8">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="flex-shrink-0">
-                    <img 
-                      src={shayPhoto} 
-                      alt="Shay Bouchles, Founder, President, and Executive Director" 
+                    <img
+                      src={shayPhoto}
+                      alt="Shay Bouchles, Founder, President, and Executive Director"
                       className="w-48 h-48 rounded-lg object-cover shadow-md"
+                      loading="lazy"
                     />
                   </div>
                   <div className="flex-1">
@@ -102,10 +108,11 @@ const AboutUs = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {/* Shay Bouchles - President */}
                 <div className="text-center">
-                  <img 
-                    src={shayPhoto} 
-                    alt="Shay Bouchles, President" 
+                  <img
+                    src={shayPhoto}
+                    alt="Shay Bouchles, President"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Shay Bouchles</h3>
                   <p className="text-sm text-sbtp-brown-500">President</p>
@@ -113,10 +120,11 @@ const AboutUs = () => {
 
                 {/* Lars Heidenreich - Secretary */}
                 <div className="text-center">
-                  <img 
-                    src={larsPhoto} 
-                    alt="Lars Heidenreich, Secretary" 
+                  <img
+                    src={larsPhoto}
+                    alt="Lars Heidenreich, Secretary"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Lars Heidenreich</h3>
                   <p className="text-sm text-sbtp-brown-500">Secretary</p>
@@ -124,10 +132,11 @@ const AboutUs = () => {
 
                 {/* Khurram Kalimi */}
                 <div className="text-center">
-                  <img 
-                    src={khurramPhoto} 
-                    alt="Khurram Kalimi" 
+                  <img
+                    src={khurramPhoto}
+                    alt="Khurram Kalimi"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Khurram Kalimi</h3>
                   <p className="text-sm text-sbtp-brown-500">Board Member</p>
@@ -135,10 +144,11 @@ const AboutUs = () => {
 
                 {/* Sara Bruno */}
                 <div className="text-center">
-                  <img 
-                    src={saraPhoto} 
-                    alt="Sara Bruno" 
+                  <img
+                    src={saraPhoto}
+                    alt="Sara Bruno"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Sara Bruno</h3>
                   <p className="text-sm text-sbtp-brown-500">Board Member</p>
@@ -146,10 +156,11 @@ const AboutUs = () => {
 
                 {/* CarolAnne Bouchles - Treasurer */}
                 <div className="text-center">
-                  <img 
-                    src={carolAnnePhoto} 
-                    alt="CarolAnne Bouchles, Treasurer" 
+                  <img
+                    src={carolAnnePhoto}
+                    alt="CarolAnne Bouchles, Treasurer"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">CarolAnne Bouchles</h3>
                   <p className="text-sm text-sbtp-brown-500">Treasurer</p>
@@ -157,10 +168,11 @@ const AboutUs = () => {
 
                 {/* Kelsey Estevez */}
                 <div className="text-center">
-                  <img 
-                    src={kelseyPhoto} 
-                    alt="Kelsey Estevez" 
+                  <img
+                    src={kelseyPhoto}
+                    alt="Kelsey Estevez"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Kelsey Estevez</h3>
                   <p className="text-sm text-sbtp-brown-500">Board Member</p>
@@ -177,10 +189,11 @@ const AboutUs = () => {
               <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
                 {/* Shane Nantais */}
                 <div className="text-center">
-                  <img 
-                    src={shanePhoto} 
-                    alt="Shane Nantais, Founding Advisor" 
+                  <img
+                    src={shanePhoto}
+                    alt="Shane Nantais, Founding Advisor"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Shane Nantais</h3>
                   <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
@@ -188,10 +201,11 @@ const AboutUs = () => {
 
                 {/* Charles Kirby */}
                 <div className="text-center">
-                  <img 
-                    src={charlesPhoto} 
-                    alt="Charles Kirby, Founding Advisor" 
+                  <img
+                    src={charlesPhoto}
+                    alt="Charles Kirby, Founding Advisor"
                     className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Charles Kirby</h3>
                   <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
@@ -204,20 +218,23 @@ const AboutUs = () => {
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">In Partnership With</h2>
               
               <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-                <img 
-                  src={ccpLogo} 
-                  alt="Calm Collected Professionals" 
+                <img
+                  src={ccpLogo}
+                  alt="Calm Collected Professionals"
                   className="h-24 w-auto object-contain"
+                  loading="lazy"
                 />
-                <img 
-                  src={modularYearLogo} 
-                  alt="Modular Year 2025" 
+                <img
+                  src={modularYearLogo}
+                  alt="Modular Year 2025"
                   className="h-24 w-auto object-contain"
+                  loading="lazy"
                 />
-                <img 
-                  src={fsLogo} 
-                  alt="FS" 
+                <img
+                  src={fsLogo}
+                  alt="FS"
                   className="h-24 w-auto object-contain"
+                  loading="lazy"
                 />
               </div>
             </CardContent>
@@ -229,10 +246,11 @@ const AboutUs = () => {
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">With Support From</h2>
               
               <div className="flex items-center justify-center">
-                <img 
-                  src={communitasLogo} 
-                  alt="Communitas Ventures" 
+                <img
+                  src={communitasLogo}
+                  alt="Communitas Ventures"
                   className="h-24 w-auto object-contain"
+                  loading="lazy"
                 />
               </div>
             </CardContent>

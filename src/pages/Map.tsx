@@ -80,6 +80,11 @@ const Map = () => {
   }, [searchQuery, activeFilters]);
   return (
     <div className="min-h-screen bg-background">
+      <title>NYC Food Map — Find Local Food Resources Near You | Saved by the Plate</title>
+      <meta name="description" content="Interactive map of community gardens, farmers markets, food banks, community fridges, and urban farms across New York City." />
+      <link rel="canonical" href="https://www.savedbytheplate.org/local-food/map" />
+      <meta property="og:title" content="NYC Food Map | Saved by the Plate" />
+      <meta property="og:url" content="https://www.savedbytheplate.org/local-food/map" />
       <Navbar />
       
       {/* Enhanced Header */}
