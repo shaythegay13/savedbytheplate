@@ -85,6 +85,7 @@ const Map = () => {
       <link rel="canonical" href="https://www.savedbytheplate.org/local-food/map" />
       <meta property="og:title" content="NYC Food Map | Saved by the Plate" />
       <meta property="og:url" content="https://www.savedbytheplate.org/local-food/map" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"Local Food Resources","item":"https://www.savedbytheplate.org/local-food"},{"@type":"ListItem","position":3,"name":"Food Map","item":"https://www.savedbytheplate.org/local-food/map"}]}` }} />
       <Navbar />
       
       {/* Enhanced Header */}

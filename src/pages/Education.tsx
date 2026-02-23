@@ -162,6 +162,10 @@ const Education = () => {
       <link rel="canonical" href="https://www.savedbytheplate.org/education" />
       <meta property="og:title" content="Youth Food Education Programs | Saved by the Plate" />
       <meta property="og:url" content="https://www.savedbytheplate.org/education" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"Education Programs","item":"https://www.savedbytheplate.org/education"}]}` }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://www.savedbytheplate.org/education#educational-org","name":"Saved by the Plate — Youth Education Programs","url":"https://www.savedbytheplate.org/education","description":"Customizable youth education programs exploring food justice, sustainability, community gardens, composting, and environmental science for students of all ages.","parentOrganization":{"@id":"https://www.savedbytheplate.org/#organization"},"areaServed":{"@type":"City","name":"New York City"},"email":"info@savedbytheplate.org","hasOfferCatalog":{"@type":"OfferCatalog","name":"Youth Education Programs","itemListElement":[{"@type":"Offer","itemOffered":{"@id":"https://www.savedbytheplate.org/education#course-community-gardens"}},{"@type":"Offer","itemOffered":{"@id":"https://www.savedbytheplate.org/education#course-soil-science"}}]}}` }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"Course","@id":"https://www.savedbytheplate.org/education#course-community-gardens","name":"Community Gardens & Food Justice","description":"Explore food justice, food sovereignty, community gardens, and urban agriculture in New York City. A 6-week customizable program for youth covering the history and impact of urban gardens, sustainable growing strategies, biodiversity, and environmental advocacy.","url":"https://www.savedbytheplate.org/education","provider":{"@id":"https://www.savedbytheplate.org/#organization"},"educationalLevel":"Youth / K-12","teaches":["Food Justice","Food Sovereignty","Community Garden History","Urban Growing Strategies","Urban Biodiversity","Environmental Justice"],"numberOfCredits":0,"hasCourseInstance":{"@type":"CourseInstance","courseMode":"onsite","duration":"P6W","courseWorkload":"PT1H","location":{"@type":"Place","name":"New York City","address":{"@type":"PostalAddress","addressLocality":"New York","addressRegion":"NY","addressCountry":"US"}}}}` }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"Course","@id":"https://www.savedbytheplate.org/education#course-soil-science","name":"Composting, Soil Science & Sustainability","description":"Learn about food waste, composting, soil nutrients, and the organisms that make soil alive. A 6-week youth program covering food waste reduction, composting fundamentals, soil health, micro and macro nutrients, and soil ecosystems.","url":"https://www.savedbytheplate.org/education","provider":{"@id":"https://www.savedbytheplate.org/#organization"},"educationalLevel":"Youth / K-12","teaches":["Composting","Soil Science","Food Waste Reduction","Soil Nutrients","Microbiology","Environmental Sustainability"],"numberOfCredits":0,"hasCourseInstance":{"@type":"CourseInstance","courseMode":"onsite","duration":"P6W","courseWorkload":"PT1H","location":{"@type":"Place","name":"New York City","address":{"@type":"PostalAddress","addressLocality":"New York","addressRegion":"NY","addressCountry":"US"}}}}` }} />
       <PhotoLightbox
         images={galleryImages}
         initialIndex={lightboxIndex}
@@ -282,6 +286,24 @@ const Education = () => {
                     </p>
                   </div>
                 </button>
+              </div>
+
+              {/* Definition Block — What is Urban Agriculture? */}
+              <div className="bg-green-50 border border-green-200 rounded-2xl p-6 sm:p-8 mb-8">
+                <h2 className="text-xl sm:text-2xl font-bold text-green-800 mb-3">What Is Urban Agriculture?</h2>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Urban agriculture refers to the practice of growing, processing, and distributing food within
+                  cities and surrounding areas. It includes community gardens, rooftop farms, school gardens,
+                  composting programs, and urban orchards. In New York City, urban agriculture plays a critical
+                  role in improving food security, building community, and educating residents — especially
+                  young people — about where their food comes from.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Urban agriculture is also central to food justice work. When communities can grow their own
+                  food, they reduce dependence on large grocery chains that often bypass low-income
+                  neighborhoods, lower household food costs, and build the skills and knowledge needed to
+                  advocate for a more equitable, sustainable food system.
+                </p>
               </div>
 
               <Tabs defaultValue="community-gardens" className="w-full">

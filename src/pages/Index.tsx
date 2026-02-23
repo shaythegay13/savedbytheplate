@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { MapPin, Book, Leaf, Users } from 'lucide-react';
+import { MapPin, Book, Leaf, Users, Sprout, Globe, GraduationCap } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 import educationGardenImage from "@/assets/education-garden-1.jpg";
@@ -134,6 +134,70 @@ const Index = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Impact Statistics Section */}
+      <section className="py-12 sm:py-16 bg-green-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4 text-white">
+            The Food Justice Crisis in New York City
+          </h2>
+          <p className="text-center text-green-100 mb-10 max-w-2xl mx-auto">
+            Food insecurity and unequal access to fresh food affect millions of New Yorkers.
+            Education and community action are the path forward.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-4xl sm:text-5xl font-bold text-green-300 mb-2">1 in 4</p>
+              <p className="text-lg font-semibold mb-1">NYC Children Face Food Insecurity</p>
+              <p className="text-green-200 text-sm">Approximately 1.3 million New Yorkers lack consistent access to nutritious food.</p>
+            </div>
+            <div>
+              <p className="text-4xl sm:text-5xl font-bold text-green-300 mb-2">500+</p>
+              <p className="text-lg font-semibold mb-1">Community Gardens in NYC</p>
+              <p className="text-green-200 text-sm">New York City's GreenThumb program supports over 500 community gardens across all five boroughs.</p>
+            </div>
+            <div>
+              <p className="text-4xl sm:text-5xl font-bold text-green-300 mb-2">6 Weeks</p>
+              <p className="text-lg font-semibold mb-1">To Transform a Young Gardener</p>
+              <p className="text-green-200 text-sm">Our hands-on education programs give students real-world skills in food justice, composting, and urban farming.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What Is Food Justice — Definition Block */}
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-green-800 mb-6">What Is Food Justice?</h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Food justice is the belief that all people — regardless of income, race, or zip code — have the right to
+            grow, sell, and eat healthy, affordable food that reflects their cultural traditions. It is both a social
+            movement and a framework for addressing the systemic inequities that create "food deserts" and limit
+            access to fresh, nutritious food in low-income communities.
+          </p>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            In New York City, food justice work includes supporting community gardens, advocating for equitable
+            grocery store placement, funding food banks and community fridges, and — critically — educating the
+            next generation about where their food comes from and why the current food system produces such
+            unequal outcomes.
+          </p>
+          <p className="text-gray-700 leading-relaxed mb-6">
+            At Saved by the Plate, food justice is our foundation. Every program we run — from our 6-week
+            community garden curriculum to our composting and soil science workshops — is designed to equip
+            young people in New York City with the knowledge and skills to become lifelong advocates for an
+            equitable, sustainable food system.
+          </p>
+          <Link
+            to="/education"
+            className="inline-flex items-center text-green-700 font-semibold hover:text-green-800"
+          >
+            Explore our education programs
+            <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         </div>
       </section>
     </div>

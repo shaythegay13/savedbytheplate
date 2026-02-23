@@ -21,6 +21,7 @@ const AboutUs = () => {
       <link rel="canonical" href="https://www.savedbytheplate.org/about" />
       <meta property="og:title" content="About Saved by the Plate — NYC Food Justice Nonprofit" />
       <meta property="og:url" content="https://www.savedbytheplate.org/about" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"About Us","item":"https://www.savedbytheplate.org/about"}]}` }} />
       <Navbar />
       
       <div className="container mx-auto px-4 py-16">
