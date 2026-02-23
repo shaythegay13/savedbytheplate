@@ -1,0 +1,28 @@
+{
+  "name": "Saved by the Plate",
+  "short_name": "Saved by the Plate",
+  "description": "Connecting communities with sustainable food options and local agriculture education in New York City",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F3E9",
+  "theme_color": "#2D5016",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "food", "lifestyle", "social"],
+  "scope": "/",
+  "dir": "ltr",
+  "lang": "en-US"
+}

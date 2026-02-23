@@ -9,9 +9,9 @@ const Hero = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 flex justify-center mb-10 md:mb-0 md:order-2">
-            <img 
-              src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
-              alt="Saved by the Plate Logo" 
+            <img
+              src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.webp"
+              alt="Saved by the Plate Logo"
               className="w-64 h-64 md:w-96 md:h-96 object-contain rounded-full bg-white p-4 shadow-lg"
             />
           </div>

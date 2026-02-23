@@ -145,9 +145,9 @@ const WaitingList = () => {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6 sm:mb-8">
-              <img 
-                src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
-                alt="Saved by the Plate Logo" 
+              <img
+                src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.webp"
+                alt="Saved by the Plate Logo"
                 className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 object-contain rounded-full bg-white p-3 sm:p-4 shadow-lg"
               />
             </div>

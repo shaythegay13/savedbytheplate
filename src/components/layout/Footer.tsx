@@ -19,9 +19,9 @@ const Footer = () => {
           {/* Logo Block */}
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img 
-                src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.png" 
-                alt="Saved by the Plate" 
+              <img
+                src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.webp"
+                alt="Saved by the Plate"
                 className="h-12 w-12 object-contain bg-white rounded-full p-1"
               />
               <span className="text-lg font-bold">Saved by the Plate</span>
