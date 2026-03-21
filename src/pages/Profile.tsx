@@ -263,9 +263,32 @@ const Profile = () => {
                   </div>
                 )}
 
+                {subscription.subscribed && (
+                  <Button 
+                    variant="outline"
+                    className="w-full border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white"
+                    onClick={async () => {
+                      try {
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session) return;
+                        const { data, error } = await supabase.functions.invoke('customer-portal', {
+                          headers: { Authorization: `Bearer ${session.access_token}` },
+                        });
+                        if (error) throw error;
+                        if (data?.url) window.open(data.url, '_blank');
+                      } catch (err: any) {
+                        toast.error(err.message || 'Failed to open subscription management');
+                      }
+                    }}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Manage Subscription
+                  </Button>
+                )}
+
                 {!subscription.subscribed && (
                   <Button asChild className="w-full">
-                    <a href="/premium">Upgrade to Premium</a>
+                    <Link to="/premium">Upgrade to Premium</Link>
                   </Button>
                 )}
               </div>
