@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,10 +9,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/Navbar';
 import { Separator } from '@/components/ui/separator';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ExternalLink } from 'lucide-react';
 import { z } from 'zod';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Badge } from '@/components/ui/badge';
+import { toast as sonnerToast } from 'sonner';
 
 const passwordSchema = z.string()
   .min(8, "Password must be at least 8 characters")
@@ -262,9 +263,32 @@ const Profile = () => {
                   </div>
                 )}
 
+                {subscription.subscribed && (
+                  <Button 
+                    variant="outline"
+                    className="w-full border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white"
+                    onClick={async () => {
+                      try {
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session) return;
+                        const { data, error } = await supabase.functions.invoke('customer-portal', {
+                          headers: { Authorization: `Bearer ${session.access_token}` },
+                        });
+                        if (error) throw error;
+                        if (data?.url) window.open(data.url, '_blank');
+                      } catch (err: any) {
+                        sonnerToast.error(err.message || 'Failed to open subscription management');
+                      }
+                    }}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Manage Subscription
+                  </Button>
+                )}
+
                 {!subscription.subscribed && (
                   <Button asChild className="w-full">
-                    <a href="/premium">Upgrade to Premium</a>
+                    <Link to="/premium">Upgrade to Premium</Link>
                   </Button>
                 )}
               </div>
