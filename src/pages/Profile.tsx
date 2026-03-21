@@ -13,7 +13,7 @@ import { Loader2, ExternalLink } from 'lucide-react';
 import { z } from 'zod';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
+import { toast as sonnerToast } from 'sonner';
 
 const passwordSchema = z.string()
   .min(8, "Password must be at least 8 characters")
