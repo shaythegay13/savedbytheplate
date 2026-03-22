@@ -851,6 +851,8 @@ serve(async (req) => {
             if (socket.readyState !== WebSocket.OPEN) continue;
 
             if (part.inlineData?.mimeType?.includes("audio")) {
+              const chunkLen = part.inlineData.data?.length || 0;
+              console.log(`🔊 Audio chunk from Gemini: ${chunkLen} base64 chars, mimeType=${part.inlineData.mimeType}`);
               socket.send(JSON.stringify({
                 type: "assistant_audio",
                 chunk: part.inlineData.data,
