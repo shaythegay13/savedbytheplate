@@ -69,7 +69,7 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, school, role, message } = await req.json();
+    const { name, phone, email, school, role, message } = await req.json();
 
     // Validate required fields
     if (!name || !email || !school || !message) {
