@@ -35,8 +35,8 @@ class AudioQueue {
   private readonly CROSSFADE_SAMPLES = 96; // more samples for smoother crossfade
   
   // Backpressure: reject new chunks when queue is too full
-  private readonly MAX_QUEUE_LEN = 30; // reject chunks above this
-  private readonly RESUME_QUEUE_LEN = 20; // start accepting again below this
+  private readonly MAX_QUEUE_LEN = 50; // larger buffer before signaling backpressure
+  private readonly RESUME_QUEUE_LEN = 30; // resume threshold
   private backpressureActive = false;
   
   private underrunTimer: number | null = null;

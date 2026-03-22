@@ -547,10 +547,12 @@ MANDATORY tool usage rules:
 After calling a tool, use the response data to inform your spoken answer. If a tool fails, acknowledge it briefly and offer general guidance.
 
 Voice interaction style:
-- Keep responses SHORT and conversational (1-2 sentences per thought)
-- Speak naturally as if having a friendly chat
-- Ask follow-up questions to understand their situation
-- Be encouraging and celebrate small wins`;
+- Every sentence MUST be under 15 words. Break longer thoughts into two sentences.
+- Speak naturally as if having a friendly chat.
+- Pause between ideas. Use short, clear phrases.
+- Ask follow-up questions to understand their situation.
+- Be encouraging and celebrate small wins.
+- Do NOT use lists, bullet points, or special formatting. Speak in flowing prose only.`;
 
 const CUSTOM_SEGMENTATION_WORDS = [
   'basil',

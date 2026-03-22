@@ -226,35 +226,129 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     window.speechSynthesis.speak(utterance);
   };
 
-  const useBrowserTTS = (text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      
-      const enhancedText = text
-        .split(/(?<=[.!?])\s+/g)
-        .map(sentence => sentence.trim())
-        .filter(sentence => sentence.length > 0)
-        .join('\n');
-      
-      const utterance = new SpeechSynthesisUtterance(enhancedText);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
-      
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      
-      const voices = window.speechSynthesis.getVoices();
-      
-      if (voices.length === 0) {
-        window.speechSynthesis.onvoiceschanged = () => {
-          selectAndSpeakVoice(utterance, enhancedText);
-        };
+  // Split text into TTS-friendly chunks (max ~120 chars, split at sentence boundaries)
+  const splitIntoTTSChunks = (text: string): string[] => {
+    const MAX_CHUNK = 120;
+    // Split at sentence-ending punctuation
+    const rawSentences = text.split(/(?<=[.!?])\s+/g)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+    
+    const chunks: string[] = [];
+    for (const sentence of rawSentences) {
+      if (sentence.length <= MAX_CHUNK) {
+        chunks.push(sentence);
       } else {
-        selectAndSpeakVoice(utterance, enhancedText);
+        // Split long sentences at commas or semicolons
+        const parts = sentence.split(/(?<=[,;])\s+/g);
+        let current = '';
+        for (const part of parts) {
+          if (current && (current.length + part.length + 1) > MAX_CHUNK) {
+            chunks.push(current.trim());
+            current = part;
+          } else {
+            current = current ? current + ' ' + part : part;
+          }
+        }
+        if (current.trim()) chunks.push(current.trim());
       }
-    } else {
+    }
+    return chunks.length > 0 ? chunks : [text];
+  };
+
+  const ttsQueueRef = useRef<SpeechSynthesisUtterance[]>([]);
+  const ttsPlayingRef = useRef(false);
+
+  const playNextUtterance = () => {
+    if (ttsQueueRef.current.length === 0) {
+      ttsPlayingRef.current = false;
       setIsSpeaking(false);
+      console.log('[TTS] Queue empty, done speaking');
+      return;
+    }
+
+    const utterance = ttsQueueRef.current.shift()!;
+    ttsPlayingRef.current = true;
+
+    utterance.onstart = () => {
+      console.log(`[TTS] Utterance started: "${utterance.text.slice(0, 50)}..." pending=${ttsQueueRef.current.length}`);
+    };
+    utterance.onboundary = (e) => {
+      console.log(`[TTS] Boundary: ${e.name} at char ${e.charIndex}`);
+    };
+    utterance.onend = () => {
+      console.log(`[TTS] Utterance ended, remaining=${ttsQueueRef.current.length}`);
+      // Chain to next utterance
+      playNextUtterance();
+    };
+    utterance.onerror = (e) => {
+      console.error(`[TTS] Utterance error: ${e.error}, remaining=${ttsQueueRef.current.length}`);
+      // Try next utterance on error (don't stop the whole queue)
+      if (ttsQueueRef.current.length > 0) {
+        setTimeout(() => playNextUtterance(), 100);
+      } else {
+        ttsPlayingRef.current = false;
+        setIsSpeaking(false);
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const useBrowserTTS = (text: string) => {
+    if (!('speechSynthesis' in window)) {
+      setIsSpeaking(false);
+      return;
+    }
+
+    // Cancel any ongoing speech and clear queue
+    window.speechSynthesis.cancel();
+    ttsQueueRef.current = [];
+    ttsPlayingRef.current = false;
+
+    const chunks = splitIntoTTSChunks(text);
+    console.log(`[TTS] Queueing ${chunks.length} chunks for speech`);
+
+    const voices = window.speechSynthesis.getVoices();
+
+    const buildUtterances = (voiceList: SpeechSynthesisVoice[]) => {
+      // Find preferred voice once
+      const preferredVoicePatterns = [
+        /google.*female.*en-us/i, /google us english/i, /google.*us.*english/i,
+        /microsoft.*aria/i, /microsoft.*jenny/i, /microsoft.*sara/i,
+        /samantha/i, /ava/i, /allison/i, /susan/i,
+        /zira/i, /hazel/i, /karen/i, /moira/i, /tessa/i, /victoria/i, /fiona/i,
+        /female.*en/i, /en.*female/i,
+      ];
+      let selectedVoice: SpeechSynthesisVoice | null = null;
+      for (const pattern of preferredVoicePatterns) {
+        selectedVoice = voiceList.find(v => pattern.test(v.name)) || null;
+        if (selectedVoice) break;
+      }
+      if (!selectedVoice) {
+        selectedVoice = voiceList.find(v => v.lang.startsWith('en-')) || voiceList[0] || null;
+      }
+      console.log(`[TTS] Selected voice: ${selectedVoice?.name || 'default'}`);
+
+      for (const chunk of chunks) {
+        const utterance = new SpeechSynthesisUtterance(chunk);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        if (selectedVoice) utterance.voice = selectedVoice;
+        ttsQueueRef.current.push(utterance);
+      }
+
+      // Start playing the queue
+      playNextUtterance();
+    };
+
+    if (voices.length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        buildUtterances(window.speechSynthesis.getVoices());
+      };
+    } else {
+      buildUtterances(voices);
     }
   };
 
