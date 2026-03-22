@@ -141,10 +141,10 @@ const Navbar = () => {
               <Link
                 key={item.href}
                 to={item.href}
-                className={`px-2 py-2 rounded-md text-xs transition-colors whitespace-nowrap ${
+                className={`px-2 py-2 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
                   isActive(item.href)
                     ? "bg-sbtp-green-700 text-white"
-                    : "hover:bg-sbtp-green-700"
+                    : "text-green-100 hover:bg-sbtp-green-700 hover:text-white"
                 }`}
               >
                 {item.label}
