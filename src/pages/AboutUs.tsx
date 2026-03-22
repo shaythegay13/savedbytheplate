@@ -42,10 +42,10 @@ const AboutUs = () => {
                 </span>
                 Our Mission
               </h2>
-              <p className="text-sbtp-brown-500 leading-relaxed mb-4">
+              <p className="text-sbtp-brown-500 leading-relaxed md:leading-loose mb-4 text-base">
                 Empower the next generation to build a resilient food future by connecting children and families to community gardens, sustainable eating education, and food justice initiatives across New York City and beyond. We provide experiential programs and resources that make urban gardening accessible, foster curiosity, and strengthen local communities.
               </p>
-              <p className="text-sbtp-green-700 text-sm font-medium">
+              <p className="text-sbtp-green-700 text-sm font-medium leading-relaxed">
                 We are currently in the application process for our 501(c)(3) nonprofit status and remain committed to our mission of making food justice education accessible to all communities.
               </p>
             </CardContent>
@@ -60,7 +60,7 @@ const AboutUs = () => {
                 </span>
                 Our Values
               </h2>
-              <p className="text-sbtp-brown-500 leading-relaxed">
+              <p className="text-sbtp-brown-500 leading-relaxed md:leading-loose text-base">
                 Create cities where every child and neighborhood has the opportunity to grow fresh food, learn the value of sustainability, and participate in a thriving, equitable local food system. Our vision is to cultivate lifelong advocates for healthy food, green spaces, and justice—reshaping cities with gardens at their hearts.
               </p>
             </CardContent>
@@ -75,7 +75,7 @@ const AboutUs = () => {
                 </span>
                 Our Story
               </h2>
-              <p className="text-sbtp-brown-500 leading-relaxed">
+              <p className="text-sbtp-brown-500 leading-relaxed md:leading-loose text-base">
                 Saved by the Plate Inc. was founded by Shay Bouchles, who recognized a critical disconnect in urban environments between education, food spaces, and youth. In New York City, young people are often disconnected from where their food comes from and lack access to hands-on experiences with sustainable agriculture and food justice. Shay created this organization to bridge that gap—bringing youth education programs, community garden connections, and digital tools together to empower the next generation to become advocates for equitable, sustainable food systems. What started as a vision to connect kids with local food has grown into a comprehensive platform serving all five boroughs of NYC.
               </p>
             </CardContent>
@@ -101,7 +101,7 @@ const AboutUs = () => {
                       Shay Bouchles, Founder, President, and Executive Director
                     </h3>
                     
-                    <div className="text-sbtp-brown-500 leading-relaxed space-y-4">
+                    <div className="text-sbtp-brown-500 leading-relaxed md:leading-loose space-y-4 text-base">
                       <p>
                         As Executive Director and Founder of Saved by the Plate Inc., Shay drives the mission to make food justice education accessible, engaging, and actionable for communities across New York City and beyond. Combining a foundation in academic research with real-world experience in social impact entrepreneurship, Shay leads initiatives that bridge sustainable agriculture, digital innovation, and hands-on learning for students and educators.
                       </p>
@@ -126,74 +126,33 @@ const AboutUs = () => {
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6">Board of Directors</h2>
               
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {/* Shay Bouchles - President */}
                 <div className="text-center">
-                  <img
-                    src={shayPhoto}
-                    alt="Shay Bouchles, President"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={shayPhoto} alt="Shay Bouchles, President" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Shay Bouchles</h3>
                   <p className="text-sm text-sbtp-brown-500">President</p>
                 </div>
-
-                {/* Lars Heidenreich - Secretary */}
                 <div className="text-center">
-                  <img
-                    src={larsPhoto}
-                    alt="Lars Heidenreich, Secretary"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={larsPhoto} alt="Lars Heidenreich, Secretary" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Lars Heidenreich</h3>
                   <p className="text-sm text-sbtp-brown-500">Secretary</p>
                 </div>
-
-                {/* Khurram Kalimi */}
                 <div className="text-center">
-                  <img
-                    src={khurramPhoto}
-                    alt="Khurram Kalimi"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={khurramPhoto} alt="Khurram Kalimi" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Khurram Kalimi</h3>
                   <p className="text-sm text-sbtp-brown-500">Board Member</p>
                 </div>
-
-                {/* Sara Bruno */}
                 <div className="text-center">
-                  <img
-                    src={saraPhoto}
-                    alt="Sara Bruno"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={saraPhoto} alt="Sara Bruno" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Sara Bruno</h3>
                   <p className="text-sm text-sbtp-brown-500">Board Member</p>
                 </div>
-
-                {/* CarolAnne Bouchles - Treasurer */}
                 <div className="text-center">
-                  <img
-                    src={carolAnnePhoto}
-                    alt="CarolAnne Bouchles, Treasurer"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={carolAnnePhoto} alt="CarolAnne Bouchles, Treasurer" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">CarolAnne Bouchles</h3>
                   <p className="text-sm text-sbtp-brown-500">Treasurer</p>
                 </div>
-
-                {/* Kelsey Estevez */}
                 <div className="text-center">
-                  <img
-                    src={kelseyPhoto}
-                    alt="Kelsey Estevez"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={kelseyPhoto} alt="Kelsey Estevez" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Kelsey Estevez</h3>
                   <p className="text-sm text-sbtp-brown-500">Board Member</p>
                 </div>
@@ -205,73 +164,39 @@ const AboutUs = () => {
           <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
             <CardContent className="pt-8 pb-8">
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6">Founding Advisors</h2>
-              
               <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
-                {/* Shane Nantais */}
                 <div className="text-center">
-                  <img
-                    src={shanePhoto}
-                    alt="Shane Nantais, Founding Advisor"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={shanePhoto} alt="Shane Nantais, Founding Advisor" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Shane Nantais</h3>
                   <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
                 </div>
-
-                {/* Charles Kirby */}
                 <div className="text-center">
-                  <img
-                    src={charlesPhoto}
-                    alt="Charles Kirby, Founding Advisor"
-                    className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3"
-                    loading="lazy"
-                  />
+                  <img src={charlesPhoto} alt="Charles Kirby, Founding Advisor" className="w-32 h-32 rounded-lg object-cover shadow-md mx-auto mb-3" loading="lazy" />
                   <h3 className="text-lg font-semibold text-sbtp-green-600">Charles Kirby</h3>
                   <p className="text-sm text-sbtp-brown-500">Founding Advisor</p>
                 </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Partners */}
           <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
             <CardContent className="pt-8 pb-8">
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">In Partnership With</h2>
-              
               <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-                <img
-                  src={ccpLogo}
-                  alt="Calm Collected Professionals"
-                  className="h-24 w-auto object-contain"
-                  loading="lazy"
-                />
-                <img
-                  src={modularYearLogo}
-                  alt="Modular Year 2025"
-                  className="h-24 w-auto object-contain"
-                  loading="lazy"
-                />
-                <img
-                  src={fsLogo}
-                  alt="FS"
-                  className="h-24 w-auto object-contain"
-                  loading="lazy"
-                />
+                <img src={ccpLogo} alt="Calm Collected Professionals" className="h-24 w-auto object-contain" loading="lazy" />
+                <img src={modularYearLogo} alt="Modular Year 2025" className="h-24 w-auto object-contain" loading="lazy" />
+                <img src={fsLogo} alt="FS" className="h-24 w-auto object-contain" loading="lazy" />
               </div>
             </CardContent>
           </Card>
 
-          {/* Support Section */}
+          {/* Support */}
           <Card className="mt-8 border-sbtp-green-300 bg-white shadow-lg">
             <CardContent className="pt-8 pb-8">
               <h2 className="text-2xl font-semibold text-sbtp-green-700 mb-6 text-center">With Support From</h2>
-              
               <div className="flex items-center justify-center">
-                <img
-                  src={communitasLogo}
-                  alt="Communitas Ventures"
-                  className="h-24 w-auto object-contain"
-                  loading="lazy"
-                />
+                <img src={communitasLogo} alt="Communitas Ventures" className="h-24 w-auto object-contain" loading="lazy" />
               </div>
             </CardContent>
           </Card>

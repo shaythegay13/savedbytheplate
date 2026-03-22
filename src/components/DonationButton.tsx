@@ -16,9 +16,7 @@ const DonationButton = () => {
   useEffect(() => {
     if (!open) return;
 
-    // Small delay to ensure modal is fully rendered
     const timer = setTimeout(() => {
-      // Create Donately script element
       const script = document.createElement("script");
       script.src = "https://cdn.donately.com/core/6.0/donately.min.js?v=6.0.67";
       script.setAttribute("data-donately-id", "act_28b81572bc05");
@@ -35,7 +33,6 @@ const DonationButton = () => {
 
     return () => {
       clearTimeout(timer);
-      // Clean up script when modal closes
       const container = document.getElementById("donately-form-container");
       if (container) {
         container.innerHTML = "";
@@ -47,7 +44,7 @@ const DonationButton = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="bg-sbtp-orange-500 hover:bg-sbtp-orange-600 text-white"
+          className="bg-sbtp-orange-500 hover:bg-sbtp-orange-600 text-white rounded-full font-semibold shadow-md"
           aria-label="Donate to Saved by the Plate Inc."
         >
           <Heart className="mr-2 h-4 w-4" />

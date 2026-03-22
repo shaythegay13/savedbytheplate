@@ -101,7 +101,7 @@ const PricingSection = () => {
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Billed monthly</p>
                     <Button 
-                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2"
+                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2 rounded-full font-semibold"
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
@@ -124,7 +124,7 @@ const PricingSection = () => {
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Save $20 with annual billing</p>
                     <Button 
-                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2"
+                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2 rounded-full font-semibold"
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
@@ -147,7 +147,7 @@ const PricingSection = () => {
                     <p className="text-xs text-sbtp-brown-500 text-center mb-4">Special pricing for educators</p>
                     <Button 
                       variant="outline" 
-                      className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2"
+                      className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2 rounded-full font-semibold"
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
@@ -163,7 +163,7 @@ const PricingSection = () => {
                   </p>
                   <Button 
                     variant="outline" 
-                    className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm"
+                    className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm rounded-full font-semibold"
                     onClick={() => window.location.href = "mailto:info@savedbytheplate.com?subject=Institutional Partnership with Saved by the Plate Inc."}
                   >
                     Contact Us
