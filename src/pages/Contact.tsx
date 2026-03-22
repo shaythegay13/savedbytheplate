@@ -15,6 +15,7 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
+    phone: '',
     email: '',
     school: '',
     role: '',
