@@ -32,10 +32,26 @@ const Index = () => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
               Grow Local, Eat Local
             </h1>
-            <p className="text-lg sm:text-xl mb-6 sm:mb-8">
+            <p className="text-lg sm:text-xl mb-8 sm:mb-10 text-green-100">
               Connecting communities with sustainable food options<br />
               and local agriculture, starting with our youth.
             </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/local-food/map"
+                className="inline-flex items-center justify-center bg-sbtp-green-500 text-white font-semibold px-8 py-4 rounded-full hover:bg-sbtp-green-400 transition-colors shadow-lg text-lg"
+              >
+                <MapPin className="w-5 h-5 mr-2" />
+                Find Food Near You
+              </Link>
+              <Link
+                to="/local-food/garden-planner"
+                className="inline-flex items-center justify-center bg-white/15 backdrop-blur text-white font-semibold px-8 py-4 rounded-full hover:bg-white/25 transition-colors border border-white/30 text-lg"
+              >
+                <Leaf className="w-5 h-5 mr-2" />
+                Ask Jane — AI Garden Planner
+              </Link>
+            </div>
           </div>
         </div>
       </section>
