@@ -35,7 +35,7 @@ const Contact = () => {
     setLoading(false);
     toast({
       title: "Inquiry sent!",
-      description: "We'll get back to you within 2 business days.",
+      description: "We'll get back to you within 3-5 business days.",
     });
   };
 
@@ -47,7 +47,7 @@ const Contact = () => {
           <CheckCircle className="w-16 h-16 text-primary mx-auto mb-6" />
           <h1 className="text-3xl font-bold text-foreground mb-4">Thank You!</h1>
           <p className="text-muted-foreground text-lg mb-2">
-            We've received your inquiry and will get back to you within 2 business days.
+            We've received your inquiry and will get back to you within 3-5 business days.
           </p>
           <p className="text-muted-foreground">
             In the meantime, feel free to explore our{' '}
@@ -73,7 +73,7 @@ const Contact = () => {
             Bring Food Justice to Your School
           </h1>
           <p className="text-green-100 text-lg max-w-2xl mx-auto">
-            Tell us about your school and what you're looking for. We'll follow up within 2 business days to discuss how we can help.
+            Tell us about your school and what you're looking for. We'll follow up within 3-5 business days to discuss how we can help.
           </p>
         </div>
       </section>
