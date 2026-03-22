@@ -10,7 +10,7 @@
       "@type": ["Organization", "NonprofitOrganization"],
       "@id": "https://www.savedbytheplate.org/#organization",
       "name": "Saved by the Plate Inc.",
-      "alternateName": "Saved by the Plate Inc. Inc.",
+      "alternateName": "Saved by the Plate Inc.",
       "url": "https://www.savedbytheplate.org",
       "logo": {
         "@type": "ImageObject",
@@ -327,7 +327,7 @@
       "worksFor": {
         "@id": "https://www.savedbytheplate.org/#organization"
       },
-      "description": "Founder and Executive Director of Saved by the Plate Inc. Inc. Expert in food justice education, social impact entrepreneurship, sustainable agriculture, and digital innovation.",
+      "description": "Founder and Executive Director of Saved by the Plate Inc. Expert in food justice education, social impact entrepreneurship, sustainable agriculture, and digital innovation.",
       "knowsAbout": ["Food Justice", "Food Sovereignty", "Urban Agriculture", "Social Impact", "Youth Education", "Community Organizing"],
       "image": "https://www.savedbytheplate.org/assets/shay-bouchles.jpeg",
       "url": "https://www.savedbytheplate.org/about"
