@@ -532,45 +532,39 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
             case 'session_ready':
               console.log('Session ready, tools:', data.tools);
               sessionReadyRef.current = true;
+              sessionReadyAtRef.current = Date.now();
+              reconnectCountRef.current = 0; // Reset reconnect counter on success
               sessionReadyDeferredRef.current?.resolve();
               setStatus('connected');
               break;
 
             case 'assistant_text': {
-              // Once the assistant starts responding, stop recording automatically.
               stopListening();
-              // Add space between text fragments to prevent word gluing
               const textFragment = data.text || '';
               options.onText?.(textFragment.endsWith(' ') ? textFragment : textFragment + ' ');
               break;
             }
 
             case 'assistant_audio': {
-              // Once the assistant starts responding, stop recording automatically.
               stopListening();
 
-              // Initialize audio queue if needed
               if (!audioQueueRef.current) {
                 const ctx = getAudioContext();
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
               }
 
-              // Decode base64 to Uint8Array
               const binaryString = atob(data.chunk);
               const bytes = new Uint8Array(binaryString.length);
               for (let i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);
               }
 
-              // Extract sample rate from mimeType (audio/pcm;rate=24000)
               let sampleRate = 24000;
               if (data.mimeType) {
                 const match = data.mimeType.match(/rate=(\d+)/);
                 if (match) sampleRate = parseInt(match[1]);
               }
 
-              // Always queue the chunk - addToQueue returns false when backpressure is active
-              // (signaling we should pause upstream, but chunk is still queued)
               const shouldContinue = await audioQueueRef.current.addToQueue(bytes, sampleRate);
               if (!shouldContinue) {
                 console.log('AudioQueue: backpressure active, chunk queued but upstream should pause');
@@ -584,7 +578,6 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               break;
 
             case 'turn_complete':
-              // Defensive: ensure mic is off when a turn ends.
               stopListening();
               console.log('Turn complete');
               options.onTurnComplete?.();
@@ -596,8 +589,6 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               break;
 
             case 'error':
-              // This happens when we start streaming audio before the server session is ready.
-              // Treat it as transient and don't flip the whole UI into an error state.
               if (data.message === 'Session not ready') {
                 console.warn('Session not ready yet (ignoring)');
                 return;
@@ -608,10 +599,31 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
               setStatus('error');
               break;
 
-            case 'session_ended':
-              console.log('Session ended');
+            case 'session_ended': {
+              const timeSinceReady = Date.now() - sessionReadyAtRef.current;
+              console.log(`Session ended (${timeSinceReady}ms after ready)`);
+              
+              // If the session ended very quickly after becoming ready, the server
+              // is auto-reconnecting. Ignore this and wait for the next session_ready.
+              if (timeSinceReady < 6000 && sessionReadyRef.current) {
+                console.log('Session ended quickly — server may be auto-reconnecting, staying in connected state');
+                sessionReadyRef.current = false;
+                // Create a new deferred for the reconnected session
+                sessionReadyDeferredRef.current = createDeferred();
+                // Wait for reconnect with a longer timeout
+                waitForSessionReady(15000).then(() => {
+                  console.log('Server reconnected successfully');
+                }).catch(() => {
+                  console.error('Server reconnect failed');
+                  setStatus('disconnected');
+                });
+                return;
+              }
+              
+              sessionReadyRef.current = false;
               setStatus('disconnected');
               break;
+            }
           }
         } catch (e) {
           console.error('Error parsing message:', e);
