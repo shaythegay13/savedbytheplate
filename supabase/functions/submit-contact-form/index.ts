@@ -69,7 +69,7 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, school, role, message } = await req.json();
+    const { name, phone, email, school, role, message } = await req.json();
 
     // Validate required fields
     if (!name || !email || !school || !message) {
@@ -103,10 +103,10 @@ serve(async (req) => {
     const now = new Date();
     const dateStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
 
-    const rowData = [dateStr, name, email, school, role || '', message];
+    const rowData = [dateStr, name, phone || '', email, school, role || '', message];
 
     const appendResponse = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet1!A:F:append?valueInputOption=RAW`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet1!A:G:append?valueInputOption=RAW`,
       {
         method: 'POST',
         headers: {
