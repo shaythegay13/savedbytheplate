@@ -10,7 +10,7 @@ const Footer = () => {
   // Choose layout class dynamically
   const layoutClass = isWaitingList || isLegalPage
     ? "grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex lg:justify-between lg:gap-0"
-    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8";
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8";
 
   return (
     <footer className="bg-sbtp-green-800 text-white pt-12 pb-6">
@@ -59,6 +59,30 @@ const Footer = () => {
               </div>
             </>
           )}
+
+          {/* Newsletter Signup */}
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Newsletter</h4>
+            <p className="text-sm text-gray-300 mb-3">
+              Get bi-monthly updates on food justice, gardening tips, and community events.
+            </p>
+            <iframe 
+              src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
+              className="beehiiv-embed" 
+              data-test-id="beehiiv-embed" 
+              frameBorder="0" 
+              scrolling="no" 
+              title="Subscribe to our newsletter"
+              style={{
+                width: '100%', 
+                height: '80px', 
+                margin: 0, 
+                backgroundColor: 'transparent', 
+                boxShadow: '0 0 #0000', 
+                maxWidth: '300px'
+              }}
+            />
+          </div>
 
           {/* Stay Connected Block */}
           <div>
