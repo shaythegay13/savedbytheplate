@@ -47,7 +47,7 @@ const Contact = () => {
           <CheckCircle className="w-16 h-16 text-primary mx-auto mb-6" />
           <h1 className="text-3xl font-bold text-foreground mb-4">Thank You!</h1>
           <p className="text-muted-foreground text-lg mb-2">
-            We've received your inquiry and will get back to you within 2 business days.
+            We've received your inquiry and will get back to you within 3-5 business days.
           </p>
           <p className="text-muted-foreground">
             In the meantime, feel free to explore our{' '}
