@@ -14,7 +14,6 @@ const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
@@ -26,7 +25,6 @@ const Navbar = () => {
       }
     );
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -72,20 +70,20 @@ const Navbar = () => {
     <nav className="bg-sbtp-green-800 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/index" className="flex items-center">
-              <Sprout className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
-              <span className="font-bold text-lg sm:text-xl truncate">Saved by the Plate Inc.</span>
+          <div className="flex items-center min-w-0">
+            <Link to="/index" className="flex items-center min-w-0">
+              <Sprout className="h-6 w-6 flex-shrink-0 mr-2" />
+              <span className="font-bold text-base lg:text-lg truncate">Saved by the Plate Inc.</span>
             </Link>
           </div>
           
-          {/* Desktop menu */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Desktop menu — tighter spacing for smaller laptops */}
+          <div className="hidden lg:flex items-center space-x-1 xl:space-x-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className={`px-3 py-2 rounded-md transition-colors ${
+                className={`px-2 xl:px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap ${
                   isActive(item.href)
                     ? "bg-sbtp-green-700 text-white"
                     : "hover:bg-sbtp-green-700"
@@ -98,18 +96,18 @@ const Navbar = () => {
             <DonationButton />
             
             {user ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm flex items-center gap-1">
-                  <User className="h-4 w-4" />
+              <div className="flex items-center gap-1 xl:gap-2">
+                <span className="text-sm flex items-center gap-1 truncate max-w-[120px]">
+                  <User className="h-4 w-4 flex-shrink-0" />
                   {username || user.email?.split('@')[0]}
                 </span>
                 <Link to="/profile">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                    className="bg-transparent border-white text-white hover:bg-sbtp-green-700 text-xs"
                   >
-                    <Settings className="h-4 w-4 mr-1" />
+                    <Settings className="h-3.5 w-3.5 mr-1" />
                     Profile
                   </Button>
                 </Link>
@@ -117,9 +115,9 @@ const Navbar = () => {
                   onClick={handleLogout}
                   variant="outline"
                   size="sm"
-                  className="bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                  className="bg-transparent border-white text-white hover:bg-sbtp-green-700 text-xs"
                 >
-                  <LogOut className="h-4 w-4 mr-1" />
+                  <LogOut className="h-3.5 w-3.5 mr-1" />
                   Logout
                 </Button>
               </div>
@@ -128,13 +126,36 @@ const Navbar = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="bg-transparent border-white text-white hover:bg-sbtp-green-700"
+                  className="bg-transparent border-white text-white hover:bg-sbtp-green-700 text-xs"
                 >
-                  <User className="h-4 w-4 mr-1" />
+                  <User className="h-3.5 w-3.5 mr-1" />
                   Login
                 </Button>
               </Link>
             )}
+          </div>
+
+          {/* Tablet menu — show nav links, collapse user actions into hamburger */}
+          <div className="hidden md:flex lg:hidden items-center space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={`px-2 py-2 rounded-md text-xs transition-colors whitespace-nowrap ${
+                  isActive(item.href)
+                    ? "bg-sbtp-green-700 text-white"
+                    : "hover:bg-sbtp-green-700"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <button 
+              onClick={toggleMenu} 
+              className="text-white hover:text-sbtp-yellow focus:outline-none ml-2"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
           
           {/* Mobile menu button */}
@@ -149,24 +170,27 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile menu */}
+      {/* Mobile/tablet dropdown menu */}
       {isMenuOpen && (
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-sbtp-green-800">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={`block px-3 py-2 rounded-md transition-colors ${
-                  isActive(item.href)
-                    ? "bg-sbtp-green-700 text-white"
-                    : "hover:bg-sbtp-green-700"
-                }`}
-                onClick={toggleMenu}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {/* Only show nav items on mobile (they're already visible on tablet) */}
+            <div className="md:hidden">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={`block px-3 py-2 rounded-md transition-colors ${
+                    isActive(item.href)
+                      ? "bg-sbtp-green-700 text-white"
+                      : "hover:bg-sbtp-green-700"
+                  }`}
+                  onClick={toggleMenu}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
             
             <div className="px-3 py-2">
               <DonationButton />

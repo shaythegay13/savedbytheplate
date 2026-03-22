@@ -41,6 +41,30 @@ interface VoiceBoxProps {
   onProcessingChange?: (isProcessing: boolean) => void;
 }
 
+// Audio waveform visualizer component for listening/processing states
+const AudioWaveform: React.FC<{ isActive: boolean; color?: string; barCount?: number }> = ({ 
+  isActive, 
+  color = "bg-green-500", 
+  barCount = 5 
+}) => {
+  return (
+    <div className="flex items-center justify-center gap-[3px] h-8" aria-hidden="true">
+      {Array.from({ length: barCount }).map((_, i) => (
+        <div
+          key={i}
+          className={`w-1 rounded-full transition-all duration-150 ${color} ${
+            isActive ? "animate-waveform" : "h-1 opacity-30"
+          }`}
+          style={isActive ? {
+            animationDelay: `${i * 0.12}s`,
+            animationDuration: `${0.6 + (i % 3) * 0.15}s`,
+          } : undefined}
+        />
+      ))}
+    </div>
+  );
+};
+
 const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange, onProcessingChange }) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -70,17 +94,13 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
   useEffect(() => {
     const checkMicPermission = async () => {
       try {
-        // Use Permissions API if available
         if (navigator.permissions && navigator.permissions.query) {
           const result = await navigator.permissions.query({ name: 'microphone' as PermissionName });
           setMicPermission(result.state as MicPermissionStatus);
-          
-          // Listen for permission changes
           result.onchange = () => {
             setMicPermission(result.state as MicPermissionStatus);
           };
         } else {
-          // Fallback: try to enumerate devices to check if we have permission
           const devices = await navigator.mediaDevices.enumerateDevices();
           const hasAudioInput = devices.some(d => d.kind === 'audioinput' && d.label);
           setMicPermission(hasAudioInput ? 'granted' : 'prompt');
@@ -116,7 +136,6 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
           }
         }
 
-        // Only append final results to avoid duplication
         if (finalTranscript) {
           setTranscript(prev => prev + finalTranscript);
         }
@@ -143,11 +162,8 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
       return;
     }
 
-    // On mobile, we need to explicitly request microphone permission first
     try {
-      // Request microphone permission - this is required on mobile
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // Stop the stream immediately - we just needed the permission
       stream.getTracks().forEach(track => track.stop());
     } catch (err) {
       console.error("Microphone permission denied:", err);
@@ -183,85 +199,54 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     setResponse("");
   };
 
-  // Helper function to select voice and speak
   const selectAndSpeakVoice = (utterance: SpeechSynthesisUtterance, text: string) => {
     const voices = window.speechSynthesis.getVoices();
-    
-    // Priority order for natural-sounding female voices
     const preferredVoicePatterns = [
-      // Google's neural voices (highest quality)
-      /google.*female.*en-us/i,
-      /google us english/i,
-      /google.*us.*english/i,
-      // Microsoft neural voices (excellent quality)
-      /microsoft.*aria/i,
-      /microsoft.*jenny/i,
-      /microsoft.*sara/i,
-      // Apple voices (macOS/iOS)
-      /samantha/i,
-      /ava/i,
-      /allison/i,
-      /susan/i,
-      // Other quality female voices
-      /zira/i,
-      /hazel/i,
-      /karen/i,
-      /moira/i,
-      /tessa/i,
-      /victoria/i,
-      /fiona/i,
-      // Fallback - any English female
-      /female.*en/i,
-      /en.*female/i,
+      /google.*female.*en-us/i, /google us english/i, /google.*us.*english/i,
+      /microsoft.*aria/i, /microsoft.*jenny/i, /microsoft.*sara/i,
+      /samantha/i, /ava/i, /allison/i, /susan/i,
+      /zira/i, /hazel/i, /karen/i, /moira/i, /tessa/i, /victoria/i, /fiona/i,
+      /female.*en/i, /en.*female/i,
     ];
     
     let selectedVoice = null;
-    
-    // Try each pattern in priority order
     for (const pattern of preferredVoicePatterns) {
       selectedVoice = voices.find(v => pattern.test(v.name));
       if (selectedVoice) break;
     }
     
-    // Fallback to any English voice
     if (!selectedVoice) {
       selectedVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
     }
     
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-      console.log('Using voice:', selectedVoice.name);
     }
     
     window.speechSynthesis.speak(utterance);
   };
 
-  // Use browser's built-in speech synthesis with enhanced natural voice selection
   const useBrowserTTS = (text: string) => {
     if ('speechSynthesis' in window) {
-      // Cancel any ongoing speech first
       window.speechSynthesis.cancel();
       
-      // Add breaks between sentences for more natural pauses
       const enhancedText = text
-        .split(/(?<=[.!?])\s+/g)  // Split on sentence boundaries
+        .split(/(?<=[.!?])\s+/g)
         .map(sentence => sentence.trim())
         .filter(sentence => sentence.length > 0)
-        .join('\n');  // Rejoin with newlines for natural pauses
+        .join('\n');
       
       const utterance = new SpeechSynthesisUtterance(enhancedText);
-      utterance.rate = 0.9;      // Slightly slower for clarity
-      utterance.pitch = 1.0;     // Neutral pitch for natural sound
+      utterance.rate = 0.9;
+      utterance.pitch = 1.0;
       utterance.volume = 1.0;
       
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => setIsSpeaking(false);
       
-      // Get available voices - handle async voice loading
       const voices = window.speechSynthesis.getVoices();
       
       if (voices.length === 0) {
-        // Wait for voices to load (race condition fix for Chrome)
         window.speechSynthesis.onvoiceschanged = () => {
           selectAndSpeakVoice(utterance, enhancedText);
         };
@@ -273,20 +258,17 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     }
   };
 
-  // Speak text using Voice API with browser TTS fallback
   const speakText = async (text: string) => {
     try {
-      // Stop any currently playing audio
       if (currentAudioRef.current) {
         currentAudioRef.current.pause();
         currentAudioRef.current.currentTime = 0;
         currentAudioRef.current = null;
       }
-      window.speechSynthesis?.cancel(); // Also cancel any browser TTS
+      window.speechSynthesis?.cancel();
       
       setIsSpeaking(true);
       
-      // Call voice API to generate speech
       const formData = new FormData();
       formData.append('text', text);
       
@@ -295,23 +277,18 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
         body: formData
       });
       
-      // Always try to parse JSON response (even on 429 for cooldown handling)
       const data = await response.json();
       
-      // Check if server tells us to use browser TTS (including cooldown)
       if (data.use_browser_tts) {
-        console.log('Using browser TTS fallback:', data.error || 'no API key');
         useBrowserTTS(text);
         return;
       }
       
       if (!response.ok) {
-        console.log('API error, using browser TTS fallback');
         useBrowserTTS(text);
         return;
       }
       
-      // Decode base64 audio and play it
       const audioBytes = atob(data.audio_base64);
       const arrayBuffer = new ArrayBuffer(audioBytes.length);
       const view = new Uint8Array(arrayBuffer);
@@ -323,7 +300,6 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
       const audioUrl = URL.createObjectURL(blob);
       const audio = new Audio(audioUrl);
       
-      // Store reference to current audio
       currentAudioRef.current = audio;
       
       audio.onended = () => {
@@ -338,18 +314,15 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
       await audio.play();
     } catch (error) {
       console.error('Speech error:', error);
-      // Fallback to browser TTS
       useBrowserTTS(text);
     }
   };
 
-  // Send transcript to conversational API
   const sendPlanRequest = async (notes: string) => {
     if (!notes.trim()) return;
 
     setIsProcessing(true);
     
-    // Stop any currently speaking audio when new request is made
     if (currentAudioRef.current) {
       currentAudioRef.current.pause();
       currentAudioRef.current = null;
@@ -373,11 +346,9 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
       }
 
       const data = await apiResponse.json();
-      console.log("API response:", data);
       
       const responseText = data.answer_text || "I'm here to help you plan your garden!";
       
-      // Build full response with crop info if available
       let fullResponse = responseText;
       
       if (data.relevant_crops && data.relevant_crops.length > 0) {
@@ -410,9 +381,19 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
     }
   };
 
+  // Determine current state label and color
+  const getStateInfo = () => {
+    if (isListening) return { label: "Listening...", emoji: "🎤", color: "text-green-600" };
+    if (isProcessing) return { label: "Jane is thinking...", emoji: "🧠", color: "text-amber-600" };
+    if (isSpeaking) return { label: "Jane is speaking...", emoji: "🔊", color: "text-blue-600" };
+    return { label: "Tap the mic to ask Jane", emoji: "🌱", color: "text-gray-500" };
+  };
+
+  const stateInfo = getStateInfo();
+
   return (
     <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-2xl shadow-xl">
-      {/* Microphone Permission Status Indicator */}
+      {/* Microphone Permission Status */}
       <div className="flex justify-center mb-3">
         <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
           micPermission === 'granted' 
@@ -454,38 +435,63 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
         </div>
       </div>
 
-      <div className="flex justify-center mb-6">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Mic button clicked');
-            toggleListening();
-          }}
-          type="button"
-          aria-label={isListening ? "Stop listening" : "Start voice recording"}
-          style={{ WebkitTapHighlightColor: 'transparent' }}
-          className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 touch-manipulation select-none ${
-            isListening
-              ? "bg-gradient-to-br from-green-500 to-green-300 shadow-lg shadow-green-300 animate-pulse"
-              : micPermission === 'denied'
-              ? "bg-gradient-to-br from-gray-400 to-gray-300"
-              : "bg-gradient-to-br from-green-700 to-green-400 hover:shadow-lg hover:shadow-green-200"
-          }`}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-            <line x1="12" x2="12" y1="19" y2="22" />
-          </svg>
-          {isListening && <span className="absolute -bottom-2 text-xs font-semibold text-green-700 animate-bounce">Listening...</span>}
-        </button>
+      {/* Mic button with waveform ring */}
+      <div className="flex flex-col items-center mb-6">
+        <div className="relative">
+          {/* Animated ring for listening state */}
+          {isListening && (
+            <div className="absolute inset-0 -m-3 rounded-full border-4 border-green-400 animate-ping opacity-30" />
+          )}
+          {isProcessing && (
+            <div className="absolute inset-0 -m-3 rounded-full border-4 border-amber-400 animate-pulse opacity-40" />
+          )}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleListening();
+            }}
+            type="button"
+            aria-label={isListening ? "Stop listening" : "Start voice recording"}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+            className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 touch-manipulation select-none ${
+              isListening
+                ? "bg-gradient-to-br from-green-500 to-green-300 shadow-lg shadow-green-300"
+                : isProcessing
+                ? "bg-gradient-to-br from-amber-500 to-amber-300 shadow-lg shadow-amber-200"
+                : isSpeaking
+                ? "bg-gradient-to-br from-blue-500 to-blue-300 shadow-lg shadow-blue-200"
+                : micPermission === 'denied'
+                ? "bg-gradient-to-br from-gray-400 to-gray-300"
+                : "bg-gradient-to-br from-green-700 to-green-400 hover:shadow-lg hover:shadow-green-200"
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Waveform visualizer */}
+        <div className="mt-3 h-8">
+          {(isListening || isProcessing || isSpeaking) ? (
+            <AudioWaveform
+              isActive={true}
+              color={isListening ? "bg-green-500" : isProcessing ? "bg-amber-500" : "bg-blue-500"}
+              barCount={7}
+            />
+          ) : null}
+        </div>
+
+        {/* State label */}
+        <p className={`text-sm font-medium mt-1 ${stateInfo.color}`}>
+          {stateInfo.emoji} {stateInfo.label}
+        </p>
       </div>
 
       <div className="flex items-center justify-center gap-4 mb-4">
-        <p className="text-sm text-gray-600">
-          {isListening ? "🎤 Listening..." : isSpeaking ? "🔊 Speaking..." : isProcessing ? "⏳ Processing..." : "Click the microphone to start"}
-        </p>
         <button
           onClick={() => {
             setIsMuted(!isMuted);
@@ -546,12 +552,12 @@ const VoiceBox: React.FC<VoiceBoxProps> = ({ onResponseChange, onSpeakingChange,
       )}
 
       <div className="flex gap-3 mt-4">
-        <button onClick={clearTranscript} disabled={!transcript && !response} className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Clear</button>
+        <button onClick={clearTranscript} disabled={!transcript && !response} className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Clear</button>
         <button onClick={() => {
           navigator.clipboard.writeText(response || transcript);
           toast({ title: "Copied!", description: "Text copied to clipboard" });
-        }} disabled={!transcript && !response} className="flex-1 px-4 py-2 bg-gradient-to-r from-green-700 to-green-500 text-white rounded-lg font-semibold hover:from-green-800 hover:to-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg">Copy</button>
-        <button onClick={() => sendPlanRequest(transcript)} disabled={!transcript || isProcessing} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg">
+        }} disabled={!transcript && !response} className="flex-1 px-4 py-3 bg-gradient-to-r from-green-700 to-green-500 text-white rounded-lg font-semibold hover:from-green-800 hover:to-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg">Copy</button>
+        <button onClick={() => sendPlanRequest(transcript)} disabled={!transcript || isProcessing} className="flex-1 px-4 py-3 bg-gradient-to-r from-sbtp-green-600 to-sbtp-green-500 text-white rounded-lg font-semibold hover:from-sbtp-green-700 hover:to-sbtp-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg">
           {isProcessing ? "Processing..." : "Generate Plan"}
         </button>
       </div>
