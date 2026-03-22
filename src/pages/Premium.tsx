@@ -415,9 +415,9 @@ const Premium = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Features</h2>
+              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Member Benefits</h2>
               <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
-                Enhance your sustainable living journey with our premium tools and resources.
+                Enhance your sustainable living journey with our member tools and resources.
               </p>
             </div>
             
