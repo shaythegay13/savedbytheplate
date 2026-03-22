@@ -110,6 +110,19 @@ const Contact = () => {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                maxLength={20}
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="(555) 123-4567"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="email">Email Address *</Label>
               <Input
                 id="email"
