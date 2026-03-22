@@ -10,7 +10,7 @@ const Footer = () => {
   // Choose layout class dynamically
   const layoutClass = isWaitingList || isLegalPage
     ? "grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex lg:justify-between lg:gap-0"
-    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8";
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8";
 
   return (
     <footer className="bg-sbtp-green-800 text-white pt-12 pb-6">
