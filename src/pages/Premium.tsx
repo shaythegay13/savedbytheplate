@@ -557,9 +557,9 @@ const Premium = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-6">Ready to Go Premium?</h2>
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-6">Ready to Become a Member?</h2>
             <p className="text-lg text-sbtp-brown-700 mb-8">
-              Join our growing community of sustainable living enthusiasts and get access to all our premium features.
+              Join our growing community of sustainable living enthusiasts. Your membership directly funds food justice education for NYC youth.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-6">
               <Button 
