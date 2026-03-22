@@ -51,7 +51,7 @@ const PricingSection = () => {
     <section className="py-16 bg-sbtp-green-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Subscription</h2>
+          <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Become a Member</h2>
           <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
             Unlock all features and support our mission to connect people with sustainable, local food sources.
           </p>
