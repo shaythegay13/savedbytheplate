@@ -273,6 +273,36 @@ export type Database = {
         }
         Relationships: []
       }
+      jane_conversation_turns: {
+        Row: {
+          content: string
+          created_at: string
+          expires_at: string
+          id: string
+          role: string
+          session_id: string
+          tool_name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          role: string
+          session_id: string
+          tool_name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+          tool_name?: string | null
+        }
+        Relationships: []
+      }
       jane_voice_rate_limits: {
         Row: {
           call_count: number
@@ -846,6 +876,7 @@ export type Database = {
     }
     Functions: {
       cleanup_google_maps_rate_limits: { Args: never; Returns: undefined }
+      cleanup_jane_conversation_turns: { Args: never; Returns: undefined }
       cleanup_jane_voice_rate_limits: { Args: never; Returns: undefined }
       cleanup_newsletter_rate_limits: { Args: never; Returns: undefined }
       deduplicate_locations: { Args: never; Returns: undefined }
