@@ -56,6 +56,25 @@ const Footer = () => {
                     </div>
                   </li>
                 </ul>
+                <h4 className="text-lg font-semibold mt-6 mb-2">Newsletter</h4>
+                <p className="text-sm text-gray-300 mb-3">
+                  Bi-monthly updates on food justice & gardening.
+                </p>
+                <iframe 
+                  src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
+                  className="beehiiv-embed" 
+                  data-test-id="beehiiv-embed" 
+                  frameBorder="0" 
+                  scrolling="no" 
+                  title="Subscribe to our newsletter"
+                  style={{
+                    width: '100%', 
+                    height: '80px', 
+                    backgroundColor: 'transparent', 
+                    boxShadow: '0 0 #0000', 
+                    maxWidth: '300px'
+                  }}
+                />
               </div>
             </>
           )}
@@ -93,31 +112,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter Signup - Full width row */}
-        <div className="border-t border-sbtp-green-700 mt-8 pt-8">
-          <div className="max-w-xl mx-auto text-center">
-            <h4 className="text-lg font-semibold mb-2">Subscribe to Our Newsletter</h4>
-            <p className="text-sm text-gray-300 mb-4">
-              Get bi-monthly updates on food justice, gardening tips, and community events.
-            </p>
-            <iframe 
-              src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
-              className="beehiiv-embed" 
-              data-test-id="beehiiv-embed" 
-              frameBorder="0" 
-              scrolling="no" 
-              title="Subscribe to our newsletter"
-              style={{
-                width: '100%', 
-                height: '80px', 
-                margin: '0 auto', 
-                backgroundColor: 'transparent', 
-                boxShadow: '0 0 #0000', 
-                maxWidth: '400px'
-              }}
-            />
-          </div>
-        </div>
 
         {/* Footer Bottom Bar */}
         <div className="border-t border-sbtp-green-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
