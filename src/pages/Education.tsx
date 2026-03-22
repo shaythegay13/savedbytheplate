@@ -157,10 +157,10 @@ const Education = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <title>Youth Food Education Programs — Food Justice &amp; Urban Agriculture | Saved by the Plate Inc.</title>
-      <meta name="description" content="Customizable 6-week programs for youth exploring food justice, community gardens, composting, and urban agriculture in New York City. In-school and after-school programs available." />
+      <title>Food Justice Education Programs for Schools — Curriculum &amp; AI Tools | Saved by the Plate Inc.</title>
+      <meta name="description" content="Customizable K-12 programs for educators teaching food justice, community gardens, composting, and urban agriculture. Includes AI garden assistant and interactive tools." />
       <link rel="canonical" href="https://www.savedbytheplate.org/education" />
-      <meta property="og:title" content="Youth Food Education Programs | Saved by the Plate Inc." />
+      <meta property="og:title" content="Food Justice Education for Schools | Saved by the Plate Inc." />
       <meta property="og:url" content="https://www.savedbytheplate.org/education" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"Education Programs","item":"https://www.savedbytheplate.org/education"}]}` }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://www.savedbytheplate.org/education#educational-org","name":"Saved by the Plate Inc. — Youth Education Programs","url":"https://www.savedbytheplate.org/education","description":"Customizable youth education programs exploring food justice, sustainability, community gardens, composting, and environmental science for students of all ages.","parentOrganization":{"@id":"https://www.savedbytheplate.org/#organization"},"areaServed":{"@type":"City","name":"New York City"},"email":"info@savedbytheplate.org","hasOfferCatalog":{"@type":"OfferCatalog","name":"Youth Education Programs","itemListElement":[{"@type":"Offer","itemOffered":{"@id":"https://www.savedbytheplate.org/education#course-community-gardens"}},{"@type":"Offer","itemOffered":{"@id":"https://www.savedbytheplate.org/education#course-soil-science"}}]}}` }} />
@@ -186,9 +186,10 @@ const Education = () => {
         </div>
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Youth Education Programs</h1>
+            <p className="text-green-200 font-semibold text-sm uppercase tracking-wide mb-3">For Educators & Schools</p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Food Justice Education Programs</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Customizable programs for students of all ages exploring food justice, sustainability, 
+              Customizable curricula for K-12 educators teaching food justice, sustainability, 
               community gardens, composting, and environmental science
             </p>
           </div>
