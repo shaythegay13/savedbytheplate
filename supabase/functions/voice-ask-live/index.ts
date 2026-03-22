@@ -2,7 +2,7 @@
 /// <reference lib="es2021" />
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "https://esm.sh/@google/genai@1.34.0";
+import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "npm:@google/genai@^1.34.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
@@ -888,86 +888,111 @@ serve(async (req) => {
       }
     };
 
-    geminiSession = await ai.live.connect({
-      model: "gemini-2.5-flash-native-audio-preview-12-2025",
-      config: {
-        responseModalities: [Modality.AUDIO],
-        outputAudioTranscription: {},
-        inputAudioTranscription: {},
-        systemInstruction: {
-          parts: [{ text: JANE_SYSTEM_PROMPT }]
-        },
-        tools: [{ functionDeclarations: gardeningTools }],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: {
-              voiceName: "Aoede"
-            }
-          }
-        },
-        realtimeInputConfig: {
-          automaticActivityDetection: {
-            disabled: false,
-            startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_HIGH,
-            endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH,
-            prefixPaddingMs: 300,
-            silenceDurationMs: 1000
-          }
-        }
-      },
-      callbacks: {
-        onopen: () => {
-          console.log("Gemini Live connection opened");
-        },
-        onmessage: handleGeminiMessage,
-        onerror: (e: any) => {
-          console.error("Gemini session error:", e);
-          if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({
-              type: "error",
-              message: "Voice session error: " + (e.message || "Unknown error")
-            }));
-          }
-        },
-        onclose: async (e: any) => {
-          const sessionAge = Date.now() - sessionStartedAt;
-          console.log(`Gemini session closed after ${sessionAge}ms:`, e?.reason || "No reason");
-          isConnected = false;
+    const modelName = "gemini-2.5-flash-native-audio-preview-12-2025";
+    console.log(`Attempting Gemini Live connect with model: ${modelName}, attempt: ${reconnectAttempts + 1}`);
 
-          // Auto-reconnect if the session died prematurely (within 5s)
-          // and we haven't exhausted reconnect attempts
-          if (sessionAge < 5000 && reconnectAttempts < MAX_RECONNECT_ATTEMPTS && socket.readyState === WebSocket.OPEN) {
-            reconnectAttempts++;
-            console.log(`Gemini session died early, auto-reconnecting (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
-            await sleep(500 * reconnectAttempts);
-            try {
-              await initGeminiSession();
-            } catch (err) {
-              console.error("Gemini reconnect failed:", err);
-              if (socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: "session_ended", message: "Voice session ended" }));
+    try {
+      geminiSession = await ai.live.connect({
+        model: modelName,
+        config: {
+          responseModalities: [Modality.AUDIO],
+          outputAudioTranscription: {},
+          inputAudioTranscription: {},
+          systemInstruction: {
+            parts: [{ text: JANE_SYSTEM_PROMPT }]
+          },
+          tools: [{ functionDeclarations: gardeningTools }],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: {
+                voiceName: "Aoede"
               }
             }
-            return;
+          },
+          realtimeInputConfig: {
+            automaticActivityDetection: {
+              disabled: false,
+              startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_HIGH,
+              endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH,
+              prefixPaddingMs: 300,
+              silenceDurationMs: 1000
+            }
           }
+        },
+        callbacks: {
+          onopen: () => {
+            console.log("Gemini Live connection opened");
+          },
+          onmessage: handleGeminiMessage,
+          onerror: (e: any) => {
+            console.error("Gemini session error:", JSON.stringify(e, Object.getOwnPropertyNames(e || {})));
+            console.error("Gemini error type:", typeof e, "keys:", e ? Object.keys(e) : 'null');
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                type: "error",
+                message: "Voice session error: " + (e?.message || e?.reason || JSON.stringify(e) || "Unknown error")
+              }));
+            }
+          },
+          onclose: async (e: any) => {
+            const sessionAge = Date.now() - sessionStartedAt;
+            console.log(`Gemini session closed after ${sessionAge}ms`);
+            console.log(`Gemini onclose event:`, JSON.stringify(e, Object.getOwnPropertyNames(e || {})));
+            console.log(`Gemini onclose code: ${e?.code}, reason: ${e?.reason}, wasClean: ${e?.wasClean}`);
+            isConnected = false;
 
-          if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({ type: "session_ended", message: "Voice session ended" }));
+            // Auto-reconnect if the session died prematurely (within 5s)
+            if (sessionAge < 5000 && reconnectAttempts < MAX_RECONNECT_ATTEMPTS && socket.readyState === WebSocket.OPEN) {
+              reconnectAttempts++;
+              const backoffMs = 1000 * reconnectAttempts; // 1s, 2s, 3s
+              console.log(`Gemini session died early (${sessionAge}ms), auto-reconnecting in ${backoffMs}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+              await sleep(backoffMs);
+              try {
+                await initGeminiSession();
+              } catch (err) {
+                console.error("Gemini reconnect failed:", err);
+                if (socket.readyState === WebSocket.OPEN) {
+                  socket.send(JSON.stringify({ type: "session_ended", message: "Voice session ended" }));
+                }
+              }
+              return;
+            }
+
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({ type: "session_ended", message: "Voice session ended" }));
+            }
           }
         }
+      });
+    } catch (connectError: unknown) {
+      const errMsg = connectError instanceof Error ? connectError.message : String(connectError);
+      console.error(`Gemini Live connect FAILED: ${errMsg}`, connectError);
+      
+      // If this is a reconnect attempt, try again
+      if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS && socket.readyState === WebSocket.OPEN) {
+        reconnectAttempts++;
+        const backoffMs = 1000 * reconnectAttempts;
+        console.log(`Connect failed, retrying in ${backoffMs}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+        await sleep(backoffMs);
+        await initGeminiSession();
+        return;
       }
-    });
+      
+      throw connectError;
+    }
 
     isConnected = true;
     sessionStartedAt = Date.now();
     reconnectAttempts = 0;
     console.log("Gemini Live session established with tools:", gardeningTools.map(t => t.name).join(", "));
 
-    socket.send(JSON.stringify({
-      type: "session_ready",
-      message: "Jane is ready to listen",
-      tools: gardeningTools.map(t => t.name)
-    }));
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({
+        type: "session_ready",
+        message: "Jane is ready to listen",
+        tools: gardeningTools.map(t => t.name)
+      }));
+    }
   }
 
   socket.onopen = async () => {

@@ -601,21 +601,23 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
             case 'session_ended': {
               const timeSinceReady = Date.now() - sessionReadyAtRef.current;
-              console.log(`Session ended (${timeSinceReady}ms after ready)`);
+              console.log(`Session ended (${timeSinceReady}ms after ready, reconnects: ${reconnectCountRef.current})`);
               
               // If the session ended very quickly after becoming ready, the server
-              // is auto-reconnecting. Ignore this and wait for the next session_ready.
-              if (timeSinceReady < 6000 && sessionReadyRef.current) {
-                console.log('Session ended quickly — server may be auto-reconnecting, staying in connected state');
+              // is auto-reconnecting. Wait for the next session_ready.
+              if (timeSinceReady < 8000 && reconnectCountRef.current < MAX_AUTO_RECONNECTS) {
+                reconnectCountRef.current++;
+                console.log(`Session ended quickly — server reconnecting (attempt ${reconnectCountRef.current}/${MAX_AUTO_RECONNECTS}), waiting...`);
                 sessionReadyRef.current = false;
                 // Create a new deferred for the reconnected session
                 sessionReadyDeferredRef.current = createDeferred();
-                // Wait for reconnect with a longer timeout
-                waitForSessionReady(15000).then(() => {
+                // Wait for reconnect with a generous timeout (server does 1s, 2s, 3s backoff)
+                waitForSessionReady(20000).then(() => {
                   console.log('Server reconnected successfully');
                 }).catch(() => {
-                  console.error('Server reconnect failed');
+                  console.error('Server reconnect failed after all attempts');
                   setStatus('disconnected');
+                  stopListening();
                 });
                 return;
               }
