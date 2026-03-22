@@ -4,7 +4,7 @@ const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
       <title>Privacy Policy | Saved by the Plate Inc.</title>
-      <meta name="description" content="Read the privacy policy for Saved by the Plate Inc.. Learn how we collect, use, and protect your information." />
+      <meta name="description" content="Read the privacy policy for Saved by the Plate Inc. Learn how we collect, use, and protect your information." />
       <link rel="canonical" href="https://www.savedbytheplate.org/privacy" />
       <Navbar />
       
