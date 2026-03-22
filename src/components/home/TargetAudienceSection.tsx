@@ -36,7 +36,7 @@ const TargetAudienceSection = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Who We Serve</h2>
           <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
-            Saved by the Plate brings together diverse communities interested in sustainable food systems.
+            Saved by the Plate Inc. brings together diverse communities interested in sustainable food systems.
           </p>
         </div>
 

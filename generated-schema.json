@@ -9,7 +9,7 @@
       "@context": "https://schema.org",
       "@type": ["Organization", "NonprofitOrganization"],
       "@id": "https://www.savedbytheplate.org/#organization",
-      "name": "Saved by the Plate",
+      "name": "Saved by the Plate Inc.",
       "alternateName": "Saved by the Plate Inc.",
       "url": "https://www.savedbytheplate.org",
       "logo": {
@@ -77,7 +77,7 @@
       "@type": "WebSite",
       "@id": "https://www.savedbytheplate.org/#website",
       "url": "https://www.savedbytheplate.org",
-      "name": "Saved by the Plate",
+      "name": "Saved by the Plate Inc.",
       "description": "Connecting communities with sustainable food options and local agriculture, starting with our youth.",
       "publisher": {
         "@id": "https://www.savedbytheplate.org/#organization"
@@ -93,7 +93,7 @@
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "@id": "https://www.savedbytheplate.org/education#educational-org",
-      "name": "Saved by the Plate — Youth Education Programs",
+      "name": "Saved by the Plate Inc. — Youth Education Programs",
       "url": "https://www.savedbytheplate.org/education",
       "description": "Customizable youth education programs exploring food justice, sustainability, community gardens, composting, and environmental science for students of all ages.",
       "parentOrganization": {

@@ -50,8 +50,8 @@ const Terms: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <title>Terms of Service | Saved by the Plate</title>
-      <meta name="description" content="Read our Terms of Service for Saved by the Plate, including user rights, limitations of liability, and policies." />
+      <title>Terms of Service | Saved by the Plate Inc.</title>
+      <meta name="description" content="Read our Terms of Service for Saved by the Plate Inc., including user rights, limitations of liability, and policies." />
       <link rel="canonical" href="https://www.savedbytheplate.org/terms" />
       <Navbar />
       

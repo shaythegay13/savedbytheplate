@@ -57,7 +57,7 @@ const FeaturesSection = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Explore Our Features</h2>
           <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
-            Discover all the ways Saved by the Plate can help you connect with local food sources and learn sustainable practices.
+            Discover all the ways Saved by the Plate Inc. can help you connect with local food sources and learn sustainable practices.
           </p>
         </div>
 

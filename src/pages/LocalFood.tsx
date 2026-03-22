@@ -7,10 +7,10 @@ const LocalFood = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <title>Local Food Resources NYC — Gardens, Markets &amp; Food Banks | Saved by the Plate</title>
+      <title>Local Food Resources NYC — Gardens, Markets &amp; Food Banks | Saved by the Plate Inc.</title>
       <meta name="description" content="Find community gardens, farmers markets, food banks, community fridges, and urban farms near you in New York City." />
       <link rel="canonical" href="https://www.savedbytheplate.org/local-food" />
-      <meta property="og:title" content="Local Food Resources NYC | Saved by the Plate" />
+      <meta property="og:title" content="Local Food Resources NYC | Saved by the Plate Inc." />
       <meta property="og:url" content="https://www.savedbytheplate.org/local-food" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"Local Food Resources","item":"https://www.savedbytheplate.org/local-food"}]}` }} />
       <Navbar />

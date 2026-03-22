@@ -59,12 +59,12 @@ const FAQ = () => {
         answer: "Our mission is to empower the next generation to build a resilient food future by connecting children and families to community gardens, sustainable eating education, and food justice initiatives across New York City and beyond. We provide experiential programs and resources that make urban gardening accessible, foster curiosity, and strengthen local communities."
       },
       {
-        question: "Who founded Saved by the Plate?",
-        answer: "Saved by the Plate was founded by Shay Bouchles, who recognized a critical disconnect in urban environments between education, food spaces, and youth. Shay created this organization to bridge that gap and ensure that young people in New York City have access to hands-on food justice education and the knowledge to become advocates for equitable, sustainable food systems."
+        question: "Who founded Saved by the Plate Inc.?",
+        answer: "Saved by the Plate Inc. was founded by Shay Bouchles, who recognized a critical disconnect in urban environments between education, food spaces, and youth. Shay created this organization to bridge that gap and ensure that young people in New York City have access to hands-on food justice education and the knowledge to become advocates for equitable, sustainable food systems."
       },
       {
         question: "How can I support your work?",
-        answer: "There are several ways to support Saved by the Plate: hire us to run an education program at your school or organization, share our resources with your community, contribute to our food map by reporting local food spaces, or reach out to info@savedbytheplate.org to discuss partnership opportunities. As we grow, we'll be adding more ways to get involved and support our mission."
+        answer: "There are several ways to support Saved by the Plate Inc.: hire us to run an education program at your school or organization, share our resources with your community, contribute to our food map by reporting local food spaces, or reach out to info@savedbytheplate.org to discuss partnership opportunities. As we grow, we'll be adding more ways to get involved and support our mission."
       }
     ]
   };
@@ -103,10 +103,10 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <title>Frequently Asked Questions — Saved by the Plate</title>
-      <meta name="description" content="Get answers to common questions about Saved by the Plate's education programs, Ask Jane AI garden assistant, nonprofit status, and food justice mission in NYC." />
+      <title>Frequently Asked Questions — Saved by the Plate Inc.</title>
+      <meta name="description" content="Get answers to common questions about Saved by the Plate Inc.'s education programs, Ask Jane AI garden assistant, nonprofit status, and food justice mission in NYC." />
       <link rel="canonical" href="https://www.savedbytheplate.org/faq" />
-      <meta property="og:title" content="FAQ | Saved by the Plate" />
+      <meta property="og:title" content="FAQ | Saved by the Plate Inc." />
       <meta property="og:url" content="https://www.savedbytheplate.org/faq" />
       <script
         type="application/ld+json"
