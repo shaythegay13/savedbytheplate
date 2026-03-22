@@ -1,4 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Footer = () => {
   const location = useLocation();
