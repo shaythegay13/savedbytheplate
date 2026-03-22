@@ -392,7 +392,7 @@ const Premium = () => {
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Become a Member</h1>
             <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6 px-4">
-              Gain access to Ask Jane - Your Personal Gardening Assistant, curated educational content, and Discord community
+              Gain access to Ask Jane - Your Personal Gardening Assistant, curated educational content, and Discord community. Your membership directly supports food justice education for NYC youth.
             </p>
             <div className="bg-white/10 rounded-lg p-4 sm:p-6 inline-block mx-4">
               <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
