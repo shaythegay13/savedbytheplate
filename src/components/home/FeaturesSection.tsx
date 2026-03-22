@@ -79,7 +79,7 @@ const FeaturesSection = () => {
                 </CardDescription>
               </CardContent>
               <CardFooter className="flex justify-center">
-                <Button asChild variant="outline" className="border-sbtp-green-500 text-sbtp-green-700">
+                <Button asChild className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white rounded-full font-semibold px-6 shadow-md">
                   <Link to={feature.link}>Explore</Link>
                 </Button>
               </CardFooter>

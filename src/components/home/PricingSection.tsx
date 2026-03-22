@@ -163,7 +163,7 @@ const PricingSection = () => {
                   </p>
                   <Button 
                     variant="outline" 
-                    className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm"
+                    className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-500 hover:text-white text-sm rounded-full font-semibold"
                     onClick={() => window.location.href = "mailto:info@savedbytheplate.com?subject=Institutional Partnership with Saved by the Plate Inc."}
                   >
                     Contact Us
