@@ -20,12 +20,12 @@ async function getAccessToken(credentials: any): Promise<string> {
 
   const signatureInput = `${jwtHeader}.${jwtClaimSet}`;
   const privateKey = credentials.private_key;
-  const pemHeader = '-----BEGIN PRIVATE KEY-----';
-  const pemFooter = '-----END PRIVATE KEY-----';
-  const pemContents = privateKey.substring(
-    pemHeader.length,
-    privateKey.length - pemFooter.length
-  ).trim();
+  const pemContents = privateKey
+    .replace('-----BEGIN PRIVATE KEY-----', '')
+    .replace('-----END PRIVATE KEY-----', '')
+    .replace(/\n/g, '')
+    .replace(/\s/g, '')
+    .trim();
 
   const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
   const cryptoKey = await crypto.subtle.importKey(
