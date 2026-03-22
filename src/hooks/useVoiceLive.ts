@@ -400,14 +400,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
   // Gate sending audio until the server explicitly tells us the Gemini session is ready.
   const sessionReadyRef = useRef(false);
-  const sessionReadyAtRef = useRef<number>(0); // Track when session became ready
+  const sessionReadyAtRef = useRef<number>(0);
   const sessionReadyDeferredRef = useRef<null | {
     promise: Promise<void>;
     resolve: () => void;
     reject: (err: unknown) => void;
   }>(null);
 
-  // Local silence detection fallback (in case server-side VAD doesn't trigger reliably)
+  // Local silence detection fallback
   const hasSpokenRef = useRef(false);
   const lastVoiceAtRef = useRef<number>(0);
   const endTurnSentRef = useRef(false);
@@ -417,6 +417,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
   // Auto-reconnect tracking
   const reconnectCountRef = useRef(0);
   const MAX_AUTO_RECONNECTS = 3;
+
+  // Tool processing guard: prevent mic restart from interrupting Gemini's tool response
+  const toolProcessingRef = useRef(false);
+  const toolProcessingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Track whether audio was received during the current turn
+  const audioReceivedInTurnRef = useRef(false);
+  // Track last tool call info for fallback TTS
+  const lastToolInfoRef = useRef<{ tool: string; args: Record<string, any> } | null>(null);
 
   const createDeferred = () => {
     let resolve!: () => void;
