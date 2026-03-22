@@ -794,6 +794,62 @@ serve(async (req) => {
   let reconnectAttempts = 0;
   const MAX_RECONNECT_ATTEMPTS = 3;
 
+  // Conversation memory: generate a unique session ID for this WS connection
+  const conversationSessionId = crypto.randomUUID();
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const memoryClient = createClient(supabaseUrl, supabaseServiceKey);
+
+  // Store a conversation turn in the DB
+  async function storeTurn(role: 'user' | 'assistant' | 'tool_result', content: string, toolName?: string) {
+    try {
+      // Trim to max 2000 chars to keep storage lean
+      const trimmed = content.slice(0, 2000);
+      await memoryClient
+        .from('jane_conversation_turns')
+        .insert({
+          session_id: conversationSessionId,
+          role,
+          content: trimmed,
+          tool_name: toolName || null,
+        });
+    } catch (e) {
+      console.warn('Failed to store conversation turn:', e);
+    }
+  }
+
+  // Retrieve conversation history for context injection
+  async function getConversationHistory(): Promise<string> {
+    try {
+      const { data } = await memoryClient
+        .from('jane_conversation_turns')
+        .select('role, content, tool_name')
+        .eq('session_id', conversationSessionId)
+        .order('created_at', { ascending: true })
+        .limit(20); // Last 20 turns max
+
+      if (!data || data.length === 0) return '';
+
+      return data
+        .map((t: any) => {
+          if (t.role === 'user') return `User: ${t.content}`;
+          if (t.role === 'tool_result') return `[Tool ${t.tool_name}]: ${t.content.slice(0, 300)}`;
+          return `Jane: ${t.content}`;
+        })
+        .join('\n');
+    } catch (e) {
+      console.warn('Failed to retrieve conversation history:', e);
+      return '';
+    }
+  }
+
+  // Cleanup expired turns opportunistically (runs ~5% of connections)
+  if (Math.random() < 0.05) {
+    memoryClient.rpc('cleanup_jane_conversation_turns').then(() => {
+      console.log('Cleaned up expired conversation turns');
+    }).catch(() => {});
+  }
+
   async function initGeminiSession() {
     const ai = new GoogleGenAI({ apiKey: GOOGLE_AI_API_KEY });
 
@@ -804,15 +860,31 @@ serve(async (req) => {
       console.log("Message keys:", Object.keys(message));
 
       try {
-        // Capture user's transcribed speech
+        // Capture user's transcribed speech and store it
         if (message.serverContent?.inputTranscription?.text) {
-          lastUserText = String(message.serverContent.inputTranscription.text || '').trim() || lastUserText;
+          const newText = String(message.serverContent.inputTranscription.text || '').trim();
+          if (newText) {
+            lastUserText = newText;
+          }
+        }
+
+        // Detect full user utterance on turn boundaries and store
+        if (message.serverContent?.turnComplete && lastUserText) {
+          await storeTurn('user', lastUserText);
         }
 
         // Handle tool calls
         if (message.toolCall || message.tool_call || message.serverContent?.toolCall) {
           const toolCallData = message.toolCall || message.tool_call || message.serverContent?.toolCall;
           console.log("🔧 TOOL CALL DETECTED:", JSON.stringify(toolCallData));
+
+          // Store the user's question that triggered this tool call
+          if (lastUserText) {
+            await storeTurn('user', lastUserText);
+          }
+
+          // Get conversation history for richer context
+          const history = await getConversationHistory();
 
           const functionCalls = toolCallData.functionCalls || toolCallData.function_calls || [];
           const toolResponses: any[] = [];
@@ -825,7 +897,16 @@ serve(async (req) => {
               socket.send(JSON.stringify({ type: "tool_call", tool: toolName, args }));
             }
 
-            const result = await executeToolCall(toolName, args, lastUserText, lastUserContext);
+            // Pass conversation history as additional context for the KB query
+            const enrichedContext = {
+              ...(lastUserContext || {}),
+              conversationHistory: history,
+            };
+            const result = await executeToolCall(toolName, args, lastUserText, enrichedContext);
+            
+            // Store tool result for memory
+            await storeTurn('tool_result', result.slice(0, 1000), toolName);
+
             toolResponses.push({
               functionResponses: [{
                 id: call.id,
@@ -862,7 +943,7 @@ serve(async (req) => {
           }
         }
 
-        // Handle output transcription
+        // Handle output transcription — store assistant responses for memory
         if (message.serverContent?.outputTranscription?.text) {
           if (socket.readyState === WebSocket.OPEN) {
             const rawText = message.serverContent.outputTranscription.text;
@@ -870,6 +951,8 @@ serve(async (req) => {
             const sanitized = sanitizeAssistantText(rawText);
             console.log('[SANITIZED TEXT]:', sanitized);
             if (!sanitized) return;
+            // Store assistant response for conversation continuity
+            await storeTurn('assistant', sanitized);
             socket.send(JSON.stringify({ type: "assistant_text", text: sanitized }));
           }
         }
@@ -895,6 +978,12 @@ serve(async (req) => {
     const modelName = "gemini-2.5-flash-native-audio-preview-12-2025";
     console.log(`Attempting Gemini Live connect with model: ${modelName}, attempt: ${reconnectAttempts + 1}`);
 
+    // Inject conversation history into system prompt for continuity
+    const history = await getConversationHistory();
+    const historyBlock = history
+      ? `\n\nCONVERSATION HISTORY (use this to maintain context — do NOT repeat greetings):\n${history}`
+      : '';
+
     try {
       geminiSession = await ai.live.connect({
         model: modelName,
@@ -903,7 +992,7 @@ serve(async (req) => {
           outputAudioTranscription: {},
           inputAudioTranscription: {},
           systemInstruction: {
-            parts: [{ text: JANE_SYSTEM_PROMPT }]
+            parts: [{ text: JANE_SYSTEM_PROMPT + historyBlock }]
           },
           tools: [{ functionDeclarations: gardeningTools }],
           speechConfig: {
