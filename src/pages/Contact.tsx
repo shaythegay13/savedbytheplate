@@ -35,7 +35,7 @@ const Contact = () => {
     setLoading(false);
     toast({
       title: "Inquiry sent!",
-      description: "We'll get back to you within 2 business days.",
+      description: "We'll get back to you within 3-5 business days.",
     });
   };
 
