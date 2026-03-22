@@ -105,7 +105,7 @@ const PricingSection = () => {
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
-                      {loading ? "Processing..." : "Subscribe Monthly"}
+                      {loading ? "Processing..." : "Join Monthly"}
                     </Button>
                   </div>
                   
