@@ -147,7 +147,7 @@ const PricingSection = () => {
                     <p className="text-xs text-sbtp-brown-500 text-center mb-4">Special pricing for educators</p>
                     <Button 
                       variant="outline" 
-                      className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2"
+                      className="mt-auto border-sbtp-blue text-sbtp-blue hover:bg-sbtp-blue hover:text-white text-sm py-2 rounded-full font-semibold"
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
