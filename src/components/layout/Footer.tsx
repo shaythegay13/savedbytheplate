@@ -112,10 +112,6 @@ const Footer = () => {
           </div>
         </div>
 
-              }}
-            />
-          </div>
-        </div>
 
         {/* Footer Bottom Bar */}
         <div className="border-t border-sbtp-green-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
