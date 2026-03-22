@@ -63,21 +63,7 @@ const Footer = () => {
                 <p className="text-sm text-gray-300 mb-3">
                   Bi-monthly updates on food justice & gardening.
                 </p>
-                <iframe 
-                  src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
-                  className="beehiiv-embed" 
-                  data-test-id="beehiiv-embed" 
-                  frameBorder="0" 
-                  scrolling="no" 
-                  title="Subscribe to our newsletter"
-                  style={{
-                    width: '100%', 
-                    height: '80px', 
-                    backgroundColor: 'transparent', 
-                    boxShadow: '0 0 #0000', 
-                    maxWidth: '300px'
-                  }}
-                />
+                <NewsletterForm />
               </div>
             </>
           )}
