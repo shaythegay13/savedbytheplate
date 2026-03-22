@@ -582,14 +582,50 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
             case 'tool_call':
               console.log('Tool call:', data.tool, data.args);
+              // Block mic restart while tool is processing to prevent interrupting Gemini's response
+              toolProcessingRef.current = true;
+              audioReceivedInTurnRef.current = false;
+              lastToolInfoRef.current = { tool: data.tool, args: data.args };
+              console.log('🔧 Tool processing started — mic restart blocked');
+              // Safety timeout: unblock after 30s in case tool hangs
+              if (toolProcessingTimerRef.current) clearTimeout(toolProcessingTimerRef.current);
+              toolProcessingTimerRef.current = setTimeout(() => {
+                if (toolProcessingRef.current) {
+                  console.warn('Tool processing timeout (30s) — unblocking mic');
+                  toolProcessingRef.current = false;
+                }
+              }, 30000);
               options.onToolCall?.(data.tool, data.args);
               break;
 
-            case 'turn_complete':
+            case 'turn_complete': {
               stopListening();
-              console.log('Turn complete');
+              console.log(`Turn complete (audioReceived=${audioReceivedInTurnRef.current}, toolProcessing=${toolProcessingRef.current})`);
+              
+              // Unblock mic restart
+              toolProcessingRef.current = false;
+              if (toolProcessingTimerRef.current) {
+                clearTimeout(toolProcessingTimerRef.current);
+                toolProcessingTimerRef.current = null;
+              }
+              
+              // If a tool was called but NO audio came back, Gemini was likely interrupted.
+              // Send a fallback text so the user gets *something*.
+              if (!audioReceivedInTurnRef.current && lastToolInfoRef.current) {
+                console.warn('⚠️ Turn complete with NO audio after tool call — sending fallback text');
+                const toolName = lastToolInfoRef.current.tool;
+                const plantName = lastToolInfoRef.current.args?.plantName || lastToolInfoRef.current.args?.query || '';
+                const fallbackText = plantName
+                  ? `I found information about ${plantName}. Tap the mic again and I'll share what I learned.`
+                  : `I found some information for you. Tap the mic again so I can share it.`;
+                options.onText?.(fallbackText);
+              }
+              
+              lastToolInfoRef.current = null;
+              audioReceivedInTurnRef.current = false;
               options.onTurnComplete?.();
               break;
+            }
 
             case 'interrupted':
               console.log('Response interrupted');
