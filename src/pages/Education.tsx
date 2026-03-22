@@ -512,12 +512,56 @@ const Education = () => {
                 </CardContent>
               </Card>
 
-              <div className="text-center">
+              {/* Classroom Mode & AI Tools */}
+              <div className="bg-gradient-to-br from-green-50 to-stone-50 border border-green-200 rounded-2xl p-6 sm:p-8 mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                    <Monitor className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-green-800">Classroom Mode</h2>
+                    <p className="text-sm text-gray-500">AI-powered tools designed for group learning</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  Our Classroom Mode transforms "Ask Jane" into a collaborative teaching tool. Broadcast Jane's 
+                  gardening advice to the whole class, let students report their plant progress to the AI, and track 
+                  engagement with digital badges for milestones like first planting, successful composting, and harvest.
+                </p>
+                <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-white rounded-lg p-4 border border-green-100 text-center">
+                    <Mic className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm text-green-800">Voice-First</h4>
+                    <p className="text-xs text-gray-500">Hands-free for dirty hands</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100 text-center">
+                    <Award className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm text-green-800">Digital Badges</h4>
+                    <p className="text-xs text-gray-500">Track student milestones</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100 text-center">
+                    <Users className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm text-green-800">Group Learning</h4>
+                    <p className="text-xs text-gray-500">Collaborative AI sessions</p>
+                  </div>
+                </div>
+                <Link 
+                  to="/local-food/garden-planner"
+                  className="inline-flex items-center text-green-700 font-semibold hover:text-green-800"
+                >
+                  Try Ask Jane with your class
+                  <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </div>
+
+              <div className="text-center mt-8">
                 <Card className="inline-block border-primary/20 bg-primary/5">
                   <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-2">Ready to Get Started?</h3>
+                    <h3 className="font-semibold text-lg mb-2">Ready to Bring This to Your School?</h3>
                     <p className="text-muted-foreground mb-4">
-                      Contact us to discuss bringing this program to your school
+                      Contact us to discuss how we can customize a program for your students, schedule, and goals.
                     </p>
                     <ShayEmailDialog />
                   </CardContent>
