@@ -169,21 +169,9 @@ serve(async (req) => {
     const formData = validationResult.data;
     console.log('Request validated successfully:', JSON.stringify(formData, null, 2));
 
-    // Update rate limit counter after validation (only for authenticated users)
-    if (user) {
+    // Update rate limit counter after validation (all users)
+    {
       const nowIso = new Date().toISOString();
-      const identifier = user.id;
-      const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
-      
-      const { data: rows } = await supabase
-        .from("newsletter_rate_limits")
-        .select("id, attempt_count, first_attempt_at")
-        .eq("identifier", identifier)
-        .gte("first_attempt_at", windowStartIso)
-        .order("first_attempt_at", { ascending: false })
-        .limit(1);
-
-      const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
       
       if (rateLimitData) {
         await supabase
