@@ -29,15 +29,28 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    // For now, simulate submission. Can be wired to Supabase or email later.
-    await new Promise(resolve => setTimeout(resolve, 800));
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-contact-form', {
+        body: formData,
+      });
 
-    setSubmitted(true);
-    setLoading(false);
-    toast({
-      title: "Inquiry sent!",
-      description: "We'll get back to you within 3-5 business days.",
-    });
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast({
+        title: "Inquiry sent!",
+        description: "We'll get back to you within 3-5 business days.",
+      });
+    } catch (err) {
+      console.error('Contact form error:', err);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or email us directly at info@savedbytheplate.org",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
