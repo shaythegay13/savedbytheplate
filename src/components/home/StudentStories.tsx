@@ -26,10 +26,10 @@ const StudentStories = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-green-800 mb-3">
-            Stories from the Garden
+            What Educators See in Their Students
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Real voices from students who've experienced the power of growing their own food.
+            Real voices from students who've experienced our programs — and the transformation their teachers witness.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ const StudentStories = () => {
             to="/education"
             className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 transition-colors"
           >
-            Learn about our programs
+            See our full program curriculum
             <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </div>

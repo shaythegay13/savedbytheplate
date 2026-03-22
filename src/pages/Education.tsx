@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin, GraduationCap, Sprout, ZoomIn } from "lucide-react";
+import { BookOpen, Video, Download, Clock, Star, Play, FileText, Mail, Users, MapPin, GraduationCap, Sprout, ZoomIn, Monitor, Award, Mic, Leaf } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PhotoLightbox } from "@/components/ui/photo-lightbox";
@@ -157,10 +157,10 @@ const Education = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <title>Youth Food Education Programs — Food Justice &amp; Urban Agriculture | Saved by the Plate Inc.</title>
-      <meta name="description" content="Customizable 6-week programs for youth exploring food justice, community gardens, composting, and urban agriculture in New York City. In-school and after-school programs available." />
+      <title>Food Justice Education Programs for Schools — Curriculum &amp; AI Tools | Saved by the Plate Inc.</title>
+      <meta name="description" content="Customizable K-12 programs for educators teaching food justice, community gardens, composting, and urban agriculture. Includes AI garden assistant and interactive tools." />
       <link rel="canonical" href="https://www.savedbytheplate.org/education" />
-      <meta property="og:title" content="Youth Food Education Programs | Saved by the Plate Inc." />
+      <meta property="og:title" content="Food Justice Education for Schools | Saved by the Plate Inc." />
       <meta property="og:url" content="https://www.savedbytheplate.org/education" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"Education Programs","item":"https://www.savedbytheplate.org/education"}]}` }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://www.savedbytheplate.org/education#educational-org","name":"Saved by the Plate Inc. — Youth Education Programs","url":"https://www.savedbytheplate.org/education","description":"Customizable youth education programs exploring food justice, sustainability, community gardens, composting, and environmental science for students of all ages.","parentOrganization":{"@id":"https://www.savedbytheplate.org/#organization"},"areaServed":{"@type":"City","name":"New York City"},"email":"info@savedbytheplate.org","hasOfferCatalog":{"@type":"OfferCatalog","name":"Youth Education Programs","itemListElement":[{"@type":"Offer","itemOffered":{"@id":"https://www.savedbytheplate.org/education#course-community-gardens"}},{"@type":"Offer","itemOffered":{"@id":"https://www.savedbytheplate.org/education#course-soil-science"}}]}}` }} />
@@ -186,9 +186,10 @@ const Education = () => {
         </div>
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Youth Education Programs</h1>
+            <p className="text-green-200 font-semibold text-sm uppercase tracking-wide mb-3">For Educators & Schools</p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 px-2">Food Justice Education Programs</h1>
             <p className="text-lg sm:text-xl opacity-90 mb-6 sm:mb-8 px-4">
-              Customizable programs for students of all ages exploring food justice, sustainability, 
+              Customizable curricula for K-12 educators teaching food justice, sustainability, 
               community gardens, composting, and environmental science
             </p>
           </div>
@@ -511,12 +512,56 @@ const Education = () => {
                 </CardContent>
               </Card>
 
-              <div className="text-center">
+              {/* Classroom Mode & AI Tools */}
+              <div className="bg-gradient-to-br from-green-50 to-stone-50 border border-green-200 rounded-2xl p-6 sm:p-8 mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                    <Monitor className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-green-800">Classroom Mode</h2>
+                    <p className="text-sm text-gray-500">AI-powered tools designed for group learning</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  Our Classroom Mode transforms "Ask Jane" into a collaborative teaching tool. Broadcast Jane's 
+                  gardening advice to the whole class, let students report their plant progress to the AI, and track 
+                  engagement with digital badges for milestones like first planting, successful composting, and harvest.
+                </p>
+                <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-white rounded-lg p-4 border border-green-100 text-center">
+                    <Mic className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm text-green-800">Voice-First</h4>
+                    <p className="text-xs text-gray-500">Hands-free for dirty hands</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100 text-center">
+                    <Award className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm text-green-800">Digital Badges</h4>
+                    <p className="text-xs text-gray-500">Track student milestones</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100 text-center">
+                    <Users className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm text-green-800">Group Learning</h4>
+                    <p className="text-xs text-gray-500">Collaborative AI sessions</p>
+                  </div>
+                </div>
+                <Link 
+                  to="/local-food/garden-planner"
+                  className="inline-flex items-center text-green-700 font-semibold hover:text-green-800"
+                >
+                  Try Ask Jane with your class
+                  <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </div>
+
+              <div className="text-center mt-8">
                 <Card className="inline-block border-primary/20 bg-primary/5">
                   <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-2">Ready to Get Started?</h3>
+                    <h3 className="font-semibold text-lg mb-2">Ready to Bring This to Your School?</h3>
                     <p className="text-muted-foreground mb-4">
-                      Contact us to discuss bringing this program to your school
+                      Contact us to discuss how we can customize a program for your students, schedule, and goals.
                     </p>
                     <ShayEmailDialog />
                   </CardContent>

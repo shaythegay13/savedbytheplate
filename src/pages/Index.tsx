@@ -1,8 +1,9 @@
 
 import { Link } from 'react-router-dom';
-import { MapPin, Book, Leaf, Users, Sprout, Globe, GraduationCap } from 'lucide-react';
+import { MapPin, Book, Leaf, Users, Sprout, Globe, GraduationCap, Mic, Award, Monitor } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import StudentStories from "@/components/home/StudentStories";
+import ClassroomModeSection from "@/components/home/ClassroomModeSection";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 import educationGardenImage from "@/assets/education-garden-1.jpg";
 import localFoodResourcesImage from "@/assets/local-food-resources.jpeg";
@@ -11,10 +12,10 @@ import TransparentJaneAvatar from "@/components/garden-plan/TransparentJaneAvata
 const Index = () => {
   return (
     <div className="w-full">
-      <title>Saved by the Plate Inc. — Grow Local, Eat Local</title>
-      <meta name="description" content="Connecting communities with sustainable food options and local agriculture education, starting with youth in New York City." />
+      <title>Saved by the Plate Inc. — Food Justice Education for Schools</title>
+      <meta name="description" content="Hands-on food justice education programs for K-12 schools in New York City. Customizable curricula, AI-powered garden assistant, and interactive local food maps for educators." />
       <link rel="canonical" href="https://www.savedbytheplate.org/" />
-      <meta property="og:title" content="Saved by the Plate Inc. — Grow Local, Eat Local" />
+      <meta property="og:title" content="Saved by the Plate Inc. — Food Justice Education for Schools" />
       <meta property="og:url" content="https://www.savedbytheplate.org/" />
       <Navbar />
       {/* Hero Section */}
@@ -29,28 +30,72 @@ const Index = () => {
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32">
           <div className="max-w-3xl">
+            <p className="text-green-300 font-semibold text-sm sm:text-base uppercase tracking-wide mb-3">
+              For Educators & Schools
+            </p>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
-              Grow Local, Eat Local
+              Bring Food Justice<br />Into Your Classroom
             </h1>
             <p className="text-lg sm:text-xl mb-8 sm:mb-10 text-green-100">
-              Connecting communities with sustainable food options<br />
-              and local agriculture, starting with our youth.
+              Customizable hands-on programs that connect your students<br className="hidden sm:block" />
+              with community gardens, composting, and urban agriculture.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/local-food/map"
+              <a
+                href="mailto:info@savedbytheplate.org?subject=Education Program Inquiry"
                 className="inline-flex items-center justify-center bg-sbtp-green-500 text-white font-semibold px-8 py-4 rounded-full hover:bg-sbtp-green-400 transition-colors shadow-lg text-lg"
               >
-                <MapPin className="w-5 h-5 mr-2" />
-                Find Food Near You
-              </Link>
+                <GraduationCap className="w-5 h-5 mr-2" />
+                Book a Program for Your School
+              </a>
               <Link
-                to="/local-food/garden-planner"
+                to="/education"
                 className="inline-flex items-center justify-center bg-white/15 backdrop-blur text-white font-semibold px-8 py-4 rounded-full hover:bg-white/25 transition-colors border border-white/30 text-lg"
               >
-                <Leaf className="w-5 h-5 mr-2" />
-                Ask Jane — AI Garden Planner
+                <Book className="w-5 h-5 mr-2" />
+                View Our Curriculum
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Educators Choose Us */}
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-green-800">
+            Why Educators Choose Us
+          </h2>
+          <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+            Everything your school needs to teach food justice — from ready-made curricula to AI-powered tools your students will love.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div className="text-center p-6">
+              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="h-7 w-7 text-green-700" />
+              </div>
+              <h3 className="text-lg font-semibold text-green-800 mb-2">Curriculum-Ready Programs</h3>
+              <p className="text-muted-foreground text-sm">
+                6-week programs aligned to NGSS and social studies standards. Customizable for any grade level, from a single session to a full semester.
+              </p>
+            </div>
+            <div className="text-center p-6">
+              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mic className="h-7 w-7 text-green-700" />
+              </div>
+              <h3 className="text-lg font-semibold text-green-800 mb-2">AI Garden Assistant for Students</h3>
+              <p className="text-muted-foreground text-sm">
+                "Ask Jane" is a voice-first AI assistant designed for hands-in-the-dirt learning — students ask questions while they garden, no screens needed.
+              </p>
+            </div>
+            <div className="text-center p-6">
+              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="h-7 w-7 text-green-700" />
+              </div>
+              <h3 className="text-lg font-semibold text-green-800 mb-2">Interactive Local Food Map</h3>
+              <p className="text-muted-foreground text-sm">
+                Plan field trips with our map of 500+ community gardens, farmers markets, food banks, and community fridges across all five boroughs.
+              </p>
             </div>
           </div>
         </div>
@@ -66,8 +111,8 @@ const Index = () => {
             The Food Justice Crisis in New York City
           </h2>
           <p className="text-center text-green-100 mb-10 max-w-2xl mx-auto">
-            Food insecurity and unequal access to fresh food affect millions of New Yorkers.
-            Education and community action are the path forward.
+            Your students are growing up in a city where food access is deeply unequal.
+            Education is how we change that.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             <div>
@@ -78,12 +123,12 @@ const Index = () => {
             <div>
               <p className="text-4xl sm:text-5xl font-bold text-green-300 mb-2">500+</p>
               <p className="text-lg font-semibold mb-1">Community Gardens in NYC</p>
-              <p className="text-green-200 text-sm">New York City's GreenThumb program supports over 500 community gardens across all five boroughs.</p>
+              <p className="text-green-200 text-sm">GreenThumb supports over 500 community gardens — many available for school visits and partnerships.</p>
             </div>
             <div>
               <p className="text-4xl sm:text-5xl font-bold text-green-300 mb-2">6 Weeks</p>
               <p className="text-lg font-semibold mb-1">To Transform a Young Gardener</p>
-              <p className="text-green-200 text-sm">Our hands-on education programs give students real-world skills in food justice, composting, and urban farming.</p>
+              <p className="text-green-200 text-sm">Our programs give students real-world skills in food justice, composting, and urban farming.</p>
             </div>
           </div>
         </div>
@@ -100,13 +145,12 @@ const Index = () => {
             access to fresh, nutritious food in low-income communities.
           </p>
           <p className="text-gray-700 leading-relaxed mb-4">
-            In New York City, food justice work includes supporting community gardens, advocating for equitable
-            grocery store placement, funding food banks and community fridges, and — critically — educating the
-            next generation about where their food comes from and why the current food system produces such
-            unequal outcomes.
+            For educators, food justice is a powerful lens for teaching across disciplines — science, social studies,
+            math, and civic engagement. When students learn where their food comes from, they develop critical
+            thinking skills and a deeper understanding of the communities they live in.
           </p>
           <p className="text-gray-700 leading-relaxed mb-6">
-            At Saved by the Plate Inc., food justice is our foundation. Every program we run — from our 6-week
+            At Saved by the Plate Inc., food justice is our foundation. Every program we deliver — from our 6-week
             community garden curriculum to our composting and soil science workshops — is designed to equip
             young people in New York City with the knowledge and skills to become lifelong advocates for an
             equitable, sustainable food system.
@@ -123,12 +167,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Feature Sections - Discover What We Offer */}
+      {/* Classroom Mode Section */}
+      <ClassroomModeSection />
+
+      {/* Tools for Your Classroom */}
       <section className="py-12 sm:py-16 bg-stone-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-green-800 px-2">
-            Discover What We Offer
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-green-800 px-2">
+            Tools for Your Classroom
           </h2>
+          <p className="text-center text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto">
+            Free digital resources that complement our in-person programs — or stand on their own.
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Local Food Resources */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -143,16 +193,17 @@ const Index = () => {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <MapPin className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Local Food Resources</h3>
+                  <h3 className="text-xl font-semibold">Local Food Map</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Discover community gardens, farmers markets, food banks, and community fridges near you with our interactive map.
+                  Plan field trips and classroom projects with our interactive map of community gardens, 
+                  farmers markets, food banks, and community fridges near your school.
                 </p>
                 <Link 
                   to="/local-food/map"
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Explore resources
+                  Explore the map
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -168,17 +219,17 @@ const Index = () => {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Leaf className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Ask Jane</h3>
+                  <h3 className="text-xl font-semibold">Ask Jane — AI Garden Assistant</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Meet Jane, your AI-powered garden assistant. Get personalized 
-                  gardening advice and create custom growing plans for your space.
+                  A voice-first AI assistant your students can talk to while gardening.
+                  Jane answers questions about planting, soil, pests, and more — hands-free.
                 </p>
                 <Link 
                   to="/local-food/garden-planner" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Chat with Jane
+                  Try Jane with your class
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -199,18 +250,17 @@ const Index = () => {
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <Book className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Educational Programming</h3>
+                  <h3 className="text-xl font-semibold">Full Curriculum</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Customizable educational programs for youth exploring food justice, 
-                  food sovereignty, community gardens, and urban agriculture. Programs 
-                  can be tailored to fit your student population and desired length.
+                  Browse our complete 6-week curricula on food justice, composting, and soil science.
+                  Customizable for any grade level or program length.
                 </p>
                 <Link 
                   to="/education" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Contact us about our programs
+                  View programs
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -226,12 +276,11 @@ const Index = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <GraduationCap className="w-16 h-16 mx-auto mb-6 text-green-200" />
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Bring Food Justice Education to Your School
+            Ready to Bring This to Your School?
           </h2>
           <p className="text-lg sm:text-xl text-green-100 mb-8 max-w-2xl mx-auto">
-            Our customizable 6-week programs connect students with community gardens,
-            composting practices, and urban agriculture—teaching hands-on skills and the
-            principles of food sovereignty and environmental justice.
+            Whether you need a single workshop or a full-semester program,
+            we'll customize our curriculum to fit your students, schedule, and goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
