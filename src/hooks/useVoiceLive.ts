@@ -431,18 +431,22 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
       return;
     }
 
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     try {
       await Promise.race([
-        deferred.promise,
-        new Promise<void>((_, reject) =>
-          setTimeout(() => {
+        deferred.promise.then(() => {
+          if (timeoutId) clearTimeout(timeoutId);
+        }),
+        new Promise<void>((_, reject) => {
+          timeoutId = setTimeout(() => {
             console.error('Session ready timeout after', timeoutMs, 'ms');
             reject(new Error('Voice session timed out - the server did not respond in time. Please try again.'));
-          }, timeoutMs)
-        ),
+          }, timeoutMs);
+        }),
       ]);
       console.log('Session ready confirmed');
     } catch (err) {
+      if (timeoutId) clearTimeout(timeoutId);
       console.error('waitForSessionReady failed:', err);
       throw err;
     }
