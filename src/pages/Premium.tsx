@@ -505,7 +505,7 @@ const Premium = () => {
                         onClick={handleManageSubscription}
                         disabled={loading}
                       >
-                        Manage Subscription
+                        Manage Membership
                       </Button>
                     ) : (
                       <Button 
