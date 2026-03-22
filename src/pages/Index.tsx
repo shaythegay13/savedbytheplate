@@ -138,6 +138,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Student Stories */}
+      <StudentStories />
+
       {/* Impact Statistics Section */}
       <section className="py-12 sm:py-16 bg-green-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

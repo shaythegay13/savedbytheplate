@@ -182,9 +182,9 @@ const PricingSection = () => {
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Please log in to subscribe</DialogTitle>
+            <DialogTitle>Please log in to become a member</DialogTitle>
             <DialogDescription>
-              You need to be logged in to subscribe to our premium plans. Please log in or create an account to continue.
+              You need to be logged in to join our membership plans. Please log in or create an account to continue.
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-4 mt-4">
