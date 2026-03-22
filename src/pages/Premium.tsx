@@ -390,7 +390,7 @@ const Premium = () => {
                 Premium Features
               </div>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Unlock Premium</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Become a Member</h1>
             <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6 px-4">
               Gain access to Ask Jane - Your Personal Gardening Assistant, curated educational content, and Discord community
             </p>
