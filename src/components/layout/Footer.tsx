@@ -60,30 +60,6 @@ const Footer = () => {
             </>
           )}
 
-          {/* Newsletter Signup */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Newsletter</h4>
-            <p className="text-sm text-gray-300 mb-3">
-              Get bi-monthly updates on food justice, gardening tips, and community events.
-            </p>
-            <iframe 
-              src="https://subscribe-forms.beehiiv.com/0fb10fdb-b28c-46d7-9de8-3df22c81bd72" 
-              className="beehiiv-embed" 
-              data-test-id="beehiiv-embed" 
-              frameBorder="0" 
-              scrolling="no" 
-              title="Subscribe to our newsletter"
-              style={{
-                width: '100%', 
-                height: '80px', 
-                margin: 0, 
-                backgroundColor: 'transparent', 
-                boxShadow: '0 0 #0000', 
-                maxWidth: '300px'
-              }}
-            />
-          </div>
-
           {/* Stay Connected Block */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Stay Connected</h4>
