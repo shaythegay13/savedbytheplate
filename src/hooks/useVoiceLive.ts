@@ -400,14 +400,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
   // Gate sending audio until the server explicitly tells us the Gemini session is ready.
   const sessionReadyRef = useRef(false);
-  const sessionReadyAtRef = useRef<number>(0); // Track when session became ready
+  const sessionReadyAtRef = useRef<number>(0);
   const sessionReadyDeferredRef = useRef<null | {
     promise: Promise<void>;
     resolve: () => void;
     reject: (err: unknown) => void;
   }>(null);
 
-  // Local silence detection fallback (in case server-side VAD doesn't trigger reliably)
+  // Local silence detection fallback
   const hasSpokenRef = useRef(false);
   const lastVoiceAtRef = useRef<number>(0);
   const endTurnSentRef = useRef(false);
@@ -417,6 +417,14 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
   // Auto-reconnect tracking
   const reconnectCountRef = useRef(0);
   const MAX_AUTO_RECONNECTS = 3;
+
+  // Tool processing guard: prevent mic restart from interrupting Gemini's tool response
+  const toolProcessingRef = useRef(false);
+  const toolProcessingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Track whether audio was received during the current turn
+  const audioReceivedInTurnRef = useRef(false);
+  // Track last tool call info for fallback TTS
+  const lastToolInfoRef = useRef<{ tool: string; args: Record<string, any> } | null>(null);
 
   const createDeferred = () => {
     let resolve!: () => void;
@@ -547,7 +555,16 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
             case 'assistant_audio': {
               stopListening();
-
+              audioReceivedInTurnRef.current = true;
+              // Unblock mic since Gemini is now responding with audio
+              if (toolProcessingRef.current) {
+                console.log('🔧 Tool processing complete — audio arriving, mic unblocked');
+                toolProcessingRef.current = false;
+                if (toolProcessingTimerRef.current) {
+                  clearTimeout(toolProcessingTimerRef.current);
+                  toolProcessingTimerRef.current = null;
+                }
+              }
               if (!audioQueueRef.current) {
                 const ctx = getAudioContext();
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
@@ -574,14 +591,50 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
             case 'tool_call':
               console.log('Tool call:', data.tool, data.args);
+              // Block mic restart while tool is processing to prevent interrupting Gemini's response
+              toolProcessingRef.current = true;
+              audioReceivedInTurnRef.current = false;
+              lastToolInfoRef.current = { tool: data.tool, args: data.args };
+              console.log('🔧 Tool processing started — mic restart blocked');
+              // Safety timeout: unblock after 30s in case tool hangs
+              if (toolProcessingTimerRef.current) clearTimeout(toolProcessingTimerRef.current);
+              toolProcessingTimerRef.current = setTimeout(() => {
+                if (toolProcessingRef.current) {
+                  console.warn('Tool processing timeout (30s) — unblocking mic');
+                  toolProcessingRef.current = false;
+                }
+              }, 30000);
               options.onToolCall?.(data.tool, data.args);
               break;
 
-            case 'turn_complete':
+            case 'turn_complete': {
               stopListening();
-              console.log('Turn complete');
+              console.log(`Turn complete (audioReceived=${audioReceivedInTurnRef.current}, toolProcessing=${toolProcessingRef.current})`);
+              
+              // Unblock mic restart
+              toolProcessingRef.current = false;
+              if (toolProcessingTimerRef.current) {
+                clearTimeout(toolProcessingTimerRef.current);
+                toolProcessingTimerRef.current = null;
+              }
+              
+              // If a tool was called but NO audio came back, Gemini was likely interrupted.
+              // Send a fallback text so the user gets *something*.
+              if (!audioReceivedInTurnRef.current && lastToolInfoRef.current) {
+                console.warn('⚠️ Turn complete with NO audio after tool call — sending fallback text');
+                const toolName = lastToolInfoRef.current.tool;
+                const plantName = lastToolInfoRef.current.args?.plantName || lastToolInfoRef.current.args?.query || '';
+                const fallbackText = plantName
+                  ? `I found information about ${plantName}. Tap the mic again and I'll share what I learned.`
+                  : `I found some information for you. Tap the mic again so I can share it.`;
+                options.onText?.(fallbackText);
+              }
+              
+              lastToolInfoRef.current = null;
+              audioReceivedInTurnRef.current = false;
               options.onTurnComplete?.();
               break;
+            }
 
             case 'interrupted':
               console.log('Response interrupted');
@@ -656,6 +709,13 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
   // Start listening (recording)
   const startListening = useCallback(async () => {
+    // Block mic restart while a tool is processing to prevent interrupting Gemini's response
+    if (toolProcessingRef.current) {
+      console.warn('🔇 Mic restart blocked — tool is still processing. Wait for Jane to respond.');
+      options.onError?.('Jane is thinking... please wait a moment.');
+      return;
+    }
+
     if (status !== 'connected') {
       console.log('Not connected, connecting first...');
       await connect();

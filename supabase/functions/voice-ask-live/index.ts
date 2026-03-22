@@ -837,7 +837,9 @@ serve(async (req) => {
 
           for (const toolResponse of toolResponses) {
             if (geminiSession) {
+              console.log("📤 Sending tool response to Gemini, expecting audio reply...");
               await geminiSession.sendToolResponse(toolResponse);
+              console.log("📤 Tool response sent — waiting for Gemini audio output");
             }
           }
           return;
@@ -849,6 +851,8 @@ serve(async (req) => {
             if (socket.readyState !== WebSocket.OPEN) continue;
 
             if (part.inlineData?.mimeType?.includes("audio")) {
+              const chunkLen = part.inlineData.data?.length || 0;
+              console.log(`🔊 Audio chunk from Gemini: ${chunkLen} base64 chars, mimeType=${part.inlineData.mimeType}`);
               socket.send(JSON.stringify({
                 type: "assistant_audio",
                 chunk: part.inlineData.data,
@@ -913,9 +917,9 @@ serve(async (req) => {
             automaticActivityDetection: {
               disabled: false,
               startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_HIGH,
-              endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH,
+              endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_LOW,
               prefixPaddingMs: 300,
-              silenceDurationMs: 1000
+              silenceDurationMs: 800
             }
           }
         },
