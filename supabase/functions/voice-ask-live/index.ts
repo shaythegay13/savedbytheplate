@@ -909,7 +909,7 @@ serve(async (req) => {
       
       // Create Live session with callbacks pattern
       geminiSession = await ai.live.connect({
-        model: "gemini-2.5-flash-native-audio-preview",
+        model: "gemini-2.5-flash-native-audio-preview-12-2025",
         config: {
           // IMPORTANT: Live API only allows ONE modality per session
           responseModalities: [Modality.AUDIO],
