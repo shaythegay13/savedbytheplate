@@ -104,30 +104,43 @@ serve(async (req) => {
     
     console.log('Processing request for user:', user?.id || 'anonymous');
 
-    // Rate limiting check (only for authenticated users)
+    // Rate limiting for ALL users (authenticated by user ID, anonymous by IP)
+    const MAX_ANON_REQUESTS = 5;
+    let identifier: string;
+    let maxRequests: number;
+
     if (user) {
-      const identifier = user.id;
-      const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
+      identifier = `garden:${user.id}`;
+      maxRequests = MAX_REQUESTS_PER_WINDOW;
+    } else {
+      const forwarded = req.headers.get('x-forwarded-for');
+      const ip = forwarded ? forwarded.split(',')[0].trim() : (req.headers.get('x-real-ip') || req.headers.get('cf-connecting-ip') || 'unknown');
+      identifier = `garden:ip:${ip}`;
+      maxRequests = MAX_ANON_REQUESTS;
+    }
 
-      const { data: rows } = await supabase
-        .from("newsletter_rate_limits")
-        .select("id, attempt_count, first_attempt_at")
-        .eq("identifier", identifier)
-        .gte("first_attempt_at", windowStartIso)
-        .order("first_attempt_at", { ascending: false })
-        .limit(1);
+    const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
 
-      const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
+    const { data: rows } = await supabase
+      .from("newsletter_rate_limits")
+      .select("id, attempt_count, first_attempt_at")
+      .eq("identifier", identifier)
+      .gte("first_attempt_at", windowStartIso)
+      .order("first_attempt_at", { ascending: false })
+      .limit(1);
 
-      if (rateLimitData && rateLimitData.attempt_count >= MAX_REQUESTS_PER_WINDOW) {
-        return new Response(
-          JSON.stringify({ 
-            error: "Rate limit exceeded. You can generate 10 garden plans per hour. Please try again later.",
-            retryAfter: RATE_LIMIT_WINDOW_MINUTES * 60
-          }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
+    const rateLimitData = rows && rows.length > 0 ? rows[0] : null;
+
+    if (rateLimitData && rateLimitData.attempt_count >= maxRequests) {
+      return new Response(
+        JSON.stringify({ 
+          error: user 
+            ? "Rate limit exceeded. You can generate 10 garden plans per hour. Please try again later."
+            : "Rate limit exceeded. Please sign in for higher limits, or try again later.",
+          retryAfter: RATE_LIMIT_WINDOW_MINUTES * 60
+        }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     console.log('=== GARDEN PLAN REQUEST START ===');
