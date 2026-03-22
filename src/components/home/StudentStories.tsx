@@ -35,11 +35,11 @@ const StudentStories = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Photo */}
-          <div className="rounded-xl overflow-hidden shadow-lg bg-stone-200 max-w-sm mx-auto lg:mx-0">
+          <div className="rounded-xl overflow-hidden shadow-lg">
             <img
               src={studentStoriesImage}
               alt="Students using microscopes during a Saved by the Plate Inc. education program in the Bronx"
-              className="w-full object-contain"
+              className="w-full object-cover h-full"
               loading="lazy"
             />
           </div>
