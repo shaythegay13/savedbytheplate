@@ -101,6 +101,52 @@ const Footer = () => {
           </div>
         </div>
 
+const NewsletterForm = () => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("subscribe-to-beehiiv", {
+        body: { email },
+      });
+      if (error) throw error;
+      if (data?.success) {
+        toast.success(data.message || "Subscribed!");
+        setEmail("");
+      } else {
+        toast.error(data?.error || "Something went wrong");
+      }
+    } catch {
+      toast.error("Failed to subscribe. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex max-w-[300px]">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Add email address"
+        required
+        className="flex-1 min-w-0 rounded-l-md border-0 px-3 py-2 text-sm text-foreground bg-white/10 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-sbtp-yellow"
+      />
+      <button
+        type="submit"
+        disabled={loading}
+        className="rounded-r-md bg-sbtp-yellow px-4 py-2 text-sm font-semibold text-sbtp-green-800 hover:bg-sbtp-yellow/90 transition-colors disabled:opacity-50"
+      >
+        {loading ? "..." : "Subscribe"}
+      </button>
+    </form>
+  );
+};
 
         {/* Footer Bottom Bar */}
         <div className="border-t border-sbtp-green-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
