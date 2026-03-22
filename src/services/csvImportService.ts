@@ -37,6 +37,11 @@ export async function importCSVToLocations() {
   );
 
   try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      return { success: false, totalImported: 0, totalErrors: fetchErrors + 1 };
+    }
+
     const { data, error } = await supabase.functions.invoke('import-csv-data', {
       body: { baseUrl, rowsBySource, includeNYCOpenData: true },
     });
