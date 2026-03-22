@@ -1,4 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -6,6 +7,8 @@ const corsHeaders = {
 };
 
 const SPREADSHEET_ID = '1k4H-t2RN91TqLL9RYCO7WKdMDgF1gNP1SeZuLnz5srA';
+const RATE_LIMIT_WINDOW_HOURS = 1;
+const MAX_ATTEMPTS_PER_WINDOW = 5;
 
 async function getAccessToken(credentials: any): Promise<string> {
   const jwtHeader = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
@@ -86,6 +89,43 @@ serve(async (req) => {
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email format' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
+    // Rate limiting
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      { auth: { persistSession: false } }
+    );
+
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
+    const ipIdentifier = `contact:${clientIP}`;
+    const emailIdentifier = `contact-email:${email.toLowerCase()}`;
+    const windowCutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_HOURS * 60 * 60 * 1000).toISOString();
+
+    const [ipResult, emailResult] = await Promise.all([
+      supabase.from('newsletter_rate_limits').select('*').eq('identifier', ipIdentifier).gte('last_attempt_at', windowCutoff).single(),
+      supabase.from('newsletter_rate_limits').select('*').eq('identifier', emailIdentifier).gte('last_attempt_at', windowCutoff).single(),
+    ]);
+
+    const ipExceeded = ipResult.data && ipResult.data.attempt_count >= MAX_ATTEMPTS_PER_WINDOW;
+    const emailExceeded = emailResult.data && emailResult.data.attempt_count >= MAX_ATTEMPTS_PER_WINDOW;
+
+    if (ipExceeded || emailExceeded) {
+      console.log(`Contact form rate limit exceeded - IP: ${ipExceeded}, Email: ${emailExceeded}`);
+      return new Response(
+        JSON.stringify({ error: 'Too many submissions. Please try again later.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+      );
+    }
+
     const googleCredentials = Deno.env.get('GOOGLE_SHEETS_CREDENTIALS');
     if (!googleCredentials) {
       console.error('GOOGLE_SHEETS_CREDENTIALS not found');
@@ -124,6 +164,21 @@ serve(async (req) => {
     }
 
     console.log('Contact form submitted successfully for:', name);
+
+    // Update rate limits
+    const nowISO = new Date().toISOString();
+    const upsertRateLimit = async (id: string, existing: any) => {
+      if (existing) {
+        await supabase.from('newsletter_rate_limits').update({ attempt_count: existing.attempt_count + 1, last_attempt_at: nowISO }).eq('id', existing.id);
+      } else {
+        await supabase.from('newsletter_rate_limits').insert({ identifier: id, attempt_count: 1, first_attempt_at: nowISO, last_attempt_at: nowISO });
+      }
+    };
+
+    await Promise.all([
+      upsertRateLimit(ipIdentifier, ipResult.data),
+      upsertRateLimit(emailIdentifier, emailResult.data),
+    ]);
 
     return new Response(
       JSON.stringify({ success: true }),
