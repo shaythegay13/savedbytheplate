@@ -101,7 +101,7 @@ const PricingSection = () => {
                     </div>
                     <p className="text-sm text-sbtp-brown-500 text-center mb-4">Billed monthly</p>
                     <Button 
-                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2"
+                      className="mt-auto bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white text-sm py-2 rounded-full font-semibold"
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
