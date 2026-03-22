@@ -860,15 +860,31 @@ serve(async (req) => {
       console.log("Message keys:", Object.keys(message));
 
       try {
-        // Capture user's transcribed speech
+        // Capture user's transcribed speech and store it
         if (message.serverContent?.inputTranscription?.text) {
-          lastUserText = String(message.serverContent.inputTranscription.text || '').trim() || lastUserText;
+          const newText = String(message.serverContent.inputTranscription.text || '').trim();
+          if (newText) {
+            lastUserText = newText;
+          }
+        }
+
+        // Detect full user utterance on turn boundaries and store
+        if (message.serverContent?.turnComplete && lastUserText) {
+          await storeTurn('user', lastUserText);
         }
 
         // Handle tool calls
         if (message.toolCall || message.tool_call || message.serverContent?.toolCall) {
           const toolCallData = message.toolCall || message.tool_call || message.serverContent?.toolCall;
           console.log("🔧 TOOL CALL DETECTED:", JSON.stringify(toolCallData));
+
+          // Store the user's question that triggered this tool call
+          if (lastUserText) {
+            await storeTurn('user', lastUserText);
+          }
+
+          // Get conversation history for richer context
+          const history = await getConversationHistory();
 
           const functionCalls = toolCallData.functionCalls || toolCallData.function_calls || [];
           const toolResponses: any[] = [];
@@ -881,7 +897,16 @@ serve(async (req) => {
               socket.send(JSON.stringify({ type: "tool_call", tool: toolName, args }));
             }
 
-            const result = await executeToolCall(toolName, args, lastUserText, lastUserContext);
+            // Pass conversation history as additional context for the KB query
+            const enrichedContext = {
+              ...(lastUserContext || {}),
+              conversationHistory: history,
+            };
+            const result = await executeToolCall(toolName, args, lastUserText, enrichedContext);
+            
+            // Store tool result for memory
+            await storeTurn('tool_result', result.slice(0, 1000), toolName);
+
             toolResponses.push({
               functionResponses: [{
                 id: call.id,
