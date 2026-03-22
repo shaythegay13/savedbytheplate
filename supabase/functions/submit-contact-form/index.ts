@@ -88,11 +88,17 @@ serve(async (req) => {
 
     const googleCredentials = Deno.env.get('GOOGLE_SHEETS_CREDENTIALS');
     if (!googleCredentials) {
+      console.error('GOOGLE_SHEETS_CREDENTIALS not found');
       throw new Error('Google Sheets credentials not configured');
     }
 
+    console.log('Parsing credentials...');
     const credentials = JSON.parse(googleCredentials);
+    console.log('Service account email:', credentials.client_email);
+    
+    console.log('Getting access token...');
     const accessToken = await getAccessToken(credentials);
+    console.log('Got access token successfully');
 
     const now = new Date();
     const dateStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
