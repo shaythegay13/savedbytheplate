@@ -709,6 +709,13 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
   // Start listening (recording)
   const startListening = useCallback(async () => {
+    // Block mic restart while a tool is processing to prevent interrupting Gemini's response
+    if (toolProcessingRef.current) {
+      console.warn('🔇 Mic restart blocked — tool is still processing. Wait for Jane to respond.');
+      options.onError?.('Jane is thinking... please wait a moment.');
+      return;
+    }
+
     if (status !== 'connected') {
       console.log('Not connected, connecting first...');
       await connect();
