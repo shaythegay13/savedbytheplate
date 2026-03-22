@@ -915,9 +915,9 @@ serve(async (req) => {
             automaticActivityDetection: {
               disabled: false,
               startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_HIGH,
-              endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_HIGH,
+              endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_LOW,
               prefixPaddingMs: 300,
-              silenceDurationMs: 1000
+              silenceDurationMs: 800
             }
           }
         },
