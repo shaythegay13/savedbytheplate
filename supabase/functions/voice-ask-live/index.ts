@@ -837,7 +837,9 @@ serve(async (req) => {
 
           for (const toolResponse of toolResponses) {
             if (geminiSession) {
+              console.log("📤 Sending tool response to Gemini, expecting audio reply...");
               await geminiSession.sendToolResponse(toolResponse);
+              console.log("📤 Tool response sent — waiting for Gemini audio output");
             }
           }
           return;
