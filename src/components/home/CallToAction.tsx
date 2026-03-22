@@ -12,10 +12,10 @@ const CallToAction = () => {
             Join our community today and start your journey towards sustainable local food choices.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild className="bg-white text-sbtp-green-700 hover:bg-sbtp-yellow hover:text-sbtp-green-800 py-6 px-8 text-lg">
+            <Button asChild size="lg" className="bg-white text-sbtp-green-700 hover:bg-sbtp-yellow hover:text-sbtp-green-800 rounded-full py-6 px-10 text-lg font-semibold shadow-lg">
               <Link to="/map">Explore Local Food Map</Link>
             </Button>
-            <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 py-6 px-8 text-lg">
+            <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white/10 rounded-full py-6 px-10 text-lg font-semibold">
               <Link to="/premium">Get Premium</Link>
             </Button>
           </div>

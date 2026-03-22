@@ -23,10 +23,10 @@ const Hero = () => {
               Empowering individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white py-6 px-8 text-lg">
+              <Button asChild size="lg" className="bg-sbtp-green-500 hover:bg-sbtp-green-600 text-white rounded-full py-6 px-10 text-lg font-semibold shadow-lg">
                 <Link to="/local-food">Local Food Resources</Link>
               </Button>
-              <Button asChild variant="outline" className="border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-100 py-6 px-8 text-lg">
+              <Button asChild variant="outline" size="lg" className="border-2 border-sbtp-green-500 text-sbtp-green-700 hover:bg-sbtp-green-100 rounded-full py-6 px-10 text-lg font-semibold">
                 <Link to="/education">Schedule a Tour</Link>
               </Button>
             </div>
