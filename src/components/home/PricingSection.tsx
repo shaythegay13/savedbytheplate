@@ -53,7 +53,7 @@ const PricingSection = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Become a Member</h2>
           <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
-            Unlock all features and support our mission to connect people with sustainable, local food sources.
+            Unlock all features and directly support our mission to connect communities with sustainable, local food sources.
           </p>
         </div>
 
