@@ -73,7 +73,7 @@ const Contact = () => {
             Bring Food Justice to Your School
           </h1>
           <p className="text-green-100 text-lg max-w-2xl mx-auto">
-            Tell us about your school and what you're looking for. We'll follow up within 2 business days to discuss how we can help.
+            Tell us about your school and what you're looking for. We'll follow up within 3-5 business days to discuss how we can help.
           </p>
         </div>
       </section>
