@@ -245,9 +245,61 @@ serve(async (req) => {
   }
 
   try {
+    // --- Authentication ---
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(
+      authHeader.replace("Bearer ", "")
+    );
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // --- Rate Limiting: 20 requests/hour per user ---
+    const RATE_LIMIT_WINDOW_MINUTES = 60;
+    const MAX_REQUESTS = 20;
+    const windowStartIso = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000).toISOString();
+
+    const { data: rows } = await supabase
+      .from("newsletter_rate_limits")
+      .select("id, attempt_count, first_attempt_at")
+      .eq("identifier", user.id)
+      .gte("first_attempt_at", windowStartIso)
+      .order("first_attempt_at", { ascending: false })
+      .limit(1);
+
+    const rl = rows && rows.length > 0 ? rows[0] : null;
+
+    if (rl && rl.attempt_count >= MAX_REQUESTS) {
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later.", retryAfter: RATE_LIMIT_WINDOW_MINUTES * 60 }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const nowIso = new Date().toISOString();
+    if (rl) {
+      await supabase.from("newsletter_rate_limits").update({ attempt_count: rl.attempt_count + 1, last_attempt_at: nowIso }).eq("id", rl.id);
+    } else {
+      await supabase.from("newsletter_rate_limits").insert({ identifier: user.id, attempt_count: 1, first_attempt_at: nowIso, last_attempt_at: nowIso });
+    }
+
+    // --- Validate input ---
     const rawBody = await req.json();
-    
-    // Validate input
     const validationResult = voiceAskSchema.safeParse(rawBody);
     if (!validationResult.success) {
       const errors = (validationResult as { success: false; error: z.ZodError }).error.errors.map(e => e.message).join(', ');
