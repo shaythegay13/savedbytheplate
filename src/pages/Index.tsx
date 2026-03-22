@@ -10,10 +10,10 @@ import TransparentJaneAvatar from "@/components/garden-plan/TransparentJaneAvata
 const Index = () => {
   return (
     <div className="w-full">
-      <title>Saved by the Plate — Grow Local, Eat Local</title>
+      <title>Saved by the Plate Inc. — Grow Local, Eat Local</title>
       <meta name="description" content="Connecting communities with sustainable food options and local agriculture education, starting with youth in New York City." />
       <link rel="canonical" href="https://www.savedbytheplate.org/" />
-      <meta property="og:title" content="Saved by the Plate — Grow Local, Eat Local" />
+      <meta property="og:title" content="Saved by the Plate Inc. — Grow Local, Eat Local" />
       <meta property="og:url" content="https://www.savedbytheplate.org/" />
       <Navbar />
       {/* Hero Section */}
@@ -184,7 +184,7 @@ const Index = () => {
             unequal outcomes.
           </p>
           <p className="text-gray-700 leading-relaxed mb-6">
-            At Saved by the Plate, food justice is our foundation. Every program we run — from our 6-week
+            At Saved by the Plate Inc., food justice is our foundation. Every program we run — from our 6-week
             community garden curriculum to our composting and soil science workshops — is designed to equip
             young people in New York City with the knowledge and skills to become lifelong advocates for an
             equitable, sustainable food system.

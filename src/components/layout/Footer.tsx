@@ -71,10 +71,10 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img
                 src="/lovable-uploads/3f051535-dc60-4ced-bbc6-0fb3a2c1b104.webp"
-                alt="Saved by the Plate"
+                alt="Saved by the Plate Inc."
                 className="h-12 w-12 object-contain bg-white rounded-full p-1"
               />
-              <span className="text-lg font-bold">Saved by the Plate</span>
+              <span className="text-lg font-bold">Saved by the Plate Inc.</span>
             </Link>
             <p className="text-sm text-gray-300 mt-2 max-w-xs">
               Inspiring the next generation to grow, learn, and lead by connecting youth and communities to local gardens, sustainable food education, and hands-on experiences in urban agriculture.
@@ -150,7 +150,7 @@ const Footer = () => {
 
         {/* Footer Bottom Bar */}
         <div className="border-t border-sbtp-green-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-400">© {currentYear} Saved by the Plate. All rights reserved.</p>
+          <p className="text-sm text-gray-400">© {currentYear} Saved by the Plate Inc.. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
             <Link to={(isWaitingList || isWaitingListLegal) ? "/legal/terms" : "/terms"} className="hover:text-white transition-colors">Terms of Service</Link>
             <Link to={(isWaitingList || isWaitingListLegal) ? "/legal/privacy" : "/privacy"} className="hover:text-white transition-colors">Privacy Policy</Link>

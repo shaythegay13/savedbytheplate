@@ -20,7 +20,7 @@ const MissionSection = () => {
                 Our Mission
               </h3>
               <p className="text-sbtp-brown-500">
-                Saved by the Plate empowers individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education with the long-term goal of shifting consumer food acquisition patterns towards local options like farmers' markets or growing food themselves.
+                Saved by the Plate Inc. empowers individuals to make informed food choices by connecting them to local food sources and sustainable agriculture education with the long-term goal of shifting consumer food acquisition patterns towards local options like farmers' markets or growing food themselves.
               </p>
             </CardContent>
           </Card>

@@ -50,8 +50,8 @@ const Terms: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <title>Terms of Service | Saved by the Plate</title>
-      <meta name="description" content="Read our Terms of Service for Saved by the Plate, including user rights, limitations of liability, and policies." />
+      <title>Terms of Service | Saved by the Plate Inc.</title>
+      <meta name="description" content="Read our Terms of Service for Saved by the Plate Inc., including user rights, limitations of liability, and policies." />
       <link rel="canonical" href="https://www.savedbytheplate.org/terms" />
       <Navbar />
       
@@ -89,7 +89,7 @@ const Terms: React.FC = () => {
             </h2>
             <article className="prose prose-neutral max-w-none">
               <p>
-                We are Saved by the Plate Inc. ("Company," "we," "us," "our"), a company registered in New York, United States at 556 W 141st Street, Apartment 4E, New York, NY 10031. We operate the website{" "}
+                We are Saved by the Plate Inc. Inc. ("Company," "we," "us," "our"), a company registered in New York, United States at 556 W 141st Street, Apartment 4E, New York, NY 10031. We operate the website{" "}
                 <a href="https://www.savedbytheplate.com" className="text-sbtp-green-700 underline" rel="noopener noreferrer">https://www.savedbytheplate.com</a>{" "}
                 (the "Site"), as well as any other related products and services that refer or link to these legal terms (the "Legal Terms") (collectively, the "Services").
               </p>
@@ -98,7 +98,7 @@ const Terms: React.FC = () => {
                 <a href="mailto:info@savedbytheplate.com" className="text-sbtp-green-700 underline">info@savedbytheplate.com</a>, or by mail to 556 W 141st Street, Apartment 4E, New York, NY 10031, United States.
               </p>
               <p>
-                These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you"), and Saved by the Plate Inc., concerning your access to and use of the Services. You agree that by accessing the Services, you have read, understood, and agreed to be bound by all of these Legal Terms. IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.
+                These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you"), and Saved by the Plate Inc. Inc., concerning your access to and use of the Services. You agree that by accessing the Services, you have read, understood, and agreed to be bound by all of these Legal Terms. IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.
               </p>
               <p>
                 We will provide you with prior notice of any scheduled changes to the Services you are using. The modified Legal Terms will become effective upon posting or notifying you by info@savedbytheplate.com, as stated in the email message. By continuing to use the Services after the effective date of any changes, you agree to be bound by the modified terms.
@@ -468,7 +468,7 @@ const Terms: React.FC = () => {
             <article className="prose prose-neutral max-w-none">
               <p>In order to resolve a complaint or to receive further information regarding use of the Services, please contact us at:</p>
               <p>
-                Saved by the Plate Inc.<br />
+                Saved by the Plate Inc. Inc.<br />
                 556 W 141st Street, Apartment 4E<br />
                 New York, NY 10031<br />
                 United States

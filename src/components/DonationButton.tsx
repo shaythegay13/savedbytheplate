@@ -48,7 +48,7 @@ const DonationButton = () => {
       <DialogTrigger asChild>
         <Button 
           className="bg-sbtp-orange-500 hover:bg-sbtp-orange-600 text-white"
-          aria-label="Donate to Saved by the Plate"
+          aria-label="Donate to Saved by the Plate Inc."
         >
           <Heart className="mr-2 h-4 w-4" />
           Donate
@@ -56,7 +56,7 @@ const DonationButton = () => {
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Support Saved by the Plate</DialogTitle>
+          <DialogTitle>Support Saved by the Plate Inc.</DialogTitle>
           <DialogDescription>
             Your donation helps us continue our mission to support food access in our community.
           </DialogDescription>

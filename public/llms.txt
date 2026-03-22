@@ -1,13 +1,13 @@
-# Saved by the Plate
+# Saved by the Plate Inc.
 
-> Saved by the Plate is a nonprofit organization empowering communities to make
+> Saved by the Plate Inc. is a nonprofit organization empowering communities to make
 > informed food choices by connecting them to local food resources and providing
 > youth education in food justice, sustainable agriculture, and urban gardening.
 > Based in New York City, serving schools and communities across the five boroughs.
 
 ## About
 
-Saved by the Plate Inc. was founded by Shay Bouchles to bridge the gap between
+Saved by the Plate Inc. Inc. was founded by Shay Bouchles to bridge the gap between
 communities and local food systems. We provide experiential programs, an
 AI-powered garden planning assistant, and an interactive map of food resources
 including community gardens, farmers markets, food banks, and community fridges.

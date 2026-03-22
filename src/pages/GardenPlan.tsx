@@ -322,10 +322,10 @@ const GardenPlan = () => {
 
   return (
     <>
-      <title>Ask Jane — AI Garden Planning Assistant | Saved by the Plate</title>
+      <title>Ask Jane — AI Garden Planning Assistant | Saved by the Plate Inc.</title>
       <meta name="description" content="Get personalized gardening advice and custom growing plans from Jane, your AI-powered garden assistant. Free 2-day trial." />
       <link rel="canonical" href="https://www.savedbytheplate.org/local-food/garden-planner" />
-      <meta property="og:title" content="Ask Jane — AI Garden Planning Assistant | Saved by the Plate" />
+      <meta property="og:title" content="Ask Jane — AI Garden Planning Assistant | Saved by the Plate Inc." />
       <meta property="og:url" content="https://www.savedbytheplate.org/local-food/garden-planner" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.savedbytheplate.org/"},{"@type":"ListItem","position":2,"name":"Local Food Resources","item":"https://www.savedbytheplate.org/local-food"},{"@type":"ListItem","position":3,"name":"Ask Jane — Garden Planner","item":"https://www.savedbytheplate.org/local-food/garden-planner"}]}` }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{"@context":"https://schema.org","@type":"WebApplication","@id":"https://www.savedbytheplate.org/local-food/garden-planner#app","name":"Ask Jane — AI Garden Planning Assistant","url":"https://www.savedbytheplate.org/local-food/garden-planner","description":"Meet Jane, your AI-powered garden assistant. Get personalized gardening advice and create custom growing plans for your space. Powered by Google Gemini AI.","applicationCategory":"LifestyleApplication","operatingSystem":"Web Browser","offers":[{"@type":"Offer","name":"Free Trial","description":"2-day free trial","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Monthly Plan","price":"10","priceCurrency":"USD","billingPeriod":"P1M"},{"@type":"Offer","name":"Annual Plan","price":"100","priceCurrency":"USD","billingPeriod":"P1Y"},{"@type":"Offer","name":"Educator Plan","price":"8","priceCurrency":"USD","billingPeriod":"P1M"}],"publisher":{"@id":"https://www.savedbytheplate.org/#organization"},"featureList":["AI-powered personalized gardening advice","Custom garden growing plans","Voice chat interface","Space-specific recommendations"]}` }} />
