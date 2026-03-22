@@ -555,7 +555,16 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
             case 'assistant_audio': {
               stopListening();
-
+              audioReceivedInTurnRef.current = true;
+              // Unblock mic since Gemini is now responding with audio
+              if (toolProcessingRef.current) {
+                console.log('🔧 Tool processing complete — audio arriving, mic unblocked');
+                toolProcessingRef.current = false;
+                if (toolProcessingTimerRef.current) {
+                  clearTimeout(toolProcessingTimerRef.current);
+                  toolProcessingTimerRef.current = null;
+                }
+              }
               if (!audioQueueRef.current) {
                 const ctx = getAudioContext();
                 audioQueueRef.current = new AudioQueue(ctx, setIsSpeaking);
