@@ -794,6 +794,62 @@ serve(async (req) => {
   let reconnectAttempts = 0;
   const MAX_RECONNECT_ATTEMPTS = 3;
 
+  // Conversation memory: generate a unique session ID for this WS connection
+  const conversationSessionId = crypto.randomUUID();
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const memoryClient = createClient(supabaseUrl, supabaseServiceKey);
+
+  // Store a conversation turn in the DB
+  async function storeTurn(role: 'user' | 'assistant' | 'tool_result', content: string, toolName?: string) {
+    try {
+      // Trim to max 2000 chars to keep storage lean
+      const trimmed = content.slice(0, 2000);
+      await memoryClient
+        .from('jane_conversation_turns')
+        .insert({
+          session_id: conversationSessionId,
+          role,
+          content: trimmed,
+          tool_name: toolName || null,
+        });
+    } catch (e) {
+      console.warn('Failed to store conversation turn:', e);
+    }
+  }
+
+  // Retrieve conversation history for context injection
+  async function getConversationHistory(): Promise<string> {
+    try {
+      const { data } = await memoryClient
+        .from('jane_conversation_turns')
+        .select('role, content, tool_name')
+        .eq('session_id', conversationSessionId)
+        .order('created_at', { ascending: true })
+        .limit(20); // Last 20 turns max
+
+      if (!data || data.length === 0) return '';
+
+      return data
+        .map((t: any) => {
+          if (t.role === 'user') return `User: ${t.content}`;
+          if (t.role === 'tool_result') return `[Tool ${t.tool_name}]: ${t.content.slice(0, 300)}`;
+          return `Jane: ${t.content}`;
+        })
+        .join('\n');
+    } catch (e) {
+      console.warn('Failed to retrieve conversation history:', e);
+      return '';
+    }
+  }
+
+  // Cleanup expired turns opportunistically (runs ~5% of connections)
+  if (Math.random() < 0.05) {
+    memoryClient.rpc('cleanup_jane_conversation_turns').then(() => {
+      console.log('Cleaned up expired conversation turns');
+    }).catch(() => {});
+  }
+
   async function initGeminiSession() {
     const ai = new GoogleGenAI({ apiKey: GOOGLE_AI_API_KEY });
 
