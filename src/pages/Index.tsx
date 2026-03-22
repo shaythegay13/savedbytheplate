@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Book, Leaf, Users, Sprout, Globe, GraduationCap } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
+import StudentStories from "@/components/home/StudentStories";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 import educationGardenImage from "@/assets/education-garden-1.jpg";
 import localFoodResourcesImage from "@/assets/local-food-resources.jpeg";
