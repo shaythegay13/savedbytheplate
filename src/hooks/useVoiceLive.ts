@@ -400,6 +400,7 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
 
   // Gate sending audio until the server explicitly tells us the Gemini session is ready.
   const sessionReadyRef = useRef(false);
+  const sessionReadyAtRef = useRef<number>(0); // Track when session became ready
   const sessionReadyDeferredRef = useRef<null | {
     promise: Promise<void>;
     resolve: () => void;
@@ -412,6 +413,10 @@ export function useVoiceLive(options: UseVoiceLiveOptions = {}) {
   const endTurnSentRef = useRef(false);
   const SPEECH_RMS_THRESHOLD = 0.012;
   const SILENCE_MS = 1200;
+
+  // Auto-reconnect tracking
+  const reconnectCountRef = useRef(0);
+  const MAX_AUTO_RECONNECTS = 3;
 
   const createDeferred = () => {
     let resolve!: () => void;
