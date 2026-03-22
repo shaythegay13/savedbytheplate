@@ -943,7 +943,7 @@ serve(async (req) => {
           }
         }
 
-        // Handle output transcription
+        // Handle output transcription — store assistant responses for memory
         if (message.serverContent?.outputTranscription?.text) {
           if (socket.readyState === WebSocket.OPEN) {
             const rawText = message.serverContent.outputTranscription.text;
@@ -951,6 +951,8 @@ serve(async (req) => {
             const sanitized = sanitizeAssistantText(rawText);
             console.log('[SANITIZED TEXT]:', sanitized);
             if (!sanitized) return;
+            // Store assistant response for conversation continuity
+            await storeTurn('assistant', sanitized);
             socket.send(JSON.stringify({ type: "assistant_text", text: sanitized }));
           }
         }
