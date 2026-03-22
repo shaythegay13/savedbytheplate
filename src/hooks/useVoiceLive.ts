@@ -28,15 +28,15 @@ class AudioQueue {
   private onPlayingChange?: (isPlaying: boolean) => void;
   private scheduledTime: number = 0;
   private sampleRate = 24000; // updated from server mimeType (audio/pcm;rate=...)
-  private readonly FADE_MS = 8; // increased for smoother transitions between chunks
-  private readonly LOOKAHEAD_MS = 120; // helps avoid underruns that cause pops/robotic gaps
-  private readonly PREBUFFER_MS = 600; // accumulate more before starting to better survive jitter
-  private readonly UNDERRUN_GRACE_MS = 750; // wait longer for more chunks before stopping
-  private readonly CROSSFADE_SAMPLES = 64; // samples to crossfade when large jumps detected
+  private readonly FADE_MS = 12; // longer fade for smoother inter-chunk transitions
+  private readonly LOOKAHEAD_MS = 150; // schedule further ahead to survive jitter
+  private readonly PREBUFFER_MS = 900; // accumulate more audio before starting playback
+  private readonly UNDERRUN_GRACE_MS = 1200; // wait longer for more chunks before stopping
+  private readonly CROSSFADE_SAMPLES = 96; // more samples for smoother crossfade
   
   // Backpressure: reject new chunks when queue is too full
-  private readonly MAX_QUEUE_LEN = 30; // reject chunks above this
-  private readonly RESUME_QUEUE_LEN = 20; // start accepting again below this
+  private readonly MAX_QUEUE_LEN = 50; // larger buffer before signaling backpressure
+  private readonly RESUME_QUEUE_LEN = 30; // resume threshold
   private backpressureActive = false;
   
   private underrunTimer: number | null = null;
