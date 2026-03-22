@@ -16,7 +16,7 @@ const CallToAction = () => {
               <Link to="/map">Explore Local Food Map</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white/10 rounded-full py-6 px-10 text-lg font-semibold">
-              <Link to="/premium">Get Premium</Link>
+              <Link to="/premium">Become a Member</Link>
             </Button>
           </div>
         </div>

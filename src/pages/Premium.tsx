@@ -141,7 +141,7 @@ const PlanModal = ({ open, onOpenChange, planType, onSubscribe, loading }: PlanM
             ) : (
               <>
                 <CreditCard className="mr-2 h-5 w-5" />
-                Subscribe Now
+                Become a Member
               </>
             )}
           </Button>
@@ -390,9 +390,9 @@ const Premium = () => {
                 Premium Features
               </div>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Unlock Premium</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">Become a Member</h1>
             <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6 px-4">
-              Gain access to Ask Jane - Your Personal Gardening Assistant, curated educational content, and Discord community
+              Gain access to Ask Jane - Your Personal Gardening Assistant, curated educational content, and Discord community. Your membership directly supports food justice education for NYC youth.
             </p>
             <div className="bg-white/10 rounded-lg p-4 sm:p-6 inline-block mx-4">
               <h2 className="text-2xl font-bold mb-2">Multiple Plans Available</h2>
@@ -415,9 +415,9 @@ const Premium = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Features</h2>
+              <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Member Benefits</h2>
               <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
-                Enhance your sustainable living journey with our premium tools and resources.
+                Enhance your sustainable living journey with our member tools and resources.
               </p>
             </div>
             
@@ -505,7 +505,7 @@ const Premium = () => {
                         onClick={handleManageSubscription}
                         disabled={loading}
                       >
-                        Manage Subscription
+                        Manage Membership
                       </Button>
                     ) : (
                       <Button 
@@ -557,9 +557,9 @@ const Premium = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-6">Ready to Go Premium?</h2>
+            <h2 className="text-3xl font-bold text-sbtp-green-800 mb-6">Ready to Become a Member?</h2>
             <p className="text-lg text-sbtp-brown-700 mb-8">
-              Join our growing community of sustainable living enthusiasts and get access to all our premium features.
+              Join our growing community of sustainable living enthusiasts. Your membership directly funds food justice education for NYC youth.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-6">
               <Button 

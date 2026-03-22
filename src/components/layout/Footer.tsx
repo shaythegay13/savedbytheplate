@@ -101,7 +101,7 @@ const Footer = () => {
                   <li><Link to="/premium" className="hover:text-white transition-colors">Premium Benefits</Link></li>
                   <li>
                     <div className="flex items-center gap-2">
-                      <span className="hover:text-white transition-colors">Subscription</span>
+                      <span className="hover:text-white transition-colors">Membership</span>
                       <span className="bg-sbtp-yellow text-sbtp-green-800 text-xs px-2 py-0.5 rounded-full">$10/mo</span>
                     </div>
                   </li>

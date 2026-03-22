@@ -51,9 +51,9 @@ const PricingSection = () => {
     <section className="py-16 bg-sbtp-green-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Premium Subscription</h2>
+          <h2 className="text-3xl font-bold text-sbtp-green-800 mb-4">Become a Member</h2>
           <p className="text-sbtp-brown-500 max-w-2xl mx-auto">
-            Unlock all features and support our mission to connect people with sustainable, local food sources.
+            Unlock all features and directly support our mission to connect communities with sustainable, local food sources.
           </p>
         </div>
 
@@ -105,7 +105,7 @@ const PricingSection = () => {
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
-                      {loading ? "Processing..." : "Subscribe Monthly"}
+                      {loading ? "Processing..." : "Join Monthly"}
                     </Button>
                   </div>
                   
@@ -128,7 +128,7 @@ const PricingSection = () => {
                       onClick={handleSubscribe}
                       disabled={loading}
                     >
-                      {loading ? "Processing..." : "Subscribe Yearly"}
+                      {loading ? "Processing..." : "Join Yearly"}
                     </Button>
                   </div>
 
@@ -182,9 +182,9 @@ const PricingSection = () => {
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Please log in to subscribe</DialogTitle>
+            <DialogTitle>Please log in to become a member</DialogTitle>
             <DialogDescription>
-              You need to be logged in to subscribe to our premium plans. Please log in or create an account to continue.
+              You need to be logged in to join our membership plans. Please log in or create an account to continue.
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-4 mt-4">

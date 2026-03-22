@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Book, Leaf, Users, Sprout, Globe, GraduationCap } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
+import StudentStories from "@/components/home/StudentStories";
 import gardenPlanningImage from "@/assets/garden-planning.jpg";
 import educationGardenImage from "@/assets/education-garden-1.jpg";
 import localFoodResourcesImage from "@/assets/local-food-resources.jpeg";
@@ -46,31 +47,29 @@ const Index = () => {
             Discover What We Offer
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Education */}
+            {/* Local Food Resources — FIRST for immediate utility */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img
-                  src={educationGardenImage}
-                  alt="Youth education program in community garden"
+                  src={localFoodResourcesImage}
+                  alt="Community garden with labeled vegetable beds"
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
-                  <Book className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Educational Programming</h3>
+                  <MapPin className="h-6 w-6 text-green-600 mr-2" />
+                  <h3 className="text-xl font-semibold">Local Food Resources</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Customizable educational programs for youth exploring food justice, 
-                  food sovereignty, community gardens, and urban agriculture. Programs 
-                  can be tailored to fit your student population and desired length.
+                  Discover community gardens, farmers markets, food banks, and community fridges near you with our interactive map.
                 </p>
                 <Link 
-                  to="/education" 
+                  to="/local-food/map"
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Contact us about our programs
+                  Explore resources
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -104,29 +103,31 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Local Food Resources */}
+            {/* Education */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-48 overflow-hidden">
                 <img
-                  src={localFoodResourcesImage}
-                  alt="Community garden with labeled vegetable beds"
+                  src={educationGardenImage}
+                  alt="Youth education program in community garden"
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
-                  <MapPin className="h-6 w-6 text-green-600 mr-2" />
-                  <h3 className="text-xl font-semibold">Local Food Resources</h3>
+                  <Book className="h-6 w-6 text-green-600 mr-2" />
+                  <h3 className="text-xl font-semibold">Educational Programming</h3>
                 </div>
                 <p className="text-gray-600 mb-4">
-                  Discover community gardens, farmers markets, food banks, and community fridges near you with our interactive map.
+                  Customizable educational programs for youth exploring food justice, 
+                  food sovereignty, community gardens, and urban agriculture. Programs 
+                  can be tailored to fit your student population and desired length.
                 </p>
                 <Link 
-                  to="/local-food/map"
+                  to="/education" 
                   className="text-green-700 font-medium hover:text-green-800 flex items-center"
                 >
-                  Explore resources
+                  Contact us about our programs
                   <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -136,6 +137,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Student Stories */}
+      <StudentStories />
 
       {/* Impact Statistics Section */}
       <section className="py-12 sm:py-16 bg-green-800 text-white">
