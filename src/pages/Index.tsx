@@ -283,13 +283,13 @@ const Index = () => {
             we'll customize our curriculum to fit your students, schedule, and goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a
-              href="mailto:info@savedbytheplate.org?subject=Education Program Inquiry"
+            <Link
+              to="/contact"
               className="inline-flex items-center bg-white text-green-800 font-semibold px-10 py-4 rounded-full hover:bg-green-50 transition-colors shadow-lg text-lg"
             >
               <Users className="w-5 h-5 mr-2" />
               Contact Us for Your School
-            </a>
+            </Link>
             <Link
               to="/education"
               className="inline-flex items-center text-white font-semibold hover:text-green-200 transition-colors"
