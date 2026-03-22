@@ -2,7 +2,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 const SPREADSHEET_ID = '1k4H-t2RN91TqLL9RYCO7WKdMDgF1gNP1SeZuLnz5srA';
@@ -20,12 +20,12 @@ async function getAccessToken(credentials: any): Promise<string> {
 
   const signatureInput = `${jwtHeader}.${jwtClaimSet}`;
   const privateKey = credentials.private_key;
-  const pemHeader = '-----BEGIN PRIVATE KEY-----';
-  const pemFooter = '-----END PRIVATE KEY-----';
-  const pemContents = privateKey.substring(
-    pemHeader.length,
-    privateKey.length - pemFooter.length
-  ).trim();
+  const pemContents = privateKey
+    .replace('-----BEGIN PRIVATE KEY-----', '')
+    .replace('-----END PRIVATE KEY-----', '')
+    .replace(/\n/g, '')
+    .replace(/\s/g, '')
+    .trim();
 
   const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
   const cryptoKey = await crypto.subtle.importKey(
@@ -88,11 +88,17 @@ serve(async (req) => {
 
     const googleCredentials = Deno.env.get('GOOGLE_SHEETS_CREDENTIALS');
     if (!googleCredentials) {
+      console.error('GOOGLE_SHEETS_CREDENTIALS not found');
       throw new Error('Google Sheets credentials not configured');
     }
 
+    console.log('Parsing credentials...');
     const credentials = JSON.parse(googleCredentials);
+    console.log('Service account email:', credentials.client_email);
+    
+    console.log('Getting access token...');
     const accessToken = await getAccessToken(credentials);
+    console.log('Got access token successfully');
 
     const now = new Date();
     const dateStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
