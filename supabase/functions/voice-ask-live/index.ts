@@ -2,7 +2,7 @@
 /// <reference lib="es2021" />
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "https://esm.sh/@google/genai@1.34.0";
+import { GoogleGenAI, Modality, Type, StartSensitivity, EndSensitivity } from "npm:@google/genai@^1.34.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
