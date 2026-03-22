@@ -978,6 +978,12 @@ serve(async (req) => {
     const modelName = "gemini-2.5-flash-native-audio-preview-12-2025";
     console.log(`Attempting Gemini Live connect with model: ${modelName}, attempt: ${reconnectAttempts + 1}`);
 
+    // Inject conversation history into system prompt for continuity
+    const history = await getConversationHistory();
+    const historyBlock = history
+      ? `\n\nCONVERSATION HISTORY (use this to maintain context — do NOT repeat greetings):\n${history}`
+      : '';
+
     try {
       geminiSession = await ai.live.connect({
         model: modelName,
@@ -986,7 +992,7 @@ serve(async (req) => {
           outputAudioTranscription: {},
           inputAudioTranscription: {},
           systemInstruction: {
-            parts: [{ text: JANE_SYSTEM_PROMPT }]
+            parts: [{ text: JANE_SYSTEM_PROMPT + historyBlock }]
           },
           tools: [{ functionDeclarations: gardeningTools }],
           speechConfig: {
