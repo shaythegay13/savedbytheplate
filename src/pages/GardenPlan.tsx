@@ -10,6 +10,8 @@ import { Lock, Star, Loader2 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import TransparentJaneAvatar from '@/components/garden-plan/TransparentJaneAvatar';
 import { useVoiceLive } from '@/hooks/useVoiceLive';
+import ClassroomMode from '@/components/garden-plan/classroom/ClassroomMode';
+import { Monitor } from 'lucide-react';
 
 const TRIAL_DURATION_DAYS = 2;
 
