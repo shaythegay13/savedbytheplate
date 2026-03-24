@@ -108,7 +108,28 @@ const ClassroomMode: React.FC<ClassroomModeProps> = ({ user, latestJaneResponse 
 
   const handleAwardBadge = async (participantId: string, badge: typeof BADGE_OPTIONS[0]) => {
     const participant = participants.find(p => p.id === participantId);
-    if (!participant) return;
+    if (!participant || !session) return;
+
+    try {
+      // Use edge function to award badge (bypasses RLS)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      
+      if (token) {
+        await supabase.functions.invoke('classroom-manage', {
+          body: {
+            action: 'award_badge',
+            session_id: session.id,
+            student_user_id: participant.user_id,
+            badge_name: badge.name,
+            badge_type: badge.type,
+            badge_description: badge.description,
+          },
+        });
+      }
+    } catch (err) {
+      console.warn('Badge award via edge function failed:', err);
+    }
 
     await broadcastMessage(
       `${badge.emoji} ${participant.display_name} earned the "${badge.name}" badge! ${badge.description}`,
