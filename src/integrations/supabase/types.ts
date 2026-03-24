@@ -41,6 +41,106 @@ export type Database = {
         }
         Relationships: []
       }
+      classroom_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          sender_id: string | null
+          sender_type: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          sender_id?: string | null
+          sender_type?: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          sender_id?: string | null
+          sender_type?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classroom_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "classroom_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classroom_participants: {
+        Row: {
+          display_name: string
+          id: string
+          joined_at: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          display_name: string
+          id?: string
+          joined_at?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          display_name?: string
+          id?: string
+          joined_at?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classroom_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "classroom_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classroom_sessions: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          id: string
+          participant_count: number
+          session_code: string
+          session_name: string
+          status: string
+          teacher_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          participant_count?: number
+          session_code: string
+          session_name: string
+          status?: string
+          teacher_id: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          participant_count?: number
+          session_code?: string
+          session_name?: string
+          status?: string
+          teacher_id?: string
+        }
+        Relationships: []
+      }
       garden_feedback: {
         Row: {
           actual_harvest_time: string | null
@@ -900,6 +1000,7 @@ export type Database = {
           website: string
         }[]
       }
+      generate_session_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
