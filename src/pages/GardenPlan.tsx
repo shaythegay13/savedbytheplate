@@ -553,6 +553,31 @@ const GardenPlan = () => {
               </div>
             </div>
 
+            {/* Classroom Mode Toggle */}
+            <div className="mb-8 text-center">
+              <Button
+                onClick={() => setShowClassroom(!showClassroom)}
+                variant={showClassroom ? "default" : "outline"}
+                className={showClassroom 
+                  ? "bg-green-600 hover:bg-green-700" 
+                  : "border-green-300 text-green-700 hover:bg-green-50"
+                }
+              >
+                <Monitor className="h-4 w-4 mr-2" />
+                {showClassroom ? 'Hide Classroom Mode' : 'Classroom Mode'}
+              </Button>
+            </div>
+
+            {/* Classroom Mode Panel */}
+            {showClassroom && user && (
+              <div className="mb-8">
+                <ClassroomMode
+                  user={user}
+                  latestJaneResponse={janeResponse}
+                />
+              </div>
+            )}
+
             {/* Features */}
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div>
