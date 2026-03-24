@@ -30,6 +30,7 @@ const GardenPlan = () => {
   
   const [janeResponse, setJaneResponse] = useState<string>("");
   const [isMuted, setIsMuted] = useState(false);
+  const [showClassroom, setShowClassroom] = useState(false);
   const { toast } = useToast();
 
   // Use the new Voice Live hook for Gemini Live WebSocket
