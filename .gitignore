@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+# Local environment. Names live in .env.example; values stay untracked.
+.env
+
+# Python build output
+__pycache__/
+*.py[cod]
+.coverage
+coverage.xml
+*.egg-info/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
