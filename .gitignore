@@ -22,6 +22,16 @@ __pycache__/
 coverage.xml
 *.egg-info/
 
+# Split-zip backups such as src.zip.001
+*.zip.*
+
+# Virtual environments
+.venv/
+venv/
+virtualenv/
+ENV/
+env/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
