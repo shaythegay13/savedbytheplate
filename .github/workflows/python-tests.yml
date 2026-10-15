@@ -43,6 +43,8 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
-        file: ./coverage.xml
+        # defaults.run.working-directory does not apply to this action.
+        file: src/data/coverage.xml
         flags: unittests
-        fail_ci_if_error: true 
+        # No CODECOV_TOKEN is configured. A failed upload should not fail the tests.
+        fail_ci_if_error: false 

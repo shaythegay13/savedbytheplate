@@ -8,6 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def run_command(cmd: list[str], cwd: str | Path) -> None:
     """Run a command in the specified directory."""
     try:
@@ -15,6 +16,7 @@ def run_command(cmd: list[str], cwd: str | Path) -> None:
     except subprocess.CalledProcessError as e:
         print(f"Error running command {' '.join(cmd)}: {e}")
         sys.exit(1)
+
 
 def update_dependencies() -> None:
     """Update all dependencies using pip-tools."""
@@ -28,25 +30,21 @@ def update_dependencies() -> None:
     # Update base requirements first
     print("Updating base requirements...")
     run_command(
-        ["pip-compile", "--upgrade", "--output-file=base.txt", "base.in"],
-        cwd=req_dir
+        ["pip-compile", "--upgrade", "--output-file=base.txt", "base.in"], cwd=req_dir
     )
 
     # Update development requirements
     print("Updating development requirements...")
     run_command(
-        ["pip-compile", "--upgrade", "--output-file=dev.txt", "dev.in"],
-        cwd=req_dir
+        ["pip-compile", "--upgrade", "--output-file=dev.txt", "dev.in"], cwd=req_dir
     )
 
     # Sync the current environment with dev requirements
     print("Syncing virtual environment...")
-    run_command(
-        ["pip-sync", "dev.txt"],
-        cwd=req_dir
-    )
+    run_command(["pip-sync", "dev.txt"], cwd=req_dir)
 
     print("Dependencies updated successfully!")
+
 
 if __name__ == "__main__":
     update_dependencies()
